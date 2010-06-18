@@ -1,14 +1,18 @@
 from distutils.core import setup
+
+long_des = open('README.rst').read()
+
 setup(name='inflect',
-      version='0.1',
+      version='0.1.1',
       description="Correctly generate plurals, ordinals, indefinite articles; convert numbers to words",
       author='Paul Dyson',
       author_email='pwdyson@yahoo.com',
+      url="http://pypi.python.org/pypi/inflect",
       py_modules=['inflect'],
       keywords = ['plural', 'inflect', 'participle'],
       classifiers = [
         "Programming Language :: Python",
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Natural Language :: English",
@@ -16,15 +20,5 @@ setup(name='inflect',
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: Linguistic",
         ],
-      long_description = """\
-Generate Inflections
---------------------
-
-* generate plural nouns
-* generate plural verbs
-* test if a word is the plural of another
-* generate 'a' or 'an' correctly before a noun
-* generate ordinal numbers
-* convert numbers into text
-""",
+      long_description = long_des
       )

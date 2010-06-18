@@ -3,10 +3,7 @@
 import unittest
 from re import error as reerror
 
-try:
-    import inflect
-except ImportError:
-    from .. import inflect
+import inflect
 
 reload(inflect)
 from inflect import BadChunkingOptionError, NumOutOfRangeError
@@ -69,6 +66,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.classical_dict, mydict)
 
 
+
     def test_num(self):
         # def NUM
         p = inflect.engine()
@@ -99,12 +97,15 @@ class test(unittest.TestCase):
 
     def test_inflect(self):
         p = inflect.engine()
-        self.assertEqual(p.inflect("NUM(1)"), "1")
-        self.assertEqual(p.inflect("NUM(1,0)"), "1")
-        self.assertEqual(p.inflect("NUM(1,1)"), "1")
-        self.assertEqual(p.inflect("NUM(1)   "), "1   ")
-        self.assertEqual(p.inflect("   NUM(1)   "), "   1   ")
-        self.assertEqual(p.inflect("NUM(3) NUM(1)"), "3 1")
+        for txt, ans in (
+                    ("NUM(1)", "1"),
+                    ("NUM(1,0)", "1"),
+                    ("NUM(1,1)", "1"),
+                    ("NUM(1)   ", "1   "),
+                    ("   NUM(1)   ", "   1   "),
+                    ("NUM(3) NUM(1)", "3 1"),
+                        ):
+            self.assertEqual(p.inflect(txt), ans)
 
         p.PLmo = lambda mo: "mockPL"
         p.PL_Nmo = lambda mo: "mockPL_N"
@@ -116,15 +117,18 @@ class test(unittest.TestCase):
         p.NUMWORDSmo = lambda mo: "mockNUMWORDS"
         p.PART_PRESmo = lambda mo: "mockPART_PRES"
 
-        self.assertEqual(p.inflect("PL(rock)"), "mockPL")
-        self.assertEqual(p.inflect("PL(rock)  PL(child)"), "mockPL  mockPL")
-        self.assertEqual(p.inflect("NUM(2) PL(rock)  PL(child)"), "2 mockPL  mockPL")
+        for txt, ans in (
+        ("PL(rock)", "mockPL"),
+        ("PL(rock)  PL(child)", "mockPL  mockPL"),
+        ("NUM(2) PL(rock)  PL(child)", "2 mockPL  mockPL"),
 
-        self.assertEqual(p.inflect("PL(rock) PL_N(rock) PL_V(rocks) PL_ADJ(big) A(ant)"),
-                 "mockPL mockPL_N mockPL_V mockPL_ADJ mockA")
+        ("PL(rock) PL_N(rock) PL_V(rocks) PL_ADJ(big) A(ant)",
+                 "mockPL mockPL_N mockPL_V mockPL_ADJ mockA"),
 
-        self.assertEqual(p.inflect("AN(rock) NO(0) ORD(3) NUMWORDS(1234) PART_PRES(runs)"),
-                 "mockA mockNO mockORD mockNUMWORDS mockPART_PRES")
+        ("AN(rock) NO(0) ORD(3) NUMWORDS(1234) PART_PRES(runs)",
+                 "mockA mockNO mockORD mockNUMWORDS mockPART_PRES"),
+                        ):
+            self.assertEqual(p.inflect(txt), ans)
 
 
 
@@ -133,6 +137,7 @@ class test(unittest.TestCase):
 
         self.assertEqual(p.PL_sb_user_defined, [])
         p.def_noun('VAX','VAXen')
+        self.assertEqual(p.PL('VAX'),'VAXEN')
         self.assertEqual(p.PL_sb_user_defined, ['VAX','VAXen'])
 
         self.assertTrue(p.ud_match('word',p.PL_sb_user_defined)
@@ -143,25 +148,34 @@ class test(unittest.TestCase):
                         is None)
 
         p.def_noun('cow','cows|kine')
+        self.assertEqual(p.PL('cow'),'cows')
+        p.classical()
+        self.assertEqual(p.PL('cow'),'kine')
+        
         self.assertEqual(p.ud_match('cow',p.PL_sb_user_defined),
                         'cows|kine')
 
         p.def_noun('(.+i)o',r'$1i')
+        self.assertEqual(p.PL('studio'),'studii')
         self.assertEqual(p.ud_match('studio',p.PL_sb_user_defined),
                         'studii')
 
         p.def_noun('aviatrix','aviatrices')
+        self.assertEqual(p.PL('aviatrix'),'aviatrices')
         self.assertEqual(p.ud_match('aviatrix',p.PL_sb_user_defined),
                         'aviatrices')
         p.def_noun('aviatrix','aviatrixes')
+        self.assertEqual(p.PL('aviatrix'),'aviatrixes')
         self.assertEqual(p.ud_match('aviatrix',p.PL_sb_user_defined),
                         'aviatrixes')
         p.def_noun('aviatrix',None)
+        self.assertEqual(p.PL('aviatrix'),'aviatrices')
         self.assertEqual(p.ud_match('aviatrix',p.PL_sb_user_defined),
                         None)
 
-        p.STDOUT_ON = False
-        self.assertRaises(reerror, p.def_noun, '(??', None)
+        inflect.STDOUT_ON = False
+        self.assertRaises(inflect.BadUserDefinedPatternError, p.def_noun, '(??', None)
+        inflect.STDOUT_ON = True
 
         #def_verb
         p.def_verb('will','shall',
@@ -173,108 +187,126 @@ class test(unittest.TestCase):
 
         #def_adj
         p.def_adj('hir','their')
+        self.assertEqual(p.PL('hir'),'their')
         self.assertEqual(p.ud_match('hir',p.PL_adj_user_defined),
                         'their')
 
         #def_a def_an
         p.def_a('h')
+        self.assertEqual(p.A('h'),'a h')
         self.assertEqual(p.ud_match('h',p.A_a_user_defined),
                         'a')
 
         p.def_an('horrendous.*')
+        self.assertEqual(p.A('horrendously'),'an horrendously')
         self.assertEqual(p.ud_match('horrendously',p.A_a_user_defined),
                         'an')
 
 
     def test_postprocess(self):
         p = inflect.engine()
-        self.assertEqual(p.postprocess('cow','cows'),'cows')
-        self.assertEqual(p.postprocess('I','we'),'we')
-        self.assertEqual(p.postprocess('COW','cows'),'COWS')
-        self.assertEqual(p.postprocess('Cow','cows'),'Cows')
-        self.assertEqual(p.postprocess('cow','cows|kine'),'cows')
+        for orig, infl, txt in (
+                    ('cow','cows','cows'),
+                    ('I','we','we'),
+                    ('COW','cows','COWS'),
+                    ('Cow','cows','Cows'),
+                    ('cow','cows|kine','cows'),
+                                ):
+            self.assertEqual(p.postprocess(orig, infl), txt)
+            
         p.classical()
         self.assertEqual(p.postprocess('cow','cows|kine'),'kine')
 
     def test_partition_word(self):
         p = inflect.engine()
-        self.assertEqual(p.partition_word(' cow '),(' ', 'cow', ' '))
-        self.assertEqual(p.partition_word('cow'),('', 'cow', ''))
-        self.assertEqual(p.partition_word('   cow'),('   ', 'cow', ''))
-        self.assertEqual(p.partition_word('cow   '),('', 'cow', '   '))
-        self.assertEqual(p.partition_word('  cow   '),('  ', 'cow', '   '))
-        self.assertEqual(p.partition_word(''),('', '', ''))
-        #spaces give weird results
-        #self.assertEqual(p.partition_word(' '),('', ' ', ''))
-        #self.assertEqual(p.partition_word('  '),(' ', ' ', ''))
-        #self.assertEqual(p.partition_word('   '),('  ', ' ', ''))
+        for txt, part in (
+                (' cow ',(' ', 'cow', ' ')),
+                ('cow',('', 'cow', '')),
+                ('   cow',('   ', 'cow', '')),
+                ('cow   ',('', 'cow', '   ')),
+                ('  cow   ',('  ', 'cow', '   ')),
+                ('',('', '', '')),
+                #spaces give weird results
+                #(' '),('', ' ', '')),
+                #('  '),(' ', ' ', '')),
+                #('   '),('  ', ' ', '')),
+                        ):
+            self.assertEqual(p.partition_word(txt),part)
 
     def test_PL(self):
         p = inflect.engine()
-        self.assertEqual(p.PL(''),'')
-        self.assertEqual(p.PL('cow'),'cows')
-        self.assertEqual(p.PL('thought'),'thoughts')
-        self.assertEqual(p.PL('mouse'),'mice')
-
-    def test_PL_N(self):
-        p = inflect.engine()
-        self.assertEqual(p.PL_N(''),'')
-        self.assertEqual(p.PL_N('cow'),'cows')
-        self.assertEqual(p.PL_N('thought'),'thoughts')
-
-    def test_PL_V(self):
-        p = inflect.engine()
-        self.assertEqual(p.PL_V(''),'')
-        self.assertEqual(p.PL_V('runs'),'run')
-        self.assertEqual(p.PL_V('thought'),'thought')
-        self.assertEqual(p.PL_V('eyes'),'eye')
-
-    def test_PL_ADJ(self):
-        p = inflect.engine()
-        self.assertEqual(p.PL_ADJ(''),'')
-        self.assertEqual(p.PL_ADJ('a'),'some')
-        self.assertEqual(p.PL_ADJ('this'),'these')
-        self.assertEqual(p.PL_ADJ('that'),'those')
-        self.assertEqual(p.PL_ADJ('my'),'our')
-        self.assertEqual(p.PL_ADJ("cat's"),"cats'")
-        self.assertEqual(p.PL_ADJ("child's"),"children's")
+        for fn, sing, plur in (
+                            (p.PL, '', ''),
+                            (p.PL, 'cow', 'cows'),
+                            (p.PL, 'thought', 'thoughts'),
+                            (p.PL, 'mouse', 'mice'),
+                            (p.PL, 'knife', 'knives'),
+                            (p.PL, 'knifes', 'knife'),
+                            (p.PL, ' cat  ', ' cats  '),
+                            (p.PL_N, '',''),
+                            (p.PL_N, 'cow','cows'),
+                            (p.PL_N, 'thought','thoughts'),
+                            (p.PL_V, '', ''),
+                            (p.PL_V, 'runs', 'run'),
+                            (p.PL_V, 'thought', 'thought'),
+                            (p.PL_V, 'eyes', 'eye'),
+                            (p.PL_ADJ, '', ''),
+                            (p.PL_ADJ, 'a', 'some'),
+                            (p.PL_ADJ, 'this', 'these'),
+                            (p.PL_ADJ, 'that', 'those'),
+                            (p.PL_ADJ, 'my', 'our'),
+                            (p.PL_ADJ, "cat's", "cats'"),
+                            (p.PL_ADJ, "child's", "children's"),
+                            ):
+            self.assertEqual(fn(sing), plur)
 
     def test_PL_eq(self):
         p = inflect.engine()
-        self.assertEqual(p.PL_eq('index','index'),'eq')
-        self.assertEqual(p.PL_eq('index','indexes'),'s:p')
-        self.assertEqual(p.PL_eq('index','indices'),'s:p')
-        self.assertEqual(p.PL_eq('indexes','index'),'p:s')
-        self.assertEqual(p.PL_eq('indices','index'),'p:s')
-        self.assertEqual(p.PL_eq('indices','indexes'),'p:p')
-        self.assertEqual(p.PL_eq('indexes','indices'),'p:p')
-        self.assertEqual(p.PL_eq('indices','indices'),'eq')
+        for fn, sing, plur, res in (
+                    (p.PL_eq, 'index','index','eq'),
+                    (p.PL_eq, 'index','indexes','s:p'),
+                    (p.PL_eq, 'index','indices','s:p'),
+                    (p.PL_eq, 'indexes','index','p:s'),
+                    (p.PL_eq, 'indices','index','p:s'),
+                    (p.PL_eq, 'indices','indexes','p:p'),
+                    (p.PL_eq, 'indexes','indices','p:p'),
+                    (p.PL_eq, 'indices','indices','eq'),
+                    (p.PL_eq, 'cats','cats','eq'),
+                    (p.PL_eq, 'base', 'basis', False),
+                    (p.PL_eq, 'syrinx', 'syringe', False),
+                    (p.PL_eq, 'she', 'he', False),
+                    (p.PL_eq, 'opus', 'operas', False),
+                    (p.PL_eq, 'taxi', 'taxes', False),
+                    (p.PL_eq, 'time', 'Times', False),
+                    (p.PL_eq, 'time'.lower(), 'Times'.lower(), 's:p'),
+                    (p.PL_N_eq, 'index','index','eq'),
+                    (p.PL_N_eq, 'index','indexes','s:p'),
+                    (p.PL_N_eq, 'index','indices','s:p'),
+                    (p.PL_N_eq, 'indexes','index','p:s'),
+                    (p.PL_N_eq, 'indices','index','p:s'),
+                    (p.PL_N_eq, 'indices','indexes','p:p'),
+                    (p.PL_N_eq, 'indexes','indices','p:p'),
+                    (p.PL_N_eq, 'indices','indices','eq'),
+                    (p.PL_V_eq, 'runs','runs','eq'),
+                    (p.PL_V_eq, 'runs','run','s:p'),
+                    (p.PL_V_eq, 'run','run','eq'),
+                    (p.PL_ADJ_eq, 'my','my','eq'),
+                    (p.PL_ADJ_eq, 'my','our','s:p'),
+                    (p.PL_ADJ_eq, 'our','our','eq'),
+                        ):
+            self.assertEqual(fn(sing, plur), res)
 
-        self.assertEqual(p.PL_N_eq('index','index'),'eq')
-        self.assertEqual(p.PL_N_eq('index','indexes'),'s:p')
-        self.assertEqual(p.PL_N_eq('index','indices'),'s:p')
-        self.assertEqual(p.PL_N_eq('indexes','index'),'p:s')
-        self.assertEqual(p.PL_N_eq('indices','index'),'p:s')
-        self.assertEqual(p.PL_N_eq('indices','indexes'),'p:p')
-        self.assertEqual(p.PL_N_eq('indexes','indices'),'p:p')
-        self.assertEqual(p.PL_N_eq('indices','indices'),'eq')
-
-        self.assertEqual(p.PL_V_eq('runs','runs'),'eq')
-        self.assertEqual(p.PL_V_eq('runs','run'),'s:p')
-        self.assertEqual(p.PL_V_eq('run','run'),'eq')
-
-        self.assertEqual(p.PL_ADJ_eq('my','my'),'eq')
-        self.assertEqual(p.PL_ADJ_eq('my','our'),'s:p')
-        self.assertEqual(p.PL_ADJ_eq('our','our'),'eq')
 
     def test__PL_reg_plurals(self):
         p = inflect.engine()
-        self.assertEqual(p._PL_reg_plurals('indexes|indices',
-                             'dummy|ind', 'exes','ices'), True)
-        self.assertEqual(p._PL_reg_plurals('indexes|robots',
-                             'dummy|ind', 'exes','ices'), False)
-        self.assertEqual(p._PL_reg_plurals('beaus|beaux',
-                             '.*eau', 's','x'), True)
+        for pair, stems, end1, end2, ans in (
+                ('indexes|indices', 'dummy|ind', 'exes', 'ices', True),
+                ('indexes|robots', 'dummy|ind', 'exes', 'ices', False),
+                ('beaus|beaux', '.*eau', 's', 'x', True),
+                                ):
+            self.assertEqual(p._PL_reg_plurals(pair, stems, end1, end2),
+                             ans)
+            
 
 
     def test__PL_check_plurals_N(self):
@@ -284,7 +316,6 @@ class test(unittest.TestCase):
         self.assertEqual(p._PL_check_plurals_N('indices', 'indexes'), True)
         self.assertEqual(p._PL_check_plurals_N('stigmata', 'stigmas'), True)
         self.assertEqual(p._PL_check_plurals_N('phalanxes', 'phalanges'), True)
-        #self.assertEqual(p._PL_check_plurals_N('cats', 'cats'), True)
 
     def test__PL_check_plurals_ADJ(self):
         p = inflect.engine()
@@ -298,25 +329,29 @@ class test(unittest.TestCase):
 
     def test_count(self):
         p = inflect.engine()
-        self.assertEqual(p.get_count(1), 1)
-        self.assertEqual(p.get_count(2), 2)
-        self.assertEqual(p.get_count(0), 2)
-        self.assertEqual(p.get_count(87), 2)
-        self.assertEqual(p.get_count(-7), 2)
-        self.assertEqual(p.get_count('1'), 1)
-        self.assertEqual(p.get_count('2'), 2)
-        self.assertEqual(p.get_count('0'), 2)
-        self.assertEqual(p.get_count('no'), 2)
-        self.assertEqual(p.get_count('zero'), 2)
-        self.assertEqual(p.get_count('nil'), 2)
-        self.assertEqual(p.get_count('a'), 1)
-        self.assertEqual(p.get_count('an'), 1)
-        self.assertEqual(p.get_count('one'), 1)
-        self.assertEqual(p.get_count('each'), 1)
-        self.assertEqual(p.get_count('every'), 1)
-        self.assertEqual(p.get_count('this'), 1)
-        self.assertEqual(p.get_count('that'), 1)
-        self.assertEqual(p.get_count('dummy'), 2)
+        for txt, num in (
+                            (1, 1),
+                            (2, 2),
+                            (0, 2),
+                            (87, 2),
+                            (-7, 2),
+                            ('1', 1),
+                            ('2', 2),
+                            ('0', 2),
+                            ('no', 2),
+                            ('zero', 2),
+                            ('nil', 2),
+                            ('a', 1),
+                            ('an', 1),
+                            ('one', 1),
+                            ('each', 1),
+                            ('every', 1),
+                            ('this', 1),
+                            ('that', 1),
+                            ('dummy', 2),
+                ):
+            self.assertEqual(p.get_count(txt), num)
+
         self.assertEqual(p.get_count(), '')
         p.NUM(3)
         self.assertEqual(p.get_count(), 2)
@@ -324,99 +359,123 @@ class test(unittest.TestCase):
 
     def test__PL_noun(self):
         p = inflect.engine()
+        for sing, plur in (
+                ('', ''),
+                ('tuna', 'tuna'),
+                ('TUNA', 'TUNA'),
+                ('swordfish', 'swordfish'),
+                ('Governor General', 'Governors General'),
+                ('Governor-General', 'Governors-General'),
+                ('Major General', 'Major Generals'),
+                ('Major-General', 'Major-Generals'),
+                ('son of a gun', 'sons of guns'),
+                ('son-of-a-gun', 'sons-of-guns'),
+                ('mother in law', 'mothers in law'),
+                ('mother-in-law', 'mothers-in-law'),
+                ('about me', 'about us'),
+                #('about ME', 'about US'),
+                ('I', 'we'),
+                ('you', 'you'),
+                #('YOU', 'YOU'),
+                ('me', 'us'),
+                ('mine', 'ours'),
+                ('child', 'children'),
+                ('brainchild', 'brainchilds'),
+                ('human', 'humans'),
+                ('soliloquy', 'soliloquies'),
+
+                ('chairwoman', 'chairwomen'),
+                ('goose', 'geese'),
+                ('tooth', 'teeth'),
+                ('foot', 'feet'),
+                ('forceps', 'forceps'),
+                ('protozoon', 'protozoa'),
+                ('basis', 'bases'),
+                ('czech', 'czechs'),
+                ('codex', 'codices'),
+                ('radix', 'radices'),
+                ('bacterium', 'bacteria'),
+                ('alumnus', 'alumni'),
+                ('criterion', 'criteria'),
+                ('alumna', 'alumnae'),
+
+                ('bias', 'biases'),
+                ('Jess', 'Jesses'),
+                ('quiz', 'quizzes'),
+                ('fox', 'foxes'),
+
+                ('shelf', 'shelves'),
+                ('leaf', 'leaves'),
+                ('midwife', 'midwives'),
+                ('scarf', 'scarves'),
+
+                ('key', 'keys'),
+                ('Sally', 'Sallys'),
+                ('sally', 'sallies'),
+
+                ('ado', 'ados'),
+                ('auto', 'autos'),
+                ('alto', 'altos'),
+                ('zoo', 'zoos'),
+                ('tomato', 'tomatoes'),
+                ):
+            self.assertEqual(p._PL_noun(sing), plur)
+
         p.NUM(1)
         self.assertEqual(p._PL_noun('cat'), 'cat')
         p.NUM(3)
-        self.assertEqual(p._PL_noun(''), '')
-        self.assertEqual(p._PL_noun('tuna'), 'tuna')
-        self.assertEqual(p._PL_noun('TUNA'), 'TUNA')
-        self.assertEqual(p._PL_noun('swordfish'), 'swordfish')
+
+
         p.classical('herd')
         self.assertEqual(p._PL_noun('swine'), 'swine')
         p.classical(herd=0)
         self.assertEqual(p._PL_noun('swine'), 'swines')
-        self.assertEqual(p._PL_noun('Governor General'), 'Governors General')
-        self.assertEqual(p._PL_noun('Governor-General'), 'Governors-General')
-        self.assertEqual(p._PL_noun('Major General'), 'Major Generals')
-        self.assertEqual(p._PL_noun('Major-General'), 'Major-Generals')
-        self.assertEqual(p._PL_noun('son of a gun'), 'sons of guns')
-        self.assertEqual(p._PL_noun('son-of-a-gun'), 'sons-of-guns')
-        self.assertEqual(p._PL_noun('mother in law'), 'mothers in law')
-        self.assertEqual(p._PL_noun('mother-in-law'), 'mothers-in-law')
-        self.assertEqual(p._PL_noun('about me'), 'about us')
-        #self.assertEqual(p._PL_noun('about ME'), 'about US')
-        self.assertEqual(p._PL_noun('I'), 'we')
-        self.assertEqual(p._PL_noun('you'), 'you')
-        #self.assertEqual(p._PL_noun('YOU'), 'YOU')
-        self.assertEqual(p._PL_noun('me'), 'us')
-        self.assertEqual(p._PL_noun('child'), 'children')
-        self.assertEqual(p._PL_noun('brainchild'), 'brainchilds')
-        self.assertEqual(p._PL_noun('human'), 'humans')
-        self.assertEqual(p._PL_noun('soliloquy'), 'soliloquies')
         p.classical(persons=1)
         self.assertEqual(p._PL_noun('chairperson'), 'chairpersons')
         p.classical(persons=0)
         self.assertEqual(p._PL_noun('chairperson'), 'chairpeople')
-        self.assertEqual(p._PL_noun('chairwoman'), 'chairwomen')
-        self.assertEqual(p._PL_noun('goose'), 'geese')
-        self.assertEqual(p._PL_noun('tooth'), 'teeth')
-        self.assertEqual(p._PL_noun('foot'), 'feet')
-        #TODO check spelling protazoon, perceps
-        self.assertEqual(p._PL_noun('preceps'), 'preceps')
-        self.assertEqual(p._PL_noun('protazoon'), 'protazoa')
-        self.assertEqual(p._PL_noun('basis'), 'bases')
-        self.assertEqual(p._PL_noun('czech'), 'czechs')
-        self.assertEqual(p._PL_noun('codex'), 'codices')
-        self.assertEqual(p._PL_noun('radix'), 'radices')
-        self.assertEqual(p._PL_noun('bacterium'), 'bacteria')
-        self.assertEqual(p._PL_noun('alumnus'), 'alumni')
-        self.assertEqual(p._PL_noun('criterion'), 'criteria')
-        self.assertEqual(p._PL_noun('alumna'), 'alumnae')
+        p.classical(ancient=1)
+        self.assertEqual(p._PL_noun('formula'), 'formulae')
+        p.classical(ancient=0)
+        self.assertEqual(p._PL_noun('formula'), 'formulas')
+
 
         p.classical()
-        self.assertEqual(p._PL_noun('matrix'), 'matrices')
-        #TODO is gateau an english word? *ieu word?
-        self.assertEqual(p._PL_noun('gateau'), 'gateaux')
-        self.assertEqual(p._PL_noun('millieu'), 'millieux')
-        self.assertEqual(p._PL_noun('syrinx'), 'syringes')
+        for sing, plur in (
+                ('matrix', 'matrices'),
+                ('gateau', 'gateaux'),
+                ('millieu', 'millieux'),
+                ('syrinx', 'syringes'),
 
-        self.assertEqual(p._PL_noun('stamen'), 'stamina')
-        self.assertEqual(p._PL_noun('apex'), 'apices')
-        self.assertEqual(p._PL_noun('appendix'), 'appendices')
-        self.assertEqual(p._PL_noun('maximum'), 'maxima')
-        self.assertEqual(p._PL_noun('focus'), 'foci')
-        self.assertEqual(p._PL_noun('status'), 'status')
-        self.assertEqual(p._PL_noun('aurora'), 'aurorae')
-        self.assertEqual(p._PL_noun('soma'), 'somata')
-        self.assertEqual(p._PL_noun('iris'), 'irides')
-        self.assertEqual(p._PL_noun('solo'), 'soli')
-        self.assertEqual(p._PL_noun('oxymoron'), 'oxymora')
-        self.assertEqual(p._PL_noun('goy'), 'goyim')
-        self.assertEqual(p._PL_noun('afrit'), 'afriti')
+                ('stamen', 'stamina'),
+                ('apex', 'apices'),
+                ('appendix', 'appendices'),
+                ('maximum', 'maxima'),
+                ('focus', 'foci'),
+                ('status', 'status'),
+                ('aurora', 'aurorae'),
+                ('soma', 'somata'),
+                ('iris', 'irides'),
+                ('solo', 'soli'),
+                ('oxymoron', 'oxymora'),
+                ('goy', 'goyim'),
+                ('afrit', 'afriti'),
+                ):
+            self.assertEqual(p._PL_noun(sing), plur)
 
-        p.classical(0)
-        p.classical('names')
+        #p.classical(0)
+        #p.classical('names')
         # clasical now back to the default mode
 
-        self.assertEqual(p._PL_noun('bias'), 'biases')
-        self.assertEqual(p._PL_noun('Jess'), 'Jesses')
-        self.assertEqual(p._PL_noun('quiz'), 'quizzes')
-        self.assertEqual(p._PL_noun('fox'), 'foxes')
 
-        self.assertEqual(p._PL_noun('shelf'), 'shelves')
-        self.assertEqual(p._PL_noun('leaf'), 'leaves')
-        self.assertEqual(p._PL_noun('midwife'), 'midwives')
-        self.assertEqual(p._PL_noun('scarf'), 'scarves')
+    def test_classical_PL(self):
+        p = inflect.engine()
+        p.classical()
+        for sing, plur in ( ('brother', 'brethren'),
+                            ('dogma', 'dogmata'),
+                            ):
+            self.assertEqual(p.PL(sing), plur)
 
-        self.assertEqual(p._PL_noun('key'), 'keys')
-        self.assertEqual(p._PL_noun('Sally'), 'Sallys')
-        self.assertEqual(p._PL_noun('sally'), 'sallies')
-
-        self.assertEqual(p._PL_noun('ado'), 'ados')
-        self.assertEqual(p._PL_noun('auto'), 'autos')
-        self.assertEqual(p._PL_noun('alto'), 'altos')
-        self.assertEqual(p._PL_noun('zoo'), 'zoos')
-        self.assertEqual(p._PL_noun('tomato'), 'tomatoes')
 
     def test__PL_special_verb(self):
         p = inflect.engine()
@@ -432,14 +491,14 @@ class test(unittest.TestCase):
         self.assertEqual(p._PL_special_verb(' '), False)
         self.assertEqual(p._PL_special_verb('brushes'), 'brush')
         self.assertEqual(p._PL_special_verb('fixes'), 'fix')
-        #TODO this does not give the correct answer. Only the 'es' gets chopped off, not the 'zes'
+        #TODO: BUG reported upstream to Perl version:
+        # "quizzes". she quizzes, I quiz. this does not give the correct answer. Only the 'es' gets chopped off, not the 'zes' so gives 'quizz'
         #self.assertEqual(p._PL_special_verb('quizzes'), 'quiz')
         self.assertEqual(p._PL_special_verb('fizzes'), 'fizz')
         self.assertEqual(p._PL_special_verb('dresses'), 'dress')
         self.assertEqual(p._PL_special_verb('flies'), 'fly')
         self.assertEqual(p._PL_special_verb('canoes'), 'canoe')
-        # TODO: what matches ^(.*[^s])s$ ?
-        #self.assertEqual(p._PL_special_verb('runs'), 'run')
+        self.assertEqual(p._PL_special_verb('runs'), 'run')
 
     def test__PL_general_verb(self):
         p = inflect.engine()
@@ -463,24 +522,50 @@ class test(unittest.TestCase):
 
     def test_A(self):
         p = inflect.engine()
-        self.assertEqual(p.A('cat'), 'a cat')
-        self.assertEqual(p.AN('cat'), 'a cat')
-        self.assertEqual(p.A('euphemism'), 'a euphemism')
-        self.assertEqual(p.A('Euler number'), 'an Euler number')
-        self.assertEqual(p.A('hour'), 'an hour')
-        self.assertEqual(p.A('houri'), 'a houri')
-        self.assertEqual(p.A('nth'), 'an nth') #TODO: check [fhlmnx]-?th - what does this match?
-        #TODO: test user defined cases
-        self.assertEqual(p.A('ant'), 'an ant')
-        self.assertEqual(p.A('book'), 'a book')
-        self.assertEqual(p.A('RSPCA'), 'an RSPCA')
-        self.assertEqual(p.A('SONAR'), 'a SONAR')
-        self.assertEqual(p.A('FJO'), 'a FJO')
-        self.assertEqual(p.A('FJ'), 'an FJ')
-        self.assertEqual(p.A('NASA'), 'a NASA')
-        self.assertEqual(p.A('UN'), 'a UN')
-        self.assertEqual(p.A('yak'), 'a yak')
-        self.assertEqual(p.A('yttrium'), 'an yttrium')
+        for sing, plur in (
+                ('cat', 'a cat'),
+                ('euphemism', 'a euphemism'),
+                ('Euler number', 'an Euler number'),
+                ('hour', 'an hour'),
+                ('houri', 'a houri'),
+                ('nth', 'an nth'),
+                ('rth', 'an rth'),
+                ('sth', 'an sth'),
+                ('xth', 'an xth'), 
+                ('ant', 'an ant'),
+                ('book', 'a book'),
+                ('RSPCA', 'an RSPCA'),
+                ('SONAR', 'a SONAR'),
+                ('FJO', 'a FJO'),
+                ('FJ', 'an FJ'),
+                ('NASA', 'a NASA'),
+                ('UN', 'a UN'),
+                ('yak', 'a yak'),
+                ('yttrium', 'an yttrium'),
+                ('a elephant', 'an elephant'),
+                ('a giraffe', 'a giraffe'),
+                ('an ewe', 'a ewe'),
+                ('a orangutan', 'an orangutan'),
+                ('R.I.P.', 'an R.I.P.'),
+                ('C.O.D.', 'a C.O.D.'),
+                ('e-mail', 'an e-mail'),
+                ('X-ray', 'an X-ray'),
+                ('T-square', 'a T-square'),
+                ('LCD', 'an LCD'),
+                ('XML', 'an XML'),
+                ('YWCA', 'a YWCA'),
+                ('LED', 'a LED'),
+                ('OPEC', 'an OPEC'),
+                ('FAQ', 'a FAQ'),
+                ('UNESCO', 'a UNESCO'),
+                
+                    ):
+            self.assertEqual(p.A(sing), plur)
+
+        self.assertEqual(p.A('cat',1), 'a cat')
+        self.assertEqual(p.A('cat',2), '2 cat')
+        
+        self.assertEqual(p.A, p.AN)
 
     def test_NO(self):
         p = inflect.engine()
@@ -491,43 +576,51 @@ class test(unittest.TestCase):
         
     def test_PART_PRES(self):
         p = inflect.engine()
-        self.assertEqual(p.PART_PRES('runs'), 'running')
-        self.assertEqual(p.PART_PRES('dies'), 'dying')
-        self.assertEqual(p.PART_PRES('glues'), 'gluing')
-        self.assertEqual(p.PART_PRES('eyes'), 'eying')
-        self.assertEqual(p.PART_PRES('skis'), 'skiing')
-        self.assertEqual(p.PART_PRES('names'), 'naming')
-        self.assertEqual(p.PART_PRES('sees'), 'seeing')
-        self.assertEqual(p.PART_PRES('hammers'), 'hammering')
-        self.assertEqual(p.PART_PRES('bats'), 'batting')
-        self.assertEqual(p.PART_PRES('eats'), 'eating')
-        
-        #TODO: these don't work:
+        for sing, plur in (
+                    ('runs', 'running'),
+                    ('dies', 'dying'),
+                    ('glues', 'gluing'),
+                    ('eyes', 'eying'),
+                    ('skis', 'skiing'),
+                    ('names', 'naming'),
+                    ('sees', 'seeing'),
+                    ('hammers', 'hammering'),
+                    ('bats', 'batting'),
+                    ('eats', 'eating'),
+                    ('loves', 'loving'),
+                    ('spies', 'spying'),
+                    ):
+            self.assertEqual(p.PART_PRES(sing), plur)
+            
+        #TODO: these don't work, reported upstream to Perl version
         #self.assertEqual(p.PART_PRES('hoes'), 'hoeing')
         #self.assertEqual(p.PART_PRES('alibis'), 'alibiing')
         #self.assertEqual(p.PART_PRES('is'), 'being')
 
     def test_ORD(self):
         p = inflect.engine()
-        self.assertEqual(p.ORD('1'), '1st')
-        self.assertEqual(p.ORD('2'), '2nd')
-        self.assertEqual(p.ORD('3'), '3rd')
-        self.assertEqual(p.ORD('4'), '4th')
-        self.assertEqual(p.ORD('10'), '10th')
-        self.assertEqual(p.ORD('28'), '28th')
-        self.assertEqual(p.ORD('100'), '100th')
-        self.assertEqual(p.ORD('101'), '101st')
-        self.assertEqual(p.ORD('1000'), '1000th')
-        self.assertEqual(p.ORD('1001'), '1001st')
-        self.assertEqual(p.ORD('0'), '0th')
-        self.assertEqual(p.ORD('one'), 'first')
-        self.assertEqual(p.ORD('two'), 'second')
-        self.assertEqual(p.ORD('four'), 'fourth')
-        self.assertEqual(p.ORD('twenty'), 'twentieth')
-        self.assertEqual(p.ORD('one hundered'), 'one hunderedth')
-        self.assertEqual(p.ORD('one hundered and one'), 'one hundered and first')
-        self.assertEqual(p.ORD('zero'), 'zeroth')
-        self.assertEqual(p.ORD('n'), 'nth') #TODO: bonus!
+        for num, numord in (
+                    ('1', '1st'),
+                    ('2', '2nd'),
+                    ('3', '3rd'),
+                    ('4', '4th'),
+                    ('10', '10th'),
+                    ('28', '28th'),
+                    ('100', '100th'),
+                    ('101', '101st'),
+                    ('1000', '1000th'),
+                    ('1001', '1001st'),
+                    ('0', '0th'),
+                    ('one', 'first'),
+                    ('two', 'second'),
+                    ('four', 'fourth'),
+                    ('twenty', 'twentieth'),
+                    ('one hundered', 'one hunderedth'),
+                    ('one hundered and one', 'one hundered and first'),
+                    ('zero', 'zeroth'),
+                    ('n', 'nth'), #bonus!
+                ):
+            self.assertEqual(p.ORD(num), numord)
 
     def test_millfn(self):
         p = inflect.engine()
@@ -537,7 +630,9 @@ class test(unittest.TestCase):
         self.assertEqual(millfn(3), ' billion')
         self.assertEqual(millfn(0), '')
         self.assertEqual(millfn(11), ' decillion')
+        inflect.STDOUT_ON = False
         self.assertRaises(NumOutOfRangeError, millfn, 12)
+        inflect.STDOUT_ON = True
         
     def test_unitfn(self):
         p = inflect.engine()
@@ -609,19 +704,48 @@ class test(unittest.TestCase):
                          'one thousand, two hundred and thirty-four, ')
         self.assertEqual(enword('12345',-1),
                          'twelve thousand, three hundred and forty-five, ')
-        #TODO: next 2 seem wrong to me
         self.assertEqual(enword('123456',-1),
-                         'one thousand, twenty-three thousand, four hundred and fifty-six, ')
+                         'one hundred and twenty-three thousand, four hundred and fifty-six, ')
         self.assertEqual(enword('1234567',-1),
-                         '1two thousand, thirty-four thousand, five hundred and sixty-seven, ')
+                         'one million, two hundred and thirty-four thousand, five hundred and sixty-seven, ')
 
-    def test_hundfn(self):
+    def test_NUMWORDS(self):
         p = inflect.engine()
         NUMWORDS = p.NUMWORDS
+
+        for n, word in (
+            ('1', 'one'),
+            ('10', 'ten'),
+            ('100', 'one hundred'),
+            ('1000', 'one thousand'),
+            ('10000', 'ten thousand'),
+            ('100000', 'one hundred thousand'),
+            ('1000000', 'one million'),
+            ('10000000', 'ten million'),
+            ):
+            self.assertEqual(NUMWORDS(n), word)
+            
+        for n, txt in (
+            (3, 'three bottles of beer on the wall'),
+            (2, 'two bottles of beer on the wall'),
+            (1, 'a solitary bottle of beer on the wall'),
+            (0, 'no more bottles of beer on the wall'),
+            ):
+            self.assertEqual("%s%s" % (
+                NUMWORDS(n, one='a solitary', zero='no more'),
+                p.PL(" bottle of beer on the wall", n)),
+                         txt)
+
+        self.assertEqual(NUMWORDS(0, one='one', zero='zero'), 'zero')
+
         self.assertEqual(NUMWORDS('1234'),
                          'one thousand, two hundred and thirty-four')
-        self.assertEqual(NUMWORDS('1234', wantarray=True),
+        self.assertEqual(NUMWORDS('1234', wantlist=True),
                          ['one thousand', 'two hundred and thirty-four'])
+        self.assertEqual(NUMWORDS('1234567', wantlist=True),
+                         ['one million',
+                          'two hundred and thirty-four thousand',
+                          'five hundred and sixty-seven'])
         self.assertEqual(NUMWORDS('1234', andword=''),
                          'one thousand, two hundred thirty-four')
         self.assertEqual(NUMWORDS('1234', andword='plus'),
@@ -644,8 +768,10 @@ class test(unittest.TestCase):
                          'one thousand, two hundred and thirty-fourth')
         self.assertEqual(NUMWORDS(p.ORD('21')),
                          'twenty-first')
+        inflect.STDOUT_ON = False
         self.assertRaises(BadChunkingOptionError, 
                           NUMWORDS, '1234', group=4)
+        inflect.STDOUT_ON = True
         self.assertEqual(NUMWORDS('9', threshold=10, group=0),
                          'nine')
         self.assertEqual(NUMWORDS('10', threshold=10),
@@ -662,6 +788,7 @@ class test(unittest.TestCase):
                          '1,234.5678')
 
 
+
     def test_wordlist(self):
         p = inflect.engine()
         WORDLIST = p.WORDLIST
@@ -673,9 +800,11 @@ class test(unittest.TestCase):
                          'apple; 1,000; and carrot')
         self.assertEqual(WORDLIST('apple', 'banana', 'carrot', final_sep=""),
                          'apple, banana and carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="or"),
+                         'apple, banana, or carrot')
 
 
-    def test_more(self):
+    def test_doc_examples(self):
         p = inflect.engine()
         self.assertEqual(p.PL_N('I'), 'we')
         self.assertEqual(p.PL_V('saw'), 'saw')
@@ -686,55 +815,49 @@ class test(unittest.TestCase):
         self.assertEqual(p.PL_V('was',2), 'were')
         self.assertEqual(p.PL_V('was'), 'were')
         self.assertEqual(p.PL_V('was',1), 'was')
-        errors = 0
-        self.assertEqual("There %s%s" % (p.PL_V('was',errors), p.NO(" error", errors)),
-                                         'There were no errors')
-        errors = 1
-        self.assertEqual("There %s%s" % (p.PL_V('was',errors), p.NO(" error", errors)),
-                                         'There was 1 error')
-        errors = 2
-        self.assertEqual("There %s%s" % (p.PL_V('was',errors), p.NO(" error", errors)),
-                                         'There were 2 errors')
 
-        num1 = 1
-        num2 = 2
-        self.assertEqual("%s%s%s %s%s" % (
+        for errors, txt in ( (0, 'There were no errors'),
+                             (1, 'There was 1 error'),
+                             (2, 'There were 2 errors'),
+                             ):
+            self.assertEqual("There %s%s" % (p.PL_V('was',errors), p.NO(" error", errors)),
+                                         txt)
+
+            self.assertEqual(p.inflect("There PL_V(was,%d) NO(error,%d)" % (errors, errors)),
+                                         txt)
+
+
+
+        for num1, num2, txt in (
+                            (1, 2, 'I saw 2 saws'),
+                            (2, 1, 'we saw 1 saw'),
+                                ):
+            self.assertEqual("%s%s%s %s%s" % (
                             p.NUM(num1,""),
                             p.PL("I"),
                             p.PL_V(" saw"),
                             p.NUM(num2),
                             p.PL_N(" saw")
                             ),
-                            "I saw 2 saws"
-                            )
-        num1 = 2
-        num2 = 1
-        self.assertEqual("%s%s%s %s%s" % (
-                            p.NUM(num1,""),
-                            p.PL("I"),
-                            p.PL_V(" saw"),
-                            p.NUM(num2),
-                            p.PL_N(" saw")
+                            txt)
+            
+            self.assertEqual(p.inflect(
+                'NUM(%d,)PL(I) PL_V(saw) NUM(%d) PL_N(saw)' % (num1, num2)
                             ),
-                            "we saw 1 saw"
-                            )
-                         
-        num1 = 1
-        num2 = 2
-        self.assertEqual(p.inflect(
-            'NUM(%d,)PL(I) PL_V(saw) NUM(%d) PL_N(saw)' % (num1, num2)
-                            ),
-                            "I saw 2 saws"
-                            )
-        num1 = 2
-        num2 = 1
-        self.assertEqual(p.inflect(
-            'NUM(%d,)PL(I) PL_V(saw) NUM(%d) PL_N(saw)' % (num1, num2)
-                            ),
-                            "we saw 1 saw"
-                            )
+                            txt)
+
+        self.assertEqual(p.A('a cat'), 'a cat')
 
 
+        for word, txt in (
+            ('cat', 'a cat'),
+            ('aardvark', 'an aardvark'),
+            ('ewe', 'a ewe'),
+            ('hour', 'an hour'),
+            ):
+            self.assertEqual(p.A('%s %s' % (p.NUMWORDS(1, one='a'),word)), txt)
+
+#TODO: test .inflectrc file code        
 
 if __name__ == "__main__":
     try:

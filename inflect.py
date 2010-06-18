@@ -3,6 +3,8 @@
                 convert numbers to words
     Copyright (C) 2010 Paul Dyson
 
+    Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +18,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+    The original Perl module Lingua::EN::Inflect by Damian Conway is 
+    available from http://search.cpan.org/~dconway/
+
+    This module can be downloaded at http://pypi.python.org/pypi/inflect
 
 methods:
           classical inflect
@@ -49,6 +55,8 @@ Exceptions:
  BadNumValueError
  BadChunkingOptionError
  NumOutOfRangeError
+ BadUserDefinedPatternError
+ BadRcFileError
 
 '''
 
@@ -63,8 +71,10 @@ class UnknownClassicalModeError(Exception): pass
 class BadNumValueError(Exception): pass
 class BadChunkingOptionError(Exception): pass
 class NumOutOfRangeError(Exception): pass
+class BadUserDefinedPatternError(Exception): pass
+class BadRcFileError(Exception): pass
 
-STDOUT_ON = True
+STDOUT_ON = False
 
 def print3(txt):
     if STDOUT_ON:
@@ -485,9 +495,8 @@ for k in PL_sb_postfix_adj.keys():
 
 PL_sb_postfix_adj_stems = '(' + '|'.join(PL_sb_postfix_adj.values()) + ')(.*)'
 
-#TODO: file upstream bug: next two are never used. Should comment out.
-PL_sb_military = 'major|lieutenant|brigadier|adjutant|quartermaster'
-PL_sb_general = '((?!'+PL_sb_military+r').*?)((-|\s+)general)'
+# PL_sb_military = 'major|lieutenant|brigadier|adjutant|quartermaster'
+# PL_sb_general = '((?!'+PL_sb_military+r').*?)((-|\s+)general)'
 
 PL_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
@@ -642,7 +651,7 @@ A_y_cons = 'y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)'
 A_explicit_an = enclose('|'.join((
     "euler",
     "hour(?!i)", "heir", "honest", "hono",
-    "[fhlmnx]-?th",
+    "[fhlmnrsx]-?th",
     )))
 
 
@@ -717,6 +726,8 @@ all_classical = dict((k,1) for k in def_classical.keys())
 no_classical = dict((k,0) for k in def_classical.keys())
 
 
+#TODO: .inflectrc file does not work
+# can't just execute methods from another file like this
 for rcfile in (pathjoin(dirname(__file__), '.inflectrc'),
                expanduser(pathjoin(('~'), '.inflectrc'))):
     if isfile(rcfile):
@@ -724,7 +735,7 @@ for rcfile in (pathjoin(dirname(__file__), '.inflectrc'),
             execfile(rcfile)
         except:
             print3("\nBad .inflectrc file (%s):\n" % rcfile)
-            raise
+            raise BadRcFileError
 
 
 
@@ -767,11 +778,6 @@ class engine:
         self.PL_adj_user_defined.extend((singular, plural))
         return 1
 
-    # BUG in perl code line 1270: if set a or an in .inflectrc it returns
-    # 'a' or 'an'
-    # instead of 'a word' or 'an word'
-    # fixed in my version of inflect.pm
-
     def def_a(self, pattern):
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, 'a'))
@@ -792,7 +798,7 @@ class engine:
             match(pattern, '')
         except reerror:
             print3("\nBad user-defined singular pattern:\n\t%s\n" % pattern)
-            raise
+            raise BadUserDefinedPatternError
        
     def ud_match(self, word, wordlist):
         for i in range(len(wordlist)-2, -2, -2): # backwards through even elements
@@ -898,7 +904,7 @@ class engine:
         NO but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.A(matchobject.group(1), matchobject.group(3))
+        return self.NO(matchobject.group(1), matchobject.group(3))
 
     def ORDmo(self, matchobject):
         '''
@@ -1025,11 +1031,6 @@ class engine:
         plural = self.postprocess(word, self._PL_special_adjective(word, count)
               or word)
         return "%s%s%s" % (pre, plural, post)
-
-# TODO: BUG to report upstream.
-# PL_eq returns reference to PL_ADJ function instead of false
-# it does not copare two adjectives
-# fixed below
 
     def PL_eq(self, word1, word2):
         return (
@@ -1505,7 +1506,6 @@ class engine:
             mo = search(a[0], word, IGNORECASE)
             if mo: return "%s %s" % (a[1], word)
 
-
 # HANDLE ABBREVIATIONS
 
         for a in (
@@ -1577,7 +1577,7 @@ class engine:
 
         for pat, repl in (
                           (r"ie$", r"y"),
-                          (r"ue$", r"u"),
+                          (r"ue$", r"u"), #TODO: isn't ue$ -> u encompassed in the following rule?
                           (r"([auy])e$", r"\g<1>"),
                           (r"ski$", r"ski"),
                           (r"i$", r""),
@@ -1590,9 +1590,6 @@ class engine:
                 return "%sing" % ans
         return "%sing" % ans
             
-    #TODO: isn't ue$ -> u encompassed in the following rule?
-    #TODO: bug: hoe should go to hoeing not hoing
-    #TODO: bug: alibi should go to alibiing not alibing
 
 
 # NUMERICAL INFLECTIONS
@@ -1693,7 +1690,7 @@ class engine:
                               self.mill_count)
     
     def enword(self, num, group):
-    
+
         if group==1:
             num = resub(r"(\d)", self.group1sub, num)
         elif group==2:
@@ -1710,7 +1707,11 @@ class engine:
         else:
             num = num.lstrip().lstrip('0')
             self.mill_count = 0
-            num = resub(r"(\d)(\d)(\d)(?=\D*\Z)", self.hundsub, num)
+            # surely there's a better way to do the next bit
+            mo = search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
+            while mo:
+                num = resub(r"(\d)(\d)(\d)(?=\D*\Z)", self.hundsub, num, 1)
+                mo = search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
             num = resub(r"(\d)(\d)(?=\D*\Z)", self.tensub, num, 1)
             num = resub(r"(\d)(?=\D*\Z)", self.unitsub, num, 1)
         return num
@@ -1736,9 +1737,10 @@ class engine:
         '''
         return ' '
 
-    def NUMWORDS(self, num, wantarray=False, **kwds):
+    def NUMWORDS(self, num, wantlist=False, **kwds):
         self.number_args.update(kwds) 
         group = int(self.number_args['group'])
+        num = '%s' % num
     
         # Handle "stylistic" conversions (up to a given threshold)...
         if ('threshold' in self.number_args and
@@ -1820,8 +1822,8 @@ class engine:
             numchunks.append(self.number_args['decimal'])
             numchunks.extend(chunk.split("%s " % comma))
 
-        #wantarray: Perl list context. can explictly specify in Python
-        if wantarray:
+        #wantlist: Perl list context. can explictly specify in Python
+        if wantlist:
             if sign:
                 return [sign].append(numchunks)
             return numchunks
