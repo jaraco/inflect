@@ -485,7 +485,7 @@ PL_v_special_s = enclose('|'.join (
 
 PL_sb_postfix_adj = {
     'general' : ['(?!major|lieutenant|brigadier|adjutant)\S+'],
-    'martial' : "court".split(),
+    'martial' : ['court'],
 }
 
 for k in PL_sb_postfix_adj.keys():
@@ -495,8 +495,7 @@ for k in PL_sb_postfix_adj.keys():
 
 PL_sb_postfix_adj_stems = '(' + '|'.join(PL_sb_postfix_adj.values()) + ')(.*)'
 
-# PL_sb_military = 'major|lieutenant|brigadier|adjutant|quartermaster'
-# PL_sb_general = '((?!'+PL_sb_military+r').*?)((-|\s+)general)'
+
 
 PL_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
@@ -554,8 +553,6 @@ PL_v_irregular_pres = {
 "do"    : "do",    "do"    : "do",    "does"   : "do",
 }
 
-PL_v_irregular_pres_keys = enclose('|'.join(PL_v_irregular_pres.keys()))
-
 PL_v_ambiguous_pres = {
 #   1st PERS. SING.     2ND PERS. SING.     3RD PERS. SINGULAR
 #               3RD PERS. (INDET.)  
@@ -582,11 +579,11 @@ PL_v_ambiguous_pres = {
 PL_v_ambiguous_pres_keys = enclose('|'.join(PL_v_ambiguous_pres.keys()));
 
 
-PL_v_irregular_non_pres = enclose('|'.join ((
+PL_v_irregular_non_pres = (
 "did", "had", "ate", "made", "put", 
 "spent", "fought", "sank", "gave", "sought",
 "shall", "could", "ought", "should",
-)))
+)
 
 PL_v_ambiguous_non_pres = enclose('|'.join ((
 "thought", "saw", "bent", "will", "might", "cut",
@@ -1166,7 +1163,7 @@ class engine:
                search(r"^%s$" % PL_sb_uninflected_herd, word, IGNORECASE)):
             return word
 
-# HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
+# HANDLE COMPOUNDS ("Governor /General", "mother-in-law", "aide-de-camp", ETC.)
 
         mo = search(r"^(?:%s)$" % PL_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
@@ -1183,11 +1180,12 @@ class engine:
                 return "%s%s" % (self._PL_noun(mo.group(1), 2), mo.group(2))
 
 # HANDLE PRONOUNS
-# BUG does not keep case: "about ME" -> "about us". bug not fixed here
+
+# TODO: BUG does not keep case: "about ME" -> "about us". bug not fixed here
         mo = search(r"^((?:%s)\s+)(%s)$" % (PL_prep, PL_pron_acc_keys), word,
                                                          IGNORECASE)
         if mo: return "%s%s" % (mo.group(1), PL_pron_acc[mo.group(2).lower()])
-     
+
         try:
             return PL_pron_nom[word.lower()]
         except KeyError: pass
@@ -1355,27 +1353,27 @@ class engine:
 
 # HANDLE IRREGULAR PRESENT TENSE (SIMPLE AND COMPOUND)
 
-        mo = search(r"^(%s)((\s.*)?)$" % PL_v_irregular_pres_keys,
-                    word, IGNORECASE)
-        if mo: return "%s%s" % (PL_v_irregular_pres[mo.group(1).lower()],
-                                 mo.group(2))
+        try:
+            firstword = word.split()[0].lower()
+        except IndexError:
+            return False # word is ''
+        
+        if firstword in PL_v_irregular_pres.keys():
+            return "%s%s" % (PL_v_irregular_pres[firstword],
+                                word[len(firstword):])
 
 # HANDLE IRREGULAR FUTURE, PRETERITE AND PERFECT TENSES 
 
-        mo = search(r"^(%s)((\s.*)?)$" % PL_v_irregular_non_pres,
-                    word, IGNORECASE)
-        if mo: return word
+        if firstword in PL_v_irregular_non_pres:
+            return word
 
 # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
-        mo = search(r"^(%s)(n't(\s.*)?)$" % PL_v_irregular_pres_keys,
-                    word, IGNORECASE)
-        if mo: return "%s%s" % (PL_v_irregular_pres[mo.group(1).lower()],
-                                 mo.group(2))
+        if firstword.endswith("n't") and firstword[:-3] in PL_v_irregular_pres.keys():
+            return "%sn't%s" % (PL_v_irregular_pres[firstword[:-3]],
+                                 word[len(firstword):])
 
-        mo = search(r"^\S+n't\b",
-                    word, IGNORECASE)
-        if mo: return word
+        if firstword.endswith("n't"): return word
 
 # HANDLE SPECIAL CASES
 

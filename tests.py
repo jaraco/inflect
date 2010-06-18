@@ -226,6 +226,7 @@ class test(unittest.TestCase):
                 ('cow   ',('', 'cow', '   ')),
                 ('  cow   ',('  ', 'cow', '   ')),
                 ('',('', '', '')),
+                ('bottle of beer',('', 'bottle of beer', '')),
                 #spaces give weird results
                 #(' '),('', ' ', '')),
                 #('  '),(' ', ' ', '')),
@@ -243,6 +244,7 @@ class test(unittest.TestCase):
                             (p.PL, 'knife', 'knives'),
                             (p.PL, 'knifes', 'knife'),
                             (p.PL, ' cat  ', ' cats  '),
+                            (p.PL, 'court martial', 'courts martial'),
                             (p.PL_N, '',''),
                             (p.PL_N, 'cow','cows'),
                             (p.PL_N, 'thought','thoughts'),
@@ -279,6 +281,7 @@ class test(unittest.TestCase):
                     (p.PL_eq, 'taxi', 'taxes', False),
                     (p.PL_eq, 'time', 'Times', False),
                     (p.PL_eq, 'time'.lower(), 'Times'.lower(), 's:p'),
+                    (p.PL_eq, 'courts martial', 'court martial', 'p:s'),
                     (p.PL_N_eq, 'index','index','eq'),
                     (p.PL_N_eq, 'index','indexes','s:p'),
                     (p.PL_N_eq, 'index','indices','s:p'),
@@ -374,6 +377,9 @@ class test(unittest.TestCase):
                 ('mother-in-law', 'mothers-in-law'),
                 ('about me', 'about us'),
                 #('about ME', 'about US'),
+                ('to it', 'to them'), #TODO: bug
+                ('from it', 'from them'), #TODO: bug
+                ('with it', 'with them'), #TODO: bug
                 ('I', 'we'),
                 ('you', 'you'),
                 #('YOU', 'YOU'),
@@ -856,6 +862,12 @@ class test(unittest.TestCase):
             ('hour', 'an hour'),
             ):
             self.assertEqual(p.A('%s %s' % (p.NUMWORDS(1, one='a'),word)), txt)
+
+        p.NUM(2)
+        for sing, plur in (
+            ('to it','to them'),
+                    ):
+            self.assertEqual(p.PL_N(sing), plur)
 
 #TODO: test .inflectrc file code        
 

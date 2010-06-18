@@ -1,0 +1,4 @@
+include COPYING.txt
+include README.rst
+include tests.py
+

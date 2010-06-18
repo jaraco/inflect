@@ -710,7 +710,7 @@ to use the ``A`` function as well:
 
 
         for word in ["cat aardvark ewe hour".split()]:
-            print p.A("{0} {1]".format(p.NUMWORDS(1, one='a'), word))
+            print p.A("{0} {1}".format(p.NUMWORDS(1, one='a'), word))
 
     # prints:
     #     a cat
