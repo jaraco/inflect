@@ -1,0 +1,28 @@
+Metadata-Version: 1.0
+Name: inflect
+Version: 0.1
+Summary: Correctly generate plurals, ordinals, indefinite articles; convert numbers to words
+Home-page: UNKNOWN
+Author: Paul Dyson
+Author-email: pwdyson@yahoo.com
+License: UNKNOWN
+Description: Generate Inflections
+        --------------------
+        
+        * generate plural nouns
+        * generate plural verbs
+        * test if a word is the plural of another
+        * generate 'a' or 'an' correctly before a noun
+        * generate ordinal numbers
+        * convert numbers into text
+        
+Keywords: plural,inflect,participle
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
