@@ -749,7 +749,6 @@ class engine:
         self.PL_adj_user_defined  = []
         self.A_a_user_defined   = []
 
-    #TODO checkpat is not the correct routine for checking the plural (i.e. replace) strings
     def def_noun(self, singular, plural):
         self.checkpat(singular)
         self.checkpatplural(plural)
@@ -801,13 +800,15 @@ class engine:
         '''
         check for errors in a regex replace pattern
         '''
-        if pattern is None:
-            return
-        try:
-            resub('', pattern, '')
-        except reerror:
-            print3("\nBad user-defined plural pattern:\n\t%s\n" % pattern)
-            raise BadUserDefinedPatternError
+        return
+        # can't find a pattern that doesn't pass the following test:
+        #if pattern is None:
+        #    return
+        #try:
+        #    resub('', pattern, '')
+        #except reerror:
+        #    print3("\nBad user-defined plural pattern:\n\t%s\n" % pattern)
+        #    raise BadUserDefinedPatternError
        
     def ud_match(self, word, wordlist):
         for i in range(len(wordlist)-2, -2, -2): # backwards through even elements
