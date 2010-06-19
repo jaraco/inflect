@@ -725,14 +725,15 @@ no_classical = dict((k,0) for k in def_classical.keys())
 
 #TODO: .inflectrc file does not work
 # can't just execute methods from another file like this
-for rcfile in (pathjoin(dirname(__file__), '.inflectrc'),
-               expanduser(pathjoin(('~'), '.inflectrc'))):
-    if isfile(rcfile):
-        try:
-            execfile(rcfile)
-        except:
-            print3("\nBad .inflectrc file (%s):\n" % rcfile)
-            raise BadRcFileError
+
+#for rcfile in (pathjoin(dirname(__file__), '.inflectrc'),
+#               expanduser(pathjoin(('~'), '.inflectrc'))):
+#    if isfile(rcfile):
+#        try:
+#            execfile(rcfile)
+#        except:
+#            print3("\nBad .inflectrc file (%s):\n" % rcfile)
+#            raise BadRcFileError
 
 
 
