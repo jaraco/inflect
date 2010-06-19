@@ -173,6 +173,9 @@ class test(unittest.TestCase):
         self.assertEqual(p.ud_match('aviatrix',p.PL_sb_user_defined),
                         None)
 
+        p.def_noun('(cat)',r'$1s')
+        self.assertEqual(p.PL('cat'),'cats')
+
         inflect.STDOUT_ON = False
         self.assertRaises(inflect.BadUserDefinedPatternError, p.def_noun, '(??', None)
         inflect.STDOUT_ON = True
