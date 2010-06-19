@@ -6,7 +6,8 @@ from re import error as reerror
 import inflect
 
 reload(inflect)
-from inflect import BadChunkingOptionError, NumOutOfRangeError
+from inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassicalModeError
+from inflect import UnknownClassicalModeError, BadNumValueError
 
 class test(unittest.TestCase):
     def test_enclose(self):
@@ -65,7 +66,7 @@ class test(unittest.TestCase):
         mydict.update(dict(names=1,zero=0))
         self.assertEqual(p.classical_dict, mydict)
 
-
+        self.assertRaises(UnknownClassicalModeError, p.classical, 'bogus', reallybogus=1)
 
     def test_num(self):
         # def NUM
@@ -94,6 +95,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.persistent_count, 3)
         self.assertEqual(ret, '')
 
+        self.assertRaises(BadNumValueError, p.NUM, 'text')
 
     def test_inflect(self):
         p = inflect.engine()
@@ -106,7 +108,7 @@ class test(unittest.TestCase):
                     ("NUM(3) NUM(1)", "3 1"),
                         ):
             self.assertEqual(p.inflect(txt), ans)
-
+        '''
         p.PLmo = lambda mo: "mockPL"
         p.PL_Nmo = lambda mo: "mockPL_N"
         p.PL_Vmo = lambda mo: "mockPL_V"
@@ -116,17 +118,20 @@ class test(unittest.TestCase):
         p.ORDmo = lambda mo: "mockORD"
         p.NUMWORDSmo = lambda mo: "mockNUMWORDS"
         p.PART_PRESmo = lambda mo: "mockPART_PRES"
+        '''
 
         for txt, ans in (
-        ("PL(rock)", "mockPL"),
-        ("PL(rock)  PL(child)", "mockPL  mockPL"),
-        ("NUM(2) PL(rock)  PL(child)", "2 mockPL  mockPL"),
+        ("PL(rock)", "rocks"),
+        ("PL(rock)  PL(child)", "rocks  children"),
+        ("NUM(2) PL(rock)  PL(child)", "2 rocks  children"),
 
         ("PL(rock) PL_N(rock) PL_V(rocks) PL_ADJ(big) A(ant)",
-                 "mockPL mockPL_N mockPL_V mockPL_ADJ mockA"),
+                 "rocks rocks rock big an ant"),
 
-        ("AN(rock) NO(0) ORD(3) NUMWORDS(1234) PART_PRES(runs)",
-                 "mockA mockNO mockORD mockNUMWORDS mockPART_PRES"),
+        ("AN(rock) NO(cat) ORD(3) NUMWORDS(1234) PART_PRES(runs)",
+                 "a rock no cats 3rd one thousand, two hundred and thirty-four running"),
+
+        ("A(cat,0) A(cat,1) A(cat,2) A(cat, 2)", "0 cat a cat 2 cat  2 cat"), # TODO: extra space when space before number. Is this desirable?
                         ):
             self.assertEqual(p.inflect(txt), ans)
 
@@ -336,6 +341,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._PL_check_plurals_ADJ("indexes's", "indexes's"), False)
         self.assertEqual(p._PL_check_plurals_ADJ("dogmas's", "dogmata's"), True)
         self.assertEqual(p._PL_check_plurals_ADJ("dogmas'", "dogmata'"), True)
+        self.assertEqual(p._PL_check_plurals_ADJ("indexes'", "indices'"), True)
 
     def test_count(self):
         p = inflect.engine()
@@ -574,6 +580,11 @@ class test(unittest.TestCase):
                 ('OPEC', 'an OPEC'),
                 ('FAQ', 'a FAQ'),
                 ('UNESCO', 'a UNESCO'),
+                ('a','an a'),
+                ('an','an an'),
+                ('an ant','an ant'),
+                ('a cat','a cat'),
+                ('',''),
                 
                     ):
             self.assertEqual(p.A(sing), plur)
@@ -589,6 +600,9 @@ class test(unittest.TestCase):
         self.assertEqual(p.NO('cat', count=3), '3 cats')
         self.assertEqual(p.NO('cat', count='three'), 'three cats')
         self.assertEqual(p.NO('mouse'), 'no mice')
+        p.NUM(3)
+        self.assertEqual(p.NO('cat'), '3 cats')
+        
         
     def test_PART_PRES(self):
         p = inflect.engine()
@@ -738,6 +752,8 @@ class test(unittest.TestCase):
             ('100000', 'one hundred thousand'),
             ('1000000', 'one million'),
             ('10000000', 'ten million'),
+            ('+10', 'plus ten'),
+            ('-10', 'minus ten'),
             ):
             self.assertEqual(NUMWORDS(n), word)
             
@@ -762,6 +778,8 @@ class test(unittest.TestCase):
                          ['one million',
                           'two hundred and thirty-four thousand',
                           'five hundred and sixty-seven'])
+        self.assertEqual(NUMWORDS('+10', wantlist=True),
+                         None) #TODO: fix this!
         self.assertEqual(NUMWORDS('1234', andword=''),
                          'one thousand, two hundred thirty-four')
         self.assertEqual(NUMWORDS('1234', andword='plus'),
@@ -773,9 +791,9 @@ class test(unittest.TestCase):
         self.assertEqual(NUMWORDS('123.456', group=1, decimal='mark', one='one'),
                          'one, two, three, mark, four, five, six')
         self.assertEqual(NUMWORDS('12345', group=3),
-                         'one, two, three, four, five')
+                         'one, two, three, four, five') #TODO: group being ignored?
         self.assertEqual(NUMWORDS('12345', group=2),
-                         'one, two, three, four, five')
+                         'one, two, three, four, five') #TODO: group being ignored?
         self.assertEqual(NUMWORDS('12345', group=1),
                          'one, two, three, four, five')
         self.assertEqual(NUMWORDS('1234th', group=0, andword='and'),
@@ -816,10 +834,17 @@ class test(unittest.TestCase):
                          'apple; 1,000; and carrot')
         self.assertEqual(WORDLIST('apple', 'banana', 'carrot', final_sep=""),
                          'apple, banana and carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', final_sep=";"),
+                         'apple, banana; and carrot')
         self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="or"),
                          'apple, banana, or carrot')
 
 
+    def test_print(self):
+        inflect.STDOUT_ON = True
+        inflect.print3('') # make sure it doesn't crash
+        inflect.STDOUT_ON = False
+        
     def test_doc_examples(self):
         p = inflect.engine()
         self.assertEqual(p.PL_N('I'), 'we')

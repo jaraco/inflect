@@ -907,6 +907,8 @@ class engine:
         A but take a matchobject
         use groups 1 and 3 in matchobject
         '''
+        if matchobject.group(3) is None:
+            return self.A(matchobject.group(1))            
         return self.A(matchobject.group(1), matchobject.group(3))
 
     def NOmo(self, matchobject):
@@ -1117,9 +1119,9 @@ class engine:
 
     def _PL_check_plurals_ADJ(self, word1, word2):
 #VERSION: tuple in endswith requires python 2.5
-#TODO PL_ADJ_eq shouldn't return true from dogmata' . Check that it doesn't
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s","'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s","'")) else ''
+        #TODO: BUG? report upstream. I don't think you should chop off the s'
         word1b = word1[:-2] if word1.endswith("s'") else ''
         word2b = word2[:-2] if word2.endswith("s'") else ''
 
@@ -1138,7 +1140,7 @@ class engine:
             if word2b and ( self._PL_check_plurals_N(word1b, word2b)
                             or self._PL_check_plurals_N(word2b, word1b) ):
                 return True
-
+        
         return False
 
     def get_count(self, count=None):
@@ -1491,7 +1493,7 @@ class engine:
             post = mo.group(3)
             result = self._indef_article(word, count)
             return "%s%s%s" % (pre, result, post)
-        return '' #TODO: is this what should be returned on no match?
+        return ''
 
     AN = A
 
@@ -1770,9 +1772,9 @@ class engine:
             raise BadChunkingOptionError 
         nowhite = num.lstrip()
         if nowhite[0] == '+':
-            sign = "+"
+            sign = "plus"
         elif nowhite[0] == '-':
-            sign = "-"
+            sign = "minus"
         else:
             sign = ""
         comma = self.number_args['comma']
