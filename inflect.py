@@ -1884,23 +1884,27 @@ class engine:
             sep = opt['sep']
         except KeyError:
             if ',' in ''.join(words):
-                sep = '; '
+                sep = ';'
             else:
-                sep = ', '
+                sep = ','
     
         if 'final_sep' not in opt:
             if conj_spaced:
-                final_sep = "%s%s " % (sep, conj)
+                final_sep = "%s %s " % (sep, conj)
             else:
                 final_sep = "%s%s" % (sep, conj)
         else:
             if opt['final_sep'] == '':
-                final_sep = " %s " % conj
+                if conj_spaced:
+                    final_sep = " %s " % conj
+                else:
+                    final_sep = conj
             else:
                 if conj_spaced:
                     final_sep = "%s %s " % (opt['final_sep'], conj)
                 else:
                     final_sep = "%s%s" % (opt['final_sep'], conj)
     
+        sep += ' '
         return "%s%s%s" %(sep.join(words[0:-1]), final_sep, words[-1])
 
