@@ -1861,12 +1861,23 @@ class engine:
 # Join words with commas and a trailing 'and' (when appropriate)...
 
     def WORDLIST(self, *words, **opt):
+        '''
+        options:
+        conj: replacement for 'and'
+        sep: separator. Default: ', '
+        final_sep: final separator. Default: ', '
+        conj_spaced: boolean. Should conj have spaces around it
+        
+
+        '''
         if not words: return ""
         if len(words) == 1: return words[0] 
  
         conj = opt.get('conj', 'and')
+        conj_spaced = opt.get('conj_spaced', True)
         if len(words) == 2:
-            conj = resub(r"^(?=[^\W\d_])|(?<=[^\W\d_])$", self.spacefn, conj)
+            if conj_spaced:
+                conj = ' %s ' % conj
             return "%s%s%s" % (words[0], conj, words[1])
  
         try:
@@ -1878,15 +1889,18 @@ class engine:
                 sep = ', '
     
         if 'final_sep' not in opt:
-            final_sep = "%s %s" % (sep, conj)
-        else:
-            if len(opt['final_sep']) == 0:
-                final_sep = conj
+            if conj_spaced:
+                final_sep = "%s%s " % (sep, conj)
             else:
-                final_sep = "%s %s" % (opt['final_sep'], conj)
-
-        final_sep = resub(r"\s+", self.spacefn ,final_sep)
-        final_sep = resub(r"^(?=[^\W\d_])|(?<=[^\W\d_])$", self.spacefn, final_sep)
+                final_sep = "%s%s" % (sep, conj)
+        else:
+            if opt['final_sep'] == '':
+                final_sep = " %s " % conj
+            else:
+                if conj_spaced:
+                    final_sep = "%s %s " % (opt['final_sep'], conj)
+                else:
+                    final_sep = "%s%s" % (opt['final_sep'], conj)
     
         return "%s%s%s" %(sep.join(words[0:-1]), final_sep, words[-1])
 

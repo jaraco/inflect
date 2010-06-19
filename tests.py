@@ -827,6 +827,30 @@ class test(unittest.TestCase):
                          'apple, banana; and carrot')
         self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="or"),
                          'apple, banana, or carrot')
+        
+        self.assertEqual(WORDLIST('apple', 'banana', conj=" or "),
+                         'apple  or  banana')
+        self.assertEqual(WORDLIST('apple', 'banana', conj="&"),
+                         'apple & banana') # TODO: want spaces here. Done, report upstream
+        self.assertEqual(WORDLIST('apple', 'banana', conj="&", conj_spaced=False),
+                         'apple&banana')
+        self.assertEqual(WORDLIST('apple', 'banana', conj="& ", conj_spaced=False),
+                         'apple& banana')
+
+
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj=" or "),
+                         'apple, banana, or carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot',conj="_or_"),
+                         'apple, banana, _or_carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="+"),
+                         'apple, banana, +carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="0"),
+                         'apple, banana, 0carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="_"),
+                         'apple, banana, _carrot')
+        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="&"),
+                         'apple, banana, &carrot') # TODO: want space here
+
 
 
     def test_print(self):
