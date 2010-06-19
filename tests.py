@@ -108,17 +108,6 @@ class test(unittest.TestCase):
                     ("NUM(3) NUM(1)", "3 1"),
                         ):
             self.assertEqual(p.inflect(txt), ans)
-        '''
-        p.PLmo = lambda mo: "mockPL"
-        p.PL_Nmo = lambda mo: "mockPL_N"
-        p.PL_Vmo = lambda mo: "mockPL_V"
-        p.PL_ADJmo = lambda mo: "mockPL_ADJ"
-        p.Amo = lambda mo: "mockA"
-        p.NOmo = lambda mo: "mockNO"
-        p.ORDmo = lambda mo: "mockORD"
-        p.NUMWORDSmo = lambda mo: "mockNUMWORDS"
-        p.PART_PRESmo = lambda mo: "mockPART_PRES"
-        '''
 
         for txt, ans in (
         ("PL(rock)", "rocks"),
