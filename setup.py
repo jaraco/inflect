@@ -18,5 +18,5 @@ setup(name='inflect',
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: Linguistic",
         ],
-      long_description = open('README.rst').read()
+      long_description = open('README.txt').read()
       )
