@@ -508,6 +508,8 @@ class test(unittest.TestCase):
         self.assertEqual(p._PL_special_verb('flies'), 'fly')
         self.assertEqual(p._PL_special_verb('canoes'), 'canoe')
         self.assertEqual(p._PL_special_verb('horseshoes'), 'horseshoe')
+        self.assertEqual(p._PL_special_verb('does'), 'do')
+        self.assertEqual(p._PL_special_verb('zzzoes'), 'zzzo') # what's a real word to test this case?
         self.assertEqual(p._PL_special_verb('runs'), 'run')
 
     def test__PL_general_verb(self):
