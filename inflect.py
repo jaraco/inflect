@@ -1410,8 +1410,8 @@ class engine:
             lowerword[-5:] in PL_v_oes_oe_endings_size5):
                 return word[:-1]
 
-        if word.endswith('oes') and len(word)>3:
-            return word[:-2]
+        if lowerword.endswith('oes') and len(lowerword)>3:
+            return lowerword[:-2]
 
         mo = search(r"^(.*[^s])s$",
                     word, IGNORECASE)
