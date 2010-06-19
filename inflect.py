@@ -591,11 +591,10 @@ PL_v_ambiguous_non_pres = enclose('|'.join ((
 
 # "..oes" -> "..oe" (the rest are "..oes" -> "o")
 
-PL_v_oes_oe = enclose('|'.join ( """
-    .*shoes  .*hoes  .*toes
-    canoes   floes   oboes  roes  throes  woes
-    """.split()
-))
+PL_v_oes_oe = ('canoes', 'floes', 'oboes', 'roes', 'throes', 'woes')
+PL_v_oes_oe_endings_size4 = ('hoes', 'toes')
+PL_v_oes_oe_endings_size5 = ('shoes')
+
 
 PL_count_zero = (
 "0", "no", "zero", "nil"
@@ -1366,8 +1365,9 @@ class engine:
 
 # HANDLE IRREGULAR PRESENT TENSE (SIMPLE AND COMPOUND)
 
+        lowerword = word.lower()
         try:
-            firstword = word.split()[0].lower()
+            firstword = lowerword.split()[0]
         except IndexError:
             return False # word is ''
         
@@ -1405,9 +1405,10 @@ class engine:
                     word, IGNORECASE)
         if mo: return "%sy" % mo.group(1)
 
-        mo = search(r"(%s)$" % PL_v_oes_oe,
-                    word, IGNORECASE)
-        if mo: return word[:-1]
+        if (lowerword in PL_v_oes_oe or
+            lowerword[-4:] in PL_v_oes_oe_endings_size4 or
+            lowerword[-5:] in PL_v_oes_oe_endings_size5):
+                return word[:-1]
 
         mo = search(r"(.+)oes$",
                     word, IGNORECASE)

@@ -507,6 +507,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._PL_special_verb('dresses'), 'dress')
         self.assertEqual(p._PL_special_verb('flies'), 'fly')
         self.assertEqual(p._PL_special_verb('canoes'), 'canoe')
+        self.assertEqual(p._PL_special_verb('horseshoes'), 'horseshoe')
         self.assertEqual(p._PL_special_verb('runs'), 'run')
 
     def test__PL_general_verb(self):
