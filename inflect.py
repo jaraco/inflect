@@ -1163,7 +1163,7 @@ class engine:
                search(r"^%s$" % PL_sb_uninflected_herd, word, IGNORECASE)):
             return word
 
-# HANDLE COMPOUNDS ("Governor /General", "mother-in-law", "aide-de-camp", ETC.)
+# HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
         mo = search(r"^(?:%s)$" % PL_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':

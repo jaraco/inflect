@@ -377,9 +377,9 @@ class test(unittest.TestCase):
                 ('mother-in-law', 'mothers-in-law'),
                 ('about me', 'about us'),
                 #('about ME', 'about US'),
-                ('to it', 'to them'), #TODO: bug
-                ('from it', 'from them'), #TODO: bug
-                ('with it', 'with them'), #TODO: bug
+                ('to it', 'to them'),
+                ('from it', 'from them'),
+                ('with it', 'with them'),
                 ('I', 'we'),
                 ('you', 'you'),
                 #('YOU', 'YOU'),
@@ -864,10 +864,6 @@ class test(unittest.TestCase):
             self.assertEqual(p.A('%s %s' % (p.NUMWORDS(1, one='a'),word)), txt)
 
         p.NUM(2)
-        for sing, plur in (
-            ('to it','to them'),
-                    ):
-            self.assertEqual(p.PL_N(sing), plur)
 
 #TODO: test .inflectrc file code        
 
