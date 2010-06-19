@@ -1,7 +1,5 @@
 from distutils.core import setup
 
-long_des = open('README.rst').read()
-
 setup(name='inflect',
       version='0.1.1',
       description="Correctly generate plurals, ordinals, indefinite articles; convert numbers to words",
@@ -20,5 +18,5 @@ setup(name='inflect',
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: Linguistic",
         ],
-      long_description = long_des
+      long_description = open('README.rst').read()
       )
