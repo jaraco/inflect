@@ -10,7 +10,7 @@ inflect.py - Convert singular to plural. Select "a" or "an".
 VERSION
 =======
 
-This document describes version 0.1.1 of inflect.py
+This document describes version 0.1.2 of inflect.py
 
 SYNOPSIS
 ========
