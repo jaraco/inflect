@@ -815,18 +815,46 @@ class test(unittest.TestCase):
     def test_wordlist(self):
         p = inflect.engine()
         WORDLIST = p.WORDLIST
-        self.assertEqual(WORDLIST('apple', 'banana'),
+        self.assertEqual(WORDLIST([]),
+                         '')
+        self.assertEqual(WORDLIST(('apple',)),
+                         'apple')
+        self.assertEqual(WORDLIST(('apple', 'banana')),
                          'apple and banana')
-        self.assertEqual(WORDLIST('apple', 'banana', 'carrot'),
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot')),
                          'apple, banana, and carrot')
-        self.assertEqual(WORDLIST('apple', '1,000', 'carrot'),
+        self.assertEqual(WORDLIST(('apple', '1,000', 'carrot')),
                          'apple; 1,000; and carrot')
-        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', final_sep=""),
+        self.assertEqual(WORDLIST(('apple', '1,000', 'carrot'), sep=','),
+                         'apple, 1,000, and carrot')
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), final_sep=""),
                          'apple, banana and carrot')
-        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', final_sep=";"),
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), final_sep=";"),
                          'apple, banana; and carrot')
-        self.assertEqual(WORDLIST('apple', 'banana', 'carrot', conj="or"),
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj="or"),
                          'apple, banana, or carrot')
+        
+        self.assertEqual(WORDLIST(('apple', 'banana'), conj=" or "),
+                         'apple  or  banana')
+        self.assertEqual(WORDLIST(('apple', 'banana'), conj="&"),
+                         'apple & banana') # TODO: want spaces here. Done, report upstream
+        self.assertEqual(WORDLIST(('apple', 'banana'), conj="&", conj_spaced=False),
+                         'apple&banana')
+        self.assertEqual(WORDLIST(('apple', 'banana'), conj="& ", conj_spaced=False),
+                         'apple& banana')
+
+
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj=" or "),
+                         'apple, banana,  or  carrot')
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj="+"),
+                         'apple, banana, + carrot')
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj="&"),
+                         'apple, banana, & carrot') # TODO: want space here. Done, report updtream
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj="&", conj_spaced=False),
+                         'apple, banana,&carrot') # TODO: want space here. Done, report updtream
+        self.assertEqual(WORDLIST(('apple', 'banana', 'carrot'), conj=" &", conj_spaced=False),
+                         'apple, banana, &carrot') # TODO: want space here. Done, report updtream
+
 
 
     def test_print(self):

@@ -121,13 +121,13 @@ SYNOPSIS
 
  # JOIN WORDS INTO A LIST:
 
-    list = WORDLIST("apple", "banana", "carrot")
+    list = WORDLIST(("apple", "banana", "carrot"))
         # "apple, banana, and carrot"
 
-    list = WORDLIST("apple", "banana")
+    list = WORDLIST(("apple", "banana"))
         # "apple and banana"
 
-    list = WORDLIST("apple", "banana", "carrot", final_sep="")
+    list = WORDLIST(("apple", "banana", "carrot"), final_sep="")
         # "apple, banana and carrot"
 
 
@@ -780,7 +780,7 @@ misleading), some people prefer to omit the comma before that final
 conjunction, even when there are more than two items.
 
 That's complicated enough to warrant its own method: ``WORDLIST()``.
-This method expects a list of words, possibly with one or more
+This method expects a tuple of words, possibly with one or more
 options. It returns a string that joins the list
 together in the normal English usage. For example:
 
