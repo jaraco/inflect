@@ -1860,51 +1860,41 @@ class engine:
 
 # Join words with commas and a trailing 'and' (when appropriate)...
 
-    def WORDLIST(self, *words, **opt):
+    def WORDLIST(self, words, sep=None, sep_spaced=True,
+                 final_sep=None,
+                 conj='and', conj_spaced=True):
         '''
         options:
         conj: replacement for 'and'
-        sep: separator. Default: ', '
-        final_sep: final separator. Default: ', '
+        sep: separator. default ',', unless ',' is in the list then ';'
+        final_sep: final separator. default ',', unless ',' is in the list then ';'
         conj_spaced: boolean. Should conj have spaces around it
         
 
         '''
-        if not words: return ""
-        if len(words) == 1: return words[0] 
- 
-        conj = opt.get('conj', 'and')
-        conj_spaced = opt.get('conj_spaced', True)
+        if not words:
+            return ""
+        if len(words) == 1:
+            return words[0] 
+
+        if conj_spaced:
+            conj = ' %s ' % conj
+
         if len(words) == 2:
-            if conj_spaced:
-                conj = ' %s ' % conj
             return "%s%s%s" % (words[0], conj, words[1])
- 
-        try:
-            sep = opt['sep']
-        except KeyError:
+
+        if sep is None:
             if ',' in ''.join(words):
                 sep = ';'
             else:
                 sep = ','
+        if final_sep is None:
+            final_sep = sep
     
-        if 'final_sep' not in opt:
-            if conj_spaced:
-                final_sep = "%s %s " % (sep, conj)
-            else:
-                final_sep = "%s%s" % (sep, conj)
-        else:
-            if opt['final_sep'] == '':
-                if conj_spaced:
-                    final_sep = " %s " % conj
-                else:
-                    final_sep = conj
-            else:
-                if conj_spaced:
-                    final_sep = "%s %s " % (opt['final_sep'], conj)
-                else:
-                    final_sep = "%s%s" % (opt['final_sep'], conj)
-    
-        sep += ' '
+        final_sep = "%s%s" % (final_sep, conj)
+
+        if sep_spaced:
+            sep += ' '
+            
         return "%s%s%s" %(sep.join(words[0:-1]), final_sep, words[-1])
 
