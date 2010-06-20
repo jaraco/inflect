@@ -1002,10 +1002,13 @@ class engine:
         """
         if '|' in inflected:
             inflected = inflected.split('|')[self.classical_dict['all']]
-        if orig == "I": return inflected
-        if orig == orig.upper(): return inflected.upper()
-        if orig[0] == orig[0].upper(): return '%s%s' % (inflected[0].upper(),
-                                                      inflected[1:])
+        if orig == "I":
+            return inflected
+        if orig == orig.upper():
+            return inflected.upper()
+        if orig[0] == orig[0].upper():
+            return '%s%s' % (inflected[0].upper(),
+                             inflected[1:])
         return inflected
 
     def partition_word(self, mystr):
@@ -1017,7 +1020,8 @@ class engine:
 
     def PL(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
-        if not word: return mystr
+        if not word:
+            return mystr
         plural = self.postprocess(word,
               self._PL_special_adjective(word, count)
               or self._PL_special_verb(word, count)
@@ -1026,20 +1030,23 @@ class engine:
 
     def PL_N(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
-        if not word: return mystr
+        if not word:
+            return mystr
         plural = self.postprocess(word, self._PL_noun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
     def PL_V(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
-        if not word: return mystr
+        if not word:
+            return mystr
         plural = self.postprocess(word, self._PL_special_verb(word, count)
               or self._PL_general_verb(word, count))
         return "%s%s%s" % (pre, plural, post)
 
     def PL_ADJ(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
-        if not word: return mystr
+        if not word:
+            return mystr
         plural = self.postprocess(word, self._PL_special_adjective(word, count)
               or word)
         return "%s%s%s" % (pre, plural, post)
@@ -1062,19 +1069,27 @@ class engine:
     def _PL_eq(self, word1, word2, PL):
         classval = self.classical_dict.copy()
         self.classical_dict = all_classical.copy()
-        if word1 == word2: return "eq"
-        if word1 == PL(word2): return "p:s"
-        if PL(word1) == word2: return "s:p"
+        if word1 == word2:
+            return "eq"
+        if word1 == PL(word2):
+            return "p:s"
+        if PL(word1) == word2:
+            return "s:p"
         self.classical_dict = no_classical.copy()
-        if word1 == PL(word2): return "p:s"
-        if PL(word1) == word2: return "s:p"
+        if word1 == PL(word2):
+            return "p:s"
+        if PL(word1) == word2:
+            return "s:p"
         self.classical_dict = classval.copy()
 
         if PL == self.PL or PL == self.PL_N:
-            if self._PL_check_plurals_N(word1, word2): return "p:p"
-            if self._PL_check_plurals_N(word2, word1): return "p:p"
+            if self._PL_check_plurals_N(word1, word2):
+                return "p:p"
+            if self._PL_check_plurals_N(word2, word1):
+                return "p:p"
         if PL == self.PL or PL == self.PL_ADJ:
-            if self._PL_check_plurals_ADJ(word1, word2): return "p:p"
+            if self._PL_check_plurals_ADJ(word1, word2):
+                return "p:p"
         return False
 
     def _PL_reg_plurals(self, pair, stems, end1, end2):
@@ -1092,8 +1107,10 @@ class engine:
 
     def _PL_check_plurals_N(self, word1, word2):
         pair = "%s|%s" % (word1, word2)
-        if pair in PL_sb_irregular_s.values(): return True
-        if pair in PL_sb_irregular.values(): return True
+        if pair in PL_sb_irregular_s.values():
+            return True
+        if pair in PL_sb_irregular.values():
+            return True
 
         for (stems, end1, end2) in (
                    (PL_sb_C_a_ata_stems,   "as","ata"),
@@ -1160,19 +1177,23 @@ class engine:
 
 # DEFAULT TO PLURAL
 
-        if count==1: return word
+        if count==1:
+            return word
 
 # HANDLE USER-DEFINED NOUNS
 
         value = self.ud_match(word, self.PL_sb_user_defined)
-        if value is not None: return value
+        if value is not None:
+            return value
 
 
 # HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
 
-        if word == '': return word
+        if word == '':
+            return word
 
-        if search(r"^%s$" % PL_sb_uninflected, word, IGNORECASE): return word
+        if search(r"^%s$" % PL_sb_uninflected, word, IGNORECASE):
+            return word
 
         if (self.classical_dict['herd'] and
                search(r"^%s$" % PL_sb_uninflected_herd, word, IGNORECASE)):
@@ -1199,28 +1220,34 @@ class engine:
 # TODO: BUG does not keep case: "about ME" -> "about us". bug not fixed here
         mo = search(r"^((?:%s)\s+)(%s)$" % (PL_prep, PL_pron_acc_keys), word,
                                                          IGNORECASE)
-        if mo: return "%s%s" % (mo.group(1), PL_pron_acc[mo.group(2).lower()])
+        if mo:
+            return "%s%s" % (mo.group(1), PL_pron_acc[mo.group(2).lower()])
 
         try:
             return PL_pron_nom[word.lower()]
-        except KeyError: pass
+        except KeyError:
+            pass
 
         try:
             return PL_pron_acc[word.lower()]
-        except KeyError: pass
+        except KeyError:
+            pass
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
         mo = search(r"(.*)\b(%s)$" % PL_sb_irregular_keys, word, IGNORECASE)
-        if mo: return "%s%s" % (mo.group(1),
-                                PL_sb_irregular.get(mo.group(2),
-                                    PL_sb_irregular[mo.group(2).lower()]))
+        if mo:
+            return "%s%s" % (mo.group(1),
+                             PL_sb_irregular.get(mo.group(2),
+                             PL_sb_irregular[mo.group(2).lower()]))
 
         mo = search(r"(%s)$" % PL_sb_U_man_mans, word, IGNORECASE)
-        if mo: return "%ss" % mo.group(1)
+        if mo:
+            return "%ss" % mo.group(1)
 
         mo = search(r"(\S*)quy$", word, IGNORECASE)
-        if mo: return "%squies" % mo.group(1)
+        if mo:
+            return "%squies" % mo.group(1)
 
         mo = search(r"(\S*)(person)$", word, IGNORECASE)
         if mo:
@@ -1239,12 +1266,14 @@ class engine:
                   (r"(.*)foot$", "%sfeet"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return a[1] % mo.group(1)
+            if mo:
+                return a[1] % mo.group(1)
 
 
 # HANDLE UNASSIMILATED IMPORTS
 
-        if search(r"(.*)ceps$", word, IGNORECASE): return word
+        if search(r"(.*)ceps$", word, IGNORECASE):
+            return word
 
 
         for a in (
@@ -1259,7 +1288,8 @@ class engine:
                   (r"(%s)$" % PL_sb_U_a_ae, "%se"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return a[1] % mo.group(1)
+            if mo:
+                return a[1] % mo.group(1)
 
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
@@ -1286,12 +1316,14 @@ class engine:
                   (r"(%s)$" % PL_sb_C_i, "%si"),
                  ):
                 mo = search(a[0], word, IGNORECASE)
-                if mo: return a[1] % mo.group(1)
+                if mo:
+                    return a[1] % mo.group(1)
 
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
         mo = search(r"(%s)$" % PL_sb_singular_s, word, IGNORECASE)
-        if mo: return "%ses" % mo.group(1)
+        if mo:
+            return "%ses" % mo.group(1)
 
 # TODO: not sure if this makes a difference. Wouldn't special words
 # ending with 's' always have been caught, regardless of them starting
@@ -1302,17 +1334,20 @@ class engine:
 # caught below?
         if (self.classical_dict['names']):
             mo = search(r"([A-Z].*s)$", word)
-            if mo: return "%ses" % mo.group(1)
+            if mo:
+                return "%ses" % mo.group(1)
 
         mo = search(r"^(.*[^z])(z)$", word, IGNORECASE)
-        if mo: return "%szzes" % mo.group(1)
+        if mo:
+            return "%szzes" % mo.group(1)
 
         for a in (
                   (r"^(.*)([cs]h|x|zz|ss)$",  "%s%ses"),
 #                  (r"(.*)(us)$", "%s%ses"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return a[1] % (mo.group(1), mo.group(2))
+            if mo:
+                return a[1] % (mo.group(1), mo.group(2))
 
 
 # HANDLE ...f -> ...ves
@@ -1324,19 +1359,23 @@ class engine:
                   (r"(.*)arf$", "%sarves"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return a[1] % mo.group(1)
+            if mo:
+                return a[1] % mo.group(1)
 
 # HANDLE ...y
 
         mo = search(r"(.*[aeiou])y$", word, IGNORECASE)
-        if mo: return "%sys" % mo.group(1)
+        if mo:
+            return "%sys" % mo.group(1)
 
         if (self.classical_dict['names']):
             mo = search(r"([A-Z].*y)$", word)
-            if mo: return "%ss" % mo.group(1)
+            if mo:
+                return "%ss" % mo.group(1)
 
         mo = search(r"(.*)y$", word, IGNORECASE)
-        if mo: return "%sies" % mo.group(1)
+        if mo:
+            return "%sies" % mo.group(1)
 
 
 # HANDLE ...o
@@ -1347,7 +1386,8 @@ class engine:
                   (r"o$", "es"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return "%s%s" % (word, a[1])
+            if mo:
+                return "%s%s" % (word, a[1])
 
 # OTHERWISE JUST ADD ...s
 
@@ -1357,14 +1397,17 @@ class engine:
     def _PL_special_verb(self, word, count=None):
         count = self.get_count(count)
 # TODO: should zero make count 2 not return here: check Perl code
-        if str(count).lower() in PL_count_zero: return False
+        if str(count).lower() in PL_count_zero:
+            return False
 
-        if count==1: return word
+        if count==1:
+            return word
 
 # HANDLE USER-DEFINED VERBS
 
         value = self.ud_match(word, self.PL_v_user_defined)
-        if value is not None: return value
+        if value is not None:
+            return value
 
 # HANDLE IRREGULAR PRESENT TENSE (SIMPLE AND COMPOUND)
 
@@ -1389,24 +1432,29 @@ class engine:
             return "%sn't%s" % (PL_v_irregular_pres[firstword[:-3]],
                                  word[len(firstword):])
 
-        if firstword.endswith("n't"): return word
+        if firstword.endswith("n't"):
+            return word
 
 # HANDLE SPECIAL CASES
 
         mo = search(r"^(%s)$" % PL_v_special_s, word)
-        if mo: return False
-        if search(r"\s", word): return False
+        if mo:
+            return False
+        if search(r"\s", word):
+            return False
 
 
 # HANDLE STANDARD 3RD PERSON (CHOP THE ...(e)s OFF SINGLE WORDS)
 
         mo = search(r"^(.*)([cs]h|[x]|zz|ss)es$",
                     word, IGNORECASE)
-        if mo: return "%s%s" % (mo.group(1), mo.group(2))
+        if mo:
+            return "%s%s" % (mo.group(1), mo.group(2))
 
         mo = search(r"^(..+)ies$",
                     word, IGNORECASE)
-        if mo: return "%sy" % mo.group(1)
+        if mo:
+            return "%sy" % mo.group(1)
 
         if (lowerword in PL_v_oes_oe or
             lowerword[-4:] in PL_v_oes_oe_endings_size4 or
@@ -1418,7 +1466,8 @@ class engine:
 
         mo = search(r"^(.*[^s])s$",
                     word, IGNORECASE)
-        if mo: return mo.group(1)
+        if mo:
+            return mo.group(1)
 
 # OTHERWISE, A REGULAR VERB (HANDLE ELSEWHERE)
 
@@ -1427,20 +1476,23 @@ class engine:
     def _PL_general_verb(self, word, count=None):
         count = self.get_count(count)
 
-        if count==1: return word
+        if count==1:
+            return word
 
 # HANDLE AMBIGUOUS PRESENT TENSES  (SIMPLE AND COMPOUND)
 
         mo = search(r"^(%s)((\s.*)?)$" % PL_v_ambiguous_pres_keys,
                     word, IGNORECASE)
-        if mo: return "%s%s" % (PL_v_ambiguous_pres[mo.group(1).lower()],
+        if mo:
+            return "%s%s" % (PL_v_ambiguous_pres[mo.group(1).lower()],
                                  mo.group(2))
 
 # HANDLE AMBIGUOUS PRETERITE AND PERFECT TENSES 
 
         mo = search(r"^(%s)((\s.*)?)$" % PL_v_ambiguous_non_pres,
                     word, IGNORECASE)
-        if mo: return word
+        if mo:
+            return word
 
 # OTHERWISE, 1st OR 2ND PERSON IS UNINFLECTED
 
@@ -1450,24 +1502,28 @@ class engine:
     def _PL_special_adjective(self, word, count=None):
         count = self.get_count(count)
 
-        if count==1: return word
+        if count==1:
+            return word
 
 # HANDLE USER-DEFINED ADJECTIVES
 
         value = self.ud_match(word, self.PL_adj_user_defined)
-        if value is not None: return value
+        if value is not None:
+            return value
 
 # HANDLE KNOWN CASES
 
         mo = search(r"^(%s)$" % PL_adj_special_keys,
                     word, IGNORECASE)
-        if mo: return "%s" % (PL_adj_special[mo.group(1).lower()])
+        if mo:
+            return "%s" % (PL_adj_special[mo.group(1).lower()])
 
 # HANDLE POSSESSIVES
 
         mo = search(r"^(%s)$" % PL_adj_poss_keys,
                     word, IGNORECASE)
-        if mo: return "%s" % (PL_adj_poss[mo.group(1).lower()])
+        if mo:
+            return "%s" % (PL_adj_poss[mo.group(1).lower()])
 
         mo = search(r"^(.*)'s?$",
                     word)
@@ -1488,7 +1544,8 @@ class engine:
                     mystr, IGNORECASE)
         if mo:
             word = mo.group(2)
-            if not word: return mystr
+            if not word:
+                return mystr
             pre = mo.group(1)
             post = mo.group(3)
             result = self._indef_article(word, count)
@@ -1501,13 +1558,15 @@ class engine:
     def _indef_article(self, word, count):
         mycount = self.get_count(count)
 
-        if mycount!=1: return "%s %s" % (count, word)
+        if mycount!=1:
+            return "%s %s" % (count, word)
 
 
 # HANDLE USER-DEFINED VARIANTS
 
         value = self.ud_match(word, self.A_a_user_defined)
-        if value is not None: return "%s %s" % (value, word)
+        if value is not None:
+            return "%s %s" % (value, word)
 
 
 # HANDLE SPECIAL CASES
@@ -1518,7 +1577,8 @@ class engine:
                   (r"^[bcdgjkpqtuvwyz]$", "a"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return "%s %s" % (a[1], word)
+            if mo:
+                return "%s %s" % (a[1], word)
 
 # HANDLE ABBREVIATIONS
 
@@ -1528,12 +1588,14 @@ class engine:
                   (r"^[a-z][.-]", "a", IGNORECASE),
                  ):
             mo = search(a[0], word, a[2])
-            if mo: return "%s %s" % (a[1], word)
+            if mo:
+                return "%s %s" % (a[1], word)
 
 # HANDLE CONSONANTS
 
         mo = search(r"^[^aeiouy]", word, IGNORECASE)
-        if mo: return "a %s" % word
+        if mo:
+            return "a %s" % word
 
 # HANDLE SPECIAL VOWEL-FORMS
 
@@ -1544,22 +1606,26 @@ class engine:
                   (r"^u[bcfhjkqrst][aeiou]", "a"),
                  ):
             mo = search(a[0], word, IGNORECASE)
-            if mo: return "%s %s" % (a[1], word)
+            if mo:
+                return "%s %s" % (a[1], word)
 
 # HANDLE SPECIAL CAPITALS
 
         mo = search(r"^U[NK][AIEO]?", word)
-        if mo: return "a %s" % word
+        if mo:
+            return "a %s" % word
 
 # HANDLE VOWELS
 
         mo = search(r"^[aeiou]", word, IGNORECASE)
-        if mo: return "an %s" % word
+        if mo:
+            return "an %s" % word
 
 # HANDLE y... (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
 
         mo = search(r"^(%s)" % A_y_cons, word, IGNORECASE)
-        if mo: return "an %s" % word
+        if mo:
+            return "an %s" % word
 
 # OTHERWISE, GUESS "a"
         return "a %s" % word
@@ -1658,32 +1724,45 @@ class engine:
     
     def group1sub(self, mo):
         units = int(mo.group(1))
-        if units == 1: return " %s, " % self.number_args['one']
-        elif units: return "%s, " % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
-        else: return " %s, " % self.number_args['zero']
+        if units == 1:
+            return " %s, " % self.number_args['one']
+        elif units:
+            return "%s, " % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+        else:
+            return " %s, " % self.number_args['zero']
     
     def group1bsub(self, mo):
         units = int(mo.group(1))
-        if units: return "%s, " % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
-        else: return " %s, " % self.number_args['zero']
+        if units:
+            return "%s, " % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+        else:
+            return " %s, " % self.number_args['zero']
     
     def group2sub(self, mo):
         tens = int(mo.group(1))
         units = int(mo.group(2))
-        if tens: return "%s, " % self.tenfn(tens, units)
-        if units: return " %s %s, " % (self.number_args['zero'],unit[units])
+        if tens:
+            return "%s, " % self.tenfn(tens, units)
+        if units:
+            return " %s %s, " % (self.number_args['zero'],unit[units])
         return " %s %s, " % (self.number_args['zero'], self.number_args['zero'])
     
     def group3sub(self, mo):
         hundreds = int(mo.group(1))
         tens = int(mo.group(2))
         units = int(mo.group(3))
-        if hundreds==1: hunword = " %s" % self.number_args['one']
-        elif hundreds: hunword = "%s" % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
-        else: hunword = " %s" % self.number_args['zero']
-        if tens: tenword = self.tenfn(tens, units)
-        elif units: tenword = " %s %s" % (self.number_args['zero'], unit[units])
-        else: tenword = " %s %s" % (self.number_args['zero'], self.number_args['zero'])
+        if hundreds==1:
+            hunword = " %s" % self.number_args['one']
+        elif hundreds:
+            hunword = "%s" % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+        else:
+            hunword = " %s" % self.number_args['zero']
+        if tens:
+            tenword = self.tenfn(tens, units)
+        elif units:
+            tenword = " %s %s" % (self.number_args['zero'], unit[units])
+        else:
+            tenword = " %s %s" % (self.number_args['zero'], self.number_args['zero'])
         return "%s %s, " % (hunword, tenword)
     
     def hundsub(self, mo):
@@ -1762,7 +1841,8 @@ class engine:
             spnum = num.split('.',1)
             while (self.number_args['comma']):
                     (spnum[0], n) = subn(r"(\d)(\d{3}(?:,|\Z))",r"\1,\2", spnum[0])
-                    if n==0: break
+                    if n==0:
+                        break
             try:
                 return "%s.%s" % (spnum[0], spnum[1])
             except IndexError:
@@ -1781,7 +1861,8 @@ class engine:
         andword = self.number_args['andword'] #can't use 'and' keyword in **kwds
     
         myord =  (num[-2:] in ('st', 'nd', 'rd', 'th'))
-        if myord: num = num[:-2]
+        if myord:
+            num = num[:-2]
         if self.number_args['decimal']:
             if group != 0:
                 chunks = num.split('.')
@@ -1796,27 +1877,31 @@ class engine:
 
         if chunks[0] == '':
             first = 0
-            if len(chunks) > 1: loopstart = 1
+            if len(chunks) > 1:
+                loopstart = 1
 
-        for i in range(loopstart, len(chunks)): 
+        for i in range(loopstart, len(chunks)):
             chunk = chunks[i]
             #remove all non numeric \D
             chunk = resub(r"\D", self.blankfn, chunk)
-            if chunk == "": chunk = "0"
+            if chunk == "":
+                chunk = "0"
 
             if group != 0 and first != 0:
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)
 
-            if chunk[-2:] == ', ': chunk = chunk[:-2]
+            if chunk[-2:] == ', ':
+                chunk = chunk[:-2]
             chunk = resub(r"\s+,", self.commafn, chunk)
             if group != 0 and first:
                 chunk = resub(r", (\S+)\s+\Z", "%s \1" % andword, chunk)
             chunk = resub(r"\s+", self.spacefn, chunk)
             #chunk = resub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
-            if first: first = ''
+            if first:
+                first = ''
             chunks[i] = chunk
 
         numchunks = []
