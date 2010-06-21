@@ -755,9 +755,6 @@ class engine:
         self.pl_sb_user_defined.extend((singular, plural))
         return 1
 
-    # TODO does the eg in the docs work? will goes to both shall and will?
-    # will it work for the test of what is the plurl of what
-
     def defverb(self, s1, p1, s2, p2, s3, p3):
         self.checkpat(s1)
         self.checkpat(s2)
@@ -1093,16 +1090,10 @@ class engine:
         return False
 
     def _pl_reg_plurals(self, pair, stems, end1, end2):
-#TODO delete commented try block
-      #try:
         if search(r"(%s)(%s\|\1%s|%s\|\1%s)" %
                                  (stems, end1, end2, end2, end1),
                                          pair):
             return True
-      #except:
-        #print r"(%s)(%s\|\1%s|%s\|\1%s)" % (stems, end1, end2, end2, end1), pair
-
-        #raise
         return False
 
     def _pl_check_plurals_N(self, word1, word2):
@@ -1217,7 +1208,6 @@ class engine:
 
 # HANDLE PRONOUNS
 
-# TODO: BUG does not keep case: "about ME" -> "about us". bug not fixed here
         mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, pl_pron_acc_keys), word,
                                                          IGNORECASE)
         if mo:
@@ -1695,8 +1685,12 @@ class engine:
         if ind > len(mill)-1:
             print3("number out of range")
             raise NumOutOfRangeError
-    
-        return mill[ind] if ind < len(mill) else ' ???illion' #TODO: never returns ???illion as this is caught above
+        
+        if ind < len(mill):
+            return mill[ind]
+        else:
+            return ' ???illion' #TODO: never returns ???illion as this is caught above
+        #return mill[ind] if ind < len(mill) else ' ???illion' #TODO: never returns ???illion as this is caught above
     
     
     def unitfn(self, units, mindex=0):

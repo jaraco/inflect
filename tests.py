@@ -184,6 +184,10 @@ class test(unittest.TestCase):
                          'will','will')
         self.assertEqual(p.ud_match('will',p.pl_v_user_defined),
                          'will')
+        self.assertEqual(p.pl('will'),'will')
+        #TODO: will -> shall. Tests below fail
+        #self.assertEqual(p.plequal('will','shall'),'s:p')
+        #self.assertEqual(p.plverbequal('will','shall'),'s:p')
 
 
         #defadj
@@ -378,6 +382,7 @@ class test(unittest.TestCase):
                 ('mother in law', 'mothers in law'),
                 ('mother-in-law', 'mothers-in-law'),
                 ('about me', 'about us'),
+                #TODO: does not keep case
                 #('about ME', 'about US'),
                 ('to it', 'to them'),
                 ('from it', 'from them'),
