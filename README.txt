@@ -809,6 +809,8 @@ The available options are::
     conj            Final conjunction        "and"
     sep             Inter-item separator     ","
     last_sep        Final separator          value of 'sep' option
+    sep_spaced      Space follows sep        True
+    conj_spaced     Spaces around conj       True
 
 
 INTERPOLATING INFLECTIONS IN STRINGS
