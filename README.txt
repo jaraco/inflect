@@ -5,7 +5,7 @@ inflect.py
 
 NAME
 ====
-inflect.py - Convert singular to plural. Select "a" or "an".
+inflect.py - Correctly generate plurals, ordinals, indefinite articles; convert numbers to words.
 
 VERSION
 =======
