@@ -72,12 +72,12 @@ SYNOPSIS
       print "same adj.\n" if p.pladjequal(word1, word2)
 
 
- # ADD CORRECT "a" OR "an" FOR A GIVEN Wordinal:
+ # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
 
       print "Did you want ", p.a(thing), " or ", p.an(idea)
 
 
- # CONVERT numERALS INTO ordinalINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+ # CONVERT numERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
 
       print "It was", p.ordinal(position), " from the left\n"
 
@@ -585,7 +585,7 @@ At present, the ``A()`` and ``AN()`` methods ignore soft H's and use
 this decision (envisaging a possible future "soft H" mode).
 
 
-INFLECTING ordinalINALS
+INFLECTING ORDINALS
 ===================
 
 Occasionally it is useful to present an integer value as an ordinal
