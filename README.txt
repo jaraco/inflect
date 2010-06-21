@@ -34,7 +34,7 @@ SYNOPSIS
  # ordinal numwords
  # wordlist
  # inflect classical
- # defnoun defverb defadj def_a def_an
+ # defnoun defverb defadj defa defan
 
 
  # UNCONDITIONALLY FORM THE PLURAL
@@ -187,9 +187,9 @@ SYNOPSIS
 
       p.defadj(  "hir"  , "their")  # SINGULAR => PLURAL
 
-      p.def_a("h")        # "AY HALWAYS SEZ 'HAITCH'!"
+      p.defa("h")        # "AY HALWAYS SEZ 'HAITCH'!"
 
-      p.def_an(   "horrendous.*" )    # "AN HORRENDOUS AFFECTATION"
+      p.defan(   "horrendous.*" )    # "AN HORRENDOUS AFFECTATION"
 
 
 DESCRIPTION
@@ -973,7 +973,7 @@ the programmer to override the module's behaviour for specific cases:
       defnoun( 'bus'    , 'buses')    # EXCEPT FOR "bus"
 
  This "try-most-recently-defined-first" approach to matching
- user-defined words is also used by ``defverb``, ``def_a`` and ``def_an``.
+ user-defined words is also used by ``defverb``, ``defa`` and ``defan``.
 
 
 ``defverb(s1, p1, s2, p2, s3, p3)``
@@ -1013,18 +1013,18 @@ the programmer to override the module's behaviour for specific cases:
  ones, and ``None``'ed plural forms revert to the standard behaviour.
 
 
-``def_a(pattern)`` and ``def_an(pattern)``
+``defa(pattern)`` and ``defan(pattern)``
 
- The ``def_a`` and ``def_an`` methods each take a single argument, which
+ The ``defa`` and ``defan`` methods each take a single argument, which
  specifies a pattern. If a word passed to ``A()`` or ``AN()`` matches this
  pattern, it will be prefixed (unconditionally) with the corresponding indefinite
  article. For example::
 
-      def_a( 'error')
-      def_a( 'in.+')
+      defa( 'error')
+      defa( 'in.+')
 
-      def_an('mistake')
-      def_an('error')
+      defan('mistake')
+      defan('error')
 
  As with the other ``def_...`` methods, such redefinitions are sequential
  in effect so that, after the above example, "error" will be inflected with "an".
@@ -1054,7 +1054,7 @@ permanently and universally modify the behaviour of the module. For example
                 "teco"  => "teco",
                 "tecos" => "teco"
 
-      def_a     "Euler.*";              # "Yewler" TURNS IN HIS GRAVE
+      defa     "Euler.*";              # "Yewler" TURNS IN HIS GRAVE
 
 
 Note that calls to the ``def_...`` methods from within a program
@@ -1084,7 +1084,7 @@ Specific diagnostics related to user-defined inflections are:
 
  The singular form of a user-defined noun or verb
  (as defined by a call to ``defnoun``, ``defverb``, ``defadj``,
- ``def_a`` or ``def_an``) is not a valid Perl regular expression. The
+ ``defa`` or ``defan``) is not a valid Perl regular expression. The
  actual Perl error message is also given.
 
 ``"Bad user-defined plural string: '%s'"``
