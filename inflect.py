@@ -1327,7 +1327,7 @@ class engine:
 
 # TODO: not sure if this makes a difference. Wouldn't special words
 # ending with 's' always have been caught, regardless of them starting
-# with a capitla letter (i.e. bieing names)
+# with a capital letter (i.e. being names)
 # It makes sense below to do this for words ending in 'y' so that
 # Sally -> Sallys. But not sure it makes sense here. Where is the case
 # of a word ending in s that is caught here and would otherwise have been
