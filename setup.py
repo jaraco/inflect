@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='inflect',
-      version='0.1.2',
+      version='0.1.3',
       description="Correctly generate plurals, ordinals, indefinite articles; convert numbers to words",
       author='Paul Dyson',
       author_email='pwdyson@yahoo.com',
