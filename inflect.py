@@ -52,9 +52,9 @@ methods:
 
 Exceptions:
  UnknownClassicalModeError
- BadnumValueError
+ BadNumValueError
  BadChunkingOptionError
- numOutOfRangeError
+ NumOutOfRangeError
  BadUserDefinedPatternError
  BadRcFileError
 
@@ -68,9 +68,9 @@ from os.path import dirname, isfile, expanduser
 from os.path import join as pathjoin
 
 class UnknownClassicalModeError(Exception): pass
-class BadnumValueError(Exception): pass
+class BadNumValueError(Exception): pass
 class BadChunkingOptionError(Exception): pass
-class numOutOfRangeError(Exception): pass
+class NumOutOfRangeError(Exception): pass
 class BadUserDefinedPatternError(Exception): pass
 class BadRcFileError(Exception): pass
 
@@ -591,9 +591,9 @@ plverb_ambiguous_non_pres = enclose('|'.join ((
 
 # "..oes" -> "..oe" (the rest are "..oes" -> "o")
 
-plverb_oes_oe = ('canoes', 'floes', 'oboes', 'roes', 'throes', 'woes')
-plverb_oes_oe_endings_size4 = ('hoes', 'toes')
-plverb_oes_oe_endings_size5 = ('shoes')
+pl_v_oes_oe = ('canoes', 'floes', 'oboes', 'roes', 'throes', 'woes')
+pl_v_oes_oe_endings_size4 = ('hoes', 'toes')
+pl_v_oes_oe_endings_size5 = ('shoes')
 
 
 pl_count_zero = (
@@ -605,14 +605,14 @@ pl_count_one = (
 "1", "a", "an", "one", "each", "every", "this", "that",
 )
 
-pladj_special = {
+pl_adj_special = {
 "a"    : "some",   "an"   :  "some",
 "this" : "these",  "that" : "those",
 }
 
-pladj_special_keys = enclose('|'.join(pladj_special.keys()))
+pl_adj_special_keys = enclose('|'.join(pl_adj_special.keys()))
 
-pladj_poss = {
+pl_adj_poss = {
 "my"    : "our",
 "your"  : "your",
 "its"   : "their",
@@ -621,7 +621,7 @@ pladj_poss = {
 "their" : "their",
 }
 
-pladj_poss_keys = enclose('|'.join(pladj_poss.keys()))
+pl_adj_poss_keys = enclose('|'.join(pl_adj_poss.keys()))
 
 
 # 2. INDEFINITE ARTICLES
@@ -651,7 +651,7 @@ A_explicit_an = enclose('|'.join((
     )))
 
 
-# numERICAL INFLECTIONS
+# NUMERICAL INFLECTIONS
 
 nth = {
      0: 'th',
@@ -683,7 +683,7 @@ ordinal_suff = '|'.join(ordinal.keys())
 
 
 
-# numBERS
+# NUMBERS
 
 default_args = {
     'group'   : 0,
@@ -745,8 +745,8 @@ class engine:
         self.number_args = default_args.copy() # user can overwrite these in num
         self.mill_count = 0
         self.pl_sb_user_defined = []
-        self.plverb_user_defined  = []
-        self.pladj_user_defined  = []
+        self.pl_v_user_defined  = []
+        self.pl_adj_user_defined  = []
         self.A_a_user_defined   = []
 
     def defnoun(self, singular, plural):
@@ -765,13 +765,13 @@ class engine:
         self.checkpatplural(p1)
         self.checkpatplural(p2)
         self.checkpatplural(p3)
-        self.plverb_user_defined.extend((s1, p1, s2, p2, s3, p3))
+        self.pl_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
     def defadj(self, singular, plural):
         self.checkpat(singular)
         self.checkpatplural(plural)
-        self.pladj_user_defined.extend((singular, plural))
+        self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
     def defa(self, pattern):
@@ -860,7 +860,7 @@ class engine:
             try:
                 self.persistent_count = int(count)
             except ValueError:
-                raise BadnumValueError
+                raise BadNumValueError
             if (show is None) or show:
                 return str(count)
         else:
@@ -902,7 +902,7 @@ class engine:
         '''
         return self.pladj(matchobject.group(1), matchobject.group(3))
 
-    def Amo(self, matchobject):
+    def amo(self, matchobject):
         '''
         A but take a matchobject
         use groups 1 and 3 in matchobject
@@ -911,7 +911,7 @@ class engine:
             return self.a(matchobject.group(1))            
         return self.a(matchobject.group(1), matchobject.group(3))
 
-    def NOmo(self, matchobject):
+    def nomo(self, matchobject):
         '''
         NO but take a matchobject
         use groups 1 and 3 in matchobject
@@ -970,11 +970,11 @@ class engine:
                     total += count
                     (section, count) = subn(
                         r"(?x)\ban?    \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.Amo, section)
+                        self.amo, section)
                     total += count
                     (section, count) = subn(
                         r"(?x)\bno    \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.NOmo, section)
+                        self.nomo, section)
                     total += count
                     (section, count) = subn(
                         r"(?x)\bordinal        \( ([^)]*) \)            ",
@@ -1187,7 +1187,7 @@ class engine:
             return value
 
 
-# HANDLE EMPTY Wordinal, SINGULAR COUNT AND UNINFLECTED PLURALS
+# HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
 
         if word == '':
             return word
@@ -1405,7 +1405,7 @@ class engine:
 
 # HANDLE USER-DEFINED VERBS
 
-        value = self.ud_match(word, self.plverb_user_defined)
+        value = self.ud_match(word, self.pl_v_user_defined)
         if value is not None:
             return value
 
@@ -1456,9 +1456,9 @@ class engine:
         if mo:
             return "%sy" % mo.group(1)
 
-        if (lowerword in plverb_oes_oe or
-            lowerword[-4:] in plverb_oes_oe_endings_size4 or
-            lowerword[-5:] in plverb_oes_oe_endings_size5):
+        if (lowerword in pl_v_oes_oe or
+            lowerword[-4:] in pl_v_oes_oe_endings_size4 or
+            lowerword[-5:] in pl_v_oes_oe_endings_size5):
                 return word[:-1]
 
         if lowerword.endswith('oes') and len(lowerword)>3:
@@ -1507,23 +1507,23 @@ class engine:
 
 # HANDLE USER-DEFINED ADJECTIVES
 
-        value = self.ud_match(word, self.pladj_user_defined)
+        value = self.ud_match(word, self.pl_adj_user_defined)
         if value is not None:
             return value
 
 # HANDLE KNOWN CASES
 
-        mo = search(r"^(%s)$" % pladj_special_keys,
+        mo = search(r"^(%s)$" % pl_adj_special_keys,
                     word, IGNORECASE)
         if mo:
-            return "%s" % (pladj_special[mo.group(1).lower()])
+            return "%s" % (pl_adj_special[mo.group(1).lower()])
 
 # HANDLE POSSESSIVES
 
-        mo = search(r"^(%s)$" % pladj_poss_keys,
+        mo = search(r"^(%s)$" % pl_adj_poss_keys,
                     word, IGNORECASE)
         if mo:
-            return "%s" % (pladj_poss[mo.group(1).lower()])
+            return "%s" % (pl_adj_poss[mo.group(1).lower()])
 
         mo = search(r"^(.*)'s?$",
                     word)
@@ -1672,7 +1672,7 @@ class engine:
             
 
 
-# numERICAL INFLECTIONS
+# NUMERICAL INFLECTIONS
 
     def ordinal(self, num):
         if match(r"\d", num):
@@ -1694,7 +1694,7 @@ class engine:
     def millfn(self, ind=0):
         if ind > len(mill)-1:
             print3("number out of range")
-            raise numOutOfRangeError
+            raise NumOutOfRangeError
     
         return mill[ind] if ind < len(mill) else ' ???illion' #TODO: never returns ???illion as this is caught above
     

@@ -6,8 +6,8 @@ from re import error as reerror
 import inflect
 
 reload(inflect)
-from inflect import BadChunkingOptionError, numOutOfRangeError, UnknownClassicalModeError
-from inflect import UnknownClassicalModeError, BadnumValueError
+from inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassicalModeError
+from inflect import UnknownClassicalModeError, BadNumValueError
 
 class test(unittest.TestCase):
     def test_enclose(self):
@@ -95,7 +95,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.persistent_count, 3)
         self.assertEqual(ret, '')
 
-        self.assertRaises(BadnumValueError, p.num, 'text')
+        self.assertRaises(BadNumValueError, p.num, 'text')
 
     def test_inflect(self):
         p = inflect.engine()
@@ -182,14 +182,14 @@ class test(unittest.TestCase):
         p.defverb('will','shall',
                          'will','will',
                          'will','will')
-        self.assertEqual(p.ud_match('will',p.plverb_user_defined),
+        self.assertEqual(p.ud_match('will',p.pl_v_user_defined),
                          'will')
 
 
         #defadj
         p.defadj('hir','their')
         self.assertEqual(p.pl('hir'),'their')
-        self.assertEqual(p.ud_match('hir',p.pladj_user_defined),
+        self.assertEqual(p.ud_match('hir',p.pl_adj_user_defined),
                         'their')
 
         #defa defan
@@ -650,7 +650,7 @@ class test(unittest.TestCase):
         self.assertEqual(millfn(0), '')
         self.assertEqual(millfn(11), ' decillion')
         inflect.STDOUT_ON = False
-        self.assertRaises(numOutOfRangeError, millfn, 12)
+        self.assertRaises(NumOutOfRangeError, millfn, 12)
         inflect.STDOUT_ON = True
         
     def test_unitfn(self):

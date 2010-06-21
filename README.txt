@@ -64,7 +64,7 @@ SYNOPSIS
       print "There ", p.num(errors,''), p.plverb("was"), p.no(" error")
 
 
- # COMPARE TWO WORDS "numBER-INSENSITIVELY":
+ # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
 
       print "same\n"      if p.plequal(word1, word2)
       print "same noun\n" if p.plnounequal(word1, word2)
@@ -119,7 +119,7 @@ SYNOPSIS
     words = p.numwords(123.456, group=1, decimal='mark')
     # "one two three mark four five six"  #TODO: DOCBUG: perl gives commas here as do I
 
- # LITERAL STYLE ONLY NAMES numBERS LESS THAN A CERTAIN THRESHOLD...
+ # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
 
     words = p.numwords(   9, threshold=10);    # "nine"
     words = p.numwords(  10, threshold=10);    # "ten"
@@ -163,7 +163,7 @@ SYNOPSIS
 
 
 
- # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", A()", "AN()"
+ # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", a()", "an()"
  # "num()" AND "ordinal()" WITHIN STRINGS:
 
       print p.inflect("The plural of {0} is pl({0})".format(word))
@@ -173,7 +173,7 @@ SYNOPSIS
       print p.inflect("I saw num({0}) pl("cat")\nnum()".format(cat_count))
       print p.inflect("There plverb(was,{0}) no(error,{0})".format(errors))
       print p.inflect("There num({0},) plverb(was) no(error)".format(errors))
-      print p.inflect("Did you want A({0}) or AN({1})".format(thing, idea))
+      print p.inflect("Did you want a({0}) or an({1})".format(thing, idea))
       print p.inflect("It was ordinal({0}) from the left".format(position))
 
 
@@ -229,12 +229,12 @@ FORMING PLURALS
 Inflecting Plurals
 ------------------
 
-All of the ``pl_...`` plural inflection methods take the word to be
+All of the ``pl...`` plural inflection methods take the word to be
 inflected as their first argument and return the corresponding inflection.
 Note that all such methods expect the *singular* form of the word. The
 results of passing a plural form are undefined (and unlikely to be correct).
 
-The ``pl_...`` methods also take an optional second argument,
+The ``pl...`` methods also take an optional second argument,
 which indicates the grammatical "number" of the word (or of another word
 with which the word being inflected must agree). If the "number" argument is
 supplied and is not ``1`` (or ``"one"`` or ``"a"``, or some other adjective that
@@ -294,10 +294,10 @@ word being inflected, but preserve that whitespace when the result is
 returned. For example, ``pl(" cat  ")`` returns " cats  ".
 
 
-numbered plurals
+Numbered plurals
 ----------------
 
-The ``pl_...`` methods return only the inflected word, not the count that
+The ``pl...`` methods return only the inflected word, not the count that
 was used to inflect it. Thus, in order to produce "I saw 3 ducks", it
 is necessary to use::
 
@@ -331,7 +331,7 @@ Reducing the number of counts required
 --------------------------------------
 
 In some contexts, the need to supply an explicit count to the various
-``pl_...`` methods makes for tiresome repetition. For example::
+``pl...`` methods makes for tiresome repetition. For example::
 
     print pladj("This",errors), plnoun(" error",errors), \
           plverb(" was",errors), " fatal."
@@ -366,7 +366,7 @@ instead of its first argument. For example::
     
 
 
-number-insensitive equality
+Number-insensitive equality
 ---------------------------
 
 inflect.py also provides a solution to the problem
@@ -396,7 +396,7 @@ Hence all of the following return true::
     p.plequal("indices","indices")  # RETURNS "eq"
 
 As indicated by the comments in the previous example, the actual value
-returned by the various ``plequal_...`` methods encodes which of the
+returned by the various ``plequal...`` methods encodes which of the
 three equality rules succeeded: "eq" is returned if the strings were
 identical, "s:p" if the strings were singular and plural respectively,
 "p:s" for plural and singular, and "p:p" for two distinct plurals.
@@ -443,8 +443,8 @@ PROVIDING INDEFINITE ARTICLES
 Selecting indefinite articles
 -----------------------------
 
-inflect.py provides two methods (``A(word, count=None)`` and
-``AN(word, count=None)``) which will correctly prepend the appropriate indefinite
+inflect.py provides two methods (``a(word, count=None)`` and
+``an(word, count=None)``) which will correctly prepend the appropriate indefinite
 article to a word, depending on its pronunciation. For example::
 
     p.a("cat")        # -> "a cat"
@@ -458,14 +458,14 @@ The two methods are *identical* in function and may be used
 interchangeably. The only reason that two versions are provided is to
 enhance the readability of code such as::
 
-    print "That is ", AN(errortype), " error
-    print "That is ", A(fataltype), " fatal error
+    print "That is ", an(errortype), " error
+    print "That is ", a(fataltype), " fatal error
 
 Note that in both cases the actual article provided depends *only* on
 the pronunciation of the first argument, *not* on the name of the
 method.
 
-``A()`` and ``AN()`` will ignore any indefinite article that already
+``a()`` and ``an()`` will ignore any indefinite article that already
 exists at the start of the string. Thus::
 
     half_arked = [
@@ -485,11 +485,11 @@ exists at the start of the string. Thus::
     #     an orangutan
 
 
-``A()`` and ``AN()`` both take an optional second argument. As with the
-``pl_...`` methods, this second argument is a "number" specifier. If
-its value is ``1`` (or some other value implying singularity), ``A()`` and
-``AN()`` insert "a" or "an" as appropriate. If the number specifier 
-implies plurality, (``A()`` and ``AN()`` insert the actual second argument instead.
+``a()`` and ``an()`` both take an optional second argument. As with the
+``pl...`` methods, this second argument is a "number" specifier. If
+its value is ``1`` (or some other value implying singularity), ``a()`` and
+``an()`` insert "a" or "an" as appropriate. If the number specifier 
+implies plurality, (``a()`` and ``an()`` insert the actual second argument instead.
 For example::
 
     p.a("cat",1)      # -> "a cat"
@@ -497,8 +497,8 @@ For example::
     p.a("cat","one")      # -> "one cat"
     p.a("cat","no")       # -> "no cat"
 
-Note that, as implied by the previous examples, ``A()`` and
-``AN()`` both assume that their job is merely to provide the correct
+Note that, as implied by the previous examples, ``a()`` and
+``an()`` both assume that their job is merely to provide the correct
 qualifier for a word (that is: "a", "an", or the specified count).
 In other words, they assume that the word they are given has
 already been correctly inflected for plurality. Hence, if ``N`` 
@@ -514,8 +514,8 @@ or, better still::
 
       print p.no("cat",N)
 
-Note too that, like the various ``pl_...`` methods, whenever ``A()``
-and ``AN()`` are called with only one argument they are subject to the
+Note too that, like the various ``pl...`` methods, whenever ``a()``
+and ``an()`` are called with only one argument they are subject to the
 effects of any preceding call to ``num()``. Hence, another possible
 solution is::
 
@@ -535,7 +535,7 @@ and "an", since they are sometimes pronounced as if they were a single
 word ("nay-tow", "sku-ba") and sometimes as a series of letter names
 ("en-eff-ell", "ess-oh-ess").
 
-``A()`` and ``AN()`` cope with this dichotomy using a series of inbuilt
+``a()`` and ``an()`` cope with this dichotomy using a series of inbuilt
 rules, which may be summarized as:
 
 
@@ -580,7 +580,7 @@ H's normally do so as well. But *some* English speakers prefer
 "an" for soft H's (although the practice is now generally considered an
 affectation, rather than a legitimate grammatical alternative).
 
-At present, the ``A()`` and ``AN()`` methods ignore soft H's and use
+At present, the ``a()`` and ``an()`` methods ignore soft H's and use
 "a" for any voiced 'H'. The author would, however, welcome feedback on
 this decision (envisaging a possible future "soft H" mode).
 
@@ -601,7 +601,7 @@ To this end, inflect.py provides the ``ordinal()`` method.
 If the argument isn't a numerical integer, it just adds "-th".
 
 
-CONVERTING numBERS TO WORDS
+CONVERTING NUMBERS TO WORDS
 ===========================
 
 The method ``numwords`` takes a number (cardinal or ordinal)
@@ -1016,7 +1016,7 @@ the programmer to override the module's behaviour for specific cases:
 ``defa(pattern)`` and ``defan(pattern)``
 
  The ``defa`` and ``defan`` methods each take a single argument, which
- specifies a pattern. If a word passed to ``A()`` or ``AN()`` matches this
+ specifies a pattern. If a word passed to ``a()`` or ``an()`` matches this
  pattern, it will be prefixed (unconditionally) with the corresponding indefinite
  article. For example::
 
@@ -1114,7 +1114,7 @@ verbs, and no inflection for adjectives.
 
  The optional argument to ``numwords()`` wasn't 1, 2 or 3.
 
-``numOutOfRangeError``
+``NumOutOfRangeError``
 
  ``numwords()`` was passed a number larger than
  999,999,999,999,999,999,999,999,999,999,999,999 (that is: nine hundred
@@ -1135,7 +1135,7 @@ verbs, and no inflection for adjectives.
 
 ``UnknownClassicalModeError``
 
-``BadnumValueError``
+``BadNumValueError``
 
 ``BadUserDefinedPatternError``
 
