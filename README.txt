@@ -27,114 +27,114 @@ SYNOPSIS
 
  # METHODS:
 
- # PL PL_N PL_V PL_ADJ NO NUM
- # PL_eq PL_N_eq PL_V_eq PL_ADJ_eq
+ # pl plnoun plverb pladj no num
+ # plequal plnounequal plverbequal pladjequal
  # A AN
- # PART_PRES
- # ORD NUMWORDS
- # WORDLIST
+ # prespart
+ # ordinal numwords
+ # wordlist
  # inflect classical
- # def_noun def_verb def_adj def_a def_an
+ # defnoun defverb defadj def_a def_an
 
 
  # UNCONDITIONALLY FORM THE PLURAL
 
-      print "The plural of ", word, " is ", p.PL(word)
+      print "The plural of ", word, " is ", p.pl(word)
 
 
  # CONDITIONALLY FORM THE PLURAL
 
-      print "I saw", cat_count, p.PL("cat",cat_count)
+      print "I saw", cat_count, p.pl("cat",cat_count)
 
 
  # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
 
-      print p.PL_N("I",N1), p.PL_V("saw",N1), p.PL_ADJ("my",N2), \
-            p.PL_N("saw",N2)
+      print p.plnoun("I",N1), p.plverb("saw",N1), p.pladj("my",N2), \
+            p.plnoun("saw",N2)
 
 
  # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
 
-      print "There ", p.PL_V("was",errors), p.NO(" error",errors)
+      print "There ", p.plverb("was",errors), p.no(" error",errors)
 
 
  # USE DEFAULT COUNTS:
 
-      print p.NUM(N1,""), p.PL("I"), p.PL_V(" saw"), p.NUM(N2), p.PL_N(" saw")
-      print "There ", p.NUM(errors,''), p.PL_V("was"), p.NO(" error")
+      print p.num(N1,""), p.pl("I"), p.plverb(" saw"), p.num(N2), p.plnoun(" saw")
+      print "There ", p.num(errors,''), p.plverb("was"), p.no(" error")
 
 
- # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
+ # COMPARE TWO WORDS "numBER-INSENSITIVELY":
 
-      print "same\n"      if p.PL_eq(word1, word2)
-      print "same noun\n" if p.PL_N_eq(word1, word2)
-      print "same verb\n" if p.PL_V_eq(word1, word2)
-      print "same adj.\n" if p.PL_ADJ_eq(word1, word2)
-
-
- # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
-
-      print "Did you want ", p.A(thing), " or ", p.AN(idea)
+      print "same\n"      if p.plequal(word1, word2)
+      print "same noun\n" if p.plnounequal(word1, word2)
+      print "same verb\n" if p.plverbequal(word1, word2)
+      print "same adj.\n" if p.pladjequal(word1, word2)
 
 
- # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+ # ADD CORRECT "a" OR "an" FOR A GIVEN Wordinal:
 
-      print "It was", p.ORD(position), " from the left\n"
+      print "Did you want ", p.a(thing), " or ", p.an(idea)
 
- # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
+
+ # CONVERT numERALS INTO ordinalINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+
+      print "It was", p.ordinal(position), " from the left\n"
+
+ # CONVERT numERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
  # RETURNS A SINGLE STRING...
 
-    words = p.NUMWORDS(1234)      # "one thousand, two hundred and thirty-four"
-    words = p.NUMWORDS(p.ORD(1234)) # "one thousand, two hundred and thirty-fourth"
+    words = p.numwords(1234)      # "one thousand, two hundred and thirty-four"
+    words = p.numwords(p.ordinal(1234)) # "one thousand, two hundred and thirty-fourth"
 
 
  # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
 
-    words = p.NUMWORDS(1234, getlist=True)    # ("one thousand","two hundred and thirty-four")
+    words = p.numwords(1234, getlist=True)    # ("one thousand","two hundred and thirty-four")
 
 
  # OPTIONAL PARAMETERS CHANGE TRANSLATION:
 
-    words = p.NUMWORDS(12345, group=1)
+    words = p.numwords(12345, group=1)
     # "one, two, three, four, five"
 
-    words = p.NUMWORDS(12345, group=2)
+    words = p.numwords(12345, group=2)
     # "twelve, thirty-four, five"
 
-    words = p.NUMWORDS(12345, group=3)
+    words = p.numwords(12345, group=3)
     # "one twenty-three, forty-five"
 
-    words = p.NUMWORDS(1234, andword='')
+    words = p.numwords(1234, andword='')
     # "one thousand, two hundred thirty-four"
 
-    words = p.NUMWORDS(1234, andword=', plus')
+    words = p.numwords(1234, andword=', plus')
     # "one thousand, two hundred, plus thirty-four" #TODO: I get no comma before plus: check perl
 
-    words = p.NUMWORDS(555_1202, group=1, zero='oh')
+    words = p.numwords(555_1202, group=1, zero='oh')
     # "five, five, five, one, two, oh, two"
 
-    words = p.NUMWORDS(555_1202, group=1, one='unity')
+    words = p.numwords(555_1202, group=1, one='unity')
     # "five, five, five, unity, two, oh, two"
 
-    words = p.NUMWORDS(123.456, group=1, decimal='mark')
+    words = p.numwords(123.456, group=1, decimal='mark')
     # "one two three mark four five six"  #TODO: DOCBUG: perl gives commas here as do I
 
- # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
+ # LITERAL STYLE ONLY NAMES numBERS LESS THAN A CERTAIN THRESHOLD...
 
-    words = p.NUMWORDS(   9, threshold=10);    # "nine"
-    words = p.NUMWORDS(  10, threshold=10);    # "ten"
-    words = p.NUMWORDS(  11, threshold=10);    # "11"
-    words = p.NUMWORDS(1000, threshold=10);    # "1,000"
+    words = p.numwords(   9, threshold=10);    # "nine"
+    words = p.numwords(  10, threshold=10);    # "ten"
+    words = p.numwords(  11, threshold=10);    # "11"
+    words = p.numwords(1000, threshold=10);    # "1,000"
 
  # JOIN WORDS INTO A LIST:
 
-    list = WORDLIST(("apple", "banana", "carrot"))
+    list = wordlist(("apple", "banana", "carrot"))
         # "apple, banana, and carrot"
 
-    list = WORDLIST(("apple", "banana"))
+    list = wordlist(("apple", "banana"))
         # "apple and banana"
 
-    list = WORDLIST(("apple", "banana", "carrot"), final_sep="")
+    list = wordlist(("apple", "banana", "carrot"), final_sep="")
         # "apple, banana and carrot"
 
 
@@ -163,29 +163,29 @@ SYNOPSIS
 
 
 
- # INTERPOLATE "PL()", "PL_N()", "PL_V()", "PL_ADJ()", A()", "AN()"
- # "NUM()" AND "ORD()" WITHIN STRINGS:
+ # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", A()", "AN()"
+ # "num()" AND "ordinal()" WITHIN STRINGS:
 
-      print p.inflect("The plural of {0} is PL({0})".format(word))
-      print p.inflect("I saw {0} PL("cat",{0})".format(cat_count))
-      print p.inflect("PL(I,{0}) PL_V(saw,{0}) PL(a,{1}) PL_N(saw,{1})".format(N1, N2))
-      print p.inflect("NUM({0},)PL(I) PL_V(saw) NUM({1},)PL(a) PL_N(saw)".format(N1, N2))
-      print p.inflect("I saw NUM({0}) PL("cat")\nNUM()".format(cat_count))
-      print p.inflect("There PL_V(was,{0}) NO(error,{0})".format(errors))
-      print p.inflect("There NUM({0},) PL_V(was) NO(error)".format(errors))
+      print p.inflect("The plural of {0} is pl({0})".format(word))
+      print p.inflect("I saw {0} pl("cat",{0})".format(cat_count))
+      print p.inflect("pl(I,{0}) plverb(saw,{0}) pl(a,{1}) plnoun(saw,{1})".format(N1, N2))
+      print p.inflect("num({0},)pl(I) plverb(saw) num({1},)pl(a) plnoun(saw)".format(N1, N2))
+      print p.inflect("I saw num({0}) pl("cat")\nnum()".format(cat_count))
+      print p.inflect("There plverb(was,{0}) no(error,{0})".format(errors))
+      print p.inflect("There num({0},) plverb(was) no(error)".format(errors))
       print p.inflect("Did you want A({0}) or AN({1})".format(thing, idea))
-      print p.inflect("It was ORD({0}) from the left".format(position))
+      print p.inflect("It was ordinal({0}) from the left".format(position))
 
 
  # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
 
-      p.def_noun( "VAX", "VAXen" )  # SINGULAR => PLURAL
+      p.defnoun( "VAX", "VAXen" )  # SINGULAR => PLURAL
 
-      p.def_verb( "will" , "shall",  # 1ST PERSON SINGULAR => PLURAL
+      p.defverb( "will" , "shall",  # 1ST PERSON SINGULAR => PLURAL
                 "will" , "will",   # 2ND PERSON SINGULAR => PLURAL
                 "will" , "will")   # 3RD PERSON SINGULAR => PLURAL
 
-      p.def_adj(  "hir"  , "their")  # SINGULAR => PLURAL
+      p.defadj(  "hir"  , "their")  # SINGULAR => PLURAL
 
       p.def_a("h")        # "AY HALWAYS SEZ 'HAITCH'!"
 
@@ -229,12 +229,12 @@ FORMING PLURALS
 Inflecting Plurals
 ------------------
 
-All of the ``PL_...`` plural inflection methods take the word to be
+All of the ``pl_...`` plural inflection methods take the word to be
 inflected as their first argument and return the corresponding inflection.
 Note that all such methods expect the *singular* form of the word. The
 results of passing a plural form are undefined (and unlikely to be correct).
 
-The ``PL_...`` methods also take an optional second argument,
+The ``pl_...`` methods also take an optional second argument,
 which indicates the grammatical "number" of the word (or of another word
 with which the word being inflected must agree). If the "number" argument is
 supplied and is not ``1`` (or ``"one"`` or ``"a"``, or some other adjective that
@@ -246,24 +246,24 @@ is returned unconditionally.
 The various methods of ``inflect.engine`` are:
 
 
-``PL_N(word, count=None)``
+``plnoun(word, count=None)``
 
- The method ``PL_N()`` takes a *singular* English noun or
+ The method ``plnoun()`` takes a *singular* English noun or
  pronoun and returns its plural. Pronouns in the nominative ("I" ->
  "we") and accusative ("me" -> "us") cases are handled, as are
  possessive pronouns ("mine" -> "ours").
 
 
-``PL_V(word, count=None)``
+``plverb(word, count=None)``
 
- The method ``PL_V()`` takes the *singular* form of a
+ The method ``plverb()`` takes the *singular* form of a
  conjugated verb (that is, one which is already in the correct "person"
  and "mood") and returns the corresponding plural conjugation.
 
 
-``PL_ADJ(word, count=None)``
+``pladj(word, count=None)``
 
- The method ``PL_ADJ()`` takes the *singular* form of
+ The method ``pladj()`` takes the *singular* form of
  certain types of adjectives and returns the corresponding plural form.
  Adjectives that are correctly handled include: "numerical" adjectives
  ("a" -> "some"), demonstrative adjectives ("this" -> "these", "that" ->
@@ -271,45 +271,45 @@ The various methods of ``inflect.engine`` are:
  -> "childrens'", etc.)
 
 
-``PL(word, count=None)``
+``pl(word, count=None)``
 
- The method ``PL()`` takes a *singular* English noun,
+ The method ``pl()`` takes a *singular* English noun,
  pronoun, verb, or adjective and returns its plural form. Where a word
  has more than one inflection depending on its part of speech (for
  example, the noun "thought" inflects to "thoughts", the verb "thought"
  to "thought"), the (singular) noun sense is preferred to the (singular)
  verb sense.
 
- Hence ``PL("knife")`` will return "knives" ("knife" having been treated
- as a singular noun), whereas ``PL("knifes")`` will return "knife"
+ Hence ``pl("knife")`` will return "knives" ("knife" having been treated
+ as a singular noun), whereas ``pl("knifes")`` will return "knife"
  ("knifes" having been treated as a 3rd person singular verb).
 
  The inherent ambiguity of such cases suggests that,
- where the part of speech is known, ``PL_N``, ``PL_V``, and
- ``PL_ADJ`` should be used in preference to ``PL``.
+ where the part of speech is known, ``plnoun``, ``plverb``, and
+ ``pladj`` should be used in preference to ``pl``.
 
 
 Note that all these methods ignore any whitespace surrounding the
 word being inflected, but preserve that whitespace when the result is
-returned. For example, ``PL(" cat  ")`` returns " cats  ".
+returned. For example, ``pl(" cat  ")`` returns " cats  ".
 
 
-Numbered plurals
+numbered plurals
 ----------------
 
-The ``PL_...`` methods return only the inflected word, not the count that
+The ``pl_...`` methods return only the inflected word, not the count that
 was used to inflect it. Thus, in order to produce "I saw 3 ducks", it
 is necessary to use::
 
-    print "I saw", N, p.PL_N(animal,N)
+    print "I saw", N, p.plnoun(animal,N)
 
 Since the usual purpose of producing a plural is to make it agree with
 a preceding count, inflect.py provides a method
-(``NO(word, count)``) which, given a word and a(n optional) count, returns the
+(``no(word, count)``) which, given a word and a(n optional) count, returns the
 count followed by the correctly inflected word. Hence the previous
 example can be rewritten::
 
-    print "I saw ", p.NO(animal,N)
+    print "I saw ", p.no(animal,N)
 
 In addition, if the count is zero (or some other term which implies
 zero, such as ``"zero"``, ``"nil"``, etc.) the count is replaced by the
@@ -331,51 +331,51 @@ Reducing the number of counts required
 --------------------------------------
 
 In some contexts, the need to supply an explicit count to the various
-``PL_...`` methods makes for tiresome repetition. For example::
+``pl_...`` methods makes for tiresome repetition. For example::
 
-    print PL_ADJ("This",errors), PL_N(" error",errors), \
-          PL_V(" was",errors), " fatal."
+    print pladj("This",errors), plnoun(" error",errors), \
+          plverb(" was",errors), " fatal."
 
 inflect.py therefore provides a method
-(``NUM(count=None, show=None)``) which may be used to set a persistent "default number"
+(``num(count=None, show=None)``) which may be used to set a persistent "default number"
 value. If such a value is set, it is subsequently used whenever an
 optional second "number" argument is omitted. The default value thus set 
-can subsequently be removed by calling ``NUM()`` with no arguments.
+can subsequently be removed by calling ``num()`` with no arguments.
 Hence we could rewrite the previous example::
 
-    p.NUM(errors)
-    print p.PL_ADJ("This"), p.PL_N(" error"), p.PL_V(" was"), "fatal."
-    p.NUM()
+    p.num(errors)
+    print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
+    p.num()
 
-Normally, ``NUM()`` returns its first argument, so that it may also
+Normally, ``num()`` returns its first argument, so that it may also
 be "inlined" in contexts like::
 
-    print p.NUM(errors), p.PL_N(" error"), p.PL_V(" was"), " detected."
+    print p.num(errors), p.plnoun(" error"), p.plverb(" was"), " detected."
     if severity > 1:
-        print p.PL_ADJ("This"), p.PL_N(" error"), p.PL_V(" was"), "fatal."
+        print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
 
 However, in certain contexts (see `INTERPOLATING INFLECTIONS IN STRINGS`)
-it is preferable that ``NUM()`` return an empty string. Hence ``NUM()``
+it is preferable that ``num()`` return an empty string. Hence ``num()``
 provides an optional second argument. If that argument is supplied (that is, if
-it is defined) and evaluates to false, ``NUM`` returns an empty string
+it is defined) and evaluates to false, ``num`` returns an empty string
 instead of its first argument. For example::
 
-    print p.NUM(errors,0), p.NO("error"), p.PL_V(" was"), " detected."
+    print p.num(errors,0), p.no("error"), p.plverb(" was"), " detected."
     if severity > 1:
-        print p.PL_ADJ("This"), p.PL_N(" error"), p.PL_V(" was"), "fatal."
+        print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
     
 
 
-Number-insensitive equality
+number-insensitive equality
 ---------------------------
 
 inflect.py also provides a solution to the problem
 of comparing words of differing plurality through the methods
-``PL_eq(word1, word2)``, ``PL_N_eq(word1, word2)``,
-``PL_V_eq(word1, word2)``, and ``PL_ADJ_eq(word1, word2)``.
+``plequal(word1, word2)``, ``plnounequal(word1, word2)``,
+``plverbequal(word1, word2)``, and ``pladjequal(word1, word2)``.
 Each  of these methods takes two strings, and  compares them
-using the corresponding plural-inflection method (``PL()``, ``PL_N()``,
-``PL_V()``, and ``PL_ADJ()`` respectively).
+using the corresponding plural-inflection method (``pl()``, ``plnoun()``,
+``plverb()``, and ``pladj()`` respectively).
 
 The comparison returns true if:
 
@@ -386,17 +386,17 @@ The comparison returns true if:
 
 Hence all of the following return true::
 
-    p.PL_eq("index","index")      # RETURNS "eq"
-    p.PL_eq("index","indexes")    # RETURNS "s:p"
-    p.PL_eq("index","indices")    # RETURNS "s:p"
-    p.PL_eq("indexes","index")    # RETURNS "p:s"
-    p.PL_eq("indices","index")    # RETURNS "p:s"
-    p.PL_eq("indices","indexes")  # RETURNS "p:p"
-    p.PL_eq("indexes","indices")  # RETURNS "p:p"
-    p.PL_eq("indices","indices")  # RETURNS "eq"
+    p.plequal("index","index")      # RETURNS "eq"
+    p.plequal("index","indexes")    # RETURNS "s:p"
+    p.plequal("index","indices")    # RETURNS "s:p"
+    p.plequal("indexes","index")    # RETURNS "p:s"
+    p.plequal("indices","index")    # RETURNS "p:s"
+    p.plequal("indices","indexes")  # RETURNS "p:p"
+    p.plequal("indexes","indices")  # RETURNS "p:p"
+    p.plequal("indices","indices")  # RETURNS "eq"
 
 As indicated by the comments in the previous example, the actual value
-returned by the various ``PL_eq_...`` methods encodes which of the
+returned by the various ``plequal_...`` methods encodes which of the
 three equality rules succeeded: "eq" is returned if the strings were
 identical, "s:p" if the strings were singular and plural respectively,
 "p:s" for plural and singular, and "p:p" for two distinct plurals.
@@ -407,17 +407,17 @@ the same plural form are *not* considered equal, nor are cases where
 one (singular) word's plural is the other (plural) word's singular.
 Hence all of the following return false::
 
-    p.PL_eq("base","basis")       # ALTHOUGH BOTH -> "bases"
-    p.PL_eq("syrinx","syringe")   # ALTHOUGH BOTH -> "syringes"
-    p.PL_eq("she","he")           # ALTHOUGH BOTH -> "they"
+    p.plequal("base","basis")       # ALTHOUGH BOTH -> "bases"
+    p.plequal("syrinx","syringe")   # ALTHOUGH BOTH -> "syringes"
+    p.plequal("she","he")           # ALTHOUGH BOTH -> "they"
 
-    p.PL_eq("opus","operas")      # ALTHOUGH "opus" -> "opera" -> "operas"
-    p.PL_eq("taxi","taxes")       # ALTHOUGH "taxi" -> "taxis" -> "taxes"
+    p.plequal("opus","operas")      # ALTHOUGH "opus" -> "opera" -> "operas"
+    p.plequal("taxi","taxes")       # ALTHOUGH "taxi" -> "taxis" -> "taxes"
 
 Note too that, although the comparison is "number-insensitive" it is *not*
-case-insensitive (that is, ``PL("time","Times")`` returns false. To obtain
+case-insensitive (that is, ``pl("time","Times")`` returns false. To obtain
 both number and case insensitivity, use the ``lower()`` method on both strings
-(that is, ``PL("time".lower(), "Times".lower())`` returns true).
+(that is, ``pl("time".lower(), "Times".lower())`` returns true).
 
 
 OTHER VERB FORMS
@@ -426,15 +426,15 @@ OTHER VERB FORMS
 Present participles
 -------------------
 
-``inflect.py`` also provides the ``PART_PRES`` method,
+``inflect.py`` also provides the ``prespart`` method,
 which can take a 3rd person singular verb and
 correctly inflect it to its present participle::
 
-    p.PART_PRES("runs")   # "running"
-    p.PART_PRES("loves")  # "loving"
-    p.PART_PRES("eats")   # "eating"
-    p.PART_PRES("bats")   # "batting"
-    p.PART_PRES("spies")  # "spying"
+    p.prespart("runs")   # "running"
+    p.prespart("loves")  # "loving"
+    p.prespart("eats")   # "eating"
+    p.prespart("bats")   # "batting"
+    p.prespart("spies")  # "spying"
 
 
 PROVIDING INDEFINITE ARTICLES
@@ -447,12 +447,12 @@ inflect.py provides two methods (``A(word, count=None)`` and
 ``AN(word, count=None)``) which will correctly prepend the appropriate indefinite
 article to a word, depending on its pronunciation. For example::
 
-    p.A("cat")        # -> "a cat"
-    p.AN("cat")       # -> "a cat"
-    p.A("euphemism")      # -> "a euphemism"
-    p.A("Euler number")   # -> "an Euler number"
-    p.A("hour")       # -> "an hour"
-    p.A("houri")      # -> "a houri"
+    p.a("cat")        # -> "a cat"
+    p.an("cat")       # -> "a cat"
+    p.a("euphemism")      # -> "a euphemism"
+    p.a("Euler number")   # -> "an Euler number"
+    p.a("hour")       # -> "an hour"
+    p.a("houri")      # -> "a houri"
 
 The two methods are *identical* in function and may be used
 interchangeably. The only reason that two versions are provided is to
@@ -476,7 +476,7 @@ exists at the start of the string. Thus::
     ]
 
     for txt in half_arked:
-        print p.A(txt)
+        print p.a(txt)
 
     # prints:
     #     an elephant
@@ -486,16 +486,16 @@ exists at the start of the string. Thus::
 
 
 ``A()`` and ``AN()`` both take an optional second argument. As with the
-``PL_...`` methods, this second argument is a "number" specifier. If
+``pl_...`` methods, this second argument is a "number" specifier. If
 its value is ``1`` (or some other value implying singularity), ``A()`` and
 ``AN()`` insert "a" or "an" as appropriate. If the number specifier 
 implies plurality, (``A()`` and ``AN()`` insert the actual second argument instead.
 For example::
 
-    p.A("cat",1)      # -> "a cat"
-    p.A("cat",2)      # -> "2 cat"
-    p.A("cat","one")      # -> "one cat"
-    p.A("cat","no")       # -> "no cat"
+    p.a("cat",1)      # -> "a cat"
+    p.a("cat",2)      # -> "2 cat"
+    p.a("cat","one")      # -> "one cat"
+    p.a("cat","no")       # -> "no cat"
 
 Note that, as implied by the previous examples, ``A()`` and
 ``AN()`` both assume that their job is merely to provide the correct
@@ -504,23 +504,23 @@ In other words, they assume that the word they are given has
 already been correctly inflected for plurality. Hence, if ``N`` 
 has the value 2, then::
 
-      print p.A("cat",N)
+      print p.a("cat",N)
 
 prints "2 cat", instead of "2 cats". The correct approach is to use::
 
-      print p.A(p.PL("cat",N),N)
+      print p.a(p.pl("cat",N),N)
 
 or, better still::
 
-      print p.NO("cat",N)
+      print p.no("cat",N)
 
-Note too that, like the various ``PL_...`` methods, whenever ``A()``
+Note too that, like the various ``pl_...`` methods, whenever ``A()``
 and ``AN()`` are called with only one argument they are subject to the
-effects of any preceding call to ``NUM()``. Hence, another possible
+effects of any preceding call to ``num()``. Hence, another possible
 solution is::
 
-      p.NUM(N)
-      print p.A(p.PL("cat"))
+      p.num(N)
+      print p.a(p.pl("cat"))
     
 
 Indefinite articles and initialisms
@@ -585,7 +585,7 @@ At present, the ``A()`` and ``AN()`` methods ignore soft H's and use
 this decision (envisaging a possible future "soft H" mode).
 
 
-INFLECTING ORDINALS
+INFLECTING ordinalINALS
 ===================
 
 Occasionally it is useful to present an integer value as an ordinal
@@ -596,20 +596,20 @@ rather than as a numeral. For example::
     Enter password (3rd attempt): *********
     No 4th attempt. Access denied.
 
-To this end, inflect.py provides the ``ORD()`` method.
-``ORD()`` takes a single argument and forms its ordinal equivalent.
+To this end, inflect.py provides the ``ordinal()`` method.
+``ordinal()`` takes a single argument and forms its ordinal equivalent.
 If the argument isn't a numerical integer, it just adds "-th".
 
 
-CONVERTING NUMBERS TO WORDS
+CONVERTING numBERS TO WORDS
 ===========================
 
-The method ``NUMWORDS`` takes a number (cardinal or ordinal)
+The method ``numwords`` takes a number (cardinal or ordinal)
 and returns an English representation of that number.
 
 ::
 
-    word = p.NUMWORDS(1234567)
+    word = p.numwords(1234567)
 
 puts the string::
 
@@ -620,7 +620,7 @@ into ``words``.
 A list can be return where each comma-separated chunk is returned as a separate element.
 Hence::
 
-    words = p.NUMWORDS(1234567, wantlist=True)
+    words = p.numwords(1234567, wantlist=True)
 
 puts the list::
 
@@ -634,16 +634,16 @@ Non-digits (apart from an optional leading plus or minus sign,
 any decimal points, and ordinal suffixes -- see below) are silently
 ignored, so the following all produce identical results::
 
-        p.NUMWORDS(5551202)
-        p.NUMWORDS(5_551_202)
-        p.NUMWORDS("5,551,202")
-        p.NUMWORDS("555-1202")
+        p.numwords(5551202)
+        p.numwords(5_551_202)
+        p.numwords("5,551,202")
+        p.numwords("555-1202")
 
 That last case is a little awkward since it's almost certainly a phone number,
 and "five million, five hundred and fifty-one thousand, two hundred and two"
 probably isn't what's wanted.
 
-To overcome this, ``NUMWORDS()`` takes an optional argument, 'group',
+To overcome this, ``numwords()`` takes an optional argument, 'group',
 which changes how numbers are translated. The argument must be a
 positive integer less than four, which indicated how the digits of the
 number are to be grouped. If the argument is ``1``, then each digit is
@@ -651,15 +651,15 @@ translated separately. If the argument is ``2``, pairs of digits
 (starting from the *left*) are grouped together. If the argument is
 ``3``, triples of numbers (again, from the *left*) are grouped. Hence::
 
-        p.NUMWORDS("555-1202", group=1)
+        p.numwords("555-1202", group=1)
 
 returns ``"five, five, five, one, two, zero, two"``, whilst::
 
-        p.NUMWORDS("555-1202", group=2)
+        p.numwords("555-1202", group=2)
 
 returns ``"fifty-five, fifty-one, twenty, two"``, and::
 
-        p.NUMWORDS("555-1202", group=3)
+        p.numwords("555-1202", group=3)
 
 returns ``"five fifty-five, one twenty, two"``.
 
@@ -667,11 +667,11 @@ Phone numbers are often written in words as
 ``"five..five..five..one..two..zero..two"``, which is also easy to
 achieve::
 
-        join '..', p.NUMWORDS("555-1202", group=>1)
+        join '..', p.numwords("555-1202", group=>1)
 
-``NUMWORDS`` also handles decimal fractions. Hence::
+``numwords`` also handles decimal fractions. Hence::
 
-        p.NUMWORDS("1.2345")
+        p.numwords("1.2345")
 
 returns ``"one point two three four five"`` in a scalar context
 and ``("one","point","two","three","four","five")``) in an array context.
@@ -680,21 +680,21 @@ Exponent form (``"1.234e56"``) is not yet handled.
 Multiple decimal points are only translated in one of the "grouping" modes.
 Hence::
 
-        p.NUMWORDS(101.202.303)
+        p.numwords(101.202.303)
 
 returns ``"one hundred and one point two zero two three zero three"``,
 whereas::
 
-        p.NUMWORDS(101.202.303, group=1)
+        p.numwords(101.202.303, group=1)
 
 returns ``"one zero one point two zero two point three zero three"``.
 
 The digit ``'0'`` is unusual in that in may be translated to English as "zero",
-"oh", or "nought". To cater for this diversity, ``NUMWORDS`` may be passed
+"oh", or "nought". To cater for this diversity, ``numwords`` may be passed
 a named argument, 'zero', which may be set to
 the desired translation of ``'0'``. For example::
 
-        print join "..", p.NUMWORDS("555-1202", group=3, zero='oh')
+        print join "..", p.numwords("555-1202", group=3, zero='oh')
 
 prints ``"five..five..five..one..two..oh..two"``.
 By default, zero is rendered as "zero".
@@ -704,8 +704,8 @@ occasionally other variants), depending on the context. So there is a
 ``'one'`` argument as well::
 
         for num in [3,2,1,0]:
-              print p.NUMWORDS(num, one='a solitary', zero='no more'),
-              p.PL(" bottle of beer on the wall", num)
+              print p.numwords(num, one='a solitary', zero='no more'),
+              p.pl(" bottle of beer on the wall", num)
 
         # prints:
         #     three bottles of beer on the wall
@@ -719,7 +719,7 @@ to use the ``A`` function as well::
 
 
         for word in ["cat aardvark ewe hour".split()]:
-            print p.A("{0} {1}".format(p.NUMWORDS(1, one='a'), word))
+            print p.a("{0} {1}".format(p.numwords(1, one='a'), word))
 
     # prints:
     #     a cat
@@ -731,7 +731,7 @@ Another major regional variation in number translation is the use of
 "and" in certain contexts. The named argument 'and'
 allows the programmer to specify how "and" should be handled. Hence::
 
-        print scalar p.NUMWORDS("765", andword='')
+        print scalar p.numwords("765", andword='')
 
 prints "seven hundred sixty-five", instead of "seven hundred and sixty-five".
 By default, the "and" is included.
@@ -741,17 +741,17 @@ The translation of the decimal point is also subject to variation
 The named argument 'decimal' allows the
 programmer to how the decimal point should be rendered. Hence::
 
-        print scalar p.NUMWORDS("666.124.64.101", group=3, decimal='dot')
+        print scalar p.numwords("666.124.64.101", group=3, decimal='dot')
 
 prints "six sixty-six, dot, one twenty-four, dot, sixty-four, dot, one zero one"
 By default, the decimal point is rendered as "point".
 
-``NUMWORDS`` also handles the ordinal forms of numbers. So::
+``numwords`` also handles the ordinal forms of numbers. So::
 
-        print p.NUMWORDS('1st')
-        print p.NUMWORDS('3rd')
-        print p.NUMWORDS('202nd')
-        print p.NUMWORDS('1000000th')
+        print p.numwords('1st')
+        print p.numwords('3rd')
+        print p.numwords('202nd')
+        print p.numwords('1000000th')
 
 prints::
 
@@ -762,17 +762,17 @@ prints::
 
 Two common idioms in this regard are::
 
-        print p.NUMWORDS(ORD(number))
+        print p.numwords(ordinal(number))
 
 and::
 
-        print p.ORD(p.NUMWORDS(number))
+        print p.ordinal(p.numwords(number))
 
 These are identical in effect, except when ``number`` contains a decimal::
 
         number = 99.09
-        print p.NUMWORDS(p.ORD(number));    # ninety-ninth point zero nine
-        print p.ORD(p.NUMWORDS(number));    # ninety-nine point zero ninth
+        print p.numwords(p.ordinal(number));    # ninety-ninth point zero nine
+        print p.ordinal(p.numwords(number));    # ninety-nine point zero ninth
 
 Use whichever you feel is most appropriate.
 
@@ -788,18 +788,18 @@ before it. And although it's technically incorrect (and sometimes
 misleading), some people prefer to omit the comma before that final
 conjunction, even when there are more than two items.
 
-That's complicated enough to warrant its own method: ``WORDLIST()``.
+That's complicated enough to warrant its own method: ``wordlist()``.
 This method expects a tuple of words, possibly with one or more
 options. It returns a string that joins the list
 together in the normal English usage. For example::
 
-    print "You chose ", p.WORDLIST(selected_items)
+    print "You chose ", p.wordlist(selected_items)
     # You chose barley soup, roast beef, and Yorkshire pudding
 
-    print "You chose ", p.WORDLIST(selected_items, final_sep=>"")
+    print "You chose ", p.wordlist(selected_items, final_sep=>"")
     # You chose barley soup, roast beef and Yorkshire pudding
 
-    print "Please chose ", p.WORDLIST(side_orders, conj=>"or")
+    print "Please chose ", p.wordlist(side_orders, conj=>"or")
     # Please chose salad, vegetables, or ice-cream
 
 The available options are::
@@ -819,9 +819,9 @@ INTERPOLATING INFLECTIONS IN STRINGS
 By far the commonest use of the inflection methods is to
 produce message strings for various purposes. For example::
 
-        print p.NUM(errors), p.PL_N(" error"), p.PL_V(" was"), " detected."
+        print p.num(errors), p.plnoun(" error"), p.plverb(" was"), " detected."
         if severity > 1:
-            print p.PL_ADJ("This"), p.PL_N(" error"), p.PL_V(" was"), "fatal."
+            print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
 
 Unfortunately the need to separate each method call detracts
 significantly from the readability of the resulting code. To ameliorate
@@ -831,15 +831,15 @@ methods within a string and interpolates them appropriately.
 
 Using ``inflect`` the previous example could be rewritten::
 
-        print p.inflect("NUM({0}) PL_N(error) PL_V(was) detected.".format(errors))
+        print p.inflect("num({0}) plnoun(error) plverb(was) detected.".format(errors))
         if severity > 1:
-            print p.inflect("PL_ADJ(This) PL_N(error) PL_V(was) fatal.")
+            print p.inflect("pladj(This) plnoun(error) plverb(was) fatal.")
 
-Note that ``inflect`` also correctly handles calls to the ``NUM()`` method
+Note that ``inflect`` also correctly handles calls to the ``num()`` method
 (whether interpolated or antecedent). The ``inflect()`` method has
 a related extra feature, in that it *automatically* cancels any "default
 number" value before it returns its interpolated string. This means that
-calls to ``NUM()`` which are embedded in an ``inflect()``-interpolated
+calls to ``num()`` which are embedded in an ``inflect()``-interpolated
 string do not "escape" and interfere with subsequent inflections.
 
 
@@ -850,12 +850,12 @@ Certain words, mainly of Latin or Ancient Greek origin, can form
 plurals either using the standard English "-s" suffix, or with 
 their original Latin or Greek inflections. For example::
 
-        p.PL("stigma")            # -> "stigmas" or "stigmata"
-        p.PL("torus")             # -> "toruses" or "tori"
-        p.PL("index")             # -> "indexes" or "indices"
-        p.PL("millennium")        # -> "millenniums" or "millennia"
-        p.PL("ganglion")          # -> "ganglions" or "ganglia"
-        p.PL("octopus")           # -> "octopuses" or "octopodes"
+        p.pl("stigma")            # -> "stigmas" or "stigmata"
+        p.pl("torus")             # -> "toruses" or "tori"
+        p.pl("index")             # -> "indexes" or "indices"
+        p.pl("millennium")        # -> "millenniums" or "millennia"
+        p.pl("ganglion")          # -> "ganglions" or "ganglia"
+        p.pl("octopus")           # -> "octopuses" or "octopodes"
 
 
 inflect.py caters to such words by providing an
@@ -874,27 +874,27 @@ specify which aspects of classical behaviour are to be used.
 Thus::
 
         p.classical()                # SWITCH ON CLASSICAL MODE
-        print p.PL("formula")        # -> "formulae"
+        print p.pl("formula")        # -> "formulae"
 
         p.classical(0)               # SWITCH OFF CLASSICAL MODE
-        print p.PL("formula")        # -> "formulas"
+        print p.pl("formula")        # -> "formulas"
 
         p.classical(cmode)           # CLASSICAL MODE IFF cmode
-        print p.PL("formula")        # -> "formulae" (IF cmode)
+        print p.pl("formula")        # -> "formulae" (IF cmode)
                                      # -> "formulas" (OTHERWISE)
 
         p.classical(herd=1)          # SWITCH ON CLASSICAL MODE FOR "HERD" NOUNS
-        print p.PL("wilderbeest")    # -> "wilderbeest"
+        print p.pl("wilderbeest")    # -> "wilderbeest"
 
         p.classical(names=1)         # SWITCH ON CLASSICAL MODE FOR NAMES
-        print p.PL("sally")          # -> "sallies"
-        print p.PL("Sally")          # -> "Sallys"
+        print p.pl("sally")          # -> "sallies"
+        print p.pl("Sally")          # -> "Sallys"
 
 Note however that ``classical()`` has no effect on the inflection of words which
 are now fully assimilated. Hence::
 
-        p.PL("forum")             # ALWAYS -> "forums"
-        p.PL("criterion")         # ALWAYS -> "criteria"
+        p.pl("forum")             # ALWAYS -> "forums"
+        p.pl("criterion")         # ALWAYS -> "criteria"
 
 LEI assumes that a capitalized word is a person's name. So it forms the
 plural according to the rules for names (which is that you don't
@@ -912,9 +912,9 @@ inflect.py provides five methods which allow
 the programmer to override the module's behaviour for specific cases:
 
 
-``def_noun(singular, plural)``
+``defnoun(singular, plural)``
 
- The ``def_noun`` method takes a pair of string arguments: the singular and the
+ The ``defnoun`` method takes a pair of string arguments: the singular and the
  plural forms of the noun being specified. The singular form 
  specifies a pattern to be interpolated (as ``m/^(?:$first_arg)$/i``).
  Any noun matching this pattern is then replaced by the string in the
@@ -922,9 +922,9 @@ the programmer to override the module's behaviour for specific cases:
  interpolated after the match succeeds, and is then used as the plural
  form. For example::
 
-      def_noun( 'cow'        , 'kine')
-      def_noun( '(.+i)o'     , '$1i')
-      def_noun( 'spam(mer)?' , '\\$\\%\\@#\\$\\@#!!')
+      defnoun( 'cow'        , 'kine')
+      defnoun( '(.+i)o'     , '$1i')
+      defnoun( 'spam(mer)?' , '\\$\\%\\@#\\$\\@#!!')
 
  Note that both arguments should usually be specified in single quotes,
  so that they are not interpolated when they are specified, but later (when
@@ -936,9 +936,9 @@ the programmer to override the module's behaviour for specific cases:
  form, to be used when "classical" plurals have been requested. The beginning
  of the second variant is marked by a '|' character::
 
-      def_noun( 'cow'        , 'cows|kine')
-      def_noun( '(.+i)o'     , '$1os|$1i')
-      def_noun( 'spam(mer)?' , '\\$\\%\\@#\\$\\@#!!|varmints')
+      defnoun( 'cow'        , 'cows|kine')
+      defnoun( '(.+i)o'     , '$1os|$1i')
+      defnoun( 'spam(mer)?' , '\\$\\%\\@#\\$\\@#!!|varmints')
 
  If no classical variant is given, the specified plural form is used in
  both normal and "classical" modes.
@@ -956,57 +956,57 @@ the programmer to override the module's behaviour for specific cases:
  singular form replace earlier definitions of the same form. For example::
 
       # FIRST, HIDE THE MODERN FORM....
-      def_noun( 'aviatrix' , 'aviatrices')
+      defnoun( 'aviatrix' , 'aviatrices')
 
       # LATER, HIDE THE CLASSICAL FORM...
-      def_noun( 'aviatrix' , 'aviatrixes')
+      defnoun( 'aviatrix' , 'aviatrixes')
 
       # FINALLY, RESTORE THE DEFAULT BEHAVIOUR...
-      def_noun( 'aviatrix' , undef)
+      defnoun( 'aviatrix' , undef)
 
 
  Special care is also required when defining general patterns and
  associated specific exceptions: put the more specific cases *after*
  the general pattern. For example::
 
-      def_noun( '(.+)us' , '$1i')      # EVERY "-us" TO "-i"
-      def_noun( 'bus'    , 'buses')    # EXCEPT FOR "bus"
+      defnoun( '(.+)us' , '$1i')      # EVERY "-us" TO "-i"
+      defnoun( 'bus'    , 'buses')    # EXCEPT FOR "bus"
 
  This "try-most-recently-defined-first" approach to matching
- user-defined words is also used by ``def_verb``, ``def_a`` and ``def_an``.
+ user-defined words is also used by ``defverb``, ``def_a`` and ``def_an``.
 
 
-``def_verb(s1, p1, s2, p2, s3, p3)``
+``defverb(s1, p1, s2, p2, s3, p3)``
 
- The ``def_verb`` method takes three pairs of string arguments (that is, six
+ The ``defverb`` method takes three pairs of string arguments (that is, six
  arguments in total), specifying the singular and plural forms of the three
- "persons" of verb. As with ``def_noun``, the singular forms are specifications of
+ "persons" of verb. As with ``defnoun``, the singular forms are specifications of
  run-time-interpolated patterns, whilst the plural forms are specifications of
  (up to two) run-time-interpolated strings::
 
-       def_verb('am'       , 'are',
+       defverb('am'       , 'are',
                 'are'      , 'are|art",
                 'is'       , 'are')
 
-       def_verb('have'     , 'have',
+       defverb('have'     , 'have',
                 'have'     , 'have",
                 'ha(s|th)' , 'have')
 
- Note that as with ``def_noun``, modern/classical variants of plurals
+ Note that as with ``defnoun``, modern/classical variants of plurals
  may be separately specified, subsequent definitions replace previous
  ones, and ``None``'ed plural forms revert to the standard behaviour.
 
 
-``def_adj(singular, plural)``
+``defadj(singular, plural)``
 
- The ``def_adj`` method takes a pair of string arguments, which specify
+ The ``defadj`` method takes a pair of string arguments, which specify
  the singular and plural forms of the adjective being defined.
- As with ``def_noun`` and ``def_adj``, the singular forms are specifications of
+ As with ``defnoun`` and ``defadj``, the singular forms are specifications of
  run-time-interpolated patterns, whilst the plural forms are specifications of
  (up to two) run-time-interpolated strings::
 
-       def_adj( 'this'     , 'these')
-       def_adj( 'red'      , 'red|gules')
+       defadj( 'this'     , 'these')
+       defadj( 'red'      , 'red|gules')
 
  As previously, modern/classical variants of plurals
  may be separately specified, subsequent definitions replace previous
@@ -1043,14 +1043,14 @@ Note that the code is executed within the inflect.py
 namespace.
 
 Hence the user or the local Perl guru can make appropriate calls to
-``def_noun``, ``def_verb``, etc. in one of these ``.inflectrc`` files, to
+``defnoun``, ``defverb``, etc. in one of these ``.inflectrc`` files, to
 permanently and universally modify the behaviour of the module. For example
 
       > cat /usr/local/lib/perl5/Text/Inflect/.inflectrc
 
-      def_noun  "UNIX"  => "UN*X|UNICES"
+      defnoun  "UNIX"  => "UN*X|UNICES"
 
-      def_verb  "teco"  => "teco",      # LITERALLY: "to edit with TECO"
+      defverb  "teco"  => "teco",      # LITERALLY: "to edit with TECO"
                 "teco"  => "teco",
                 "tecos" => "teco"
 
@@ -1083,14 +1083,14 @@ Specific diagnostics related to user-defined inflections are:
 ``"Bad user-defined singular pattern:\t %s"``
 
  The singular form of a user-defined noun or verb
- (as defined by a call to ``def_noun``, ``def_verb``, ``def_adj``,
+ (as defined by a call to ``defnoun``, ``defverb``, ``defadj``,
  ``def_a`` or ``def_an``) is not a valid Perl regular expression. The
  actual Perl error message is also given.
 
 ``"Bad user-defined plural string: '%s'"``
 
  The plural form(s) of a user-defined noun or verb
- (as defined by a call to ``def_noun``, ``def_verb`` or ``def_adj``)
+ (as defined by a call to ``defnoun``, ``defverb`` or ``defadj``)
  is not a valid Perl interpolated string (usually because it 
  interpolates some undefined variable).
 
@@ -1102,7 +1102,7 @@ Specific diagnostics related to user-defined inflections are:
 
 
 There are *no* diagnosable run-time error conditions for the actual
-inflection methods, except ``NUMWORDS`` and hence no run-time
+inflection methods, except ``numwords`` and hence no run-time
 diagnostics. If the inflection methods are unable to form a plural
 via a user-definition or an inbuilt rule, they just "guess" the
 commonest English inflection: adding "-s" for nouns, removing "-s" for
@@ -1112,11 +1112,11 @@ verbs, and no inflection for adjectives.
 
 ``BadChunkingOptionError``
 
- The optional argument to ``NUMWORDS()`` wasn't 1, 2 or 3.
+ The optional argument to ``numwords()`` wasn't 1, 2 or 3.
 
-``NumOutOfRangeError``
+``numOutOfRangeError``
 
- ``NUMWORDS()`` was passed a number larger than
+ ``numwords()`` was passed a number larger than
  999,999,999,999,999,999,999,999,999,999,999,999 (that is: nine hundred
  and ninety-nine decillion, nine hundred and ninety-nine nonillion, nine
  hundred and ninety-nine octillion, nine hundred and ninety-nine
@@ -1126,7 +1126,7 @@ verbs, and no inflection for adjectives.
  nine hundred and ninety-nine million, nine hundred and ninety-nine
  thousand, nine hundred and ninety-nine :-) 
 
- The problem is that ``NUMWORDS`` doesn't know any
+ The problem is that ``numwords`` doesn't know any
  words for number components bigger than "decillion".
 
 
@@ -1135,7 +1135,7 @@ verbs, and no inflection for adjectives.
 
 ``UnknownClassicalModeError``
 
-``BadNumValueError``
+``BadnumValueError``
 
 ``BadUserDefinedPatternError``
 
@@ -1166,11 +1166,11 @@ can vary, depending on its "case". For example::
         It ate it                ->  They ate them
         I fed my homework to it  ->  I fed my homework to them
 
-As a consequence of this ambiguity, ``PL()`` or ``PL_N`` have been implemented
+As a consequence of this ambiguity, ``pl()`` or ``plnoun`` have been implemented
 so that they always return the *nominative* plural (that is, "they").
 
 However, when asked for the plural of an unambiguously *accusative*
-"it" (namely, ``PL("to it")``, ``PL_N("from it")``, ``PL("with it")``,
+"it" (namely, ``pl("to it")``, ``plnoun("from it")``, ``pl("with it")``,
 etc.), both methods will correctly return the accusative plural
 ("to them", "from them", "with them", etc.)
 
@@ -1198,14 +1198,14 @@ singular form is always returned.
 
 Thus, the sequence::
 
-      p.NUM(0)
-      print p.inflect("There PL(was) NO(choice)")
+      p.num(0)
+      print p.inflect("There pl(was) no(choice)")
 
 produces "There were no choices", whereas::
 
       p.classical('zero')     # or: classical('zero'=1)
-      p.NUM(0)
-      print p.inflect("There PL(was) NO(choice)")
+      p.num(0)
+      print p.inflect("There pl(was) no(choice)")
 
 it will print "There was no choice".
 
@@ -1236,13 +1236,13 @@ inflect.py handles such words in two ways:
 
 - If each meaning of the word is a different part of speech (for
   example, "thought" is both a noun and a verb), then the noun's
-  plural is returned by ``PL()`` and ``PL_N()`` and the verb's plural is
-  returned only by ``PL_V()``.
+  plural is returned by ``pl()`` and ``plnoun()`` and the verb's plural is
+  returned only by ``plverb()``.
 
 
 Such contexts are, fortunately, uncommon (particularly
 "same-part-of-speech" examples). An informal study of nearly 600
-"difficult plurals" indicates that ``PL()`` can be relied upon to "get
+"difficult plurals" indicates that ``pl()`` can be relied upon to "get
 it right" about 98% of the time (although, of course, ichthyophilic
 guitarists or cyber-behaviouralists may experience higher rates of
 confusion).

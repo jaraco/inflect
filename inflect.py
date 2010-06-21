@@ -25,36 +25,36 @@
 
 methods:
           classical inflect
-          PL PL_N PL_V PL_ADJ NO NUM A AN
-          PL_eq PL_N_eq PL_V_eq PL_ADJ_eq
-          PART_PRES
-          ORD
-          NUMWORDS
-          WORDLIST
-          def_noun def_verb def_adj def_a def_an
+          pl plnoun plverb pladj no num a an
+          plequal plnounequal plverbequal pladjequal
+          prespart
+          ordinal
+          numwords
+          wordlist
+          defnoun defverb defadj defa defan
 
     INFLECTIONS:    classical inflect
-          PL PL_N PL_V PL_ADJ PL_eq
-          NO NUM A AN PART_PRES
+          pl plnoun plverb pladj plequal
+          no num a an prespart
 
     PLURALS:   classical inflect
-          PL PL_N PL_V PL_ADJ NO NUM
-          PL_eq PL_N_eq PL_V_eq PL_ADJ_eq
+          pl plnoun plverb pladj no num
+          plequal plnounequal plverbequal pladjequal
 
     COMPARISONS:    classical 
-          PL_eq PL_N_eq PL_V_eq PL_ADJ_eq
+          plequal plnounequal plverbequal pladjequal
 
-    ARTICLES:   classical inflect NUM A AN 
+    ARTICLES:   classical inflect num a an 
 
-    NUMERICAL:      ORD NUMWORDS
+    NUMERICAL:      ordinal numwords
 
-    USER_DEFINED:   def_noun def_verb def_adj def_a def_an
+    USER_DEFINED:   defnoun defverb defadj defa defan
 
 Exceptions:
  UnknownClassicalModeError
- BadNumValueError
+ BadnumValueError
  BadChunkingOptionError
- NumOutOfRangeError
+ numOutOfRangeError
  BadUserDefinedPatternError
  BadRcFileError
 
@@ -68,9 +68,9 @@ from os.path import dirname, isfile, expanduser
 from os.path import join as pathjoin
 
 class UnknownClassicalModeError(Exception): pass
-class BadNumValueError(Exception): pass
+class BadnumValueError(Exception): pass
 class BadChunkingOptionError(Exception): pass
-class NumOutOfRangeError(Exception): pass
+class numOutOfRangeError(Exception): pass
 class BadUserDefinedPatternError(Exception): pass
 class BadRcFileError(Exception): pass
 
@@ -99,7 +99,7 @@ def joinstem(cutpoint=0, words=''):
 
 # 1. PLURALS
 
-PL_sb_irregular_s = {
+pl_sb_irregular_s = {
     "corpus"    : "corpuses|corpora",
     "opus"      : "opuses|opera",
     "genus"     : "genera",
@@ -110,7 +110,7 @@ PL_sb_irregular_s = {
     "yes"       : "yeses",
 }
 
-PL_sb_irregular = {
+pl_sb_irregular = {
     "child"       : "children",
     "brother"     : "brothers|brethren",
     "loaf"        : "loaves",
@@ -148,13 +148,13 @@ PL_sb_irregular = {
     'rom'         : 'roma',
 }
 
-PL_sb_irregular.update(PL_sb_irregular_s)
+pl_sb_irregular.update(pl_sb_irregular_s)
 
-PL_sb_irregular_keys = enclose('|'.join(PL_sb_irregular.keys()))
+pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
 
 # CLASSICAL "..is" -> "..ides"
 
-PL_sb_C_is_ides = [
+pl_sb_C_is_ides = [
 # GENERAL WORDS...
 
     "ephemeris", "iris", "clitoris",
@@ -166,11 +166,11 @@ PL_sb_C_is_ides = [
 
 ]
 
-PL_sb_C_is_ides_stems = joinstem(-2, PL_sb_C_is_ides)
+pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides)
 
 # CLASSICAL "..a" -> "..ata"
 
-PL_sb_C_a_ata = (
+pl_sb_C_a_ata = (
     "anathema", "bema", "carcinoma", "charisma", "diploma",
     "dogma", "drama", "edema", "enema", "enigma", "lemma",
     "lymphoma", "magma", "melisma", "miasma", "oedema",
@@ -178,17 +178,17 @@ PL_sb_C_a_ata = (
     "gumma", "pragma",
 )
 
-PL_sb_C_a_ata_stems = joinstem(-1, PL_sb_C_a_ata)
+pl_sb_C_a_ata_stems = joinstem(-1, pl_sb_C_a_ata)
 
 # UNCONDITIONAL "..a" -> "..ae"
 
-PL_sb_U_a_ae = enclose('|'.join ((
+pl_sb_U_a_ae = enclose('|'.join ((
     "alumna", "alga", "vertebra", "persona"
 )))
 
 # CLASSICAL "..a" -> "..ae"
 
-PL_sb_C_a_ae = enclose('|'.join ((
+pl_sb_C_a_ae = enclose('|'.join ((
     "amoeba", "antenna", "formula", "hyperbola",
     "medusa", "nebula", "parabola", "abscissa",
     "hydra", "nova", "lacuna", "aurora", ".*umbra",
@@ -197,13 +197,13 @@ PL_sb_C_a_ae = enclose('|'.join ((
 
 # CLASSICAL "..en" -> "..ina"
 
-PL_sb_C_en_ina = joinstem(-2, ((
+pl_sb_C_en_ina = joinstem(-2, ((
     "stamen", "foramen", "lumen", "carmen"
 )))
 
 # UNCONDITIONAL "..um" -> "..a"
 
-PL_sb_U_um_a = joinstem(-2, ((
+pl_sb_U_um_a = joinstem(-2, ((
     "bacterium",    "agendum",  "desideratum",  "erratum",
     "stratum",  "datum",    "ovum",     "extremum",
     "candelabrum",
@@ -211,7 +211,7 @@ PL_sb_U_um_a = joinstem(-2, ((
 
 # CLASSICAL "..um" -> "..a"
 
-PL_sb_C_um_a = joinstem(-2, ((
+pl_sb_C_um_a = joinstem(-2, ((
     "maximum",  "minimum",    "momentum",   "optimum",
     "quantum",  "cranium",    "curriculum", "dictum",
     "phylum",   "aquarium",   "compendium", "emporium",
@@ -224,7 +224,7 @@ PL_sb_C_um_a = joinstem(-2, ((
 
 # UNCONDITIONAL "..us" -> "i"
 
-PL_sb_U_us_i = joinstem(-2, ((
+pl_sb_U_us_i = joinstem(-2, ((
     "alumnus",  "alveolus", "bacillus", "bronchus",
     "locus",    "nucleus",  "stimulus", "meniscus",
     "sarcophagus",
@@ -232,7 +232,7 @@ PL_sb_U_us_i = joinstem(-2, ((
 
 # CLASSICAL "..us" -> "..i"
 
-PL_sb_C_us_i = joinstem(-2, ((
+pl_sb_C_us_i = joinstem(-2, ((
     "focus",    "radius",   "genius",
     "incubus",  "succubus", "nimbus",
     "fungus",   "nucleolus",    "stylus",
@@ -242,14 +242,14 @@ PL_sb_C_us_i = joinstem(-2, ((
 
 # CLASSICAL "..us" -> "..us"  (ASSIMILATED 4TH DECLENSION LATIN NOUNS)
 
-PL_sb_C_us_us = enclose('|'.join ((
+pl_sb_C_us_us = enclose('|'.join ((
     "status", "apparatus", "prospectus", "sinus",
     "hiatus", "impetus", "plexus",
 )))
 
 # UNCONDITIONAL "..on" -> "a"
 
-PL_sb_U_on_a = joinstem(-2, ((
+pl_sb_U_on_a = joinstem(-2, ((
     "criterion",    "perihelion",   "aphelion",
     "phenomenon",   "prolegomenon", "noumenon",
     "organon",  "asyndeton",    "hyperbaton",
@@ -257,22 +257,22 @@ PL_sb_U_on_a = joinstem(-2, ((
 
 # CLASSICAL "..on" -> "..a"
 
-PL_sb_C_on_a = joinstem(-2, ((
+pl_sb_C_on_a = joinstem(-2, ((
     "oxymoron",
 )))
 
 # CLASSICAL "..o" -> "..i"  (BUT NORMALLY -> "..os")
 
-PL_sb_C_o_i = [
+pl_sb_C_o_i = [
     "solo",     "soprano",  "basso",    "alto",
     "contralto",    "tempo",    "piano",    "virtuoso",
-] # list not tuple so can concat for PL_sb_U_o_os
+] # list not tuple so can concat for pl_sb_U_o_os
 
-PL_sb_C_o_i_stems = joinstem(-1, PL_sb_C_o_i)
+pl_sb_C_o_i_stems = joinstem(-1, pl_sb_C_o_i)
 
 # ALWAYS "..o" -> "..os"
 
-PL_sb_U_o_os = enclose('|'.join ([
+pl_sb_U_o_os = enclose('|'.join ([
     "^ado",          "aficionado",   "aggro",
     "albino",       "allegro",      "ammo",
     "Antananarivo", "archipelago",  "armadillo",
@@ -340,52 +340,52 @@ PL_sb_U_o_os = enclose('|'.join ([
     "Virgo",        "weirdo",       "WHO",  
     "WTO",          "Yamoussoukro", "yo-yo",        
     "zero",         "Zibo",         
-    ] + PL_sb_C_o_i
+    ] + pl_sb_C_o_i
 ))
 
 
 # UNCONDITIONAL "..ch" -> "..chs"
 
-PL_sb_U_ch_chs = joinstem(-2, ((
+pl_sb_U_ch_chs = joinstem(-2, ((
     "czech",  "eunuch",   "stomach"
 )))
 
 # UNCONDITIONAL "..[ei]x" -> "..ices"
 
-PL_sb_U_ex_ices = joinstem(-2, ((
+pl_sb_U_ex_ices = joinstem(-2, ((
     "codex",    "murex",    "silex",
 )))
 
-PL_sb_U_ix_ices = joinstem(-2, ((
+pl_sb_U_ix_ices = joinstem(-2, ((
     "radix",    "helix",
 )))
 
 # CLASSICAL "..[ei]x" -> "..ices"
 
-PL_sb_C_ex_ices = joinstem(-2, ((
+pl_sb_C_ex_ices = joinstem(-2, ((
     "vortex",   "vertex",   "cortex",   "latex",
     "pontifex", "apex",     "index",    "simplex",
 )))
 
-PL_sb_C_ix_ices = joinstem(-2, ((
+pl_sb_C_ix_ices = joinstem(-2, ((
     "appendix",
 )))
 
 # ARABIC: ".." -> "..i"
 
-PL_sb_C_i = enclose('|'.join ((
+pl_sb_C_i = enclose('|'.join ((
     "afrit",    "afreet",   "efreet",
 )))
 
 # HEBREW: ".." -> "..im"
 
-PL_sb_C_im = enclose('|'.join ((
+pl_sb_C_im = enclose('|'.join ((
     "goy",      "seraph",   "cherub",
 )))
 
 # UNCONDITIONAL "..man" -> "..mans"
 
-PL_sb_U_man_mans = enclose('|'.join (
+pl_sb_U_man_mans = enclose('|'.join (
 """
     ataman caiman cayman ceriman
     desman dolman farman harman hetman
@@ -397,7 +397,7 @@ PL_sb_U_man_mans = enclose('|'.join (
 """.split()
 ))
 
-PL_sb_uninflected_s = [
+pl_sb_uninflected_s = [
 # PAIRS OR GROUPS SUBSUMED TO A SINGULAR...
     "breeches", "britches", "pajamas", "pyjamas", "clippers", "gallows",
     "hijinks", "headquarters", "pliers", "scissors", "testes", "herpes",
@@ -419,7 +419,7 @@ PL_sb_uninflected_s = [
     "chassis", "innings", "news", "mews", "haggis",
 ]
 
-PL_sb_uninflected_herd = enclose('|'.join((
+pl_sb_uninflected_herd = enclose('|'.join((
 # DON'T INFLECT IN CLASSICAL MODE, OTHERWISE NORMAL INFLECTION
     "wildebeest", "swine", "eland", "bison", "buffalo",
     "elk", "rhinoceros", 'zucchini',
@@ -429,7 +429,7 @@ PL_sb_uninflected_herd = enclose('|'.join((
     'snipe', 'teal', 'turbot', 'water[- ]fowl',
 )))
 
-PL_sb_uninflected = enclose('|'.join ([
+pl_sb_uninflected = enclose('|'.join ([
 # SOME FISH AND HERD ANIMALS
     ".*fish", "tuna", "salmon", "mackerel", "trout",
     "bream", "sea[- ]bass", "carp", "cod", "flounder", "whiting", 
@@ -455,13 +455,13 @@ PL_sb_uninflected = enclose('|'.join ([
 
 # SOME WORDS ENDING IN ...s (OFTEN PAIRS TAKEN AS A WHOLE)
 
-    PL_sb_uninflected_s
+    pl_sb_uninflected_s
 
 ))
 
 # SINGULAR WORDS ENDING IN ...s (ALL INFLECT WITH ...es)
 
-PL_sb_singular_s = enclose('|'.join ([
+pl_sb_singular_s = enclose('|'.join ([
     ".*ss",
     "acropolis", "aegis", "alias", "asbestos", "bathos", "bias",
     "bronchitis", "bursitis", "caddis", "cannabis",
@@ -470,47 +470,47 @@ PL_sb_singular_s = enclose('|'.join ([
     "hubris", "ibis", "lens", "mantis", "marquis", "metropolis",
     "pathos", "pelvis", "polis", "rhinoceros",
     "sassafras", "trellis", ".*us", "[A-Z].*es",
-   ] + PL_sb_C_is_ides
+   ] + pl_sb_C_is_ides
 ))
 
 
-PL_v_special_s = enclose('|'.join (
-    [PL_sb_singular_s] +
-    PL_sb_uninflected_s +
-    PL_sb_irregular_s.keys() + [
+plverb_special_s = enclose('|'.join (
+    [pl_sb_singular_s] +
+    pl_sb_uninflected_s +
+    pl_sb_irregular_s.keys() + [
     '(.*[csx])is',
     '(.*)ceps',
     '[A-Z].*s',
 ]))
 
-PL_sb_postfix_adj = {
+pl_sb_postfix_adj = {
     'general' : ['(?!major|lieutenant|brigadier|adjutant)\S+'],
     'martial' : ['court'],
 }
 
-for k in PL_sb_postfix_adj.keys():
-    PL_sb_postfix_adj[k] = enclose(
-                   enclose('|'.join(PL_sb_postfix_adj[k]))
+for k in pl_sb_postfix_adj.keys():
+    pl_sb_postfix_adj[k] = enclose(
+                   enclose('|'.join(pl_sb_postfix_adj[k]))
                    + "(?=(?:-|\\s+)%s)" % k)
 
-PL_sb_postfix_adj_stems = '(' + '|'.join(PL_sb_postfix_adj.values()) + ')(.*)'
+pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
 
 
 
-PL_prep = enclose('|'.join( """
+pl_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
     below beneath beside besides between betwixt beyond but by
     during except for from in into near of off on onto out over
     since till to under until unto upon with""".split()
 ))
 
-PL_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+PL_prep+r'|d[eua])(?:-|\s+))a(?:-|\s+)(.*)'
+pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+pl_prep+r'|d[eua])(?:-|\s+))a(?:-|\s+)(.*)'
 
 
-PL_sb_prep_compound = r'(.*?)((-|\s+)('+PL_prep+r'|d[eua])((-|\s+)(.*))?)'
+pl_sb_prep_compound = r'(.*?)((-|\s+)('+pl_prep+r'|d[eua])((-|\s+)(.*))?)'
 
 
-PL_pron_nom = {
+pl_pron_nom = {
 #   NOMINATIVE      REFLEXIVE
 
 "i" : "we",    "myself"   :   "ourselves",
@@ -530,7 +530,7 @@ PL_pron_nom = {
 "theirs" : "theirs",
 }
 
-PL_pron_acc = {
+pl_pron_acc = {
 #   ACCUSATIVE      REFLEXIVE
 
 "me"    : "us",    "myself"   :   "ourselves",
@@ -541,9 +541,9 @@ PL_pron_acc = {
 "them"  : "them",  "themself" :   "themselves",
 }
 
-PL_pron_acc_keys = enclose('|'.join(PL_pron_acc.keys()))
+pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
 
-PL_v_irregular_pres = {
+plverb_irregular_pres = {
 #   1st PERS. SING.     2ND PERS. SING.     3RD PERS. SINGULAR
 #               3RD PERS. (INDET.)  
 
@@ -553,7 +553,7 @@ PL_v_irregular_pres = {
 "do"    : "do",    "do"    : "do",    "does"   : "do",
 }
 
-PL_v_ambiguous_pres = {
+plverb_ambiguous_pres = {
 #   1st PERS. SING.     2ND PERS. SING.     3RD PERS. SINGULAR
 #               3RD PERS. (INDET.)  
 
@@ -576,43 +576,43 @@ PL_v_ambiguous_pres = {
 "view"  : "view",  "view"  : "view",  "views"   : "view",
 }
 
-PL_v_ambiguous_pres_keys = enclose('|'.join(PL_v_ambiguous_pres.keys()));
+plverb_ambiguous_pres_keys = enclose('|'.join(plverb_ambiguous_pres.keys()));
 
 
-PL_v_irregular_non_pres = (
+plverb_irregular_non_pres = (
 "did", "had", "ate", "made", "put", 
 "spent", "fought", "sank", "gave", "sought",
 "shall", "could", "ought", "should",
 )
 
-PL_v_ambiguous_non_pres = enclose('|'.join ((
+plverb_ambiguous_non_pres = enclose('|'.join ((
 "thought", "saw", "bent", "will", "might", "cut",
 )))
 
 # "..oes" -> "..oe" (the rest are "..oes" -> "o")
 
-PL_v_oes_oe = ('canoes', 'floes', 'oboes', 'roes', 'throes', 'woes')
-PL_v_oes_oe_endings_size4 = ('hoes', 'toes')
-PL_v_oes_oe_endings_size5 = ('shoes')
+plverb_oes_oe = ('canoes', 'floes', 'oboes', 'roes', 'throes', 'woes')
+plverb_oes_oe_endings_size4 = ('hoes', 'toes')
+plverb_oes_oe_endings_size5 = ('shoes')
 
 
-PL_count_zero = (
+pl_count_zero = (
 "0", "no", "zero", "nil"
 )
 
 
-PL_count_one = (
+pl_count_one = (
 "1", "a", "an", "one", "each", "every", "this", "that",
 )
 
-PL_adj_special = {
+pladj_special = {
 "a"    : "some",   "an"   :  "some",
 "this" : "these",  "that" : "those",
 }
 
-PL_adj_special_keys = enclose('|'.join(PL_adj_special.keys()))
+pladj_special_keys = enclose('|'.join(pladj_special.keys()))
 
-PL_adj_poss = {
+pladj_poss = {
 "my"    : "our",
 "your"  : "your",
 "its"   : "their",
@@ -621,7 +621,7 @@ PL_adj_poss = {
 "their" : "their",
 }
 
-PL_adj_poss_keys = enclose('|'.join(PL_adj_poss.keys()))
+pladj_poss_keys = enclose('|'.join(pladj_poss.keys()))
 
 
 # 2. INDEFINITE ARTICLES
@@ -651,7 +651,7 @@ A_explicit_an = enclose('|'.join((
     )))
 
 
-# NUMERICAL INFLECTIONS
+# numERICAL INFLECTIONS
 
 nth = {
      0: 'th',
@@ -683,7 +683,7 @@ ordinal_suff = '|'.join(ordinal.keys())
 
 
 
-# NUMBERS
+# numBERS
 
 default_args = {
     'group'   : 0,
@@ -742,44 +742,44 @@ class engine:
 
         self.classical_dict = def_classical.copy()
         self.persistent_count = None
-        self.number_args = default_args.copy() # user can overwrite these in NUM
+        self.number_args = default_args.copy() # user can overwrite these in num
         self.mill_count = 0
-        self.PL_sb_user_defined = []
-        self.PL_v_user_defined  = []
-        self.PL_adj_user_defined  = []
+        self.pl_sb_user_defined = []
+        self.plverb_user_defined  = []
+        self.pladj_user_defined  = []
         self.A_a_user_defined   = []
 
-    def def_noun(self, singular, plural):
+    def defnoun(self, singular, plural):
         self.checkpat(singular)
         self.checkpatplural(plural)
-        self.PL_sb_user_defined.extend((singular, plural))
+        self.pl_sb_user_defined.extend((singular, plural))
         return 1
 
     # TODO does the eg in the docs work? will goes to both shall and will?
     # will it work for the test of what is the plurl of what
 
-    def def_verb(self, s1, p1, s2, p2, s3, p3):
+    def defverb(self, s1, p1, s2, p2, s3, p3):
         self.checkpat(s1)
         self.checkpat(s2)
         self.checkpat(s3)
         self.checkpatplural(p1)
         self.checkpatplural(p2)
         self.checkpatplural(p3)
-        self.PL_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
+        self.plverb_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
-    def def_adj(self, singular, plural):
+    def defadj(self, singular, plural):
         self.checkpat(singular)
         self.checkpatplural(plural)
-        self.PL_adj_user_defined.extend((singular, plural))
+        self.pladj_user_defined.extend((singular, plural))
         return 1
 
-    def def_a(self, pattern):
+    def defa(self, pattern):
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, 'a'))
         return 1
 
-    def def_an(self, pattern):
+    def defan(self, pattern):
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, 'an'))
         return 1
@@ -855,52 +855,52 @@ class engine:
             self.classical_dict = all_classical.copy() if self.classical_dict['all'] else no_classical.copy()
 
 
-    def NUM(self, count=None, show=None):     # (;$count,$show)
+    def num(self, count=None, show=None):     # (;$count,$show)
         if count is not None:
             try:
                 self.persistent_count = int(count)
             except ValueError:
-                raise BadNumValueError
+                raise BadnumValueError
             if (show is None) or show:
                 return str(count)
         else:
             self.persistent_count = None;
         return ''
 
-    def NUMmo(self, matchobject):
+    def nummo(self, matchobject):
         '''
-        NUM but take a matchobject
+        num but take a matchobject
         use groups 1 and 2 in matchobject
         '''
-        return self.NUM(matchobject.group(1), matchobject.group(2))
+        return self.num(matchobject.group(1), matchobject.group(2))
 
-    def PLmo(self, matchobject):
+    def plmo(self, matchobject):
         '''
-        PL but take a matchobject
+        pl but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.PL(matchobject.group(1), matchobject.group(3))
+        return self.pl(matchobject.group(1), matchobject.group(3))
 
-    def PL_Nmo(self, matchobject):
+    def plnounmo(self, matchobject):
         '''
-        PL_N but take a matchobject
+        plnoun but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.PL_N(matchobject.group(1), matchobject.group(3))
+        return self.plnoun(matchobject.group(1), matchobject.group(3))
 
-    def PL_Vmo(self, matchobject):
+    def plverbmo(self, matchobject):
         '''
-        PL_V but take a matchobject
+        plverb but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.PL_V(matchobject.group(1), matchobject.group(3))
+        return self.plverb(matchobject.group(1), matchobject.group(3))
 
-    def PL_ADJmo(self, matchobject):
+    def pladjmo(self, matchobject):
         '''
-        PL_ADJ but take a matchobject
+        pladj but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.PL_ADJ(matchobject.group(1), matchobject.group(3))
+        return self.pladj(matchobject.group(1), matchobject.group(3))
 
     def Amo(self, matchobject):
         '''
@@ -908,36 +908,36 @@ class engine:
         use groups 1 and 3 in matchobject
         '''
         if matchobject.group(3) is None:
-            return self.A(matchobject.group(1))            
-        return self.A(matchobject.group(1), matchobject.group(3))
+            return self.a(matchobject.group(1))            
+        return self.a(matchobject.group(1), matchobject.group(3))
 
     def NOmo(self, matchobject):
         '''
         NO but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.NO(matchobject.group(1), matchobject.group(3))
+        return self.no(matchobject.group(1), matchobject.group(3))
 
-    def ORDmo(self, matchobject):
+    def ordinalmo(self, matchobject):
         '''
-        ORD but take a matchobject
+        ordinal but take a matchobject
         use group 1
         '''
-        return self.ORD(matchobject.group(1))
+        return self.ordinal(matchobject.group(1))
 
-    def NUMWORDSmo(self, matchobject):
+    def numwordsmo(self, matchobject):
         '''
-        NUMWORDS but take a matchobject
+        numwords but take a matchobject
         use group 1
         '''
-        return self.NUMWORDS(matchobject.group(1))
+        return self.numwords(matchobject.group(1))
 
-    def PART_PRESmo(self, matchobject):
+    def prespartmo(self, matchobject):
         '''
-        PART_PRES but take a matchobject
+        prespart but take a matchobject
         use group 1
         '''
-        return self.PART_PRES(matchobject.group(1))
+        return self.prespart(matchobject.group(1))
 
 
 # 0. PERFORM GENERAL INFLECTIONS IN A STRING
@@ -945,48 +945,48 @@ class engine:
     def inflect(self, text):
 
         save_persistent_count = self.persistent_count
-        sections = splitre(r"(NUM\([^)]*\))", text)
+        sections = splitre(r"(num\([^)]*\))", text)
         inflection = []
 
         for section in sections:
-            (section, count) = subn(r"NUM\(\s*?(?:([^),]*)(?:,([^)]*))?)?\)", self.NUMmo, section)
+            (section, count) = subn(r"num\(\s*?(?:([^),]*)(?:,([^)]*))?)?\)", self.nummo, section)
             if not count:
                 total = -1
                 while total:
                     (section, total) = subn(
-                        r"(?x)\bPL     \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.PLmo, section)
+                        r"(?x)\bpl     \( ([^),]*) (, ([^)]*) )? \)  ",
+                        self.plmo, section)
                     (section, count) = subn(
-                        r"(?x)\bPL_N   \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.PL_Nmo, section)
+                        r"(?x)\bplnoun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        self.plnounmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bPL_V   \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.PL_Vmo, section)
+                        r"(?x)\bplverb   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        self.plverbmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bPL_ADJ \( ([^),]*) (, ([^)]*) )? \)  ",
-                        self.PL_ADJmo, section)
+                        r"(?x)\bpladj \( ([^),]*) (, ([^)]*) )? \)  ",
+                        self.pladjmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bAN?    \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\ban?    \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.Amo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bNO    \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bno    \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.NOmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bORD        \( ([^)]*) \)            ",
-                        self.ORDmo, section)
+                        r"(?x)\bordinal        \( ([^)]*) \)            ",
+                        self.ordinalmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bNUMWORDS  \( ([^)]*) \)            ",
-                        self.NUMWORDSmo, section)
+                        r"(?x)\bnumwords  \( ([^)]*) \)            ",
+                        self.numwordsmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bPART_PRES \( ([^)]*) \)            ",
-                        self.PART_PRESmo, section)
+                        r"(?x)\bprespart \( ([^)]*) \)            ",
+                        self.prespartmo, section)
                     total += count
 
             inflection.append(section)
@@ -1018,81 +1018,81 @@ class engine:
         except AttributeError: # empty string
             return '', '', ''
 
-    def PL(self, mystr, count=None):
+    def pl(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
         if not word:
             return mystr
         plural = self.postprocess(word,
-              self._PL_special_adjective(word, count)
-              or self._PL_special_verb(word, count)
-              or self._PL_noun(word, count))
+              self._pl_special_adjective(word, count)
+              or self._pl_special_verb(word, count)
+              or self._plnounoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def PL_N(self, mystr, count=None):
+    def plnoun(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
         if not word:
             return mystr
-        plural = self.postprocess(word, self._PL_noun(word, count))
+        plural = self.postprocess(word, self._plnounoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def PL_V(self, mystr, count=None):
+    def plverb(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
         if not word:
             return mystr
-        plural = self.postprocess(word, self._PL_special_verb(word, count)
-              or self._PL_general_verb(word, count))
+        plural = self.postprocess(word, self._pl_special_verb(word, count)
+              or self._pl_general_verb(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def PL_ADJ(self, mystr, count=None):
+    def pladj(self, mystr, count=None):
         pre, word, post = self.partition_word(mystr)
         if not word:
             return mystr
-        plural = self.postprocess(word, self._PL_special_adjective(word, count)
+        plural = self.postprocess(word, self._pl_special_adjective(word, count)
               or word)
         return "%s%s%s" % (pre, plural, post)
 
-    def PL_eq(self, word1, word2):
+    def plequal(self, word1, word2):
         return (
-          self._PL_eq(word1, word2, self.PL_N) or
-          self._PL_eq(word1, word2, self.PL_V) or
-          self._PL_eq(word1, word2, self.PL_ADJ))
+          self._plequal(word1, word2, self.plnoun) or
+          self._plequal(word1, word2, self.plverb) or
+          self._plequal(word1, word2, self.pladj))
 
-    def PL_N_eq(self, word1, word2):
-          return self._PL_eq(word1, word2, self.PL_N)
+    def plnounequal(self, word1, word2):
+          return self._plequal(word1, word2, self.plnoun)
 
-    def PL_V_eq(self, word1, word2):
-          return self._PL_eq(word1, word2, self.PL_V)
+    def plverbequal(self, word1, word2):
+          return self._plequal(word1, word2, self.plverb)
 
-    def PL_ADJ_eq(self, word1, word2):
-          return self._PL_eq(word1, word2, self.PL_ADJ)
+    def pladjequal(self, word1, word2):
+          return self._plequal(word1, word2, self.pladj)
 
-    def _PL_eq(self, word1, word2, PL):
+    def _plequal(self, word1, word2, pl):
         classval = self.classical_dict.copy()
         self.classical_dict = all_classical.copy()
         if word1 == word2:
             return "eq"
-        if word1 == PL(word2):
+        if word1 == pl(word2):
             return "p:s"
-        if PL(word1) == word2:
+        if pl(word1) == word2:
             return "s:p"
         self.classical_dict = no_classical.copy()
-        if word1 == PL(word2):
+        if word1 == pl(word2):
             return "p:s"
-        if PL(word1) == word2:
+        if pl(word1) == word2:
             return "s:p"
         self.classical_dict = classval.copy()
 
-        if PL == self.PL or PL == self.PL_N:
-            if self._PL_check_plurals_N(word1, word2):
+        if pl == self.pl or pl == self.plnoun:
+            if self._pl_check_plurals_N(word1, word2):
                 return "p:p"
-            if self._PL_check_plurals_N(word2, word1):
+            if self._pl_check_plurals_N(word2, word1):
                 return "p:p"
-        if PL == self.PL or PL == self.PL_ADJ:
-            if self._PL_check_plurals_ADJ(word1, word2):
+        if pl == self.pl or pl == self.pladj:
+            if self._pl_check_plurals_ADJ(word1, word2):
                 return "p:p"
         return False
 
-    def _PL_reg_plurals(self, pair, stems, end1, end2):
+    def _pl_reg_plurals(self, pair, stems, end1, end2):
 #TODO delete commented try block
       #try:
         if search(r"(%s)(%s\|\1%s|%s\|\1%s)" %
@@ -1105,36 +1105,36 @@ class engine:
         #raise
         return False
 
-    def _PL_check_plurals_N(self, word1, word2):
+    def _pl_check_plurals_N(self, word1, word2):
         pair = "%s|%s" % (word1, word2)
-        if pair in PL_sb_irregular_s.values():
+        if pair in pl_sb_irregular_s.values():
             return True
-        if pair in PL_sb_irregular.values():
+        if pair in pl_sb_irregular.values():
             return True
 
         for (stems, end1, end2) in (
-                   (PL_sb_C_a_ata_stems,   "as","ata"),
-                   (PL_sb_C_is_ides_stems, "is","ides"),
-                   (PL_sb_C_a_ae,    "s","e"),
-                   (PL_sb_C_en_ina,  "ens","ina"),
-                   (PL_sb_C_um_a,    "ums","a"),
-                   (PL_sb_C_us_i,    "uses","i"),
-                   (PL_sb_C_on_a,    "ons","a"),
-                   (PL_sb_C_o_i_stems,     "os","i"),
-                   (PL_sb_C_ex_ices, "exes","ices"),
-                   (PL_sb_C_ix_ices, "ixes","ices"),
-                   (PL_sb_C_i,       "s","i"),
-                   (PL_sb_C_im,      "s","im"),
+                   (pl_sb_C_a_ata_stems,   "as","ata"),
+                   (pl_sb_C_is_ides_stems, "is","ides"),
+                   (pl_sb_C_a_ae,    "s","e"),
+                   (pl_sb_C_en_ina,  "ens","ina"),
+                   (pl_sb_C_um_a,    "ums","a"),
+                   (pl_sb_C_us_i,    "uses","i"),
+                   (pl_sb_C_on_a,    "ons","a"),
+                   (pl_sb_C_o_i_stems,     "os","i"),
+                   (pl_sb_C_ex_ices, "exes","ices"),
+                   (pl_sb_C_ix_ices, "ixes","ices"),
+                   (pl_sb_C_i,       "s","i"),
+                   (pl_sb_C_im,      "s","im"),
                    ('.*eau',       "s","x"),
                    ('.*ieu',       "s","x"),
                    ('.*tri',       "xes","ces"),
                    ('.{2,}[yia]n', "xes","ges"),
                                     ):
-            if self._PL_reg_plurals(pair, stems, end1, end2):
+            if self._pl_reg_plurals(pair, stems, end1, end2):
                 return True
         return False
 
-    def _PL_check_plurals_ADJ(self, word1, word2):
+    def _pl_check_plurals_ADJ(self, word1, word2):
 #VERSION: tuple in endswith requires python 2.5
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s","'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s","'")) else ''
@@ -1143,19 +1143,19 @@ class engine:
         word2b = word2[:-2] if word2.endswith("s'") else ''
 
         if word1a:
-            if word2a and ( self._PL_check_plurals_N(word1a, word2a)
-                            or self._PL_check_plurals_N(word2a, word1a) ):
+            if word2a and ( self._pl_check_plurals_N(word1a, word2a)
+                            or self._pl_check_plurals_N(word2a, word1a) ):
                 return True
-            if word2b and ( self._PL_check_plurals_N(word1a, word2b)
-                            or self._PL_check_plurals_N(word2b, word1a) ):
+            if word2b and ( self._pl_check_plurals_N(word1a, word2b)
+                            or self._pl_check_plurals_N(word2b, word1a) ):
                 return True
 
         if word1b:
-            if word2a and ( self._PL_check_plurals_N(word1b, word2a)
-                            or self._PL_check_plurals_N(word2a, word1b) ):
+            if word2a and ( self._pl_check_plurals_N(word1b, word2a)
+                            or self._pl_check_plurals_N(word2a, word1b) ):
                 return True
-            if word2b and ( self._PL_check_plurals_N(word1b, word2b)
-                            or self._PL_check_plurals_N(word2b, word1b) ):
+            if word2b and ( self._pl_check_plurals_N(word1b, word2b)
+                            or self._pl_check_plurals_N(word2b, word1b) ):
                 return True
         
         return False
@@ -1165,14 +1165,14 @@ class engine:
             count = self.persistent_count
 
         if count is not None:
-            count = 1 if ((str(count) in PL_count_one) or
+            count = 1 if ((str(count) in pl_count_one) or
               (self.classical_dict['zero'] and
-                                str(count).lower() in PL_count_zero)) else 2
+                                str(count).lower() in pl_count_zero)) else 2
         else:
             count = ''
         return count
 
-    def _PL_noun(self, word, count=None):
+    def _plnounoun(self, word, count=None):
         count = self.get_count(count)
 
 # DEFAULT TO PLURAL
@@ -1182,66 +1182,66 @@ class engine:
 
 # HANDLE USER-DEFINED NOUNS
 
-        value = self.ud_match(word, self.PL_sb_user_defined)
+        value = self.ud_match(word, self.pl_sb_user_defined)
         if value is not None:
             return value
 
 
-# HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
+# HANDLE EMPTY Wordinal, SINGULAR COUNT AND UNINFLECTED PLURALS
 
         if word == '':
             return word
 
-        if search(r"^%s$" % PL_sb_uninflected, word, IGNORECASE):
+        if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
             return word
 
         if (self.classical_dict['herd'] and
-               search(r"^%s$" % PL_sb_uninflected_herd, word, IGNORECASE)):
+               search(r"^%s$" % pl_sb_uninflected_herd, word, IGNORECASE)):
             return word
 
 # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
-        mo = search(r"^(?:%s)$" % PL_sb_postfix_adj_stems, word, IGNORECASE)
+        mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._PL_noun(mo.group(1), 2), mo.group(2))
+            return "%s%s" % (self._plnounoun(mo.group(1), 2), mo.group(2))
 
-        mo = search(r"^(?:%s)$" % PL_sb_prep_dual_compound, word, IGNORECASE)
+        mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
         if mo and mo.group(2) != '' and mo.group(3) != '':
-            return "%s%s%s" % (self._PL_noun(mo.group(1), 2),
+            return "%s%s%s" % (self._plnounoun(mo.group(1), 2),
                                mo.group(2),
-                               self._PL_noun(mo.group(3)))
+                               self._plnounoun(mo.group(3)))
 
-        mo = search(r"^(?:%s)$" % PL_sb_prep_compound, word, IGNORECASE)
+        mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
         if mo and mo.group(2) != '':
-                return "%s%s" % (self._PL_noun(mo.group(1), 2), mo.group(2))
+                return "%s%s" % (self._plnounoun(mo.group(1), 2), mo.group(2))
 
 # HANDLE PRONOUNS
 
 # TODO: BUG does not keep case: "about ME" -> "about us". bug not fixed here
-        mo = search(r"^((?:%s)\s+)(%s)$" % (PL_prep, PL_pron_acc_keys), word,
+        mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, pl_pron_acc_keys), word,
                                                          IGNORECASE)
         if mo:
-            return "%s%s" % (mo.group(1), PL_pron_acc[mo.group(2).lower()])
+            return "%s%s" % (mo.group(1), pl_pron_acc[mo.group(2).lower()])
 
         try:
-            return PL_pron_nom[word.lower()]
+            return pl_pron_nom[word.lower()]
         except KeyError:
             pass
 
         try:
-            return PL_pron_acc[word.lower()]
+            return pl_pron_acc[word.lower()]
         except KeyError:
             pass
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
-        mo = search(r"(.*)\b(%s)$" % PL_sb_irregular_keys, word, IGNORECASE)
+        mo = search(r"(.*)\b(%s)$" % pl_sb_irregular_keys, word, IGNORECASE)
         if mo:
             return "%s%s" % (mo.group(1),
-                             PL_sb_irregular.get(mo.group(2),
-                             PL_sb_irregular[mo.group(2).lower()]))
+                             pl_sb_irregular.get(mo.group(2),
+                             pl_sb_irregular[mo.group(2).lower()]))
 
-        mo = search(r"(%s)$" % PL_sb_U_man_mans, word, IGNORECASE)
+        mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
         if mo:
             return "%ss" % mo.group(1)
 
@@ -1279,13 +1279,13 @@ class engine:
         for a in (
                   (r"(.*)zoon$", "%szoa"),
                   (r"(.*[csx])is$", "%ses"),
-                  (r"(%s)ch$" % PL_sb_U_ch_chs, "%schs"),
-                  (r"(%s)ex$" % PL_sb_U_ex_ices, "%sices"),
-                  (r"(%s)ix$" % PL_sb_U_ix_ices, "%sices"),
-                  (r"(%s)um$" % PL_sb_U_um_a, "%sa"),
-                  (r"(%s)us$" % PL_sb_U_us_i, "%si"),
-                  (r"(%s)on$" % PL_sb_U_on_a, "%sa"),
-                  (r"(%s)$" % PL_sb_U_a_ae, "%se"),
+                  (r"(%s)ch$" % pl_sb_U_ch_chs, "%schs"),
+                  (r"(%s)ex$" % pl_sb_U_ex_ices, "%sices"),
+                  (r"(%s)ix$" % pl_sb_U_ix_ices, "%sices"),
+                  (r"(%s)um$" % pl_sb_U_um_a, "%sa"),
+                  (r"(%s)us$" % pl_sb_U_us_i, "%si"),
+                  (r"(%s)on$" % pl_sb_U_on_a, "%sa"),
+                  (r"(%s)$" % pl_sb_U_a_ae, "%se"),
                  ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
@@ -1301,19 +1301,19 @@ class engine:
                   (r"(.*)eau$", "%seaux"),
                   (r"(.*)ieu$", "%sieux"),
                   (r"(.{2,}[yia])nx$", "%snges"),
-                  (r"(%s)en$" % PL_sb_C_en_ina, "%sina"),
-                  (r"(%s)ex$" % PL_sb_C_ex_ices, "%sices"),
-                  (r"(%s)ix$" % PL_sb_C_ix_ices, "%sices"),
-                  (r"(%s)um$" % PL_sb_C_um_a, "%sa"),
-                  (r"(%s)us$" % PL_sb_C_us_i, "%si"),
-                  (r"(%s)$" % PL_sb_C_us_us, "%s"),
-                  (r"(%s)$" % PL_sb_C_a_ae, "%se"),
-                  (r"(%s)a$" % PL_sb_C_a_ata_stems, "%sata"),
-                  (r"(%s)is$" % PL_sb_C_is_ides_stems, "%sides"),
-                  (r"(%s)o$" % PL_sb_C_o_i_stems, "%si"),
-                  (r"(%s)on$" % PL_sb_C_on_a, "%sa"),
-                  (r"(%s)$" % PL_sb_C_im, "%sim"),
-                  (r"(%s)$" % PL_sb_C_i, "%si"),
+                  (r"(%s)en$" % pl_sb_C_en_ina, "%sina"),
+                  (r"(%s)ex$" % pl_sb_C_ex_ices, "%sices"),
+                  (r"(%s)ix$" % pl_sb_C_ix_ices, "%sices"),
+                  (r"(%s)um$" % pl_sb_C_um_a, "%sa"),
+                  (r"(%s)us$" % pl_sb_C_us_i, "%si"),
+                  (r"(%s)$" % pl_sb_C_us_us, "%s"),
+                  (r"(%s)$" % pl_sb_C_a_ae, "%se"),
+                  (r"(%s)a$" % pl_sb_C_a_ata_stems, "%sata"),
+                  (r"(%s)is$" % pl_sb_C_is_ides_stems, "%sides"),
+                  (r"(%s)o$" % pl_sb_C_o_i_stems, "%si"),
+                  (r"(%s)on$" % pl_sb_C_on_a, "%sa"),
+                  (r"(%s)$" % pl_sb_C_im, "%sim"),
+                  (r"(%s)$" % pl_sb_C_i, "%si"),
                  ):
                 mo = search(a[0], word, IGNORECASE)
                 if mo:
@@ -1321,7 +1321,7 @@ class engine:
 
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
-        mo = search(r"(%s)$" % PL_sb_singular_s, word, IGNORECASE)
+        mo = search(r"(%s)$" % pl_sb_singular_s, word, IGNORECASE)
         if mo:
             return "%ses" % mo.group(1)
 
@@ -1381,7 +1381,7 @@ class engine:
 # HANDLE ...o
 
         for a in (
-                  (r"%s$" % PL_sb_U_o_os, "s"),
+                  (r"%s$" % pl_sb_U_o_os, "s"),
                   (r"[aeiou]o$", "s"),
                   (r"o$", "es"),
                  ):
@@ -1394,10 +1394,10 @@ class engine:
         return "%ss" % word
 
 
-    def _PL_special_verb(self, word, count=None):
+    def _pl_special_verb(self, word, count=None):
         count = self.get_count(count)
 # TODO: should zero make count 2 not return here: check Perl code
-        if str(count).lower() in PL_count_zero:
+        if str(count).lower() in pl_count_zero:
             return False
 
         if count==1:
@@ -1405,7 +1405,7 @@ class engine:
 
 # HANDLE USER-DEFINED VERBS
 
-        value = self.ud_match(word, self.PL_v_user_defined)
+        value = self.ud_match(word, self.plverb_user_defined)
         if value is not None:
             return value
 
@@ -1417,19 +1417,19 @@ class engine:
         except IndexError:
             return False # word is ''
         
-        if firstword in PL_v_irregular_pres.keys():
-            return "%s%s" % (PL_v_irregular_pres[firstword],
+        if firstword in plverb_irregular_pres.keys():
+            return "%s%s" % (plverb_irregular_pres[firstword],
                                 word[len(firstword):])
 
 # HANDLE IRREGULAR FUTURE, PRETERITE AND PERFECT TENSES 
 
-        if firstword in PL_v_irregular_non_pres:
+        if firstword in plverb_irregular_non_pres:
             return word
 
 # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
-        if firstword.endswith("n't") and firstword[:-3] in PL_v_irregular_pres.keys():
-            return "%sn't%s" % (PL_v_irregular_pres[firstword[:-3]],
+        if firstword.endswith("n't") and firstword[:-3] in plverb_irregular_pres.keys():
+            return "%sn't%s" % (plverb_irregular_pres[firstword[:-3]],
                                  word[len(firstword):])
 
         if firstword.endswith("n't"):
@@ -1437,7 +1437,7 @@ class engine:
 
 # HANDLE SPECIAL CASES
 
-        mo = search(r"^(%s)$" % PL_v_special_s, word)
+        mo = search(r"^(%s)$" % plverb_special_s, word)
         if mo:
             return False
         if search(r"\s", word):
@@ -1456,9 +1456,9 @@ class engine:
         if mo:
             return "%sy" % mo.group(1)
 
-        if (lowerword in PL_v_oes_oe or
-            lowerword[-4:] in PL_v_oes_oe_endings_size4 or
-            lowerword[-5:] in PL_v_oes_oe_endings_size5):
+        if (lowerword in plverb_oes_oe or
+            lowerword[-4:] in plverb_oes_oe_endings_size4 or
+            lowerword[-5:] in plverb_oes_oe_endings_size5):
                 return word[:-1]
 
         if lowerword.endswith('oes') and len(lowerword)>3:
@@ -1473,7 +1473,7 @@ class engine:
 
         return False
 
-    def _PL_general_verb(self, word, count=None):
+    def _pl_general_verb(self, word, count=None):
         count = self.get_count(count)
 
         if count==1:
@@ -1481,15 +1481,15 @@ class engine:
 
 # HANDLE AMBIGUOUS PRESENT TENSES  (SIMPLE AND COMPOUND)
 
-        mo = search(r"^(%s)((\s.*)?)$" % PL_v_ambiguous_pres_keys,
+        mo = search(r"^(%s)((\s.*)?)$" % plverb_ambiguous_pres_keys,
                     word, IGNORECASE)
         if mo:
-            return "%s%s" % (PL_v_ambiguous_pres[mo.group(1).lower()],
+            return "%s%s" % (plverb_ambiguous_pres[mo.group(1).lower()],
                                  mo.group(2))
 
 # HANDLE AMBIGUOUS PRETERITE AND PERFECT TENSES 
 
-        mo = search(r"^(%s)((\s.*)?)$" % PL_v_ambiguous_non_pres,
+        mo = search(r"^(%s)((\s.*)?)$" % plverb_ambiguous_non_pres,
                     word, IGNORECASE)
         if mo:
             return word
@@ -1499,7 +1499,7 @@ class engine:
         return word
 
 
-    def _PL_special_adjective(self, word, count=None):
+    def _pl_special_adjective(self, word, count=None):
         count = self.get_count(count)
 
         if count==1:
@@ -1507,28 +1507,28 @@ class engine:
 
 # HANDLE USER-DEFINED ADJECTIVES
 
-        value = self.ud_match(word, self.PL_adj_user_defined)
+        value = self.ud_match(word, self.pladj_user_defined)
         if value is not None:
             return value
 
 # HANDLE KNOWN CASES
 
-        mo = search(r"^(%s)$" % PL_adj_special_keys,
+        mo = search(r"^(%s)$" % pladj_special_keys,
                     word, IGNORECASE)
         if mo:
-            return "%s" % (PL_adj_special[mo.group(1).lower()])
+            return "%s" % (pladj_special[mo.group(1).lower()])
 
 # HANDLE POSSESSIVES
 
-        mo = search(r"^(%s)$" % PL_adj_poss_keys,
+        mo = search(r"^(%s)$" % pladj_poss_keys,
                     word, IGNORECASE)
         if mo:
-            return "%s" % (PL_adj_poss[mo.group(1).lower()])
+            return "%s" % (pladj_poss[mo.group(1).lower()])
 
         mo = search(r"^(.*)'s?$",
                     word)
         if mo:
-            pl = self.PL_N(mo.group(1))
+            pl = self.plnoun(mo.group(1))
             trailing_s = "" if pl[-1] == 's' else "s" 
             return "%s'%s" % (pl, trailing_s)
 
@@ -1539,7 +1539,7 @@ class engine:
 
 # ADJECTIVES
 
-    def A(self, mystr, count=1):
+    def a(self, mystr, count=1):
         mo = search(r"\A(\s*)(?:an?\s+)?(.+?)(\s*)\Z",
                     mystr, IGNORECASE)
         if mo:
@@ -1552,7 +1552,7 @@ class engine:
             return "%s%s%s" % (pre, result, post)
         return ''
 
-    AN = A
+    an = a
 
 
     def _indef_article(self, word, count):
@@ -1631,9 +1631,9 @@ class engine:
         return "a %s" % word
 
 
-# 2. TRANSLATE ZERO-QUANTIFIED $word TO "no PL($word)"
+# 2. TRANSLATE ZERO-QUANTIFIED $word TO "no pl($word)"
 
-    def NO(self, mystr, count=None):
+    def no(self, mystr, count=None):
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
@@ -1644,16 +1644,16 @@ class engine:
         word = mo.group(2)
         post = mo.group(3)
 
-        if str(count).lower() in PL_count_zero:
-            return "%sno %s%s" % (pre, self.PL(word, 0), post)
+        if str(count).lower() in pl_count_zero:
+            return "%sno %s%s" % (pre, self.pl(word, 0), post)
         else:
-            return "%s%s %s%s" % (pre, count, self.PL(word, count), post)
+            return "%s%s %s%s" % (pre, count, self.pl(word, count), post)
 
 
 # PARTICIPLES
 
-    def PART_PRES(self, word):
-        plv = self.PL_V(word, 2)
+    def prespart(self, word):
+        plv = self.plverb(word, 2)
 
         for pat, repl in (
                           (r"ie$", r"y"),
@@ -1672,9 +1672,9 @@ class engine:
             
 
 
-# NUMERICAL INFLECTIONS
+# numERICAL INFLECTIONS
 
-    def ORD(self, num):
+    def ordinal(self, num):
         if match(r"\d", num):
             n = int(num)
             try:
@@ -1693,8 +1693,8 @@ class engine:
     
     def millfn(self, ind=0):
         if ind > len(mill)-1:
-            print3("Number out of range")
-            raise NumOutOfRangeError
+            print3("number out of range")
+            raise numOutOfRangeError
     
         return mill[ind] if ind < len(mill) else ' ???illion' #TODO: never returns ???illion as this is caught above
     
@@ -1830,7 +1830,7 @@ class engine:
         '''
         return ' '
 
-    def NUMWORDS(self, num, wantlist=False, **kwds):
+    def numwords(self, num, wantlist=False, **kwds):
         self.number_args.update(kwds) 
         group = int(self.number_args['group'])
         num = '%s' % num
@@ -1945,7 +1945,7 @@ class engine:
 
 # Join words with commas and a trailing 'and' (when appropriate)...
 
-    def WORDLIST(self, words, sep=None, sep_spaced=True,
+    def wordlist(self, words, sep=None, sep_spaced=True,
                  final_sep=None,
                  conj='and', conj_spaced=True):
         '''
