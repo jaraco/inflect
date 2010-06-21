@@ -10,7 +10,7 @@ inflect.py - Correctly generate plurals, ordinals, indefinite articles; convert 
 VERSION
 =======
 
-This document describes version 0.1.3 of inflect.py
+This document describes version 0.1.4 of inflect.py
 
 INSTALLATION
 ============
