@@ -1060,7 +1060,7 @@ class engine:
         plural = self.postprocess(word,
               self._pl_special_adjective(word, count)
               or self._pl_special_verb(word, count)
-              or self._plnounoun(word, count))
+              or self._plnoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
     def plnoun(self, text, count=None):
@@ -1077,7 +1077,7 @@ class engine:
         pre, word, post = self.partition_word(text)
         if not word:
             return text
-        plural = self.postprocess(word, self._plnounoun(word, count))
+        plural = self.postprocess(word, self._plnoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
     def plverb(self, text, count=None):
@@ -1278,7 +1278,7 @@ class engine:
             count = ''
         return count
 
-    def _plnounoun(self, word, count=None):
+    def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
 # DEFAULT TO PLURAL
@@ -1311,17 +1311,17 @@ class engine:
 
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._plnounoun(mo.group(1), 2), mo.group(2))
+            return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
 
         mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
         if mo and mo.group(2) != '' and mo.group(3) != '':
-            return "%s%s%s" % (self._plnounoun(mo.group(1), 2),
+            return "%s%s%s" % (self._plnoun(mo.group(1), 2),
                                mo.group(2),
-                               self._plnounoun(mo.group(3)))
+                               self._plnoun(mo.group(3)))
 
         mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
         if mo and mo.group(2) != '':
-                return "%s%s" % (self._plnounoun(mo.group(1), 2), mo.group(2))
+                return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
 
 # HANDLE PRONOUNS
 

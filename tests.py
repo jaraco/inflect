@@ -382,7 +382,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.get_count(), 2)
 
 
-    def test__plnounoun(self):
+    def test__plnoun(self):
         p = inflect.engine()
         for sing, plur in (
                 ('', ''),
@@ -448,25 +448,25 @@ class test(unittest.TestCase):
                 ('zoo', 'zoos'),
                 ('tomato', 'tomatoes'),
                 ):
-            self.assertEqual(p._plnounoun(sing), plur)
+            self.assertEqual(p._plnoun(sing), plur)
 
         p.num(1)
-        self.assertEqual(p._plnounoun('cat'), 'cat')
+        self.assertEqual(p._plnoun('cat'), 'cat')
         p.num(3)
 
 
         p.classical('herd')
-        self.assertEqual(p._plnounoun('swine'), 'swine')
+        self.assertEqual(p._plnoun('swine'), 'swine')
         p.classical(herd=0)
-        self.assertEqual(p._plnounoun('swine'), 'swines')
+        self.assertEqual(p._plnoun('swine'), 'swines')
         p.classical(persons=1)
-        self.assertEqual(p._plnounoun('chairperson'), 'chairpersons')
+        self.assertEqual(p._plnoun('chairperson'), 'chairpersons')
         p.classical(persons=0)
-        self.assertEqual(p._plnounoun('chairperson'), 'chairpeople')
+        self.assertEqual(p._plnoun('chairperson'), 'chairpeople')
         p.classical(ancient=1)
-        self.assertEqual(p._plnounoun('formula'), 'formulae')
+        self.assertEqual(p._plnoun('formula'), 'formulae')
         p.classical(ancient=0)
-        self.assertEqual(p._plnounoun('formula'), 'formulas')
+        self.assertEqual(p._plnoun('formula'), 'formulas')
 
 
         p.classical()
@@ -490,7 +490,7 @@ class test(unittest.TestCase):
                 ('goy', 'goyim'),
                 ('afrit', 'afriti'),
                 ):
-            self.assertEqual(p._plnounoun(sing), plur)
+            self.assertEqual(p._plnoun(sing), plur)
 
         #p.classical(0)
         #p.classical('names')
