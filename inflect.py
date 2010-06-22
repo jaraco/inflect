@@ -419,15 +419,15 @@ pl_sb_uninflected_s = [
     "chassis", "innings", "news", "mews", "haggis",
 ]
 
-pl_sb_uninflected_herd = enclose('|'.join((
+pl_sb_uninflected_herd = (
 # DON'T INFLECT IN CLASSICAL MODE, OTHERWISE NORMAL INFLECTION
     "wildebeest", "swine", "eland", "bison", "buffalo",
     "elk", "rhinoceros", 'zucchini',
-    'caribou', 'dace', 'grouse', 'guinea[- ]fowl',
+    'caribou', 'dace', 'grouse', 'guinea fowl', 'guinea-fowl',
     'haddock', 'hake', 'halibut', 'herring', 'mackerel',
     'pickerel', 'pike', 'roe', 'seed', 'shad',
-    'snipe', 'teal', 'turbot', 'water[- ]fowl',
-)))
+    'snipe', 'teal', 'turbot', 'water fowl', 'water-fowl',
+)
 
 pl_sb_uninflected = enclose('|'.join ([
 # SOME FISH AND HERD ANIMALS
@@ -1298,11 +1298,13 @@ class engine:
         if word == '':
             return word
 
+        lowerword = word.lower()
+
         if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
             return word
 
         if (self.classical_dict['herd'] and
-               search(r"^%s$" % pl_sb_uninflected_herd, word, IGNORECASE)):
+               lowerword in pl_sb_uninflected_herd):
             return word
 
 # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
