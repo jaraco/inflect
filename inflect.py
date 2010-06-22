@@ -685,16 +685,6 @@ ordinal_suff = '|'.join(ordinal.keys())
 
 # NUMBERS
 
-default_args = {
-    'group'   : 0,
-    'comma'   : ',',
-    'andword'   : 'and',
-    'zero'    : 'zero',
-    'one'     : 'one',
-    'decimal' : 'point',
-}
-
-
 unit = ['', 'one', 'two', 'three', 'four', 'five',
         'six', 'seven', 'eight', 'nine']
 teen = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
