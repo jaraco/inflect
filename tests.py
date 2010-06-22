@@ -686,6 +686,7 @@ class test(unittest.TestCase):
     def test_hundfn(self):
         p = inflect.engine()
         hundfn = p.hundfn
+        p.number_args = dict(andword='and')
         self.assertEqual(hundfn(4,3,1,2), 'four hundred and thirty-one million, ')
         self.assertEqual(hundfn(4,0,0,2), 'four hundred million, ')
         self.assertEqual(hundfn(4,0,5,2), 'four hundred and five million, ')
@@ -697,6 +698,7 @@ class test(unittest.TestCase):
         enword = p.enword
         self.assertEqual(enword('5',1),
                          'five, ')
+        p.number_args = dict(zero='zero', one='one', andword='and')
         self.assertEqual(enword('0',1),
                          ' zero, ')
         self.assertEqual(enword('1',1),
@@ -791,7 +793,7 @@ class test(unittest.TestCase):
         self.assertEqual(numwords('555_1202', group=1, zero='oh'),
                          'five, five, five, one, two, oh, two')
         self.assertEqual(numwords('555_1202', group=1, one='unity'),
-                         'five, five, five, unity, two, oh, two')
+                         'five, five, five, unity, two, zero, two')
         self.assertEqual(numwords('123.456', group=1, decimal='mark', one='one'),
                          'one, two, three, mark, four, five, six')
         self.assertEqual(numwords('12345', group=3),

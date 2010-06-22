@@ -742,7 +742,6 @@ class engine:
 
         self.classical_dict = def_classical.copy()
         self.persistent_count = None
-        self.number_args = default_args.copy() # user can overwrite these in num
         self.mill_count = 0
         self.pl_sb_user_defined = []
         self.pl_v_user_defined  = []
@@ -1826,16 +1825,21 @@ class engine:
         '''
         return ' '
 
-    def numwords(self, num, wantlist=False, **kwds):
-        self.number_args.update(kwds) 
-        group = int(self.number_args['group'])
+    def numwords(self, num, wantlist=False,
+                 group=0, comma=',', andword='and',
+                 zero='zero', one='one', decimal='point',
+                 threshold=None):
+        '''
+        parameters not remembered from last call. Departure from Perl.
+        '''
+        self.number_args = dict(andword=andword, zero=zero, one=one)
         num = '%s' % num
     
         # Handle "stylistic" conversions (up to a given threshold)...
-        if ('threshold' in self.number_args and
-             float(num) > self.number_args['threshold']):
+        if (threshold is not None and
+             float(num) > threshold):
             spnum = num.split('.',1)
-            while (self.number_args['comma']):
+            while (comma):
                     (spnum[0], n) = subn(r"(\d)(\d{3}(?:,|\Z))",r"\1,\2", spnum[0])
                     if n==0:
                         break
@@ -1853,13 +1857,11 @@ class engine:
             sign = "minus"
         else:
             sign = ""
-        comma = self.number_args['comma']
-        andword = self.number_args['andword'] #can't use 'and' keyword in **kwds
     
         myord =  (num[-2:] in ('st', 'nd', 'rd', 'th'))
         if myord:
             num = num[:-2]
-        if self.number_args['decimal']:
+        if decimal:
             if group != 0:
                 chunks = num.split('.')
             else:
@@ -1914,7 +1916,7 @@ class engine:
                 numchunks[-1] += 'th'
 
         for chunk in chunks[1:]:
-            numchunks.append(self.number_args['decimal'])
+            numchunks.append(decimal)
             numchunks.extend(chunk.split("%s " % comma))
 
         #wantlist: Perl list context. can explictly specify in Python
@@ -1928,9 +1930,9 @@ class engine:
         else:
             signout = "%s " % sign if sign else ''
             num = "%s%s" % (signout, numchunks.pop(0))
-            first = not num.endswith(self.number_args['decimal'])
+            first = not num.endswith(decimal)
             for nc in numchunks:
-                if nc == self.number_args['decimal']:
+                if nc == decimal:
                     num += " %s" % nc
                     first = 0
                 elif first:
