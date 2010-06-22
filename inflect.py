@@ -749,12 +749,22 @@ class engine:
         self.A_a_user_defined   = []
 
     def defnoun(self, singular, plural):
+        '''
+        Set the noun plural of singular to plural.
+
+        '''
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_sb_user_defined.extend((singular, plural))
         return 1
 
     def defverb(self, s1, p1, s2, p2, s3, p3):
+        '''
+        Set the verb plurals for s1, s2 and s3 to p1, p2 and p3 respectively.
+
+        Where 1, 2 and 3 represent the 1st, 2nd and 3rd person forms of the verb.
+
+        '''
         self.checkpat(s1)
         self.checkpat(s2)
         self.checkpat(s3)
@@ -765,17 +775,29 @@ class engine:
         return 1
 
     def defadj(self, singular, plural):
+        '''
+        Set the adjective plural of singular to plural.
+
+        '''
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
     def defa(self, pattern):
+        '''
+        Define the indefinate article as 'a' for words matching pattern.
+
+        '''
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, 'a'))
         return 1
 
     def defan(self, pattern):
+        '''
+        Define the indefinate article as 'an' for words matching pattern.
+
+        '''
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, 'an'))
         return 1
@@ -820,10 +842,10 @@ class engine:
 
     def classical(self, *args, **kwargs):
         """
-        Set the classical mode by changing classical_dict
+        Change the classical mode.
 
-        no args: all_classical
-        single args: all_classical if arg else no_classical
+        no args: all classical
+        single args: all classical if arg else no classical
         if 'all' in args or all=<true value> then all_classical
         if all=<false value> then no_classical
         else set each that appears in args as long as it is a valid key
@@ -852,6 +874,14 @@ class engine:
 
 
     def num(self, count=None, show=None):     # (;$count,$show)
+        '''
+        Set the number to be used in other method calls.
+
+        Returns count.
+
+        Set show to False to return '' instead.
+
+        '''
         if count is not None:
             try:
                 self.persistent_count = int(count)
@@ -939,7 +969,16 @@ class engine:
 # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
     def inflect(self, text):
+        '''
+        Perform inflections in a string.
 
+        e.g. inflect('The plural of cat is pl(cat)') returns
+        'The plural of cat is cats'
+
+        can use pl, plnoun, plverb, pladj, a, an, no, ordinal,
+        numwords and prespart
+
+        '''
         save_persistent_count = self.persistent_count
         sections = splitre(r"(num\([^)]*\))", text)
         inflection = []
@@ -1007,60 +1046,147 @@ class engine:
                              inflected[1:])
         return inflected
 
-    def partition_word(self, mystr):
-        mo = search(r'\A(\s*)(.+?)(\s*)\Z', mystr)
+    def partition_word(self, text):
+        mo = search(r'\A(\s*)(.+?)(\s*)\Z', text)
         try:
             return mo.group(1), mo.group(2), mo.group(3)
         except AttributeError: # empty string
             return '', '', ''
 
-    def pl(self, mystr, count=None):
-        pre, word, post = self.partition_word(mystr)
+    def pl(self, text, count=None):
+        '''
+        Return the plural of text.
+
+        If count supplied, then return text if count is one of:
+            1, a, an, one, each, every, this, that
+        otherwise return the plural.
+
+        Whitespace at the start and end is preserved.
+        
+        '''
+        pre, word, post = self.partition_word(text)
         if not word:
-            return mystr
+            return text
         plural = self.postprocess(word,
               self._pl_special_adjective(word, count)
               or self._pl_special_verb(word, count)
               or self._plnounoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def plnoun(self, mystr, count=None):
-        pre, word, post = self.partition_word(mystr)
+    def plnoun(self, text, count=None):
+        '''
+        Return the plural of text, where text is a noun.
+
+        If count supplied, then return text if count is one of:
+            1, a, an, one, each, every, this, that
+        otherwise return the plural.
+
+        Whitespace at the start and end is preserved.
+        
+        '''
+        pre, word, post = self.partition_word(text)
         if not word:
-            return mystr
+            return text
         plural = self.postprocess(word, self._plnounoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def plverb(self, mystr, count=None):
-        pre, word, post = self.partition_word(mystr)
+    def plverb(self, text, count=None):
+        '''
+        Return the plural of text, where text is a verb.
+
+        If count supplied, then return text if count is one of:
+            1, a, an, one, each, every, this, that
+        otherwise return the plural.
+
+        Whitespace at the start and end is preserved.
+        
+        '''
+        pre, word, post = self.partition_word(text)
         if not word:
-            return mystr
+            return text
         plural = self.postprocess(word, self._pl_special_verb(word, count)
               or self._pl_general_verb(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def pladj(self, mystr, count=None):
-        pre, word, post = self.partition_word(mystr)
+    def pladj(self, text, count=None):
+        '''
+        Return the plural of text, where text is an adjective.
+
+        If count supplied, then return text if count is one of:
+            1, a, an, one, each, every, this, that
+        otherwise return the plural.
+
+        Whitespace at the start and end is preserved.
+        
+        '''
+        pre, word, post = self.partition_word(text)
         if not word:
-            return mystr
+            return text
         plural = self.postprocess(word, self._pl_special_adjective(word, count)
               or word)
         return "%s%s%s" % (pre, plural, post)
 
     def plequal(self, word1, word2):
+        '''
+        compare word1 and word2 for equality regardless of plurality
+
+        return values:
+        eq - the strings are equal
+        p:s - word1 is the plural of word2
+        s:p - word2 is the plural of word1
+        p:p - word1 and word2 are two different plural forms of the one word
+        False - otherwise
+
+        '''
         return (
           self._plequal(word1, word2, self.plnoun) or
           self._plequal(word1, word2, self.plverb) or
           self._plequal(word1, word2, self.pladj))
 
     def plnounequal(self, word1, word2):
-          return self._plequal(word1, word2, self.plnoun)
+        '''
+        compare word1 and word2 for equality regardless of plurality
+        word1 and word2 are to be treated as nouns
+
+        return values:
+        eq - the strings are equal
+        p:s - word1 is the plural of word2
+        s:p - word2 is the plural of word1
+        p:p - word1 and word2 are two different plural forms of the one word
+        False - otherwise
+
+        '''
+        return self._plequal(word1, word2, self.plnoun)
 
     def plverbequal(self, word1, word2):
-          return self._plequal(word1, word2, self.plverb)
+        '''
+        compare word1 and word2 for equality regardless of plurality
+        word1 and word2 are to be treated as verbs
+
+        return values:
+        eq - the strings are equal
+        p:s - word1 is the plural of word2
+        s:p - word2 is the plural of word1
+        p:p - word1 and word2 are two different plural forms of the one word
+        False - otherwise
+
+        '''
+        return self._plequal(word1, word2, self.plverb)
 
     def pladjequal(self, word1, word2):
-          return self._plequal(word1, word2, self.pladj)
+        '''
+        compare word1 and word2 for equality regardless of plurality
+        word1 and word2 are to be treated as adjectives
+
+        return values:
+        eq - the strings are equal
+        p:s - word1 is the plural of word2
+        s:p - word2 is the plural of word1
+        p:p - word1 and word2 are two different plural forms of the one word
+        False - otherwise
+
+        '''
+        return self._plequal(word1, word2, self.pladj)
 
     def _plequal(self, word1, word2, pl):
         classval = self.classical_dict.copy()
@@ -1530,13 +1656,24 @@ class engine:
 
 # ADJECTIVES
 
-    def a(self, mystr, count=1):
+    def a(self, text, count=1):
+        '''
+        Return the appropriate indefinite article followed by text.
+
+        The indefinite article is either 'a' or 'an'.
+
+        If count is not one, then return count followed by text
+        instead of 'a' or 'an'.
+
+        Whitespace at the start and end is preserved.
+
+        '''
         mo = search(r"\A(\s*)(?:an?\s+)?(.+?)(\s*)\Z",
-                    mystr, IGNORECASE)
+                    text, IGNORECASE)
         if mo:
             word = mo.group(2)
             if not word:
-                return mystr
+                return text
             pre = mo.group(1)
             post = mo.group(3)
             result = self._indef_article(word, count)
@@ -1624,13 +1761,28 @@ class engine:
 
 # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no pl($word)"
 
-    def no(self, mystr, count=None):
+    def no(self, text, count=None):
+        '''
+        If count is 0, no, zero or nil, return 'no' followed by the plural
+        of text.
+
+        If count is one of:
+            1, a, an, one, each, every, this, that
+        return count followed by text.
+
+        Otherwise return count follow by the plural of text.
+
+        In the return value count is always followed by a space.
+
+        Whitespace at the start and end is preserved.
+        
+        '''
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
         if count is None:
             count = 0
-        mo = search(r"\A(\s*)(.+?)(\s*)\Z", mystr)
+        mo = search(r"\A(\s*)(.+?)(\s*)\Z", text)
         pre = mo.group(1)
         word = mo.group(2)
         post = mo.group(3)
@@ -1644,6 +1796,12 @@ class engine:
 # PARTICIPLES
 
     def prespart(self, word):
+        '''
+        Return the present participle for word.
+
+        word is the 3rd person singular verb.
+        
+        '''
         plv = self.plverb(word, 2)
 
         for pat, repl in (
@@ -1666,6 +1824,15 @@ class engine:
 # NUMERICAL INFLECTIONS
 
     def ordinal(self, num):
+        '''
+        Return the ordinal of num.
+
+        num can be an integer or text
+
+        e.g. ordinal(1) returns '1st'
+        ordinal('one') returns 'first'
+
+        '''
         if match(r"\d", num):
             n = int(num)
             try:
@@ -1830,7 +1997,18 @@ class engine:
                  zero='zero', one='one', decimal='point',
                  threshold=None):
         '''
-        parameters not remembered from last call. Departure from Perl.
+        Return a number in words.
+
+        group = 1, 2 or 3 to group numbers before turning into words
+        comma: define comma
+        andword: word for 'and'. Can be set to ''.
+            e.g. "one hundred and one" vs "one hundred one"
+        zero: word for '0'
+        one: word for '1'
+        decimal: word for decimal point
+        threshold: numbers above threshold not turned into words
+        
+        parameters not remembered from last call. Departure from Perl version.
         '''
         self.number_args = dict(andword=andword, zero=zero, one=one)
         num = '%s' % num
@@ -1947,6 +2125,10 @@ class engine:
                  final_sep=None,
                  conj='and', conj_spaced=True):
         '''
+        Join a words into a list.
+
+        e.g. wordlist(['ant', 'bee', 'fly']) returns 'ant, bee, and fly'
+        
         options:
         conj: replacement for 'and'
         sep: separator. default ',', unless ',' is in the list then ';'

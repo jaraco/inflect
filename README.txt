@@ -29,7 +29,7 @@ SYNOPSIS
 
  # pl plnoun plverb pladj no num
  # plequal plnounequal plverbequal pladjequal
- # A AN
+ # a an
  # prespart
  # ordinal numwords
  # wordlist
@@ -128,13 +128,13 @@ SYNOPSIS
 
  # JOIN WORDS INTO A LIST:
 
-    list = wordlist(("apple", "banana", "carrot"))
+    mylist = wordlist(("apple", "banana", "carrot"))
         # "apple, banana, and carrot"
 
-    list = wordlist(("apple", "banana"))
+    mylist = wordlist(("apple", "banana"))
         # "apple and banana"
 
-    list = wordlist(("apple", "banana", "carrot"), final_sep="")
+    mylist = wordlist(("apple", "banana", "carrot"), final_sep="")
         # "apple, banana and carrot"
 
 

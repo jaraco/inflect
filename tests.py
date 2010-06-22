@@ -267,6 +267,22 @@ class test(unittest.TestCase):
                             ):
             self.assertEqual(fn(sing), plur)
 
+        for num, plur in (
+                (1, 'cow'),
+                (2, 'cows'),
+                ('one', 'cow'),
+                ('each', 'cow'),
+                ('two', 'cows'),
+                (0, 'cows'),
+                ('zero', 'cows'),
+                    ):
+            self.assertEqual(p.pl('cow', num), plur)
+
+        p.classical('zero')
+        self.assertEqual(p.pl('cow', 0), 'cow')
+        self.assertEqual(p.pl('cow', 'zero'), 'cow')
+        
+
     def test_plequal(self):
         p = inflect.engine()
         for fn, sing, plur, res in (
@@ -598,6 +614,8 @@ class test(unittest.TestCase):
         self.assertEqual(p.no('cat'), 'no cats')
         self.assertEqual(p.no('cat', count=3), '3 cats')
         self.assertEqual(p.no('cat', count='three'), 'three cats')
+        self.assertEqual(p.no('cat', count=1), '1 cat')
+        self.assertEqual(p.no('cat', count='one'), 'one cat')
         self.assertEqual(p.no('mouse'), 'no mice')
         p.num(3)
         self.assertEqual(p.no('cat'), '3 cats')
