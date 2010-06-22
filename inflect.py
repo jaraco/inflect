@@ -1386,9 +1386,11 @@ class engine:
 
     def _pl_special_verb(self, word, count=None):
         count = self.get_count(count)
-# TODO: should zero make count 2 not return here: check Perl code
         if str(count).lower() in pl_count_zero:
-            return False
+            if self.classical_dict['zero']:
+                return False
+            else:
+                count = 2
 
         if count==1:
             return word
