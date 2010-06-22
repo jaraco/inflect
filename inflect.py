@@ -1920,7 +1920,7 @@ class engine:
         #wantlist: Perl list context. can explictly specify in Python
         if wantlist:
             if sign:
-                return [sign].append(numchunks)
+                numchunks = [sign] + numchunks
             return numchunks
         elif group:
             signout = "%s " % sign if sign else ''

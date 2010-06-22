@@ -711,7 +711,12 @@ class test(unittest.TestCase):
         self.assertEqual(enword('34768',2),
                          'thirty-four, seventy-six, eight, ')
         self.assertEqual(enword('1',2),
+                         'one, ')
+        p.number_args['one'] = 'single'
+        self.assertEqual(enword('1',2),
                          'one, ') #TODO: doesn't use default word for 'one' here
+
+        p.number_args['one'] = 'one'
 
         self.assertEqual(enword('134',3),
                          ' one thirty-four, ')
@@ -778,7 +783,7 @@ class test(unittest.TestCase):
                           'two hundred and thirty-four thousand',
                           'five hundred and sixty-seven'])
         self.assertEqual(numwords('+10', wantlist=True),
-                         None) #TODO: fix this!
+                         ['plus', 'ten'])
         self.assertEqual(numwords('1234', andword=''),
                          'one thousand, two hundred thirty-four')
         self.assertEqual(numwords('1234', andword='plus'),
