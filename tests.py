@@ -325,16 +325,16 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_check_plurals_N('stigmata', 'stigmas'), True)
         self.assertEqual(p._pl_check_plurals_N('phalanxes', 'phalanges'), True)
 
-    def test__pl_check_plurals_ADJ(self):
+    def test__pl_check_plurals_adj(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_check_plurals_ADJ("indexes's", "indices's"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("indices's", "indexes's"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("indexes'", "indices's"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("indexes's", "indices'"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("indexes's", "indexes's"), False)
-        self.assertEqual(p._pl_check_plurals_ADJ("dogmas's", "dogmata's"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("dogmas'", "dogmata'"), True)
-        self.assertEqual(p._pl_check_plurals_ADJ("indexes'", "indices'"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indices's"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indices's", "indexes's"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indexes'", "indices's"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indices'"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indexes's"), False)
+        self.assertEqual(p._pl_check_plurals_adj("dogmas's", "dogmata's"), True)
+        self.assertEqual(p._pl_check_plurals_adj("dogmas'", "dogmata'"), True)
+        self.assertEqual(p._pl_check_plurals_adj("indexes'", "indices'"), True)
 
     def test_count(self):
         p = inflect.engine()
