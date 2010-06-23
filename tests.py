@@ -250,6 +250,7 @@ class test(unittest.TestCase):
                             (p.pl, 'knifes', 'knife'),
                             (p.pl, ' cat  ', ' cats  '),
                             (p.pl, 'court martial', 'courts martial'),
+                            (p.pl, 'a', 'some'),
                             (p.plnoun, '',''),
                             (p.plnoun, 'cow','cows'),
                             (p.plnoun, 'thought','thoughts'),
@@ -294,6 +295,9 @@ class test(unittest.TestCase):
                     (p.plequal, 'indices','indexes','p:p'),
                     (p.plequal, 'indexes','indices','p:p'),
                     (p.plequal, 'indices','indices','eq'),
+                    (p.plequal, 'opuses','opera','p:p'),
+                    (p.plequal, 'opera','opuses','p:p'),
+                    (p.plequal, 'brothers','brethren','p:p'),                  
                     (p.plequal, 'cats','cats','eq'),
                     (p.plequal, 'base', 'basis', False),
                     (p.plequal, 'syrinx', 'syringe', False),
@@ -303,6 +307,9 @@ class test(unittest.TestCase):
                     (p.plequal, 'time', 'Times', False),
                     (p.plequal, 'time'.lower(), 'Times'.lower(), 's:p'),
                     (p.plequal, 'courts martial', 'court martial', 'p:s'),
+                    (p.plequal, 'my','my','eq'),
+                    (p.plequal, 'my','our','s:p'),
+                    (p.plequal, 'our','our','eq'),
                     (p.plnounequal, 'index','index','eq'),
                     (p.plnounequal, 'index','indexes','s:p'),
                     (p.plnounequal, 'index','indices','s:p'),
@@ -317,9 +324,21 @@ class test(unittest.TestCase):
                     (p.pladjequal, 'my','my','eq'),
                     (p.pladjequal, 'my','our','s:p'),
                     (p.pladjequal, 'our','our','eq'),
+                    (p.plequal, "dresses's","dresses'", 'p:s'), # TODO: should return p:p 
+                    (p.pladjequal, "dresses's","dresses'", False), # TODO: should return p:p
+
+                    # TODO: future: support different singulars one day.
+                    #(p.plequal, "dress's","dress'",'s:s'),
+                    #(p.pladjequal, "dress's","dress'",'s:s'),
+                    #(p.plequal, "Jess's","Jess'",'s:s'),
+                    #(p.pladjequal, "Jess's","Jess'",'s:s'),
                         ):
             self.assertEqual(fn(sing, plur), res)
 
+        #TODO: pass upstream. multiple adjective plurals not supported
+        #self.assertEqual(p.plequal('your', 'our'), False)
+        #p.defadj('my', 'our|your') # what's ours is yours
+        #self.assertEqual(p.plequal('your', 'our'), 'p:p')
 
     def test__pl_reg_plurals(self):
         p = inflect.engine()
