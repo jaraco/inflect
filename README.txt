@@ -10,10 +10,14 @@ inflect.py - Correctly generate plurals, ordinals, indefinite articles; convert 
 VERSION
 =======
 
-This document describes version 0.1.4 of inflect.py
+This document describes version 0.1.5 of inflect.py
 
 INSTALLATION
 ============
+
+``pip install inflect``
+
+or
 
 ``easy_install inflect``
 
