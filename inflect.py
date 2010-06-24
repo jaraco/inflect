@@ -1851,12 +1851,7 @@ class engine:
         if ind > len(mill)-1:
             print3("number out of range")
             raise NumOutOfRangeError
-        
-        if ind < len(mill):
-            return mill[ind]
-        else:
-            return ' ???illion' #TODO: never returns ???illion as this is caught above
-        #return mill[ind] if ind < len(mill) else ' ???illion' #TODO: never returns ???illion as this is caught above
+        return mill[ind]
     
     
     def unitfn(self, units, mindex=0):
