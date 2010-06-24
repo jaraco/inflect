@@ -1248,6 +1248,9 @@ class engine:
         #word1b = word1[:-2] if word1.endswith("s'") else ''
         #word2b = word2[:-2] if word2.endswith("s'") else ''
 
+        #TODO: dresses', dresses's -> dresses, dresses when chop off letters
+        # then they return False because they are the same. Need to fix this.
+
         if word1a:
             if word2a and ( self._pl_check_plurals_N(word1a, word2a)
                             or self._pl_check_plurals_N(word2a, word1a) ):
