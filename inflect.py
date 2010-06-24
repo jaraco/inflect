@@ -2101,7 +2101,10 @@ class engine:
         else:
             signout = "%s " % sign if sign else ''
             num = "%s%s" % (signout, numchunks.pop(0))
-            first = not num.endswith(decimal)
+            if decimal is None:
+                first = True
+            else:
+                first = not num.endswith(decimal)
             for nc in numchunks:
                 if nc == decimal:
                     num += " %s" % nc

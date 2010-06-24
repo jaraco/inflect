@@ -808,6 +808,9 @@ class test(unittest.TestCase):
             ('10000000', 'ten million'),
             ('+10', 'plus ten'),
             ('-10', 'minus ten'),
+            ('10.','ten point zero'),
+            ('1.23','one point twenty-three'), #TODO: should be one point two three
+            ('.10','point ten'), #TODO: should be point one zero
             ):
             self.assertEqual(numwords(n), word)
             
@@ -874,7 +877,10 @@ class test(unittest.TestCase):
                          '1,234')
         self.assertEqual(numwords('1234.5678', threshold=10),
                          '1,234.5678')
-
+        self.assertEqual(numwords('1', decimal=None),
+                         'one')
+        self.assertEqual(numwords('1234.5678', decimal=None),
+                         'twelve million, three hundred and forty-five thousand, six hundred and seventy-eight')
 
 
     def test_wordlist(self):
