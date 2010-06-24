@@ -1435,17 +1435,21 @@ class engine:
         if mo:
             return "%ses" % mo.group(1)
 
-# TODO: not sure if this makes a difference. Wouldn't special words
+# Wouldn't special words
 # ending with 's' always have been caught, regardless of them starting
 # with a capital letter (i.e. being names)
 # It makes sense below to do this for words ending in 'y' so that
 # Sally -> Sallys. But not sure it makes sense here. Where is the case
 # of a word ending in s that is caught here and would otherwise have been
 # caught below?
-        if (self.classical_dict['names']):
-            mo = search(r"([A-Z].*s)$", word)
-            if mo:
-                return "%ses" % mo.group(1)
+#
+# removing it as I can't find a case that executes it
+#
+#
+#        if (self.classical_dict['names']):
+#            mo = search(r"([A-Z].*s)$", word)
+#            if mo:
+#                return "%ses" % mo.group(1)
 
         mo = search(r"^(.*[^z])(z)$", word, IGNORECASE)
         if mo:

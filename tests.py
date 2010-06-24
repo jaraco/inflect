@@ -282,7 +282,7 @@ class test(unittest.TestCase):
         p.classical('zero')
         self.assertEqual(p.pl('cow', 0), 'cow')
         self.assertEqual(p.pl('cow', 'zero'), 'cow')
-        
+
 
     def test_plequal(self):
         p = inflect.engine()
