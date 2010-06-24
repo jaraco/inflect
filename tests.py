@@ -268,20 +268,26 @@ class test(unittest.TestCase):
                             ):
             self.assertEqual(fn(sing), plur)
 
-        for num, plur in (
-                (1, 'cow'),
-                (2, 'cows'),
-                ('one', 'cow'),
-                ('each', 'cow'),
-                ('two', 'cows'),
-                (0, 'cows'),
-                ('zero', 'cows'),
+        for sing, num, plur in (
+                ('cow', 1, 'cow'),
+                ('cow', 2, 'cows'),
+                ('cow', 'one', 'cow'),
+                ('cow', 'each', 'cow'),
+                ('cow', 'two', 'cows'),
+                ('cow', 0, 'cows'),
+                ('cow', 'zero', 'cows'),
+                ('runs', 0, 'run'),
+                ('runs', 1, 'runs'),
+                ('am', 0, 'are'),
                     ):
-            self.assertEqual(p.pl('cow', num), plur)
+            self.assertEqual(p.pl(sing, num), plur)
 
         p.classical('zero')
         self.assertEqual(p.pl('cow', 0), 'cow')
         self.assertEqual(p.pl('cow', 'zero'), 'cow')
+        self.assertEqual(p.pl('runs', 0), 'runs')
+        self.assertEqual(p.pl('am', 0), 'am')
+        self.assertEqual(p.plverb('runs', 1), 'runs')
 
 
     def test_plequal(self):
@@ -530,10 +536,12 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb(''), False)
         self.assertEqual(p._pl_special_verb('am'), 'are')
         self.assertEqual(p._pl_special_verb('am',0), 'are')
+        self.assertEqual(p._pl_special_verb('runs',0), 'run')
         p.classical('zero')
-        self.assertEqual(p._pl_special_verb('am',0), 'am')
+        self.assertEqual(p._pl_special_verb('am',0), False)
         self.assertEqual(p._pl_special_verb('am',1), 'am')
         self.assertEqual(p._pl_special_verb('am',2), 'are')
+        self.assertEqual(p._pl_special_verb('runs',0), False)
         self.assertEqual(p._pl_special_verb('am going to'), 'are going to')
         self.assertEqual(p._pl_special_verb('did'), 'did')
         self.assertEqual(p._pl_special_verb("wasn't"), "weren't")
@@ -556,11 +564,14 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb('zzzoes'), 'zzzo') # what's a real word to test this case?
         self.assertEqual(p._pl_special_verb('runs'), 'run')
 
+
+
     def test__pl_general_verb(self):
         p = inflect.engine()
         self.assertEqual(p._pl_general_verb('acts'), 'act')
         self.assertEqual(p._pl_general_verb('act'), 'act')
         self.assertEqual(p._pl_general_verb('saw'), 'saw')
+        self.assertEqual(p._pl_general_verb('runs', 1), 'runs')
         
     def test__pl_special_adjective(self):
         p = inflect.engine()

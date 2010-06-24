@@ -1509,12 +1509,11 @@ class engine:
 
 
     def _pl_special_verb(self, word, count=None):
-        count = self.get_count(count)
-        if str(count).lower() in pl_count_zero:
-            if self.classical_dict['zero']:
+        
+        if (self.classical_dict['zero'] and 
+            str(count).lower() in pl_count_zero):
                 return False
-            else:
-                count = 2
+        count = self.get_count(count)
 
         if count==1:
             return word
