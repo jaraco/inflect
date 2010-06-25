@@ -430,6 +430,7 @@ class test(unittest.TestCase):
                 ('with it', 'with them'),
                 ('I', 'we'),
                 ('you', 'you'),
+                #TODO: does not keep case
                 #('YOU', 'YOU'),
                 ('me', 'us'),
                 ('mine', 'ours'),
@@ -561,7 +562,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb('canoes'), 'canoe')
         self.assertEqual(p._pl_special_verb('horseshoes'), 'horseshoe')
         self.assertEqual(p._pl_special_verb('does'), 'do')
-        self.assertEqual(p._pl_special_verb('zzzoes'), 'zzzo') # what's a real word to test this case?
+        self.assertEqual(p._pl_special_verb('zzzoes'), 'zzzo') # TODO: what's a real word to test this case?
         self.assertEqual(p._pl_special_verb('runs'), 'run')
 
 
@@ -882,7 +883,7 @@ class test(unittest.TestCase):
         self.assertEqual(numwords('120', group=2, zero='oh', one='unity'),
                          'twelve, oh')
         self.assertEqual(numwords('101', group=2, zero='oh', one='unity'),
-                         'ten, one') # TODO: ignoring one param with group=2
+                         'ten, one') # TODO: ignoring 'one' param with group=2
         self.assertEqual(numwords('555_1202', group=1, zero='oh'),
                          'five, five, five, one, two, oh, two')
         self.assertEqual(numwords('555_1202', group=1, one='unity'),
