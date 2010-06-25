@@ -1943,7 +1943,13 @@ class engine:
             num = resub(r"(\d)", self.group1sub, num)
         elif group==2:
             num = resub(r"(\d)(\d)", self.group2sub, num)
-            num = resub(r"(\d)", self.group1bsub, num, 1) #group1bsub same as group1sub except it doesn't use the default word for one. Is this required? i.e. is the default word only for the single number 1 and not for 1 in otehr cases???
+            num = resub(r"(\d)", self.group1bsub, num, 1) #
+            # group1bsub same as
+            # group1sub except it doesn't use the default word for one.
+            # Is this required? i.e. is the default word not to beused when
+            # grouping in pairs?
+            #
+            # No. This is a bug. Fixed. TODO: report upstream.
         elif group==3:
             num = resub(r"(\d)(\d)(\d)", self.group3sub, num)
             num = resub(r"(\d)(\d)", self.group2sub, num, 1)
@@ -2005,7 +2011,7 @@ class engine:
         '''
         self.number_args = dict(andword=andword, zero=zero, one=one)
         num = '%s' % num
-    
+
         # Handle "stylistic" conversions (up to a given threshold)...
         if (threshold is not None and
              float(num) > threshold):
@@ -2056,7 +2062,7 @@ class engine:
             if chunk == "":
                 chunk = "0"
 
-            if group != 0 and first != 0:
+            if group == 0 and first == 0:
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)

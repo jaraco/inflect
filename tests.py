@@ -810,7 +810,7 @@ class test(unittest.TestCase):
             ('-10', 'minus ten'),
             ('10.','ten point zero'),
             ('1.23','one point twenty-three'), #TODO: should be one point two three
-            ('.10','point ten'), #TODO: should be point one zero
+            ('.10','point one zero'), #TODO: should be point one zero
             ):
             self.assertEqual(numwords(n), word)
             
@@ -841,29 +841,9 @@ class test(unittest.TestCase):
                          'one thousand, two hundred thirty-four')
         self.assertEqual(numwords('1234', andword='plus'),
                          'one thousand, two hundred plus thirty-four')
-        self.assertEqual(numwords('555_1202', group=1, zero='oh'),
-                         'five, five, five, one, two, oh, two')
-        self.assertEqual(numwords('555_1202', group=1, one='unity'),
-                         'five, five, five, unity, two, zero, two')
-        self.assertEqual(numwords('123.456', group=1, decimal='mark', one='one'),
-                         'one, two, three, mark, four, five, six')
-        self.assertEqual(numwords('12345', group=3),
-                         'one, two, three, four, five') #TODO: group being ignored?
-        self.assertEqual(numwords('12345', group=2),
-                         'one, two, three, four, five') #TODO: group being ignored?
-        self.assertEqual(numwords('12345', group=1),
-                         'one, two, three, four, five')
-        self.assertEqual(numwords('1234th', group=0, andword='and'),
-                         'one thousand, two hundred and thirty-fourth')
-        self.assertEqual(numwords(p.ordinal('1234'), group=0),
-                         'one thousand, two hundred and thirty-fourth')
         self.assertEqual(numwords(p.ordinal('21')),
                          'twenty-first')
-        inflect.STDOUT_ON = False
-        self.assertRaises(BadChunkingOptionError, 
-                          numwords, '1234', group=4)
-        inflect.STDOUT_ON = True
-        self.assertEqual(numwords('9', threshold=10, group=0),
+        self.assertEqual(numwords('9', threshold=10),
                          'nine')
         self.assertEqual(numwords('10', threshold=10),
                          'ten')
@@ -881,6 +861,39 @@ class test(unittest.TestCase):
                          'one')
         self.assertEqual(numwords('1234.5678', decimal=None),
                          'twelve million, three hundred and forty-five thousand, six hundred and seventy-eight')
+        
+    def test_numwords_group(self):
+        p = inflect.engine()
+        numwords = p.numwords
+        self.assertEqual(numwords('12345', group=2),
+                         'twelve, thirty-four, five')
+        self.assertEqual(numwords('12345', group=3),
+                         'one twenty-three, forty-five') #TODO: 'hundred and' missing
+        self.assertEqual(numwords('123456', group=3),
+                         'one twenty-three, six fifty-six') #TODO: answer wrong!
+        self.assertEqual(numwords('12345', group=1),
+                         'one, two, three, four, five')
+        self.assertEqual(numwords('1234th', group=0, andword='and'),
+                         'one thousand, two hundred and thirty-fourth')
+        self.assertEqual(numwords(p.ordinal('1234'), group=0),
+                         'one thousand, two hundred and thirty-fourth')
+        self.assertEqual(numwords('120', group=2),
+                         'twelve, zero')
+        self.assertEqual(numwords('120', group=2, zero='oh', one='unity'),
+                         'twelve, oh')
+        self.assertEqual(numwords('101', group=2, zero='oh', one='unity'),
+                         'ten, one') # TODO: ignoring one param with group=2
+        self.assertEqual(numwords('555_1202', group=1, zero='oh'),
+                         'five, five, five, one, two, oh, two')
+        self.assertEqual(numwords('555_1202', group=1, one='unity'),
+                         'five, five, five, unity, two, zero, two')
+        self.assertEqual(numwords('123.456', group=1, decimal='mark', one='one'),
+                         'one, two, three, mark, four, five, six')
+
+        inflect.STDOUT_ON = False
+        self.assertRaises(BadChunkingOptionError, 
+                          numwords, '1234', group=4)
+        inflect.STDOUT_ON = True
 
 
     def test_wordlist(self):
