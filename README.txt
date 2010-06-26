@@ -1306,7 +1306,7 @@ COPYRIGHT
     Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
+    it under the terms of the GNU Affero General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -1315,7 +1315,7 @@ COPYRIGHT
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
+    You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     The original Perl module Lingua::EN::Inflect by Damian Conway is 
