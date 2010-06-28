@@ -10,6 +10,18 @@ from inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassical
 from inflect import UnknownClassicalModeError, BadNumValueError
 
 class test(unittest.TestCase):
+
+    def TODO(self, ans, answer_wanted, answer_gives_now="default_that_will_never_occur__can't_use_None_as_that_is_a_possible_valid_value"):
+        '''
+        make this test for future testing
+
+        so can easily rename these to assertEqual when code ready        
+        '''
+        if ans == answer_wanted:
+            print 'test unexpectedly passed!: %s == %s' % (ans, answer_wanted)
+        if answer_gives_now != "default_that_will_never_occur__can't_use_None_as_that_is_a_possible_valid_value":
+            self.assertEqual(ans, answer_gives_now)
+        
     def test_enclose(self):
         # def enclose
         self.assertEqual(inflect.enclose("test"), "(?:test)")
@@ -186,8 +198,8 @@ class test(unittest.TestCase):
                          'will')
         self.assertEqual(p.pl('will'),'will')
         #TODO: will -> shall. Tests below fail
-        #self.assertEqual(p.plequal('will','shall'),'s:p')
-        #self.assertEqual(p.plverbequal('will','shall'),'s:p')
+        self.TODO(p.plequal('will','shall'),'s:p')
+        self.TODO(p.plverbequal('will','shall'),'s:p')
 
 
         #defadj
@@ -330,21 +342,26 @@ class test(unittest.TestCase):
                     (p.pladjequal, 'my','my','eq'),
                     (p.pladjequal, 'my','our','s:p'),
                     (p.pladjequal, 'our','our','eq'),
-                    (p.plequal, "dresses's","dresses'", 'p:s'), # TODO: should return p:p 
-                    (p.pladjequal, "dresses's","dresses'", False), # TODO: should return p:p
-
-                    # TODO: future: support different singulars one day.
-                    #(p.plequal, "dress's","dress'",'s:s'),
-                    #(p.pladjequal, "dress's","dress'",'s:s'),
-                    #(p.plequal, "Jess's","Jess'",'s:s'),
-                    #(p.pladjequal, "Jess's","Jess'",'s:s'),
                         ):
             self.assertEqual(fn(sing, plur), res)
 
+        for fn, sing, plur, res, badres in (
+                    (p.plequal, "dresses's","dresses'", 'p:p', 'p:s'), # TODO: should return p:p 
+                    (p.pladjequal, "dresses's","dresses'", 'p:p', False), # TODO: should return p:p
+
+                    # TODO: future: support different singulars one day.
+                    (p.plequal, "dress's","dress'",'s:s', 'p:s'),
+                    (p.pladjequal, "dress's","dress'",'s:s', False),
+                    (p.plequal, "Jess's","Jess'",'s:s', 'p:s'),
+                    (p.pladjequal, "Jess's","Jess'",'s:s', False),
+                        ):
+            self.TODO(fn(sing, plur), res, badres)
+
+
         #TODO: pass upstream. multiple adjective plurals not supported
-        #self.assertEqual(p.plequal('your', 'our'), False)
-        #p.defadj('my', 'our|your') # what's ours is yours
-        #self.assertEqual(p.plequal('your', 'our'), 'p:p')
+        self.assertEqual(p.plequal('your', 'our'), False)
+        p.defadj('my', 'our|your') # what's ours is yours
+        self.TODO(p.plequal('your', 'our'), 'p:p')
 
     def test__pl_reg_plurals(self):
         p = inflect.engine()
@@ -423,15 +440,11 @@ class test(unittest.TestCase):
                 ('mother in law', 'mothers in law'),
                 ('mother-in-law', 'mothers-in-law'),
                 ('about me', 'about us'),
-                #TODO: does not keep case
-                #('about ME', 'about US'),
                 ('to it', 'to them'),
                 ('from it', 'from them'),
                 ('with it', 'with them'),
                 ('I', 'we'),
                 ('you', 'you'),
-                #TODO: does not keep case
-                #('YOU', 'YOU'),
                 ('me', 'us'),
                 ('mine', 'ours'),
                 ('child', 'children'),
@@ -475,6 +488,16 @@ class test(unittest.TestCase):
                 ('tomato', 'tomatoes'),
                 ):
             self.assertEqual(p._plnoun(sing), plur)
+
+
+        for sing, plur in (
+                #TODO: does not keep case
+                ('about ME', 'about US'),
+                #TODO: does not keep case
+                ('YOU', 'YOU'),
+                ):
+            self.TODO(p._plnoun(sing), plur)
+
 
         p.num(1)
         self.assertEqual(p._plnoun('cat'), 'cat')
@@ -555,7 +578,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb('fixes'), 'fix')
         #TODO: BUG reported upstream to Perl version:
         # "quizzes". she quizzes, I quiz. this does not give the correct answer. Only the 'es' gets chopped off, not the 'zes' so gives 'quizz'
-        #self.assertEqual(p._pl_special_verb('quizzes'), 'quiz')
+        self.TODO(p._pl_special_verb('quizzes'), 'quiz')
         self.assertEqual(p._pl_special_verb('fizzes'), 'fizz')
         self.assertEqual(p._pl_special_verb('dresses'), 'dress')
         self.assertEqual(p._pl_special_verb('flies'), 'fly')
@@ -580,10 +603,10 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_adjective('my'), 'our')
         self.assertEqual(p._pl_special_adjective("John's"), "Johns'")
         # TODO: original can't handle this. should we handle it?
-        #self.assertEqual(p._pl_special_adjective("JOHN's"), "JOHNS'")
+        self.TODO(p._pl_special_adjective("JOHN's"), "JOHNS'")
         # TODO: can't handle capitals
-        #self.assertEqual(p._pl_special_adjective("JOHN'S"), "JOHNS'")
-        #self.assertEqual(p._pl_special_adjective("TUNA'S"), "TUNA'S")
+        self.TODO(p._pl_special_adjective("JOHN'S"), "JOHNS'")
+        self.TODO(p._pl_special_adjective("TUNA'S"), "TUNA'S")
         self.assertEqual(p._pl_special_adjective("tuna's"), "tuna's")
         self.assertEqual(p._pl_special_adjective("TUNA's"), "TUNA's")
         self.assertEqual(p._pl_special_adjective("bad"), False)
@@ -670,10 +693,10 @@ class test(unittest.TestCase):
                     ):
             self.assertEqual(p.prespart(sing), plur)
             
-        #TODO: these don't work, reported upstream to Perl version
-        #self.assertEqual(p.prespart('hoes'), 'hoeing')
-        #self.assertEqual(p.prespart('alibis'), 'alibiing')
-        #self.assertEqual(p.prespart('is'), 'being')
+        #TODO: these don't work, reported upstream to Perl version. DC says fix will be in next Perl release.
+        self.TODO(p.prespart('hoes'), 'hoeing')
+        self.TODO(p.prespart('alibis'), 'alibiing')
+        self.TODO(p.prespart('is'), 'being')
 
     def test_ordinal(self):
         p = inflect.engine()
@@ -764,8 +787,8 @@ class test(unittest.TestCase):
         self.assertEqual(enword('1',2),
                          'one, ')
         p.number_args['one'] = 'single'
-        self.assertEqual(enword('1',2),
-                         'one, ') #TODO: doesn't use default word for 'one' here
+        self.TODO(enword('1',2),
+                         'single, ', 'one, ') #TODO: doesn't use default word for 'one' here
 
         p.number_args['one'] = 'one'
 
@@ -810,10 +833,15 @@ class test(unittest.TestCase):
             ('+10', 'plus ten'),
             ('-10', 'minus ten'),
             ('10.','ten point zero'),
-            ('1.23','one point twenty-three'), #TODO: should be one point two three
-            ('.10','point one zero'), #TODO: should be point one zero
+            ('.10', 'point one zero'),
             ):
             self.assertEqual(numwords(n), word)
+
+        for n, word, wrongword in (
+            #TODO: should be one point two three
+            ('1.23', 'one point two three', 'one point twenty-three'), 
+            ):
+            self.TODO(numwords(n), word, wrongword)
             
         for n, txt in (
             (3, 'three bottles of beer on the wall'),
@@ -868,10 +896,14 @@ class test(unittest.TestCase):
         numwords = p.numwords
         self.assertEqual(numwords('12345', group=2),
                          'twelve, thirty-four, five')
-        self.assertEqual(numwords('12345', group=3),
-                         'one twenty-three, forty-five') #TODO: 'hundred and' missing
-        self.assertEqual(numwords('123456', group=3),
-                         'one twenty-three, six fifty-six') #TODO: answer wrong!
+        #TODO: 'hundred and' missing
+        self.TODO(numwords('12345', group=3),
+                         'one hundred and twenty-three',
+                         'one twenty-three, forty-five')
+        #TODO: answer wrong!
+        self.TODO(numwords('123456', group=3),
+                         'one twenty-three, four fifty-six',
+                         'one twenty-three, six fifty-six')
         self.assertEqual(numwords('12345', group=1),
                          'one, two, three, four, five')
         self.assertEqual(numwords('1234th', group=0, andword='and'),
@@ -882,8 +914,10 @@ class test(unittest.TestCase):
                          'twelve, zero')
         self.assertEqual(numwords('120', group=2, zero='oh', one='unity'),
                          'twelve, oh')
-        self.assertEqual(numwords('101', group=2, zero='oh', one='unity'),
-                         'ten, one') # TODO: ignoring 'one' param with group=2
+        # TODO: ignoring 'one' param with group=2
+        self.TODO(numwords('101', group=2, zero='oh', one='unity'),
+                         'ten, unity',
+                         'ten, one') 
         self.assertEqual(numwords('555_1202', group=1, zero='oh'),
                          'five, five, five, one, two, oh, two')
         self.assertEqual(numwords('555_1202', group=1, one='unity'),
