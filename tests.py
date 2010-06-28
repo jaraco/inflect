@@ -119,7 +119,7 @@ class test(unittest.TestCase):
                     ("   num(1)   ", "   1   "),
                     ("num(3) num(1)", "3 1"),
                         ):
-            self.assertEqual(p.inflect(txt), ans)
+            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
 
         for txt, ans in (
         ("pl(rock)", "rocks"),
@@ -134,7 +134,7 @@ class test(unittest.TestCase):
 
         ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"), # TODO: extra space when space before number. Is this desirable?
                         ):
-            self.assertEqual(p.inflect(txt), ans)
+            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
 
 
 
@@ -278,7 +278,8 @@ class test(unittest.TestCase):
                             (p.pladj, "cat's", "cats'"),
                             (p.pladj, "child's", "children's"),
                             ):
-            self.assertEqual(fn(sing), plur)
+            self.assertEqual(fn(sing), plur,
+                             msg='%s("%s") != "%s"' % (fn.__name__, sing, plur))
 
         for sing, num, plur in (
                 ('cow', 1, 'cow'),
@@ -487,7 +488,8 @@ class test(unittest.TestCase):
                 ('zoo', 'zoos'),
                 ('tomato', 'tomatoes'),
                 ):
-            self.assertEqual(p._plnoun(sing), plur)
+            self.assertEqual(p._plnoun(sing), plur,
+                             msg = 'p._plnoun("%s") != "%s"' % (sing, plur))
 
 
         for sing, plur in (
