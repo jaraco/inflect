@@ -263,6 +263,8 @@ class test(unittest.TestCase):
                             (p.pl, ' cat  ', ' cats  '),
                             (p.pl, 'court martial', 'courts martial'),
                             (p.pl, 'a', 'some'),
+                            (p.pl, 'carmen', 'carmina'),
+                            (p.pl, 'quartz', 'quartzes'),
                             (p.plnoun, '',''),
                             (p.plnoun, 'cow','cows'),
                             (p.plnoun, 'thought','thoughts'),
@@ -279,7 +281,8 @@ class test(unittest.TestCase):
                             (p.pladj, "child's", "children's"),
                             ):
             self.assertEqual(fn(sing), plur,
-                             msg='%s("%s") != "%s"' % (fn.__name__, sing, plur))
+                             msg='%s("%s") == "%s" != "%s"' % (
+                                 fn.__name__, sing, fn(sing), plur))
 
         for sing, num, plur in (
                 ('cow', 1, 'cow'),
@@ -581,9 +584,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb(' '), False)
         self.assertEqual(p._pl_special_verb('brushes'), 'brush')
         self.assertEqual(p._pl_special_verb('fixes'), 'fix')
-        #TODO: BUG reported upstream to Perl version:
-        # "quizzes". she quizzes, I quiz. this does not give the correct answer. Only the 'es' gets chopped off, not the 'zes' so gives 'quizz'
-        self.TODO(p._pl_special_verb('quizzes'), 'quiz')
+        self.assertEqual(p._pl_special_verb('quizzes'), 'quiz')
         self.assertEqual(p._pl_special_verb('fizzes'), 'fizz')
         self.assertEqual(p._pl_special_verb('dresses'), 'dress')
         self.assertEqual(p._pl_special_verb('flies'), 'fly')
@@ -658,8 +659,8 @@ class test(unittest.TestCase):
                 ('an','an an'),
                 ('an ant','an ant'),
                 ('a cat','a cat'),
-                ('',''),
-                
+                ('an cat','a cat'),
+                ('a ant','an ant'),
                     ):
             self.assertEqual(p.a(sing), plur)
 
@@ -698,10 +699,13 @@ class test(unittest.TestCase):
                     ):
             self.assertEqual(p.prespart(sing), plur)
             
-        #TODO: these don't work, reported upstream to Perl version. DC says fix will be in next Perl release.
-        self.TODO(p.prespart('hoes'), 'hoeing')
-        self.TODO(p.prespart('alibis'), 'alibiing')
-        self.TODO(p.prespart('is'), 'being')
+        self.assertEqual(p.prespart('hoes'), 'hoeing')
+        self.assertEqual(p.prespart('alibis'), 'alibiing')
+        self.assertEqual(p.prespart('is'), 'being')
+        self.assertEqual(p.prespart('are'), 'being')
+        self.assertEqual(p.prespart('had'), 'having')
+        self.assertEqual(p.prespart('has'), 'having')
+        
 
     def test_ordinal(self):
         p = inflect.engine()

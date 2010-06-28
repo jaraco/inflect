@@ -146,11 +146,21 @@ pl_sb_irregular = {
     'blouse'      : 'blouses',
     'Rom'         : 'Roma',
     'rom'         : 'roma',
+    'carmen'      : 'carmina',
 }
 
 pl_sb_irregular.update(pl_sb_irregular_s)
 
 pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
+
+# Z's that don't double
+
+pl_sb_z_zes = (
+    "quartz", "topaz", "snooz(?=e)",
+)
+
+pl_sb_z_zes = enclose('|'.join(pl_sb_z_zes))
+
 
 # CLASSICAL "..is" -> "..ides"
 
@@ -198,7 +208,7 @@ pl_sb_C_a_ae = enclose('|'.join ((
 # CLASSICAL "..en" -> "..ina"
 
 pl_sb_C_en_ina = joinstem(-2, ((
-    "stamen", "foramen", "lumen", "carmen"
+    "stamen", "foramen", "lumen",
 )))
 
 # UNCONDITIONAL "..um" -> "..a"
@@ -484,7 +494,7 @@ plverb_special_s = enclose('|'.join (
 ]))
 
 pl_sb_postfix_adj = {
-    'general' : ['(?!major|lieutenant|brigadier|adjutant)\S+'],
+    'general' : ['(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
     'martial' : ['court'],
 }
 
@@ -647,7 +657,14 @@ A_y_cons = 'y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)'
 A_explicit_an = enclose('|'.join((
     "euler",
     "hour(?!i)", "heir", "honest", "hono",
-    "[fhlmnrsx]-?th",
+    )))
+
+A_ordinal_an = enclose('|'.join((
+    "[aefhilmnorsx]-?th",
+    )))
+
+A_ordinal_a = enclose('|'.join((
+    "[bcdgjkpqtuvwyz]-?th",
     )))
 
 
@@ -1451,6 +1468,11 @@ class engine:
 #            if mo:
 #                return "%ses" % mo.group(1)
 
+        mo = search(r"(%s)$" % pl_sb_z_zes, word, IGNORECASE)
+        if mo:
+            return "%ses" % mo.group(1)
+
+
         mo = search(r"^(.*[^z])(z)$", word, IGNORECASE)
         if mo:
             return "%szzes" % mo.group(1)
@@ -1557,6 +1579,8 @@ class engine:
             return False
         if search(r"\s", word):
             return False
+        if lowerword == 'quizzes':
+            return 'quiz'
 
 
 # HANDLE STANDARD 3RD PERSON (CHOP THE ...(e)s OFF SINGLE WORDS)
@@ -1694,6 +1718,16 @@ class engine:
         if value is not None:
             return "%s %s" % (value, word)
 
+    # HANDLE ORDINAL FORMS
+
+        for a in (
+                  (r"^(%s)" % A_ordinal_a, "a"),
+                  (r"^(%s)" % A_ordinal_an, "an"),
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return "%s %s" % (a[1], word)
+
 
 # HANDLE SPECIAL CASES
 
@@ -1807,7 +1841,10 @@ class engine:
                           (r"ue$", r"u"), #TODO: isn't ue$ -> u encompassed in the following rule?
                           (r"([auy])e$", r"\g<1>"),
                           (r"ski$", r"ski"),
-                          (r"i$", r""),
+                          (r"[^b]i$", r""),
+                          (r"^(are|were)$", r"be"),
+                          (r"^(had)$", r"hav"),
+                          (r"^(hoe)$", r"\g<1>"),
                           (r"([^e])e$", r"\g<1>"),
                           (r"er$", r"er"),
                           (r"([^aeiou][aeiouy]([bdgmnprst]))$", "\g<1>\g<2>"),

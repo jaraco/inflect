@@ -400,7 +400,7 @@ Hence all of the following return true::
     p.plequal("indices","indices")  # RETURNS "eq"
 
 As indicated by the comments in the previous example, the actual value
-returned by the various ``plequal...`` methods encodes which of the
+returned by the various ``plequal`` methods encodes which of the
 three equality rules succeeded: "eq" is returned if the strings were
 identical, "s:p" if the strings were singular and plural respectively,
 "p:s" for plural and singular, and "p:p" for two distinct plurals.
