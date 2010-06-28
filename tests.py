@@ -302,6 +302,9 @@ class test(unittest.TestCase):
         self.assertEqual(p.pl('am', 0), 'am')
         self.assertEqual(p.plverb('runs', 1), 'runs')
 
+        self.TODO(p.pl('die'),'dice','dies')
+        self.TODO(p.plnoun('die'),'dice','dies')
+
 
     def test_plequal(self):
         p = inflect.engine()
