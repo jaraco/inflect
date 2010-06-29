@@ -1,1 +1,5 @@
 *.pyc
+MANIFEST
+dist/*
+cover/*
+htmlcov/*
