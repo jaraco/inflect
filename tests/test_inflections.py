@@ -96,7 +96,6 @@ class test(unittest.TestCase):
             else:
                 class_PL_val = class_PL
 
-
             self.assertEqual(mod_plural, mod_PL_val)
             self.assertEqual(class_plural, class_PL_val)
             self.assertEqual(self.is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True, msg='is_eq(%s,%s) == %s != %s' % (singular, mod_plural,self.is_eq(p, singular, mod_plural), 's:p, p:s or eq'))
@@ -105,7 +104,17 @@ class test(unittest.TestCase):
             self.assertEqual(self.is_eq(p, class_plural, singular) in ('p:s', 's:p', 'eq'), True)
             self.assertNotEqual(singular, '')
             self.assertEqual(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
-        
+
+            print singular, mod_plural
+            if is_nv != '_V':
+                self.assertEqual(p.sinoun(mod_plural, 1), singular,
+                             msg="p.sinoun(%s) == %s != %s" % (
+                                 mod_plural, p.sinoun(mod_plural, 1), singular) )
+
+                self.assertEqual(p.sinoun(class_plural, 1), singular,
+                             msg="p.sinoun(%s) == %s != %s" % (
+                                 class_plural, p.sinoun(class_plural, 1), singular) )
+
 
             '''
             don't see any test data for this ???
@@ -224,7 +233,7 @@ class test(unittest.TestCase):
     def get_data(self):
         return '''
                     a  ->  as                             # NOUN FORM
-                    a  ->  some                           # INDEFINITE ARTICLE
+      TODO:sing              a  ->  some                           # INDEFINITE ARTICLE
       TODO:  A.C.R.O.N.Y.M.  ->  A.C.R.O.N.Y.M.s
              abscissa  ->  abscissas|abscissae
              Achinese  ->  Achinese
@@ -247,14 +256,14 @@ class test(unittest.TestCase):
                alumna  ->  alumnae
               alumnus  ->  alumni
              alveolus  ->  alveoli
-                   am  ->  are
-             am going  ->  are going
+   TODO:siverb                am  ->  are
+   TODO:siverb          am going  ->  are going
   ambassador-at-large  ->  ambassadors-at-large
             Amboinese  ->  Amboinese
           Americanese  ->  Americanese
                amoeba  ->  amoebas|amoebae
               Amoyese  ->  Amoyese
-                   an  ->  some                           # INDEFINITE ARTICLE
+   TODO:siadj                an  ->  some                           # INDEFINITE ARTICLE
              analysis  ->  analyses
              anathema  ->  anathemas|anathemata
            Andamanese  ->  Andamanese
@@ -263,7 +272,7 @@ class test(unittest.TestCase):
               antenna  ->  antennas|antennae
                  anus  ->  anuses
                  apex  ->  apexes|apices
-               apex's  ->  apexes'|apices'                # POSSESSIVE FORM
+   TODO:siadj            apex's  ->  apexes'|apices'                # POSSESSIVE FORM
              aphelion  ->  aphelia
             apparatus  ->  apparatuses|apparatus
              appendix  ->  appendixes|appendices
@@ -272,8 +281,8 @@ class test(unittest.TestCase):
             Aragonese  ->  Aragonese
             Arakanese  ->  Arakanese
           archipelago  ->  archipelagos
-                  are  ->  are
-             are made  ->  are made
+   TODO:siverb               are  ->  are
+   TODO:siverb          are made  ->  are made
             armadillo  ->  armadillos
              arpeggio  ->  arpeggios
             arthritis  ->  arthritises|arthritides
@@ -285,19 +294,19 @@ class test(unittest.TestCase):
             asyndeton  ->  asyndeta
                 at it  ->  at them                        # ACCUSATIVE
                ataman  ->  atamans
-                  ate  ->  ate
+   TODO:siverb               ate  ->  ate
                 atlas  ->  atlases|atlantes
                 atman  ->  atmas
-     attorney general  ->  attorneys general
+  TODO:sinoun   attorney general  ->  attorneys general
    attorney of record  ->  attorneys of record
                aurora  ->  auroras|aurorae
                  auto  ->  autos
            auto-da-fe  ->  autos-da-fe
              aviatrix  ->  aviatrixes|aviatrices
-           aviatrix's  ->  aviatrixes'|aviatrices'
+    TODO:siadj       aviatrix's  ->  aviatrixes'|aviatrices'
            Avignonese  ->  Avignonese
-                  axe  ->  axes
-                 axis  ->  axes
+    TODO:sinoun gives ax              axe  ->  axes
+    TODO:sinoun 2 anwers!            axis  ->  axes
                 axman  ->  axmen
         Azerbaijanese  ->  Azerbaijanese
              bacillus  ->  bacilli
@@ -346,7 +355,7 @@ class test(unittest.TestCase):
               Burmese  ->  Burmese
              bursitis  ->  bursitises|bursitides
                   bus  ->  buses
-                 buzz  ->  buzzes
+     TODO:sinoun gives buz            buzz  ->  buzzes
                buzzes  ->  buzz                           # VERB FORM
                 by it  ->  by them                        # ACCUSATIVE
                caddis  ->  caddises
@@ -363,7 +372,7 @@ class test(unittest.TestCase):
                 can't  ->  can't                          # VERB FORM
           candelabrum  ->  candelabra
              cannabis  ->  cannabises
-               canoes  ->  canoe
+      TODO:siverb         canoes  ->  canoe
                 canto  ->  cantos
             Cantonese  ->  Cantonese
                cantus  ->  cantus
@@ -389,7 +398,7 @@ class test(unittest.TestCase):
                 chaos  ->  chaoses
               chapeau  ->  chapeaus|chapeaux
              charisma  ->  charismas|charismata
-               chases  ->  chase
+    TODO:siverb           chases  ->  chase
               chassis  ->  chassis
               chateau  ->  chateaus|chateaux
                cherub  ->  cherubs|cherubim
@@ -422,7 +431,7 @@ class test(unittest.TestCase):
                corpus  ->  corpuses|corpora
                cortex  ->  cortexes|cortices
                cosmos  ->  cosmoses
-        court martial  ->  courts martial
+     TODO:sinoun   court martial  ->  courts martial
                   cow  ->  cows|kine
               cranium  ->  craniums|crania
             crescendo  ->  crescendos
@@ -440,8 +449,8 @@ class test(unittest.TestCase):
                desman  ->  desmans
              diabetes  ->  diabetes
                dictum  ->  dictums|dicta
-                  did  ->  did
-             did need  ->  did need
+    TODO:siverb              did  ->  did
+    TODO:siverb         did need  ->  did need
             digitalis  ->  digitalises
                 dingo  ->  dingoes
               diploma  ->  diplomas|diplomata
@@ -449,8 +458,8 @@ class test(unittest.TestCase):
                  dish  ->  dishes
                 ditto  ->  dittos
                 djinn  ->  djinn
-                 does  ->  do
-              doesn't  ->  don't                          # VERB FORM
+     TODO:siverb            does  ->  do
+     TODO:siverb         doesn't  ->  don't                          # VERB FORM
                   dog  ->  dogs
                 dogma  ->  dogmas|dogmata
                dolman  ->  dolmans
@@ -492,10 +501,10 @@ class test(unittest.TestCase):
               fiancee  ->  fiancees
                fiasco  ->  fiascos
                  fish  ->  fish
-                 fizz  ->  fizzes
+    TODO:sinoun             fizz  ->  fizzes
              flamingo  ->  flamingoes
          flittermouse  ->  flittermice
-                floes  ->  floe
+     TODO:siverb           floes  ->  floe
                 flora  ->  floras|florae
              flounder  ->  flounder
                 focus  ->  focuses|foci
@@ -503,14 +512,14 @@ class test(unittest.TestCase):
                 folio  ->  folios
            Foochowese  ->  Foochowese
                  foot  ->  feet
-               foot's  ->  feet's                         # POSSESSIVE FORM
+     TODO:siadj          foot's  ->  feet's                         # POSSESSIVE FORM
               foramen  ->  foramens|foramina
-            foreshoes  ->  foreshoe
+     TODO:siverb       foreshoes  ->  foreshoe
               formula  ->  formulas|formulae
                 forum  ->  forums
-               fought  ->  fought
+     TODO:siverb          fought  ->  fought
                   fox  ->  foxes
-             from him  ->  from them
+     TODO:sinoun 2 different returns        from him  ->  from them
               from it  ->  from them                      # ACCUSATIVE
                fungus  ->  funguses|fungi
              Gabunese  ->  Gabunese
@@ -518,12 +527,12 @@ class test(unittest.TestCase):
              ganglion  ->  ganglions|ganglia
                   gas  ->  gases
                gateau  ->  gateaus|gateaux
-                 gave  ->  gave
+    TODO:siverb             gave  ->  gave
               general  ->  generals
         generalissimo  ->  generalissimos
              Genevese  ->  Genevese
                 genie  ->  genies|genii
-               genius  ->  geniuses|genii
+    TODO:sinoun 2 diff return values!           genius  ->  geniuses|genii
               Genoese  ->  Genoese
                 genus  ->  genera
                German  ->  Germans
@@ -533,63 +542,63 @@ class test(unittest.TestCase):
               Goanese  ->  Goanese
                  goat  ->  goats
                 goose  ->  geese
-     Governor General  ->  Governors General
+    TODO:sinoun Governor General  ->  Governors General
                   goy  ->  goys|goyim
              graffiti  ->  graffiti
-             graffito  ->  graffiti
+    TODO:sinoun 2 diff ret values         graffito  ->  graffiti
               grizzly  ->  grizzlies
                 guano  ->  guanos
             guardsman  ->  guardsmen
              Guianese  ->  Guianese
                 gumma  ->  gummas|gummata
-             gumshoes  ->  gumshoe
+    TODO:siverb         gumshoes  ->  gumshoe
                gunman  ->  gunmen
             gymnasium  ->  gymnasiums|gymnasia
-                  had  ->  had
-          had thought  ->  had thought
+    TODO:siverb              had  ->  had
+    TODO:siverb      had thought  ->  had thought
             Hainanese  ->  Hainanese
-           hammertoes  ->  hammertoe
+    TODO:siverb       hammertoes  ->  hammertoe
          handkerchief  ->  handkerchiefs
              Hararese  ->  Hararese
             Harlemese  ->  Harlemese
                harman  ->  harmans
             harmonium  ->  harmoniums
-                  has  ->  have
-           has become  ->  have become
-             has been  ->  have been
-             has-been  ->  has-beens
+    TODO:siverb              has  ->  have
+    TODO:siverb       has become  ->  have become
+    TODO:siverb         has been  ->  have been
+    TODO:siverb         has-been  ->  has-beens
                hasn't  ->  haven't                        # VERB FORM
              Havanese  ->  Havanese
-                 have  ->  have
-        have conceded  ->  have conceded
-                   he  ->  they
+    TODO:siverb             have  ->  have
+    TODO:siverb    have conceded  ->  have conceded
+    TODO:sinoun 2 values               he  ->  they
          headquarters  ->  headquarters
             Heavenese  ->  Heavenese
                 helix  ->  helices
             hepatitis  ->  hepatitises|hepatitides
-                  her  ->  them                           # PRONOUN
-                  her  ->  their                          # POSSESSIVE ADJ
+    TODO:sinoun 2 values              her  ->  them                           # PRONOUN
+    TODO:sinoun 2 values              her  ->  their                          # POSSESSIVE ADJ
                  hero  ->  heroes
                herpes  ->  herpes
-                 hers  ->  theirs                         # POSSESSIVE NOUN
-              herself  ->  themselves
+    TODO:sinoun 2 values             hers  ->  theirs                         # POSSESSIVE NOUN
+    TODO:sinoun 2 values          herself  ->  themselves
                hetman  ->  hetmans
                hiatus  ->  hiatuses|hiatus
             highlight  ->  highlights
               hijinks  ->  hijinks
-                  him  ->  them
-              himself  ->  themselves
+    TODO:sinoun 2 values              him  ->  them
+    TODO:sinoun 2 values          himself  ->  themselves
          hippopotamus  ->  hippopotamuses|hippopotami
            Hiroshiman  ->  Hiroshimans
-                  his  ->  their                          # POSSESSIVE ADJ
-                  his  ->  theirs                         # POSSESSIVE NOUN
-                 hoes  ->  hoe
+    TODO:sinoun 2 values              his  ->  their                          # POSSESSIVE ADJ
+    TODO:sinoun 2 values              his  ->  theirs                         # POSSESSIVE NOUN
+    TODO:siverb             hoes  ->  hoe
            honorarium  ->  honorariums|honoraria
                  hoof  ->  hoofs|hooves
            Hoosierese  ->  Hoosierese
-           horseshoes  ->  horseshoe
+    TODO:siverb       horseshoes  ->  horseshoe
          Hottentotese  ->  Hottentotese
-                house  ->  houses
+    TODO:sinoun            house  ->  houses
             housewife  ->  housewives
                hubris  ->  hubrises
                 human  ->  humans
@@ -606,14 +615,14 @@ class test(unittest.TestCase):
           Indochinese  ->  Indochinese
               inferno  ->  infernos
               innings  ->  innings
-    Inspector General  ->  Inspectors General
+   TODO:sinoun Inspector General  ->  Inspectors General
           interregnum  ->  interregnums|interregna
                  iris  ->  irises|irides
-                   is  ->  are
-             is eaten  ->  are eaten
+       TODO:siverb            is  ->  are
+       TODO:siverb      is eaten  ->  are eaten
                 isn't  ->  aren't                         # VERB FORM
                    it  ->  they                           # NOMINATIVE
-                  its  ->  their                          # POSSESSIVE FORM
+       TODO:siadj           its  ->  their                          # POSSESSIVE FORM
                itself  ->  themselves
            jackanapes  ->  jackanapes
              Japanese  ->  Japanese
@@ -672,7 +681,7 @@ class test(unittest.TestCase):
           Macassarese  ->  Macassarese
              mackerel  ->  mackerel
                 macro  ->  macros
-                 made  ->  made
+     TODO:siverb            made  ->  made
                madman  ->  madmen
              Madurese  ->  Madurese
                 magma  ->  magmas|magmata
@@ -690,7 +699,7 @@ class test(unittest.TestCase):
               measles  ->  measles
                medico  ->  medicos
                medium  ->  mediums|media
-             medium's  ->  mediums'|media's
+   TODO:siadj          medium's  ->  mediums'|media's
                medusa  ->  medusas|medusae
            memorandum  ->  memorandums|memoranda
              meniscus  ->  menisci
@@ -708,7 +717,7 @@ class test(unittest.TestCase):
                  miss  ->  miss                           # VERB FORM (1st/2nd pers.)
                  miss  ->  misses                         # NOUN FORM
                misses  ->  miss                           # VERB FORM (3rd pers.)
-           mistletoes  ->  mistletoe
+    TODO:siverb       mistletoes  ->  mistletoe
              mittamus  ->  mittamuses
              Modenese  ->  Modenese
              momentum  ->  momentums|momenta
@@ -722,7 +731,7 @@ class test(unittest.TestCase):
                 murex  ->  murices
                museum  ->  museums
             mustachio  ->  mustachios
-                   my  ->  our                            # POSSESSIVE FORM
+   TODO:siadj                my  ->  our                            # POSSESSIVE FORM
                myself  ->  ourselves
                mythos  ->  mythoi
             Nakayaman  ->  Nakayamans
@@ -748,7 +757,7 @@ class test(unittest.TestCase):
               nucleus  ->  nuclei
                 numen  ->  numina
                   oaf  ->  oafs
-                oboes  ->  oboe
+    TODO:siverb            oboes  ->  oboe
               occiput  ->  occiputs|occipita
                octavo  ->  octavos
               octopus  ->  octopuses|octopodes
@@ -763,11 +772,11 @@ class test(unittest.TestCase):
               organon  ->  organa
               ottoman  ->  ottomans
           ought to be  ->  ought to be                    # VERB (UNLIKE bride to be)
-            overshoes  ->  overshoe
-             overtoes  ->  overtoe
+     TODO:siverb       overshoes  ->  overshoe
+     TODO:siverb        overtoes  ->  overtoe
                  ovum  ->  ova
                    ox  ->  oxen
-                 ox's  ->  oxen's                         # POSSESSIVE FORM
+     TODO:siadj            ox's  ->  oxen's                         # POSSESSIVE FORM
                 oxman  ->  oxmen
              oxymoron  ->  oxymorons|oxymora
               Panaman  ->  Panamans
@@ -793,7 +802,7 @@ class test(unittest.TestCase):
                 piano  ->  pianos|piani
           Piedmontese  ->  Piedmontese
                  pika  ->  pikas
-               pincer  ->  pincers
+   TODO:sinoun ret mul value            pincer  ->  pincers
               pincers  ->  pincers
             Pistoiese  ->  Pistoiese
               plateau  ->  plateaus|plateaux
@@ -822,9 +831,9 @@ class test(unittest.TestCase):
             protozoan  ->  protozoans
             protozoon  ->  protozoa
                  puma  ->  pumas
-                  put  ->  put
+     TODO:siverb             put  ->  put
               quantum  ->  quantums|quanta
-quartermaster general  ->  quartermasters general
+ TODO:sinoun quartermaster general  ->  quartermasters general
                quarto  ->  quartos
                  quiz  ->  quizzes
               quizzes  ->  quiz                           # VERB FORM
@@ -834,12 +843,12 @@ quartermaster general  ->  quartermasters general
                 radix  ->  radices
                ragman  ->  ragmen
                 rebus  ->  rebuses
-               rehoes  ->  rehoe
+   TODO:siverb            rehoes  ->  rehoe
              reindeer  ->  reindeer
-              reshoes  ->  reshoe
+   TODO:siverb           reshoes  ->  reshoe
                 rhino  ->  rhinos
            rhinoceros  ->  rhinoceroses|rhinoceros
-                 roes  ->  roe
+   TODO:siverb              roes  ->  roe
                   Rom  ->  Roma
             Romagnese  ->  Romagnese
                 Roman  ->  Romans
@@ -851,7 +860,7 @@ quartermaster general  ->  quartermasters general
                ruckus  ->  ruckuses
                salmon  ->  salmon
             Sangirese  ->  Sangirese
-                 sank  ->  sank
+   TODO: siverb              sank  ->  sank
            Sarawakese  ->  Sarawakese
               sarcoma  ->  sarcomas|sarcomata
             sassafras  ->  sassafrases
@@ -869,17 +878,17 @@ quartermaster general  ->  quartermasters general
            Senegalese  ->  Senegalese
                seraph  ->  seraphs|seraphim
                series  ->  series
-            shall eat  ->  shall eat
+    TODO:siverb        shall eat  ->  shall eat
                shaman  ->  shamans
               Shavese  ->  Shavese
             Shawanese  ->  Shawanese
-                  she  ->  they
+    TODO:sinoun multivalue              she  ->  they
                 sheaf  ->  sheaves
                shears  ->  shears
                 sheep  ->  sheep
                 shelf  ->  shelves
-                shoes  ->  shoe
-          should have  ->  should have
+   TODO:siverb             shoes  ->  shoe
+   TODO:siverb       should have  ->  should have
               Siamese  ->  Siamese
               siemens  ->  siemens
               Sienese  ->  Sienese
@@ -893,20 +902,20 @@ quartermaster general  ->  quartermasters general
                 sizes  ->  size                           #VERB FORM
              smallpox  ->  smallpox
                 Smith  ->  Smiths
-            snowshoes  ->  snowshoe
+   TODO:siverb         snowshoes  ->  snowshoe
            Sogdianese  ->  Sogdianese
             soliloquy  ->  soliloquies
                  solo  ->  solos|soli
                  soma  ->  somas|somata
-       son of a bitch  ->  sons of bitches
+   TODO:sinoun tough    son of a bitch  ->  sons of bitches
               Sonaman  ->  Sonamans
               soprano  ->  sopranos|soprani
-               sought  ->  sought
-          spattlehoes  ->  spattlehoe
+   TODO:siverb            sought  ->  sought
+   TODO:siverb       spattlehoes  ->  spattlehoe
               species  ->  species
              spectrum  ->  spectrums|spectra
              speculum  ->  speculums|specula
-                spent  ->  spent
+   TODO:siverb             spent  ->  spent
          spermatozoon  ->  spermatozoa
                sphinx  ->  sphinxes|sphinges
          spokesperson  ->  spokespeople|spokespersons
@@ -929,11 +938,11 @@ quartermaster general  ->  quartermasters general
                suffix  ->  suffixes
             Sundanese  ->  Sundanese
              superior  ->  superiors
-      Surgeon-General  ->  Surgeons-General
+  TODO:sinoun    Surgeon-General  ->  Surgeons-General
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
                 swine  ->  swines|swine
-              syringe  ->  syringes
+      TODO:sinoun multiple return        syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
               tableau  ->  tableaus|tableaux
               Tacoman  ->  Tacomans
@@ -944,37 +953,37 @@ quartermaster general  ->  quartermasters general
            Tenggerese  ->  Tenggerese
             testatrix  ->  testatrixes|testatrices
                testes  ->  testes
-               testis  ->  testes
-                 that  ->  those
-                their  ->  their                          # POSSESSIVE FORM (GENDER-INCLUSIVE)
-             themself  ->  themselves                     # ugly but gaining currency
-                 they  ->  they                           # for indeterminate gender
+      TODO:sinoun multiple return         testis  ->  testes
+      TODO:siadj           that  ->  those
+      TODO:siadj          their  ->  their                          # POSSESSIVE FORM (GENDER-INCLUSIVE)
+      TODO:sinoun multiple return       themself  ->  themselves                     # ugly but gaining currency
+      TODO:sinoun multiple return           they  ->  they                           # for indeterminate gender
                 thief  ->  thiefs|thieves
-                 this  ->  these
+      TODO:siadj           this  ->  these
               thought  ->  thoughts                       # NOUN FORM
               thought  ->  thought                        # VERB FORM
-               throes  ->  throe
-         ticktacktoes  ->  ticktacktoe
+      TODO:siverb         throes  ->  throe
+      TODO:siverb   ticktacktoes  ->  ticktacktoe
                 Times  ->  Timeses
              Timorese  ->  Timorese
-              tiptoes  ->  tiptoe
+      TODO:siverb        tiptoes  ->  tiptoe
              Tirolese  ->  Tirolese
              titmouse  ->  titmice
-               to her  ->  to them
-           to herself  ->  to themselves
-               to him  ->  to them
-           to himself  ->  to themselves
+      TODO:sinoun multivalue         to her  ->  to them
+      TODO:sinoun multivalue     to herself  ->  to themselves
+      TODO:sinoun multivalue         to him  ->  to them
+      TODO:sinoun multivalue     to himself  ->  to themselves
                 to it  ->  to them
                 to it  ->  to them                        # ACCUSATIVE
             to itself  ->  to themselves
                 to me  ->  to us
             to myself  ->  to ourselves
-              to them  ->  to them                        # for indeterminate gender
-          to themself  ->  to themselves                  # ugly but gaining currency
+      TODO:sinoun multivalue        to them  ->  to them                        # for indeterminate gender
+      TODO:sinoun multivalue    to themself  ->  to themselves                  # ugly but gaining currency
                to you  ->  to you
           to yourself  ->  to yourselves
             Tocharese  ->  Tocharese
-                 toes  ->  toe
+      TODO:siverb           toes  ->  toe
                tomato  ->  tomatoes
             Tonkinese  ->  Tonkinese
           tonsillitis  ->  tonsillitises|tonsillitides
@@ -990,15 +999,15 @@ quartermaster general  ->  quartermasters general
              trousers  ->  trousers
             trousseau  ->  trousseaus|trousseaux
                 trout  ->  trout
-                  try  ->  tries
+      TODO:siverb            try  ->  tries
                  tuna  ->  tuna
                  turf  ->  turfs|turves
              Tyrolese  ->  Tyrolese
             ultimatum  ->  ultimatums|ultimata
             umbilicus  ->  umbilicuses|umbilici
                 umbra  ->  umbras|umbrae
-           undershoes  ->  undershoe
-              unshoes  ->  unshoe
+      TODO:siverb     undershoes  ->  undershoe
+      TODO:siverb        unshoes  ->  unshoe
                uterus  ->  uteruses|uteri
                vacuum  ->  vacuums|vacua
                vellum  ->  vellums
@@ -1014,17 +1023,17 @@ quartermaster general  ->  quartermasters general
                 vixen  ->  vixens
                vortex  ->  vortexes|vortices
                walrus  ->  walruses
-                  was  ->  were
-       was faced with  ->  were faced with
-           was hoping  ->  were hoping
+   TODO:siverb               was  ->  were
+   TODO:siverb    was faced with  ->  were faced with
+   TODO:siverb        was hoping  ->  were hoping
            Wenchowese  ->  Wenchowese
-                 were  ->  were
-           were found  ->  were found
+   TODO:siverb              were  ->  were
+   TODO:siverb        were found  ->  were found
                 wharf  ->  wharves
               whiting  ->  whiting
            Whitmanese  ->  Whitmanese
                  whiz  ->  whizzes
-                whizz  ->  whizzes
+   TODO:sinoun multivalue             whizz  ->  whizzes
                widget  ->  widgets
                  wife  ->  wives
            wildebeest  ->  wildebeests|wildebeest
@@ -1033,13 +1042,13 @@ quartermaster general  ->  quartermasters general
              will eat  ->  will eat                       # VERB FORM
                 wills  ->  will                           # VERB FORM
                  wish  ->  wishes
-             with him  ->  with them
+   TODO:sinoun multivalue          with him  ->  with them
               with it  ->  with them                      # ACCUSATIVE
-                 woes  ->  woe
+   TODO:siverb              woes  ->  woe
                  wolf  ->  wolves
                 woman  ->  women
    woman of substance  ->  women of substance
-              woman's  ->  women's                        # POSSESSIVE FORM
+    TODO:siadj          woman's  ->  women's                        # POSSESSIVE FORM
                 won't  ->  won't                          # VERB FORM
             woodlouse  ->  woodlice
               Yakiman  ->  Yakimans
@@ -1049,7 +1058,7 @@ quartermaster general  ->  quartermasters general
                   yes  ->  yeses
             Yokohaman  ->  Yokohamans
                   you  ->  you
-                 your  ->  your                           # POSSESSIVE FORM
+   TODO:siadj              your  ->  your                           # POSSESSIVE FORM
              yourself  ->  yourselves
                 Yuman  ->  Yumans
             Yunnanese  ->  Yunnanese

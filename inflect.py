@@ -158,8 +158,17 @@ pl_sb_irregular = {
 }
 
 pl_sb_irregular.update(pl_sb_irregular_s)
-
 pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
+
+si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.iteritems()])
+keys = si_sb_irregular.keys()
+for k in keys:
+    if '|' in k:
+        k1, k2 = k.split('|')
+        si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
+        del si_sb_irregular[k]
+        
+si_sb_irregular_keys = enclose('|'.join(si_sb_irregular.keys()))
 
 # Z's that don't double
 
@@ -514,7 +523,6 @@ for k in pl_sb_postfix_adj.keys():
 pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
 
 
-
 pl_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
     below beneath beside besides between betwixt beyond but by
@@ -548,6 +556,13 @@ pl_pron_nom = {
 "theirs" : "theirs",
 }
 
+si_pron_nom = dict([(v, k) for (k, v) in pl_pron_nom.iteritems()])
+si_pron_nom['they'] = 'it'
+si_pron_nom['themselves'] = 'itself'
+si_pron_nom['theirs'] = 'its'
+si_pron_nom['we'] = 'I'
+
+
 pl_pron_acc = {
 #   ACCUSATIVE      REFLEXIVE
 
@@ -560,6 +575,12 @@ pl_pron_acc = {
 }
 
 pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
+
+si_pron_acc = dict([(v, k) for (k, v) in pl_pron_acc.iteritems()])
+si_pron_acc['them'] = 'it'
+si_pron_acc['themselves'] = 'itself'
+si_pron_acc_keys = enclose('|'.join(si_pron_acc.keys()))
+
 
 plverb_irregular_pres = {
 #   1st PERS. SING.     2ND PERS. SING.     3RD PERS. SINGULAR
@@ -761,6 +782,7 @@ class engine:
         self.pl_sb_user_defined = []
         self.pl_v_user_defined  = []
         self.pl_adj_user_defined  = []
+        self.si_sb_user_defined = []
         self.A_a_user_defined   = []
 
     def defnoun(self, singular, plural):
@@ -771,6 +793,7 @@ class engine:
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_sb_user_defined.extend((singular, plural))
+        self.si_sb_user_defined.extend((plural, singular))
         return 1
 
     def defverb(self, s1, p1, s2, p2, s3, p3):
@@ -1203,6 +1226,25 @@ class engine:
         '''
         return self._plequal(word1, word2, self.pladj)
 
+
+    def sinoun(self, text, count=None):
+        '''
+        return the singular of a plural noun
+
+        in development
+
+        '''
+        pre, word, post = self.partition_word(text)
+        if not word:
+            return text
+        sing = self._sinoun(word, count)
+        if sing != False:
+            plural = self.postprocess(word,
+                  self._sinoun(word, count))
+            return "%s%s%s" % (pre, plural, post)
+        return False
+    
+        
     def _plequal(self, word1, word2, pl):
         classval = self.classical_dict.copy()
         self.classical_dict = all_classical.copy()
@@ -1469,7 +1511,7 @@ class engine:
 # caught below?
 #
 # removing it as I can't find a case that executes it
-#
+# TODO: check this again
 #
 #        if (self.classical_dict['names']):
 #            mo = search(r"([A-Z].*s)$", word)
@@ -1487,7 +1529,7 @@ class engine:
 
         for a in (
                   (r"^(.*)([cs]h|x|zz|ss)$",  "%s%ses"),
-#                  (r"(.*)(us)$", "%s%ses"),
+#                  (r"(.*)(us)$", "%s%ses"),  TODO: why is this commented?
                  ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
@@ -1681,6 +1723,265 @@ class engine:
 
 # OTHERWISE, NO IDEA
 
+        return False
+
+
+    def _sinoun(self, word, count=None):
+        count = self.get_count(count)
+
+# DEFAULT TO PLURAL
+
+        if count!=1:
+            return word
+
+# HANDLE USER-DEFINED NOUNS
+
+        value = self.ud_match(word, self.si_sb_user_defined)
+        if value is not None:
+            return value
+
+
+# HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
+
+        if word == '':
+            return word
+
+        lowerword = word.lower()
+
+        if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
+            return word
+
+        if (self.classical_dict['herd'] and
+               lowerword in pl_sb_uninflected_herd):
+            return word
+
+# HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
+        ''' TODO
+        mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
+        if mo and mo.group(2) != '':
+            return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
+        '''
+
+        #how to reverse this one?
+        # mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
+        # if mo and mo.group(2) != '' and mo.group(3) != '':
+        #     return "%s%s%s" % (self._sinoun(mo.group(1), 1),
+        #                        mo.group(2),
+        #                        self._sinoun(mo.group(3), 1))
+
+        mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
+        if mo and mo.group(2) != '':
+                return "%s%s" % (self._sinoun(mo.group(1), 1), mo.group(2))
+
+# HANDLE PRONOUNS
+
+        mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, si_pron_acc_keys), word,
+                                                         IGNORECASE)
+        if mo:
+            return "%s%s" % (mo.group(1), si_pron_acc[mo.group(2).lower()])
+
+        try:
+            return si_pron_nom[word.lower()]
+        except KeyError:
+            pass
+
+        try:
+            return si_pron_acc[word.lower()]
+        except KeyError:
+            pass
+
+# HANDLE ISOLATED IRREGULAR PLURALS 
+
+        mo = search(r"(.*)\b(%s)$" % si_sb_irregular_keys, word, IGNORECASE)
+        if mo:
+            try:
+                return "%s%s" % (mo.group(1),
+                             si_sb_irregular[mo.group(2)])
+            except KeyError:
+                return "%s%s" % (mo.group(1),
+                             si_sb_irregular[mo.group(2).lower()])
+
+        mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
+        if mo:
+            return "%s" % mo.group(1)
+
+        mo = search(r"(\S*)quies$", word, IGNORECASE)
+        if mo:
+            return "%squy" % mo.group(1)
+
+        mo = search(r"(\S*)(persons)$", word, IGNORECASE)
+        if mo:
+             return "%sperson" % mo.group(1)
+
+        mo = search(r"(\S*)(people)$", word, IGNORECASE)
+        if mo:
+             return "%sperson" % mo.group(1)
+
+# HANDLE FAMILIES OF IRREGULAR PLURALS 
+
+        for a in (
+                  (r"(.*)men$", "%sman"),
+                  (r"(.*[ml])ice$", "%souse"),
+                  (r"(.*)geese$", "%sgoose"),
+                  (r"(.*)teeth$", "%stooth"),
+                  (r"(.*)feet$", "%sfoot"),
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % mo.group(1)
+
+        if word == 'apexes': print '1'
+
+# HANDLE UNASSIMILATED IMPORTS
+
+        if search(r"(.*)ceps$", word, IGNORECASE):
+            return word
+
+        for a in (
+                  (r"(.*)zoa$", "%szoon"),
+                  #(r"(.*[csx])es$", "%sis"), # test too general to have this early
+                  (r"(%s)chs$" % pl_sb_U_ch_chs, "%sch"),
+                  (r"(%s)ices$" % pl_sb_U_ex_ices, "%sex"),
+                  (r"(%s)ices$" % pl_sb_U_ix_ices, "%six"),
+                  (r"(%s)a$" % pl_sb_U_um_a, "%sum"),
+                  (r"(%s)i$" % pl_sb_U_us_i, "%sus"),
+                  (r"(%s)a$" % pl_sb_U_on_a, "%son"),
+                  (r"(%s)e$" % pl_sb_U_a_ae, "%s"),
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % mo.group(1)
+
+        if word == 'apexes': print '2'
+
+# HANDLE INCOMPLETELY ASSIMILATED IMPORTS
+
+        if (self.classical_dict['ancient']):
+
+            for a in (
+                  (r"(.*)trices$", "%strix"),
+                  (r"(.*)eaux$", "%seau"),
+                  (r"(.*)ieux$", "%sieu"),
+                  (r"(.{2,}[yia])nges$", "%snx"),
+                  (r"(%s)ina$" % pl_sb_C_en_ina, "%sen"),
+                  (r"(%s)ices$" % pl_sb_C_ex_ices, "%sex"),
+                  (r"(%s)ices$" % pl_sb_C_ix_ices, "%six"),
+                  (r"(%s)a$" % pl_sb_C_um_a, "%sum"),
+                  (r"(%s)i$" % pl_sb_C_us_i, "%sus"),
+                  (r"(%s)$" % pl_sb_C_us_us, "%s"),
+                  (r"(%s)e$" % pl_sb_C_a_ae, "%s"),
+                  (r"(%s)ata$" % pl_sb_C_a_ata_stems, "%sa"),
+                  (r"(%s)ides$" % pl_sb_C_is_ides_stems, "%sis"),
+                  (r"(%s)i$" % pl_sb_C_o_i_stems, "%so"),
+                  (r"(%s)a$" % pl_sb_C_on_a, "%son"),
+                  (r"(%s)im$" % pl_sb_C_im, "%s"),
+                  (r"(%s)i$" % pl_sb_C_i, "%s"),
+                 ):
+                mo = search(a[0], word, IGNORECASE)
+                if mo:
+                    return a[1] % mo.group(1)
+
+        if word == 'apexes': print '3'
+
+# HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
+        mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
+        if mo:
+            return "%s" % mo.group(1)
+
+
+# UNASSIMILATED IMPORTS FINAL RULE
+
+        for a in (
+                  (r"(.*[s])es$", "%sis"), # test too general to have earlier
+                  # remove 'x' from test as only word is axes -> axis, but axes -> axe too
+                  # remove 'c' from test. What words need this?
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % mo.group(1)
+
+# BACK TO: HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
+
+# Wouldn't special words
+# ending with 's' always have been caught, regardless of them starting
+# with a capital letter (i.e. being names)
+# It makes sense below to do this for words ending in 'y' so that
+# Sally -> Sallys. But not sure it makes sense here. Where is the case
+# of a word ending in s that is caught here and would otherwise have been
+# caught below?
+#
+# removing it as I can't find a case that executes it
+# TODO: check this again
+#
+#        if (self.classical_dict['names']):
+#            mo = search(r"([A-Z].*ses)$", word)
+#            if mo:
+#                return "%s" % mo.group(1)
+
+        mo = search(r"(%s)es$" % pl_sb_z_zes, word, IGNORECASE)
+        if mo:
+            return "%s" % mo.group(1)
+
+
+        mo = search(r"^(.*[^z])(zzes)$", word, IGNORECASE)
+        if mo:
+            return "%sz" % mo.group(1)
+
+        for a in (
+                  (r"^(.*)([cs]h|x|zz|ss)es$",  "%s%s"),
+#                  (r"(.*)(us)es$", "%s%s"),  TODO: why is this commented?
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % (mo.group(1), mo.group(2))
+
+
+# HANDLE ...f -> ...ves
+
+        for a in (
+                  (r"(.*[eao])lves$", "%slf"),
+                  (r"(.*[^d])eaves$", "%seaf"),
+                  (r"(.*[nlw])ives$", "%sife"),
+                  (r"(.*)arves$", "%sarf"),
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % mo.group(1)
+
+# HANDLE ...y
+
+        mo = search(r"(.*[aeiou])ys$", word, IGNORECASE)
+        if mo:
+            return "%sy" % mo.group(1)
+
+        if (self.classical_dict['names']):
+            mo = search(r"([A-Z].*y)s$", word)
+            if mo:
+                return "%s" % mo.group(1)
+
+        mo = search(r"(.*)ies$", word, IGNORECASE)
+        if mo:
+            return "%sy" % mo.group(1)
+
+
+# HANDLE ...o
+
+        for a in (
+                  r"(%s)s$" % pl_sb_U_o_os,
+                  r"(.*[aeiou]o)s$",
+                  r"(.*o)es$",
+                 ):
+            mo = search(a, word, IGNORECASE)
+            if mo:
+                return "%s" % mo.group(1)
+
+# OTHERWISE JUST REMOVE ...s
+
+        if lowerword[-1] == 's':
+            return word[:-1]
+
+
+# COULD NOT FIND SINGULAR
         return False
 
 
