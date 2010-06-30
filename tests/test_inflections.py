@@ -994,7 +994,7 @@ class test(unittest.TestCase):
                trauma  ->  traumas|traumata
               travois  ->  travois
               trellis  ->  trellises
-                tries  ->  try
+     TODO:siverb           tries  ->  try
                trilby  ->  trilbys
              trousers  ->  trousers
             trousseau  ->  trousseaus|trousseaux
