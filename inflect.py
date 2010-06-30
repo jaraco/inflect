@@ -1876,7 +1876,7 @@ class engine:
         ordinal('one') returns 'first'
 
         '''
-        if match(r"\d", num):
+        if match(r"\d", str(num)):
             n = int(num)
             try:
                 post = nth[n%100]

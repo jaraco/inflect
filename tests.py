@@ -265,6 +265,7 @@ class test(unittest.TestCase):
                             (p.pl, 'a', 'some'),
                             (p.pl, 'carmen', 'carmina'),
                             (p.pl, 'quartz', 'quartzes'),
+                            (p.pl, 'care', 'cares'),
                             (p.plnoun, '',''),
                             (p.plnoun, 'cow','cows'),
                             (p.plnoun, 'thought','thoughts'),
