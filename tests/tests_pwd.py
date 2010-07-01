@@ -6,8 +6,9 @@ from re import error as reerror
 import inflect
 
 reload(inflect)
-from inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassicalModeError
-from inflect import UnknownClassicalModeError, BadNumValueError
+from ..inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassicalModeError
+from ..inflect import UnknownClassicalModeError, BadNumValueError
+from .. import inflect
 
 class test(unittest.TestCase):
 

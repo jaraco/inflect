@@ -29,7 +29,7 @@ sub ok($;$$)
 '''
 import unittest
 
-import inflect
+from .. import inflect
 
 class test(unittest.TestCase):
     def is_eq(self, p, a, b):
