@@ -513,6 +513,50 @@ si_sb_uses_use = (
     'ruses', 'souses', 'spouses', 'suffuses', 'transfuses', 'uses', 
 )
 
+si_sb_ies_ie = (
+    'Addies', 'Aggies', 'Allies', 'Amies', 'Angies', 'Annies',
+'Annmaries', 'Archies', 'Arties', 'Aussies', 'Barbies',
+'Barries', 'Basies', 'Bennies', 'Bernies', 'Berties', 'Bessies',
+'Betties', 'Billies', 'Blondies', 'Bobbies', 'Bonnies',
+'Bowies', 'Brandies', 'Bries', 'Brownies', 'Callies',
+'Carnegies', 'Carries', 'Cassies', 'Charlies', 'Cheries',
+'Christies', 'Connies', 'Curies', 'Dannies', 'Debbies', 'Dixies',
+'Dollies', 'Donnies', 'Drambuies', 'Eddies', 'Effies', 'Ellies',
+'Elsies', 'Eries', 'Ernies', 'Essies', 'Eugenies', 'Fannies',
+'Flossies', 'Frankies', 'Freddies', 'Gillespies', 'Goldies',
+'Gracies', 'Guthries', 'Hallies', 'Hatties', 'Hetties',
+'Hollies', 'Jackies', 'Jamies', 'Janies', 'Jannies', 'Jeanies',
+'Jeannies', 'Jennies', 'Jessies', 'Jimmies', 'Jodies', 'Johnies',
+'Johnnies', 'Josies', 'Julies', 'Kalgoorlies', 'Kathies', 'Katies',
+'Kellies', 'Kewpies', 'Kristies', 'Laramies', 'Lassies', 'Lauries',
+'Leslies', 'Lessies', 'Lillies', 'Lizzies', 'Lonnies', 'Lories',
+'Lorries', 'Lotties', 'Louies', 'Mackenzies', 'Maggies', 'Maisies',
+'Mamies', 'Marcies', 'Margies', 'Maries', 'Marjories', 'Matties',
+'McKenzies', 'Melanies', 'Mickies', 'Millies', 'Minnies', 'Mollies',
+'Mounties', 'Nannies', 'Natalies', 'Nellies', 'Netties', 'Ollies',
+'Ozzies', 'Pearlies', 'Pottawatomies', 'Reggies', 'Richies', 'Rickies',
+'Robbies', 'Ronnies', 'Rosalies', 'Rosemaries', 'Rosies', 'Roxies',
+'Rushdies', 'Ruthies', 'Sadies', 'Sallies', 'Sammies', 'Scotties',
+'Selassies', 'Sherries', 'Sophies', 'Stacies', 'Stefanies', 'Stephanies',
+'Stevies', 'Susies', 'Sylvies', 'Tammies', 'Terries', 'Tessies',
+'Tommies', 'Tracies', 'Trekkies', 'Valaries', 'Valeries', 'Valkyries',
+'Vickies', 'Virgies', 'Willies', 'Winnies', 'Wylies', 'Yorkies',
+'aeries', 'baggies', 'belies', 'biggies', 'birdies', 'bogies',
+'bonnies', 'boogies', 'bookies', 'booties', 'bourgeoisies', 'brownies',
+'budgies', 'cabbies', 'caddies', 'calories', 'camaraderies', 'cockamamies',
+'collies', 'cookies', 'coolies', 'cooties', 'coteries', 'crappies',
+'curies', 'cutesies', 'doggies', 'dogies', 'floozies', 'footsies',
+'freebies', 'genies', 'goalies', 'goodies', 'grannies', 'groupies',
+'hankies', 'hies', 'hippies', 'hoagies', 'jalousies', 'junkies',
+'kiddies', 'kookies', 'laddies', 'lassies', 'lefties', 'lies',
+'lingeries', 'magpies', 'menageries', 'mommies', 'movies', 'neckties',
+'newbies', 'nighties', 'oldies', 'organdies', 'overlies', 'panties',
+'pies', 'pinkies', 'pixies', 'potpies', 'prairies', 'preppies',
+'quickies', 'reveries', 'rookies', 'rotisseries', 'softies', 'sorties',
+'species', 'stymies', 'sweeties', 'ties', 'underlies', 'unties',
+'veggies', 'vies', 'woolies', 'yuppies', 'zombies',
+)
+
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
     pl_sb_uninflected_s +
@@ -1908,6 +1952,11 @@ class engine:
 # HANDLE PLURLS ENDING IN uses -> use
 
         if word[-6:] == 'houses' or word in si_sb_uses_use:
+            return word[:-1]
+
+# HANDLE PLURLS ENDING IN ies -> ie
+
+        if word in si_sb_ies_ie:
             return word[:-1]
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
