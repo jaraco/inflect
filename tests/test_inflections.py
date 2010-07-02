@@ -598,7 +598,7 @@ class test(unittest.TestCase):
            Hoosierese  ->  Hoosierese
     TODO:siverb       horseshoes  ->  horseshoe
          Hottentotese  ->  Hottentotese
-    TODO:sinoun            house  ->  houses
+                house  ->  houses
             housewife  ->  housewives
                hubris  ->  hubrises
                 human  ->  humans

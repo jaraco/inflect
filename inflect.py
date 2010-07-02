@@ -557,6 +557,16 @@ si_sb_ies_ie = (
 'veggies', 'vies', 'woolies', 'yuppies', 'zombies',
 )
 
+
+si_sb_oes_oe = (
+    'Chloes', 'Crusoes', 'Defoes', 'Faeroes', 'Ivanhoes', 'Joes',
+    'McEnroes', 'Moes', 'Monroes', 'Noes', 'Poes', 'Roscoes',
+    'Tahoes', 'Tippecanoes', 'Zoes', 'aloes', 'backhoes', 'canoes',
+    'does', 'floes', 'foes', 'hoes', 'mistletoes',
+    'oboes', 'pekoes', 'roes', 'sloes',
+    'throes', 'tiptoes', 'toes', 'woes',
+)
+
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
     pl_sb_uninflected_s +
@@ -581,9 +591,23 @@ pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
 
 # PLURAL WORDS ENDING IS es GO TO SINGULAR is
 
-si_sb_es_is = joinstem(-2, ((
-    "bases",
-)))
+si_sb_es_is = (
+'amanuenses', 'amniocenteses', 'analyses', 'antitheses',
+'apotheoses', 'arterioscleroses', 'atheroscleroses', 'axes',
+'bases', 'catalyses', 'catharses', 'chasses', 'cirrhoses',
+'cocces', 'crises', 'diagnoses', 'dialyses', 'diereses',
+'electrolyses', 'ellipses', 'emphases', 'exegeses', 'geneses',
+'halitoses', 'hydrolyses', 'hypnoses', 'hypotheses', 'hystereses',
+'metamorphoses', 'metastases', 'misdiagnoses', 'mitoses', 
+'mononucleoses', 'narcoses', 'necroses', 'nemeses', 'neuroses',
+'oases', 'osmoses', 'osteoporoses', 'paralyses', 'parentheses',
+'parthenogeneses', 'periphrases', 'photosyntheses', 'probosces',
+'prognoses', 'prophylaxes', 'prostheses', 'preces', 'psoriases',
+'psychoanalyses', 'psychokineses', 'psychoses', 'scleroses',
+'scolioses', 'sepses', 'silicoses', 'symbioses', 'synopses',
+'syntheses', 'taxes', 'telekineses', 'theses', 'thromboses',
+'tuberculoses', 'urinalyses',
+)
 
 pl_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
@@ -1959,6 +1983,12 @@ class engine:
         if word in si_sb_ies_ie:
             return word[:-1]
 
+
+# HANDLE PLURLS ENDING IN oes -> oe
+
+        if word[-5:] == 'shoes' or word in si_sb_oes_oe:
+            return word[:-1]
+
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
         mo = search(r"(%s)es$" % pl_sb_singular_s, word)
@@ -2049,14 +2079,8 @@ class engine:
 
 # UNASSIMILATED IMPORTS FINAL RULE
 
-        for a in (
-                  (r"(%s)es$" % si_sb_es_is, "%sis"), # test too general to have earlier
-                  # remove 'x' from test as only word is axes -> axis, but axes -> axe too
-                  # remove 'c' from test. What words need this?
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
+        if word in si_sb_es_is:
+            return word[:-2] + 'is'
 
 
 # OTHERWISE JUST REMOVE ...s
