@@ -5,8 +5,10 @@ from nose.tools import eq_
 
 from .. import inflect
 
-FNAME = 'tests/words.txt'
-FNAME = 'tests/list-of-nouns.txt'
+#FNAME = 'tests/words.txt'
+#FNAME = 'tests/list-of-nouns.txt'
+#FNAME = '/usr/share/dict/british-english'
+FNAME = 'tricky.txt'
 
 def getwords():
     words = open(FNAME).readlines()
@@ -18,6 +20,10 @@ def test_pl_si():
     words = getwords()
     for word in words:
         if word == '':
+            continue
+        if word[-2:] == "'s":
+            continue
+        if word[-1] == 's':
             continue
         yield check_pl_si, p, word
 

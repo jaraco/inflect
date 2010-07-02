@@ -502,8 +502,11 @@ pl_sb_singular_s = enclose('|'.join ([
 
 # PLURALS ENDING IN uses -> use
 
-si_sb_uses_use = (
+si_sb_uses_use_case = (
     'Betelgeuses', 'Duses', 'Meuses', 'Syracuses', 'Toulouses',
+    )
+
+si_sb_uses_use = (
     'abuses', 'applauses', 'blouses',
     'carouses', 'causes', 'chartreuses', 'clauses',
     'contuses', 'douses', 'excuses', 'fuses', 
@@ -513,7 +516,7 @@ si_sb_uses_use = (
     'ruses', 'souses', 'spouses', 'suffuses', 'transfuses', 'uses', 
 )
 
-si_sb_ies_ie = (
+si_sb_ies_ie_case = (
     'Addies', 'Aggies', 'Allies', 'Amies', 'Angies', 'Annies',
 'Annmaries', 'Archies', 'Arties', 'Aussies', 'Barbies',
 'Barries', 'Basies', 'Bennies', 'Bernies', 'Berties', 'Bessies',
@@ -541,6 +544,9 @@ si_sb_ies_ie = (
 'Stevies', 'Susies', 'Sylvies', 'Tammies', 'Terries', 'Tessies',
 'Tommies', 'Tracies', 'Trekkies', 'Valaries', 'Valeries', 'Valkyries',
 'Vickies', 'Virgies', 'Willies', 'Winnies', 'Wylies', 'Yorkies',
+    )
+
+si_sb_ies_ie = (
 'aeries', 'baggies', 'belies', 'biggies', 'birdies', 'bogies',
 'bonnies', 'boogies', 'bookies', 'booties', 'bourgeoisies', 'brownies',
 'budgies', 'cabbies', 'caddies', 'calories', 'camaraderies', 'cockamamies',
@@ -558,14 +564,47 @@ si_sb_ies_ie = (
 )
 
 
-si_sb_oes_oe = (
+si_sb_oes_oe_case = (
     'Chloes', 'Crusoes', 'Defoes', 'Faeroes', 'Ivanhoes', 'Joes',
     'McEnroes', 'Moes', 'Monroes', 'Noes', 'Poes', 'Roscoes',
-    'Tahoes', 'Tippecanoes', 'Zoes', 'aloes', 'backhoes', 'canoes',
+    'Tahoes', 'Tippecanoes', 'Zoes',
+    )
+
+si_sb_oes_oe = (
+    'aloes', 'backhoes', 'canoes',
     'does', 'floes', 'foes', 'hoes', 'mistletoes',
     'oboes', 'pekoes', 'roes', 'sloes',
     'throes', 'tiptoes', 'toes', 'woes',
 )
+
+si_sb_zzes_zz = (
+'buzzes', 'fizzes', 'frizzes', 'razzes' 
+    )
+
+si_sb_ches_che_case = (
+'Andromaches', 'Apaches', 'Blanches',  'Comanches',
+'Nietzsches', 'Porsches', 'Roches',
+)
+
+si_sb_ches_che = (
+'aches', 'avalanches', 'backaches', 'bellyaches', 'caches',
+'cloches', 'creches', 'douches', 'earaches', 'fiches',
+'headaches', 'heartaches', 'microfiches',
+ 'niches', 'pastiches', 'psyches', 'quiches',
+'stomachaches', 'toothaches',
+)
+
+si_sb_xes_xe = (
+'annexes', 'axes', 'deluxes', 'pickaxes',
+    )
+
+si_sb_sses_sse_case = (
+'Hesses', 'Jesses', 'Larousses', 'Matisses',
+)
+si_sb_sses_sse = (
+'bouillabaisses', 'crevasses', 'demitasses', 'impasses',
+'mousses', 'posses',
+    )
 
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
@@ -1815,7 +1854,6 @@ class engine:
     def _sinoun(self, word, count=None):
         count = self.get_count(count)
 
-        if word == 'houses': print 'here 6'
 
 # DEFAULT TO PLURAL
 
@@ -1861,7 +1899,6 @@ class engine:
         if mo and mo.group(2) != '':
                 return "%s%s" % (self._sinoun(mo.group(1), 1), mo.group(2))
 
-        if word == 'houses': print 'here 5'
 
 # HANDLE PRONOUNS
 
@@ -1920,7 +1957,6 @@ class engine:
             if mo:
                 return a[1] % mo.group(1)
 
-        if word == 'houses': print 'here 4'
 
 # HANDLE UNASSIMILATED IMPORTS
 
@@ -1941,8 +1977,6 @@ class engine:
             mo = search(a[0], word, IGNORECASE)
             if mo:
                 return a[1] % mo.group(1)
-
-        if word == 'houses': print 'here 3'
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
@@ -1971,25 +2005,33 @@ class engine:
                 if mo:
                     return a[1] % mo.group(1)
 
-        if word == 'houses': print 'here 2.7'
 
 # HANDLE PLURLS ENDING IN uses -> use
 
-        if word[-6:] == 'houses' or word in si_sb_uses_use:
+        if (lowerword[-6:] == 'houses' or
+            word in si_sb_uses_use_case or
+            lowerword in si_sb_uses_use):
             return word[:-1]
 
 # HANDLE PLURLS ENDING IN ies -> ie
 
-        if word in si_sb_ies_ie:
+        if word in si_sb_ies_ie_case or lowerword in si_sb_ies_ie:
             return word[:-1]
 
 
 # HANDLE PLURLS ENDING IN oes -> oe
 
-        if word[-5:] == 'shoes' or word in si_sb_oes_oe:
+        if (lowerword[-5:] == 'shoes' or
+            word in si_sb_oes_oe_case or
+            lowerword in si_sb_oes_oe):
             return word[:-1]
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
+        if word == 'impasses': print 'here c'
+
+        if (word in si_sb_sses_sse_case or
+            lowerword in si_sb_sses_sse):
+            return word[:-1]
 
         mo = search(r"(%s)es$" % pl_sb_singular_s, word)
         #TODO: stop [A-Z].*es matching all words, something sublter than above line which stopping any upper case matching other words
@@ -1997,8 +2039,8 @@ class engine:
         if mo:
             return "%s" % mo.group(1)
 
-        if word == 'houses': print 'here 2.5'
 
+        if word == 'impasses': print 'here j'
 
 
 # Wouldn't special words
@@ -2021,20 +2063,27 @@ class engine:
         if mo:
             return "%s" % mo.group(1)
 
-        if word == 'houses': print 'here 2'
+        if lowerword in si_sb_zzes_zz:
+            return word[:-2]
 
+        if lowerword[-4:] == 'zzes':
+            return word[:-3]
 
-        mo = search(r"^(.*[^z])(zzes)$", word, IGNORECASE)
-        if mo:
-            return "%sz" % mo.group(1)
+        if (word in si_sb_ches_che_case or
+            lowerword in si_sb_ches_che):
+            return word[:-1]
 
-        for a in (
-                  (r"^(.*)([cs]h|x|zz|ss)es$",  "%s%s"),
+        if lowerword[-4:] in ('ches', 'shes'):
+            return word[:-2]
+
+        if lowerword in si_sb_xes_xe:
+            return word[:-1]
+
+        if lowerword[-3:] == 'xes':
+            return word[:-2]
+
+            
 #                  (r"(.*)(us)es$", "%s%s"),  TODO: why is this commented?
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % (mo.group(1), mo.group(2))
 
 
 # HANDLE ...f -> ...ves
@@ -2064,7 +2113,6 @@ class engine:
         if mo:
             return "%sy" % mo.group(1)
 
-        if word == 'houses': print 'here 1'
 
 # HANDLE ...o
 
