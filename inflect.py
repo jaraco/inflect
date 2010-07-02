@@ -500,6 +500,18 @@ pl_sb_singular_s = enclose('|'.join ([
    ] + pl_sb_C_is_ides
 ))
 
+# PLURALS ENDING IN uses -> use
+
+si_sb_uses_use = (
+    'Betelgeuses', 'Duses', 'Meuses', 'Syracuses', 'Toulouses',
+    'abuses', 'applauses', 'blouses',
+    'carouses', 'causes', 'chartreuses', 'clauses',
+    'contuses', 'douses', 'excuses', 'fuses', 
+    'grouses', 'hypotenuses', 'masseuses',
+    'menopauses', 'misuses', 'muses', 'overuses', 'pauses',
+    'peruses', 'profuses', 'recluses', 'reuses',
+    'ruses', 'souses', 'spouses', 'suffuses', 'transfuses', 'uses', 
+)
 
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
@@ -522,6 +534,12 @@ for k in pl_sb_postfix_adj.keys():
 
 pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
 
+
+# PLURAL WORDS ENDING IS es GO TO SINGULAR is
+
+si_sb_es_is = joinstem(-2, ((
+    "bases",
+)))
 
 pl_prep = enclose('|'.join( """
     about above across after among around at athwart before behind
@@ -1729,6 +1747,8 @@ class engine:
     def _sinoun(self, word, count=None):
         count = self.get_count(count)
 
+        if word == 'houses': print 'here 6'
+
 # DEFAULT TO PLURAL
 
         if count!=1:
@@ -1772,6 +1792,8 @@ class engine:
         mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
         if mo and mo.group(2) != '':
                 return "%s%s" % (self._sinoun(mo.group(1), 1), mo.group(2))
+
+        if word == 'houses': print 'here 5'
 
 # HANDLE PRONOUNS
 
@@ -1830,7 +1852,7 @@ class engine:
             if mo:
                 return a[1] % mo.group(1)
 
-        if word == 'apexes': print '1'
+        if word == 'houses': print 'here 4'
 
 # HANDLE UNASSIMILATED IMPORTS
 
@@ -1852,7 +1874,7 @@ class engine:
             if mo:
                 return a[1] % mo.group(1)
 
-        if word == 'apexes': print '2'
+        if word == 'houses': print 'here 3'
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
@@ -1881,26 +1903,24 @@ class engine:
                 if mo:
                     return a[1] % mo.group(1)
 
-        if word == 'apexes': print '3'
+        if word == 'houses': print 'here 2.7'
+
+# HANDLE PLURLS ENDING IN uses -> use
+
+        if word[-6:] == 'houses' or word in si_sb_uses_use:
+            return word[:-1]
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
-        mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
+
+        mo = search(r"(%s)es$" % pl_sb_singular_s, word)
+        #TODO: stop [A-Z].*es matching all words, something sublter than above line which stopping any upper case matching other words
+        #mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
         if mo:
             return "%s" % mo.group(1)
 
+        if word == 'houses': print 'here 2.5'
 
-# UNASSIMILATED IMPORTS FINAL RULE
 
-        for a in (
-                  (r"(.*[s])es$", "%sis"), # test too general to have earlier
-                  # remove 'x' from test as only word is axes -> axis, but axes -> axe too
-                  # remove 'c' from test. What words need this?
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
-
-# BACK TO: HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
 # Wouldn't special words
 # ending with 's' always have been caught, regardless of them starting
@@ -1921,6 +1941,8 @@ class engine:
         mo = search(r"(%s)es$" % pl_sb_z_zes, word, IGNORECASE)
         if mo:
             return "%s" % mo.group(1)
+
+        if word == 'houses': print 'here 2'
 
 
         mo = search(r"^(.*[^z])(zzes)$", word, IGNORECASE)
@@ -1963,6 +1985,7 @@ class engine:
         if mo:
             return "%sy" % mo.group(1)
 
+        if word == 'houses': print 'here 1'
 
 # HANDLE ...o
 
@@ -1974,6 +1997,18 @@ class engine:
             mo = search(a, word, IGNORECASE)
             if mo:
                 return "%s" % mo.group(1)
+
+# UNASSIMILATED IMPORTS FINAL RULE
+
+        for a in (
+                  (r"(%s)es$" % si_sb_es_is, "%sis"), # test too general to have earlier
+                  # remove 'x' from test as only word is axes -> axis, but axes -> axe too
+                  # remove 'c' from test. What words need this?
+                 ):
+            mo = search(a[0], word, IGNORECASE)
+            if mo:
+                return a[1] % mo.group(1)
+
 
 # OTHERWISE JUST REMOVE ...s
 

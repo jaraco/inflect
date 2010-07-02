@@ -6,7 +6,7 @@ from nose.tools import eq_
 from .. import inflect
 
 FNAME = 'tests/words.txt'
-#FNAME = 'tests/list-of-nouns.txt'
+FNAME = 'tests/list-of-nouns.txt'
 
 def getwords():
     words = open(FNAME).readlines()
@@ -24,13 +24,11 @@ def test_pl_si():
 
 def check_pl_si(p, word):
 
-        '''
-	if p.sinoun(p.plnoun(word, 2), 1) != word:
+ 	if p.sinoun(p.plnoun(word, 2), 1) != word:
             f = open('badsi.txt','a')
             f.write('%s %s %s\n' % ( word, p.plnoun(word, 2),
                                    p.sinoun(p.plnoun(word, 2), 1))) 
             f.close()
-        '''
         eq_(p.sinoun(p.plnoun(word, 2), 1), word,
                              msg='''word==%s
 plnoun(%s)==%s
