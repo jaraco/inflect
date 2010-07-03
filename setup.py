@@ -15,7 +15,7 @@ setup(name='inflect',
         "Programming Language :: Python",
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "License :: OSI Approved :: GNU Affero General Public License v3"
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
