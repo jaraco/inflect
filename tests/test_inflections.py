@@ -1,236 +1,208 @@
-'''
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl test.pl'
 
-######################### We start with some black magic to print on failure.
-
-# Change 1..1 below to 1..last_test_to_print .
-# (It may become useful if the test is moved to ./t subdirectory.)
-
-END {print "not ok 1\n" unless $loaded;}
-use Lingua::EN::Inflect qw( :ALL );
-$loaded = 1;
-print "ok 1\n";
-
-my $count = 2;
-sub ok($;$$)
-{
-    my $ok = $_[0];
-    print "not " unless $ok;
-    print "ok $count";
-    print "\t# $_[1]" if $_[1];
-    print " -> $_[2]" if $_[2];
-    print "\n";
-    $count++;
-    return $ok;
-}
-
-######################### End of black magic.
-'''
-import unittest
+from nose.tools import eq_, assert_not_equal
 
 from .. import inflect
 
-class test(unittest.TestCase):
-    def is_eq(self, p, a, b):
-        return (p.plequal(a, b) or
-        p.plnounequal(a, b) or
-        p.plverbequal(a, b) or
-        p.pladjequal(a, b) )
+def is_eq(p, a, b):
+    return (p.plequal(a, b) or
+    p.plnounequal(a, b) or
+    p.plverbequal(a, b) or
+    p.pladjequal(a, b) )
 
-    def test_many(self):
+def test_many():
+    p = inflect.engine()
+    
+    data = get_data()
+    
+    for line in data:
+        if 'TODO:' in line:
+            continue
+        try:
+            singular, rest = line.split('->',1)
+        except ValueError:
+            continue
+        singular = singular.strip()
+        rest = rest.strip()
+        try:
+            plural, comment = rest.split('#',1)
+        except ValueError:
+            plural = rest.strip()
+            comment = ''
+        try:
+            mod_plural, class_plural = plural.split("|", 1)
+            mod_plural = mod_plural.strip()
+            class_plural = class_plural.strip()
+        except ValueError:
+            mod_plural = class_plural = plural.strip()
+        if 'verb' in comment.lower():
+            is_nv = '_V'
+        elif 'noun' in comment.lower():
+            is_nv = '_N'
+        else:
+            is_nv = ''
 
-        p = inflect.engine()
+
+        p.classical(all=0, names=0)
+        mod_PL_V     = p.plverb(singular)
+        mod_PL_N     = p.plnoun(singular)
+        mod_PL       = p.pl(singular)
+        if is_nv == '_V':
+            mod_PL_val = mod_PL_V
+        elif is_nv == '_N':
+            mod_PL_val = mod_PL_N
+        else:
+            mod_PL_val = mod_PL
+
+
+        p.classical(all=1)
+        class_PL_V     = p.plverb(singular)
+        class_PL_N     = p.plnoun(singular)
+        class_PL       = p.pl(singular)
+        if is_nv == '_V':
+            class_PL_val = class_PL_V
+        elif is_nv == '_N':
+            class_PL_val = class_PL_N
+        else:
+            class_PL_val = class_PL
+
+        yield check_all, p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural
         
-        data = self.get_data()
+def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural):
+        eq_(mod_plural, mod_PL_val)
+        eq_(class_plural, class_PL_val)
+        eq_(is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True, msg='is_eq(%s,%s) == %s != %s' % (singular, mod_plural,is_eq(p, singular, mod_plural), 's:p, p:s or eq'))
+        eq_(is_eq(p, mod_plural, singular) in ('p:s', 's:p', 'eq'), True, msg='is_eq(%s,%s) == %s != %s' % (mod_plural, singular, is_eq(p, mod_plural, singular), 's:p, p:s or eq'))
+        eq_(is_eq(p, singular, class_plural) in ('s:p', 'p:s', 'eq'), True)
+        eq_(is_eq(p, class_plural, singular) in ('p:s', 's:p', 'eq'), True)
+        assert_not_equal(singular, '')
+        eq_(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
 
-        
-        for line in data:
-            if 'TODO:' in line:
-                continue
-            try:
-                singular, rest = line.split('->',1)
-            except ValueError:
-                continue
-            singular = singular.strip()
-            rest = rest.strip()
-            try:
-                plural, comment = rest.split('#',1)
-            except ValueError:
-                plural = rest.strip()
-                comment = ''
-            try:
-                mod_plural, class_plural = plural.split("|", 1)
-                mod_plural = mod_plural.strip()
-                class_plural = class_plural.strip()
-            except ValueError:
-                mod_plural = class_plural = plural.strip()
-            if 'verb' in comment.lower():
-                is_nv = '_V'
-            elif 'noun' in comment.lower():
-                is_nv = '_N'
-            else:
-                is_nv = ''
+        print singular, mod_plural
+        if is_nv != '_V':
+            eq_(p.sinoun(mod_plural, 1), singular,
+                         msg="p.sinoun(%s) == %s != %s" % (
+                             mod_plural, p.sinoun(mod_plural, 1), singular) )
+
+            eq_(p.sinoun(class_plural, 1), singular,
+                         msg="p.sinoun(%s) == %s != %s" % (
+                             class_plural, p.sinoun(class_plural, 1), singular) )
 
 
-            p.classical(all=0, names=0)
-            mod_PL_V     = p.plverb(singular)
-            mod_PL_N     = p.plnoun(singular)
-            mod_PL       = p.pl(singular)
-            if is_nv == '_V':
-                mod_PL_val = mod_PL_V
-            elif is_nv == '_N':
-                mod_PL_val = mod_PL_N
-            else:
-                mod_PL_val = mod_PL
+        '''
+        don't see any test data for this ???
+        elsif (/^\s+(an?)\s+(.*?)\s*$/)
+        {
+            $article = $1;
+            $word    = $2;
+            $Aword   = A($word);
+    
+            ok ("$article $word" eq $Aword, "$article $word");
+        }
+        '''
 
+def test_def():
+    p = inflect.engine()
+    
+    p.defnoun("kin", "kine")
+    p.defnoun('(.*)x', '$1xen')
 
-            p.classical(all=1)
-            class_PL_V     = p.plverb(singular)
-            class_PL_N     = p.plnoun(singular)
-            class_PL       = p.pl(singular)
-            if is_nv == '_V':
-                class_PL_val = class_PL_V
-            elif is_nv == '_N':
-                class_PL_val = class_PL_N
-            else:
-                class_PL_val = class_PL
+    p.defverb('foobar' , 'feebar',
+             'foobar' , 'feebar',
+             'foobars', 'feebar')
+    
+    p.defadj('red', 'red|gules')
+    
+    eq_( p.no("kin",0),  "no kine", msg="kin -> kine (user defined)..." );
+    eq_( p.no("kin",1),  "1 kin" );
+    eq_( p.no("kin",2),  "2 kine" );
+    
+    eq_( p.no("regex",0),  "no regexen", msg="regex -> regexen (user defined)" );
 
-            self.assertEqual(mod_plural, mod_PL_val)
-            self.assertEqual(class_plural, class_PL_val)
-            self.assertEqual(self.is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True, msg='is_eq(%s,%s) == %s != %s' % (singular, mod_plural,self.is_eq(p, singular, mod_plural), 's:p, p:s or eq'))
-            self.assertEqual(self.is_eq(p, mod_plural, singular) in ('p:s', 's:p', 'eq'), True, msg='is_eq(%s,%s) == %s != %s' % (mod_plural, singular, self.is_eq(p, mod_plural, singular), 's:p, p:s or eq'))
-            self.assertEqual(self.is_eq(p, singular, class_plural) in ('s:p', 'p:s', 'eq'), True)
-            self.assertEqual(self.is_eq(p, class_plural, singular) in ('p:s', 's:p', 'eq'), True)
-            self.assertNotEqual(singular, '')
-            self.assertEqual(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
+    eq_( p.pl("foobar",2),  "feebar", msg="foobar -> feebar (user defined)..." );
+    eq_( p.pl("foobars",2),  "feebar" );
 
-            print singular, mod_plural
-            if is_nv != '_V':
-                self.assertEqual(p.sinoun(mod_plural, 1), singular,
-                             msg="p.sinoun(%s) == %s != %s" % (
-                                 mod_plural, p.sinoun(mod_plural, 1), singular) )
+    eq_( p.pl("red",0),  "red", msg="red -> red..." );
+    eq_( p.pl("red",1),  "red" );
+    eq_( p.pl("red",2),  "red" );
+    p.classical(1)
+    eq_( p.pl("red",0),  "red" , msg="red -> gules...");
+    eq_( p.pl("red",1),  "red" );
+    eq_( p.pl("red",2),  "gules" );
 
-                self.assertEqual(p.sinoun(class_plural, 1), singular,
-                             msg="p.sinoun(%s) == %s != %s" % (
-                                 class_plural, p.sinoun(class_plural, 1), singular) )
+def test_ordinal():
+    p = inflect.engine()
+    eq_( p.ordinal(0),  "0th", msg="0 -> 0th..." );
+    eq_( p.ordinal(1),  "1st" );
+    eq_( p.ordinal(2),  "2nd" );
+    eq_( p.ordinal(3),  "3rd" );
+    eq_( p.ordinal(4),  "4th" );
+    eq_( p.ordinal(5),  "5th" );
+    eq_( p.ordinal(6),  "6th" );
+    eq_( p.ordinal(7),  "7th" );
+    eq_( p.ordinal(8),  "8th" );
+    eq_( p.ordinal(9),  "9th" );
+    eq_( p.ordinal(10),  "10th" );
+    eq_( p.ordinal(11),  "11th" );
+    eq_( p.ordinal(12),  "12th" );
+    eq_( p.ordinal(13),  "13th" );
+    eq_( p.ordinal(14),  "14th" );
+    eq_( p.ordinal(15),  "15th" );
+    eq_( p.ordinal(16),  "16th" );
+    eq_( p.ordinal(17),  "17th" );
+    eq_( p.ordinal(18),  "18th" );
+    eq_( p.ordinal(19),  "19th" );
+    eq_( p.ordinal(20),  "20th" );
+    eq_( p.ordinal(21),  "21st" );
+    eq_( p.ordinal(22),  "22nd" );
+    eq_( p.ordinal(23),  "23rd" );
+    eq_( p.ordinal(24),  "24th" );
+    eq_( p.ordinal(100),  "100th" );
+    eq_( p.ordinal(101),  "101st" );
+    eq_( p.ordinal(102),  "102nd" );
+    eq_( p.ordinal(103),  "103rd" );
+    eq_( p.ordinal(104),  "104th" );
 
+    eq_( p.ordinal('zero'),  "zeroth", msg="zero -> zeroth..." );
+    eq_( p.ordinal('one'),  "first" );
+    eq_( p.ordinal('two'),  "second" );
+    eq_( p.ordinal('three'),  "third" );
+    eq_( p.ordinal('four'),  "fourth" );
+    eq_( p.ordinal('five'),  "fifth" );
+    eq_( p.ordinal('six'),  "sixth" );
+    eq_( p.ordinal('seven'),  "seventh" );
+    eq_( p.ordinal('eight'),  "eighth" );
+    eq_( p.ordinal('nine'),  "ninth" );
+    eq_( p.ordinal('ten'),  "tenth" );
+    eq_( p.ordinal('eleven'),  "eleventh" );
+    eq_( p.ordinal('twelve'),  "twelfth" );
+    eq_( p.ordinal('thirteen'),  "thirteenth" );
+    eq_( p.ordinal('fourteen'),  "fourteenth" );
+    eq_( p.ordinal('fifteen'),  "fifteenth" );
+    eq_( p.ordinal('sixteen'),  "sixteenth" );
+    eq_( p.ordinal('seventeen'),  "seventeenth" );
+    eq_( p.ordinal('eighteen'),  "eighteenth" );
+    eq_( p.ordinal('nineteen'),  "nineteenth" );
+    eq_( p.ordinal('twenty'),  "twentieth" );
+    eq_( p.ordinal('twenty-one'),  "twenty-first" );
+    eq_( p.ordinal('twenty-two'),  "twenty-second" );
+    eq_( p.ordinal('twenty-three'),  "twenty-third" );
+    eq_( p.ordinal('twenty-four'),  "twenty-fourth" );
+    eq_( p.ordinal('one hundred'),  "one hundredth" );
+    eq_( p.ordinal('one hundred and one'),  "one hundred and first" );
+    eq_( p.ordinal('one hundred and two'),  "one hundred and second" );
+    eq_( p.ordinal('one hundred and three'),  "one hundred and third" );
+    eq_( p.ordinal('one hundred and four'),  "one hundred and fourth" );
 
-            '''
-            don't see any test data for this ???
-            elsif (/^\s+(an?)\s+(.*?)\s*$/)
-            {
-                $article = $1;
-                $word    = $2;
-                $Aword   = A($word);
-        
-                ok ("$article $word" eq $Aword, "$article $word");
-            }
-            '''
+def test_prespart():
+    p = inflect.engine()
+    eq_( p.prespart("sees"),  "seeing", msg="sees -> seeing..." );
+    eq_( p.prespart("eats"),  "eating" );
+    eq_( p.prespart("bats"),  "batting" );
+    eq_( p.prespart("hates"),  "hating" );
+    eq_( p.prespart("spies"),  "spying" );
+    eq_( p.prespart("skis"),  "skiing" );
 
-    def test_def(self):
-        p = inflect.engine()
-        
-        p.defnoun("kin", "kine")
-        p.defnoun('(.*)x', '$1xen')
-
-        p.defverb('foobar' , 'feebar',
-                 'foobar' , 'feebar',
-                 'foobars', 'feebar')
-        
-        p.defadj('red', 'red|gules')
-        
-        self.assertEqual( p.no("kin",0),  "no kine", msg="kin -> kine (user defined)..." );
-        self.assertEqual( p.no("kin",1),  "1 kin" );
-        self.assertEqual( p.no("kin",2),  "2 kine" );
-        
-        self.assertEqual( p.no("regex",0),  "no regexen", msg="regex -> regexen (user defined)" );
-
-        self.assertEqual( p.pl("foobar",2),  "feebar", msg="foobar -> feebar (user defined)..." );
-        self.assertEqual( p.pl("foobars",2),  "feebar" );
-
-        self.assertEqual( p.pl("red",0),  "red", msg="red -> red..." );
-        self.assertEqual( p.pl("red",1),  "red" );
-        self.assertEqual( p.pl("red",2),  "red" );
-        p.classical(1)
-        self.assertEqual( p.pl("red",0),  "red" , msg="red -> gules...");
-        self.assertEqual( p.pl("red",1),  "red" );
-        self.assertEqual( p.pl("red",2),  "gules" );
-
-    def test_ordinal(self):
-        p = inflect.engine()
-        self.assertEqual( p.ordinal(0),  "0th", msg="0 -> 0th..." );
-        self.assertEqual( p.ordinal(1),  "1st" );
-        self.assertEqual( p.ordinal(2),  "2nd" );
-        self.assertEqual( p.ordinal(3),  "3rd" );
-        self.assertEqual( p.ordinal(4),  "4th" );
-        self.assertEqual( p.ordinal(5),  "5th" );
-        self.assertEqual( p.ordinal(6),  "6th" );
-        self.assertEqual( p.ordinal(7),  "7th" );
-        self.assertEqual( p.ordinal(8),  "8th" );
-        self.assertEqual( p.ordinal(9),  "9th" );
-        self.assertEqual( p.ordinal(10),  "10th" );
-        self.assertEqual( p.ordinal(11),  "11th" );
-        self.assertEqual( p.ordinal(12),  "12th" );
-        self.assertEqual( p.ordinal(13),  "13th" );
-        self.assertEqual( p.ordinal(14),  "14th" );
-        self.assertEqual( p.ordinal(15),  "15th" );
-        self.assertEqual( p.ordinal(16),  "16th" );
-        self.assertEqual( p.ordinal(17),  "17th" );
-        self.assertEqual( p.ordinal(18),  "18th" );
-        self.assertEqual( p.ordinal(19),  "19th" );
-        self.assertEqual( p.ordinal(20),  "20th" );
-        self.assertEqual( p.ordinal(21),  "21st" );
-        self.assertEqual( p.ordinal(22),  "22nd" );
-        self.assertEqual( p.ordinal(23),  "23rd" );
-        self.assertEqual( p.ordinal(24),  "24th" );
-        self.assertEqual( p.ordinal(100),  "100th" );
-        self.assertEqual( p.ordinal(101),  "101st" );
-        self.assertEqual( p.ordinal(102),  "102nd" );
-        self.assertEqual( p.ordinal(103),  "103rd" );
-        self.assertEqual( p.ordinal(104),  "104th" );
-
-        self.assertEqual( p.ordinal('zero'),  "zeroth", msg="zero -> zeroth..." );
-        self.assertEqual( p.ordinal('one'),  "first" );
-        self.assertEqual( p.ordinal('two'),  "second" );
-        self.assertEqual( p.ordinal('three'),  "third" );
-        self.assertEqual( p.ordinal('four'),  "fourth" );
-        self.assertEqual( p.ordinal('five'),  "fifth" );
-        self.assertEqual( p.ordinal('six'),  "sixth" );
-        self.assertEqual( p.ordinal('seven'),  "seventh" );
-        self.assertEqual( p.ordinal('eight'),  "eighth" );
-        self.assertEqual( p.ordinal('nine'),  "ninth" );
-        self.assertEqual( p.ordinal('ten'),  "tenth" );
-        self.assertEqual( p.ordinal('eleven'),  "eleventh" );
-        self.assertEqual( p.ordinal('twelve'),  "twelfth" );
-        self.assertEqual( p.ordinal('thirteen'),  "thirteenth" );
-        self.assertEqual( p.ordinal('fourteen'),  "fourteenth" );
-        self.assertEqual( p.ordinal('fifteen'),  "fifteenth" );
-        self.assertEqual( p.ordinal('sixteen'),  "sixteenth" );
-        self.assertEqual( p.ordinal('seventeen'),  "seventeenth" );
-        self.assertEqual( p.ordinal('eighteen'),  "eighteenth" );
-        self.assertEqual( p.ordinal('nineteen'),  "nineteenth" );
-        self.assertEqual( p.ordinal('twenty'),  "twentieth" );
-        self.assertEqual( p.ordinal('twenty-one'),  "twenty-first" );
-        self.assertEqual( p.ordinal('twenty-two'),  "twenty-second" );
-        self.assertEqual( p.ordinal('twenty-three'),  "twenty-third" );
-        self.assertEqual( p.ordinal('twenty-four'),  "twenty-fourth" );
-        self.assertEqual( p.ordinal('one hundred'),  "one hundredth" );
-        self.assertEqual( p.ordinal('one hundred and one'),  "one hundred and first" );
-        self.assertEqual( p.ordinal('one hundred and two'),  "one hundred and second" );
-        self.assertEqual( p.ordinal('one hundred and three'),  "one hundred and third" );
-        self.assertEqual( p.ordinal('one hundred and four'),  "one hundred and fourth" );
-
-    def test_prespart(self):
-        p = inflect.engine()
-        self.assertEqual( p.prespart("sees"),  "seeing", msg="sees -> seeing..." );
-        self.assertEqual( p.prespart("eats"),  "eating" );
-        self.assertEqual( p.prespart("bats"),  "batting" );
-        self.assertEqual( p.prespart("hates"),  "hating" );
-        self.assertEqual( p.prespart("spies"),  "spying" );
-        self.assertEqual( p.prespart("skis"),  "skiing" );
-
-    def get_data(self):
+def get_data():
         return '''
                     a  ->  as                             # NOUN FORM
       TODO:sing              a  ->  some                           # INDEFINITE ARTICLE
@@ -305,7 +277,7 @@ class test(unittest.TestCase):
              aviatrix  ->  aviatrixes|aviatrices
     TODO:siadj       aviatrix's  ->  aviatrixes'|aviatrices'
            Avignonese  ->  Avignonese
-    TODO:sinoun gives ax              axe  ->  axes
+                  axe  ->  axes
     TODO:sinoun 2 anwers!            axis  ->  axes
                 axman  ->  axmen
         Azerbaijanese  ->  Azerbaijanese
@@ -355,7 +327,7 @@ class test(unittest.TestCase):
               Burmese  ->  Burmese
              bursitis  ->  bursitises|bursitides
                   bus  ->  buses
-     TODO:sinoun gives buz            buzz  ->  buzzes
+                 buzz  ->  buzzes
                buzzes  ->  buzz                           # VERB FORM
                 by it  ->  by them                        # ACCUSATIVE
                caddis  ->  caddises
@@ -501,7 +473,7 @@ class test(unittest.TestCase):
               fiancee  ->  fiancees
                fiasco  ->  fiascos
                  fish  ->  fish
-    TODO:sinoun             fizz  ->  fizzes
+                 fizz  ->  fizzes
              flamingo  ->  flamingoes
          flittermouse  ->  flittermice
      TODO:siverb           floes  ->  floe
@@ -1066,10 +1038,4 @@ class test(unittest.TestCase):
                  zoon  ->  zoa
 '''.split('\n')
 
-
-if __name__ == "__main__":
-    try:
-        unittest.main()
-    except SystemExit:
-        pass
 
