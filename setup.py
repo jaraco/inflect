@@ -5,7 +5,7 @@ import inflect
 
 setup(name='inflect',
       version=inflect.__version__,
-      description="Correctly generate plurals, ordinals, indefinite articles; convert numbers to words",
+      description="Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words",
       author='Paul Dyson',
       author_email='pwdyson@yahoo.com',
       url="http://pypi.python.org/pypi/inflect",
