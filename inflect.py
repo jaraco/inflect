@@ -553,19 +553,19 @@ si_sb_ies_ie_case = (
 
 si_sb_ies_ie = (
 'aeries', 'baggies', 'belies', 'biggies', 'birdies', 'bogies',
-'bonnies', 'boogies', 'bookies', 'booties', 'bourgeoisies', 'brownies',
-'budgies', 'cabbies', 'caddies', 'calories', 'camaraderies', 'cockamamies',
+'bonnies', 'boogies', 'bookies', 'bourgeoisies', 'brownies',
+'budgies', 'caddies', 'calories', 'camaraderies', 'cockamamies',
 'collies', 'cookies', 'coolies', 'cooties', 'coteries', 'crappies',
-'curies', 'cutesies', 'doggies', 'dogies', 'floozies', 'footsies',
-'freebies', 'genies', 'goalies', 'goodies', 'grannies', 'groupies',
-'hankies', 'hies', 'hippies', 'hoagies', 'jalousies', 'junkies',
-'kiddies', 'kookies', 'laddies', 'lassies', 'lefties', 'lies',
+'curies', 'cutesies',  'dogies', 'eyrie', 'floozies', 'footsies',
+'freebies', 'genies', 'goalies', 'groupies',
+'hies', 'jalousies', 'junkies',
+'kiddies', 'laddies', 'lassies', 'lies',
 'lingeries', 'magpies', 'menageries', 'mommies', 'movies', 'neckties',
-'newbies', 'nighties', 'oldies', 'organdies', 'overlies', 'panties',
-'pies', 'pinkies', 'pixies', 'potpies', 'prairies', 'preppies',
+'newbies', 'nighties', 'oldies', 'organdies', 'overlies',
+'pies', 'pinkies', 'pixies', 'potpies', 'prairies',
 'quickies', 'reveries', 'rookies', 'rotisseries', 'softies', 'sorties',
 'species', 'stymies', 'sweeties', 'ties', 'underlies', 'unties',
-'veggies', 'vies', 'woolies', 'yuppies', 'zombies',
+'veggies', 'vies', 'yuppies', 'zombies',
 )
 
 
@@ -658,9 +658,10 @@ pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
 si_sb_es_is = (
 'amanuenses', 'amniocenteses', 'analyses', 'antitheses',
 'apotheoses', 'arterioscleroses', 'atheroscleroses', 'axes',
-'bases', 'catalyses', 'catharses', 'chasses', 'cirrhoses',
+# 'bases', # bases -> basis
+'catalyses', 'catharses', 'chasses', 'cirrhoses',
 'cocces', 'crises', 'diagnoses', 'dialyses', 'diereses',
-'electrolyses', 'ellipses', 'emphases', 'exegeses', 'geneses',
+'electrolyses', 'emphases', 'exegeses', 'geneses',
 'halitoses', 'hydrolyses', 'hypnoses', 'hypotheses', 'hystereses',
 'metamorphoses', 'metastases', 'misdiagnoses', 'mitoses', 
 'mononucleoses', 'narcoses', 'necroses', 'nemeses', 'neuroses',
@@ -1596,6 +1597,9 @@ class engine:
             if mo:
                 return a[1] % mo.group(1)
 
+        if lowerword == 'die':
+            return 'dice'
+
 
 # HANDLE UNASSIMILATED IMPORTS
 
@@ -1984,6 +1988,9 @@ class engine:
             mo = search(a[0], word, IGNORECASE)
             if mo:
                 return a[1] % mo.group(1)
+            
+        if lowerword == 'dice':
+            return 'die'
 
 
 # HANDLE UNASSIMILATED IMPORTS
