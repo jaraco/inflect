@@ -502,6 +502,11 @@ pl_sb_singular_s = enclose('|'.join ([
 
 # PLURALS ENDING IN uses -> use
 
+
+si_sb_ois_oi_case = (
+    'Bolshois', 'Hanois'
+    )
+
 si_sb_uses_use_case = (
     'Betelgeuses', 'Duses', 'Meuses', 'Syracuses', 'Toulouses',
     )
@@ -577,6 +582,10 @@ si_sb_oes_oe = (
     'throes', 'tiptoes', 'toes', 'woes',
 )
 
+si_sb_z_zes = (
+    "quartzes", "topazes",
+)
+
 si_sb_zzes_zz = (
 'buzzes', 'fizzes', 'frizzes', 'razzes' 
     )
@@ -605,6 +614,22 @@ si_sb_sses_sse = (
 'bouillabaisses', 'crevasses', 'demitasses', 'impasses',
 'mousses', 'posses',
     )
+
+si_sb_ves_ve_case = (
+# *[nwl]ives -> [nwl]live
+'Clives', 'Palmolives',
+)
+si_sb_ves_ve = (
+# *[^d]eaves -> eave
+'interweaves', 'weaves',
+
+# *[nwl]ives -> [nwl]live
+'olives', 
+
+# *[eoa]lves -> [eoa]lve
+'bivalves', 'dissolves', 'resolves', 'salves', 'twelves', 'valves',
+    )
+
 
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
@@ -1545,7 +1570,7 @@ class engine:
 
         mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
         if mo:
-            return "%ss" % mo.group(1)
+            return "%ss" % word
 
         mo = search(r"(\S*)quy$", word, IGNORECASE)
         if mo:
@@ -1581,13 +1606,13 @@ class engine:
         for a in (
                   (r"(.*)zoon$", "%szoa"),
                   (r"(.*[csx])is$", "%ses"),
-                  (r"(%s)ch$" % pl_sb_U_ch_chs, "%schs"),
-                  (r"(%s)ex$" % pl_sb_U_ex_ices, "%sices"),
-                  (r"(%s)ix$" % pl_sb_U_ix_ices, "%sices"),
-                  (r"(%s)um$" % pl_sb_U_um_a, "%sa"),
-                  (r"(%s)us$" % pl_sb_U_us_i, "%si"),
-                  (r"(%s)on$" % pl_sb_U_on_a, "%sa"),
-                  (r"(%s)$" % pl_sb_U_a_ae, "%se"),
+                  (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
+                  (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
+                  (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
+                  (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
+                  (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
+                  (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
+                  (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
                  ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
@@ -1874,6 +1899,9 @@ class engine:
 
         lowerword = word.lower()
 
+        if word in si_sb_ois_oi_case:
+            return word[:-1]
+
         if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
             return word
 
@@ -1930,7 +1958,7 @@ class engine:
 
         mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
         if mo:
-            return "%s" % mo.group(1)
+            return word[:-1]
 
         mo = search(r"(\S*)quies$", word, IGNORECASE)
         if mo:
@@ -1966,13 +1994,13 @@ class engine:
         for a in (
                   (r"(.*)zoa$", "%szoon"),
                   #(r"(.*[csx])es$", "%sis"), # test too general to have this early
-                  (r"(%s)chs$" % pl_sb_U_ch_chs, "%sch"),
-                  (r"(%s)ices$" % pl_sb_U_ex_ices, "%sex"),
-                  (r"(%s)ices$" % pl_sb_U_ix_ices, "%six"),
-                  (r"(%s)a$" % pl_sb_U_um_a, "%sum"),
-                  (r"(%s)i$" % pl_sb_U_us_i, "%sus"),
-                  (r"(%s)a$" % pl_sb_U_on_a, "%son"),
-                  (r"(%s)e$" % pl_sb_U_a_ae, "%s"),
+                  (r"(.*%s)chs$" % pl_sb_U_ch_chs, "%sch"),
+                  (r"(.*%s)ices$" % pl_sb_U_ex_ices, "%sex"),
+                  (r"(.*%s)ices$" % pl_sb_U_ix_ices, "%six"),
+                  (r"(.*%s)a$" % pl_sb_U_um_a, "%sum"),
+                  (r"(.*%s)i$" % pl_sb_U_us_i, "%sus"),
+                  (r"(.*%s)a$" % pl_sb_U_on_a, "%son"),
+                  (r"(.*%s)e$" % pl_sb_U_a_ae, "%s"),
                  ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
@@ -2027,7 +2055,6 @@ class engine:
             return word[:-1]
 
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
-        if word == 'impasses': print 'here c'
 
         if (word in si_sb_sses_sse_case or
             lowerword in si_sb_sses_sse):
@@ -2038,9 +2065,6 @@ class engine:
         #mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
         if mo:
             return "%s" % mo.group(1)
-
-
-        if word == 'impasses': print 'here j'
 
 
 # Wouldn't special words
@@ -2059,9 +2083,8 @@ class engine:
 #            if mo:
 #                return "%s" % mo.group(1)
 
-        mo = search(r"(%s)es$" % pl_sb_z_zes, word, IGNORECASE)
-        if mo:
-            return "%s" % mo.group(1)
+        if lowerword in si_sb_z_zes:
+            return word[:-2]
 
         if lowerword in si_sb_zzes_zz:
             return word[:-2]
@@ -2088,15 +2111,20 @@ class engine:
 
 # HANDLE ...f -> ...ves
 
-        for a in (
-                  (r"(.*[eao])lves$", "%slf"),
-                  (r"(.*[^d])eaves$", "%seaf"),
-                  (r"(.*[nlw])ives$", "%sife"),
-                  (r"(.*)arves$", "%sarf"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
+        if (word in si_sb_ves_ve_case or
+            lowerword in si_sb_ves_ve):
+            return word[:-1]
+
+        if word[-3:] == 'ves':
+            for a in (
+                      (r"(.*[eao])lves$", "%slf"),
+                      (r"(.*[^d])eaves$", "%seaf"),
+                      (r"(.*[nlw])ives$", "%sife"),
+                      (r"(.*)arves$", "%sarf"),
+                     ):
+                mo = search(a[0], word, IGNORECASE)
+                if mo:
+                    return a[1] % mo.group(1)
 
 # HANDLE ...y
 
@@ -2116,14 +2144,14 @@ class engine:
 
 # HANDLE ...o
 
-        for a in (
-                  r"(%s)s$" % pl_sb_U_o_os,
-                  r"(.*[aeiou]o)s$",
-                  r"(.*o)es$",
+        for a, num in (
+                  (r"(%s)s$" % pl_sb_U_o_os, -1),
+                  (r"(.*[aeiou]o)s$", -1),
+                  (r"(.*o)es$", -2),
                  ):
             mo = search(a, word, IGNORECASE)
             if mo:
-                return "%s" % mo.group(1)
+                return word[:num]
 
 # UNASSIMILATED IMPORTS FINAL RULE
 
