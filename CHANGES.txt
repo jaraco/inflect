@@ -1,0 +1,16 @@
+
+ver 0.1.6 (2010-07-03)
+
+* add method sinoun() to generate the singular of a plural noun. Phew!
+
+* add changes from new Perl version: 1.892
+
+* start adding tests from Perl version
+
+* add test to check sinoun(plnoun(word)) == word
+  Can now use word lists to check these methods without needing to have
+  a list of plurals. ;-)
+
+* fix die -> dice
+
+

@@ -1,3 +1,5 @@
 include COPYING.txt
-include tests.py
+include CHANGES.txt
+include tests/test*.py
+include tests/words.txt
 
