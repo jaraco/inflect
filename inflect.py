@@ -25,7 +25,7 @@
 
 methods:
           classical inflect
-          pl plnoun plverb pladj no num a an
+          pl plnoun plverb pladj sinoun no num a an
           plequal plnounequal plverbequal pladjequal
           prespart
           ordinal
@@ -34,11 +34,11 @@ methods:
           defnoun defverb defadj defa defan
 
     INFLECTIONS:    classical inflect
-          pl plnoun plverb pladj plequal
+          pl plnoun plverb pladj sinoun plequal
           no num a an prespart
 
     PLURALS:   classical inflect
-          pl plnoun plverb pladj no num
+          pl plnoun plverb pladj sinoun no num
           plequal plnounequal plverbequal pladjequal
 
     COMPARISONS:    classical 
@@ -1117,6 +1117,13 @@ class engine:
         '''
         return self.pladj(matchobject.group(1), matchobject.group(3))
 
+    def sinounmo(self, matchobject):
+        '''
+        sinoun but take a matchobject
+        use groups 1 and 3 in matchobject
+        '''
+        return self.sinoun(matchobject.group(1), matchobject.group(3))
+
     def amo(self, matchobject):
         '''
         A but take a matchobject
@@ -1164,7 +1171,7 @@ class engine:
         e.g. inflect('The plural of cat is pl(cat)') returns
         'The plural of cat is cats'
 
-        can use pl, plnoun, plverb, pladj, a, an, no, ordinal,
+        can use pl, plnoun, plverb, pladj, sinoun, a, an, no, ordinal,
         numwords and prespart
 
         '''
@@ -1191,6 +1198,10 @@ class engine:
                     (section, count) = subn(
                         r"(?x)\bpladj \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.pladjmo, section)
+                    total += count
+                    (section, count) = subn(
+                        r"(?x)\bsinoun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        self.sinounmo, section)
                     total += count
                     (section, count) = subn(
                         r"(?x)\ban?    \( ([^),]*) (, ([^)]*) )? \)  ",
@@ -1380,9 +1391,13 @@ class engine:
 
     def sinoun(self, text, count=None):
         '''
-        return the singular of a plural noun
+        Return the singular of text, where text is a plural noun.
 
-        in development
+        If count supplied, then return the singular if count is one of:
+            1, a, an, one, each, every, this, that or if count is None
+        otherwise return text unchanged.
+        
+        Whitespace at the start and end is preserved.
 
         '''
         pre, word, post = self.partition_word(text)
@@ -1886,7 +1901,7 @@ class engine:
 
 # DEFAULT TO PLURAL
 
-        if count!=1:
+        if count == 2:
             return word
 
 # HANDLE USER-DEFINED NOUNS
@@ -1914,11 +1929,9 @@ class engine:
             return word
 
 # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
-        ''' TODO
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
-        '''
+            return "%s%s" % (self._sinoun(mo.group(1), 1), mo.group(2))
 
         #how to reverse this one?
         # mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)

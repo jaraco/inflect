@@ -304,9 +304,19 @@ class test(unittest.TestCase):
         self.assertEqual(p.pl('am', 0), 'am')
         self.assertEqual(p.plverb('runs', 1), 'runs')
 
-        self.TODO(p.pl('die'),'dice','dies')
-        self.TODO(p.plnoun('die'),'dice','dies')
+        self.assertEqual(p.pl('die'),'dice')
+        self.assertEqual(p.plnoun('die'),'dice')
 
+    def test_sinoun(self):
+        p = inflect.engine()
+        for sing, plur in (
+            ('cat', 'cats'),
+            ('die', 'dice'),
+            ):
+            self.assertEqual(p.sinoun(plur), sing)
+            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+
+        
 
     def test_plequal(self):
         p = inflect.engine()
@@ -441,8 +451,6 @@ class test(unittest.TestCase):
                 ('Governor-General', 'Governors-General'),
                 ('Major General', 'Major Generals'),
                 ('Major-General', 'Major-Generals'),
-                ('son of a gun', 'sons of guns'),
-                ('son-of-a-gun', 'sons-of-guns'),
                 ('mother in law', 'mothers in law'),
                 ('mother-in-law', 'mothers-in-law'),
                 ('about me', 'about us'),
@@ -464,7 +472,6 @@ class test(unittest.TestCase):
                 ('foot', 'feet'),
                 ('forceps', 'forceps'),
                 ('protozoon', 'protozoa'),
-                ('basis', 'bases'),
                 ('czech', 'czechs'),
                 ('codex', 'codices'),
                 ('radix', 'radices'),
@@ -474,7 +481,6 @@ class test(unittest.TestCase):
                 ('alumna', 'alumnae'),
 
                 ('bias', 'biases'),
-                ('Jess', 'Jesses'),
                 ('quiz', 'quizzes'),
                 ('fox', 'foxes'),
 
@@ -492,6 +498,19 @@ class test(unittest.TestCase):
                 ('alto', 'altos'),
                 ('zoo', 'zoos'),
                 ('tomato', 'tomatoes'),
+                ):
+            self.assertEqual(p._plnoun(sing), plur,
+                             msg = 'p._plnoun("%s") != "%s"' % (sing, plur))
+
+            self.assertEqual(p._sinoun(plur), sing,
+                             msg = 'p._sinoun("%s") != "%s"' % (plur, sing))
+
+        # words where forming singular is ambiguious or not attempted
+        for sing, plur in (
+                ('son of a gun', 'sons of guns'),
+                ('son-of-a-gun', 'sons-of-guns'),
+                ('basis', 'bases'),
+                ('Jess', 'Jesses'),
                 ):
             self.assertEqual(p._plnoun(sing), plur,
                              msg = 'p._plnoun("%s") != "%s"' % (sing, plur))

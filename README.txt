@@ -5,7 +5,7 @@ inflect.py
 
 NAME
 ====
-inflect.py - Correctly generate plurals, ordinals, indefinite articles; convert numbers to words.
+inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
 
 VERSION
 =======
@@ -31,7 +31,7 @@ SYNOPSIS
 
  # METHODS:
 
- # pl plnoun plverb pladj no num
+ # pl plnoun plverb pladj sinoun no num
  # plequal plnounequal plverbequal pladjequal
  # a an
  # prespart
@@ -55,6 +55,11 @@ SYNOPSIS
 
       print p.plnoun("I",N1), p.plverb("saw",N1), p.pladj("my",N2), \
             p.plnoun("saw",N2)
+
+
+ # FORM THE SINGULAR OF PLURAL NOUNS
+
+      print "The singular of ", word, " is ", p.sinoun(word)
 
 
  # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
@@ -81,11 +86,11 @@ SYNOPSIS
       print "Did you want ", p.a(thing), " or ", p.an(idea)
 
 
- # CONVERT numERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+ # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
 
       print "It was", p.ordinal(position), " from the left\n"
 
- # CONVERT numERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
+ # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
  # RETURNS A SINGLE STRING...
 
     words = p.numwords(1234)      # "one thousand, two hundred and thirty-four"
@@ -167,10 +172,11 @@ SYNOPSIS
 
 
 
- # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", a()", "an()"
- # "num()" AND "ordinal()" WITHIN STRINGS:
+ # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", "sinoun()",
+ # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
 
       print p.inflect("The plural of {0} is pl({0})".format(word))
+      print p.inflect("The singular of {0} is sinoun({0})".format(word))
       print p.inflect("I saw {0} pl("cat",{0})".format(cat_count))
       print p.inflect("pl(I,{0}) plverb(saw,{0}) pl(a,{1}) plnoun(saw,{1})".format(N1, N2))
       print p.inflect("num({0},)pl(I) plverb(saw) num({1},)pl(a) plnoun(saw)".format(N1, N2))
@@ -200,12 +206,14 @@ DESCRIPTION
 ===========
 
 The methods of the class ``engine`` in module ``inflect.py`` provide plural
-inflections, "a"/"an" selection for English words, and manipulation
-of numbers as words.
+inflections, singular noun inflections, "a"/"an" selection for English words,
+and manipulation of numbers as words.
 
 Plural forms of all nouns, most verbs, and some adjectives are
 provided. Where appropriate, "classical" variants (for example: "brother" ->
 "brethren", "dogma" -> "dogmata", etc.) are also provided.
+
+Single forms of nouns are also provided.
 
 Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
@@ -227,16 +235,18 @@ more common form (typically the "modern" one), unless "classical"
 processing has been specified
 (see `MODERN VS CLASSICAL INFLECTIONS`).
 
-FORMING PLURALS
-===============
+FORMING PLURALS AND SINGULARS
+=============================
 
-Inflecting Plurals
-------------------
+Inflecting Plurals and Singulars
+--------------------------------
 
 All of the ``pl...`` plural inflection methods take the word to be
 inflected as their first argument and return the corresponding inflection.
 Note that all such methods expect the *singular* form of the word. The
 results of passing a plural form are undefined (and unlikely to be correct).
+Similarly, the ``si...`` singular inflection method expects the *plural*
+form of the word.
 
 The ``pl...`` methods also take an optional second argument,
 which indicates the grammatical "number" of the word (or of another word
@@ -247,7 +257,13 @@ implies the singular), the plural form of the word is returned. If the
 itself is returned. If the number argument is omitted, the plural form
 is returned unconditionally.
 
+The ``si...`` method takes a second argument in a similar fashion. If it is
+some form of the number ``1``, or is omitted, the singular form is returned.
+Otherwise the plural is returned unaltered.
+
+
 The various methods of ``inflect.engine`` are:
+
 
 
 ``plnoun(word, count=None)``
@@ -292,6 +308,15 @@ The various methods of ``inflect.engine`` are:
  where the part of speech is known, ``plnoun``, ``plverb``, and
  ``pladj`` should be used in preference to ``pl``.
 
+
+``sinoun(word, count=None)``
+
+ The method ``sinoun()`` takes a *plural* English noun or
+ pronoun and returns its singular. Pronouns in the nominative ("we" ->
+ "I") and accusative ("us" -> "me") cases are handled, as are
+ possessive pronouns ("ours" -> "mine"). Note that when third person
+ singular pronouns are returned they take the neuter gender ("they" ->
+ "it"), not ("they"-> "she") nor ("they" -> "he").
 
 Note that all these methods ignore any whitespace surrounding the
 word being inflected, but preserve that whitespace when the result is
@@ -1258,7 +1283,7 @@ to the corresponding ``def_...`` method.
 NOTE
 ====
 
-I [1] am not taking any further correspondence on:
+There will be no further correspondence on:
 
 "octopi".
 
@@ -1277,15 +1302,13 @@ AUTHORS
 =======
 
 Paul Dyson (pwdyson@yahoo.com)
+* converted code from Perl to Python
+* added sinoun functionality
 
-Perl Version:
+Original Perl version of the code and documentation:
 Damian Conway (damian@conway.org),
 Matthew Persico (ORD inflection)
 
-
-[1] References to "I" in this documentation refer to Danian Conway
-(the author of the Perl code and hence this documentation), not to Paul Dyson (who rewrote
-the code in Python and edited this documentation to relfect python syntax).
 
 BUGS AND IRRITATIONS
 ====================
