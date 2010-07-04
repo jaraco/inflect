@@ -1567,7 +1567,7 @@ class engine:
             count = ''
         return count
 
-    #@profile
+    @profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1610,11 +1610,12 @@ class engine:
         if mo and mo.group(2) != '':
             return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
 
-        mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
-        if mo and mo.group(2) != '' and mo.group(3) != '':
-            return "%s%s%s" % (self._plnoun(mo.group(1), 2),
-                               mo.group(2),
-                               self._plnoun(mo.group(3)))
+        if ' a ' in lowerword or '-a-' in lowerword:
+            mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
+            if mo and mo.group(2) != '' and mo.group(3) != '':
+                return "%s%s%s" % (self._plnoun(mo.group(1), 2),
+                                   mo.group(2),
+                                   self._plnoun(mo.group(3)))
 
         mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
         if mo and mo.group(2) != '':
