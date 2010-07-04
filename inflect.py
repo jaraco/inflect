@@ -173,7 +173,7 @@ pl_sb_irregular = {
 }
 
 pl_sb_irregular.update(pl_sb_irregular_s)
-pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
+#pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
 
 si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.iteritems()])
 keys = si_sb_irregular.keys()
@@ -183,7 +183,7 @@ for k in keys:
         si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
         del si_sb_irregular[k]
         
-si_sb_irregular_keys = enclose('|'.join(si_sb_irregular.keys()))
+#si_sb_irregular_keys = enclose('|'.join(si_sb_irregular.keys()))
 
 # Z's that don't double
 
@@ -1652,11 +1652,18 @@ class engine:
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
-        mo = search(r"(.*)\b(%s)$" % pl_sb_irregular_keys, word, IGNORECASE)
-        if mo:
-            return "%s%s" % (mo.group(1),
-                             pl_sb_irregular.get(mo.group(2),
-                             pl_sb_irregular[mo.group(2).lower()]))
+        lowerwordsplit = lowerword.split()
+        if lowerwordsplit[-1] in pl_sb_irregular.keys():
+            llen = len(lowerwordsplit[-1])
+            return '%s%s' % (lowerword[:-llen],
+                             pl_sb_irregular.get(lowerwordsplit[-1],
+                             pl_sb_irregular[lowerwordsplit[-1].lower()]))
+        
+        #mo = search(r"(.*)\b(%s)$" % pl_sb_irregular_keys, word, IGNORECASE)
+        #if mo:
+        #    return "%s%s" % (mo.group(1),
+        #                     pl_sb_irregular.get(mo.group(2),
+        #                     pl_sb_irregular[mo.group(2).lower()]))
 
         mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
         if mo:
@@ -2070,14 +2077,22 @@ class engine:
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
-        mo = search(r"(.*)\b(%s)$" % si_sb_irregular_keys, word, IGNORECASE)
-        if mo:
-            try:
-                return "%s%s" % (mo.group(1),
-                             si_sb_irregular[mo.group(2)])
-            except KeyError:
-                return "%s%s" % (mo.group(1),
-                             si_sb_irregular[mo.group(2).lower()])
+        lowerwordsplit = lowerword.split()
+        if lowerwordsplit[-1] in si_sb_irregular.keys():
+            llen = len(lowerwordsplit[-1])
+            return '%s%s' % (lowerword[:-llen],
+                             si_sb_irregular.get(lowerwordsplit[-1],
+                             si_sb_irregular[lowerwordsplit[-1].lower()]))
+
+
+        # mo = search(r"(.*)\b(%s)$" % si_sb_irregular_keys, word, IGNORECASE)
+        # if mo:
+        #     try:
+        #         return "%s%s" % (mo.group(1),
+        #                      si_sb_irregular[mo.group(2)])
+        #     except KeyError:
+        #         return "%s%s" % (mo.group(1),
+        #                      si_sb_irregular[mo.group(2).lower()])
 
         mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
         if mo:
