@@ -105,6 +105,21 @@ def joinstem(cutpoint=0, words=''):
     '''
     return enclose('|'.join(w[:cutpoint] for w in words))
 
+def bysize(words):
+    '''
+    take a list of words and return a dict of lists sorted by word length
+    e.g.
+    ret[3]=['ant', 'cat', 'dog', 'eel']
+    ret[4]=['frog', 'goat']
+    ret[5]=['horse']
+    '''
+    ret = {}
+    for w in words:
+        if len(w) not in ret:
+            ret[len(w)] = set()
+        ret[len(w)].add(w)
+    return ret
+
 # 1. PLURALS
 
 pl_sb_irregular_s = {
@@ -295,12 +310,21 @@ pl_sb_C_o_i = [
     "contralto",    "tempo",    "piano",    "virtuoso",
 ] # list not tuple so can concat for pl_sb_U_o_os
 
+pl_sb_C_o_i_bysize = bysize(pl_sb_C_o_i)
+si_sb_C_o_i_bysize = bysize(['%si' % w[:-1] for w in pl_sb_C_o_i])
+
 pl_sb_C_o_i_stems = joinstem(-1, pl_sb_C_o_i)
 
 # ALWAYS "..o" -> "..os"
 
-pl_sb_U_o_os = enclose('|'.join ([
-    "^ado",          "aficionado",   "aggro",
+pl_sb_U_o_os_complete = set((
+    "ado",    "ISO", "NATO",  "NCO",  "NGO", "oto",
+))
+si_sb_U_o_os_complete = set('%ss' % w for w in pl_sb_U_o_os_complete)
+
+    
+pl_sb_U_o_os_endings = [
+    "aficionado",   "aggro",
     "albino",       "allegro",      "ammo",
     "Antananarivo", "archipelago",  "armadillo",
     "auto",         "avocado",      "Bamako",
@@ -324,7 +348,7 @@ pl_sb_U_o_os = enclose('|'.join ([
     "gyro",         "hairdo",       "hippo",
     "Idaho",        "impetigo",     "inferno",
     "info",         "intermezzo",   "intertrigo",
-    "Iquico",       "^ISO",          "jumbo",
+    "Iquico",       "jumbo",
     "junto",        "Kakapo",       "kilo",
     "Kinkimavo",    "Kokako",       "Kosovo",
     "Lesotho",      "libero",       "libido",
@@ -339,10 +363,10 @@ pl_sb_U_o_os = enclose('|'.join ([
     "metro",        "Mexico",       "micro",
     "Milano",       "Monaco",       "mono", 
     "Montenegro",   "Morocco",      "Muqdisho",
-    "myo",          "^NATO",         "^NCO",
-    "neutrino",     "^NGO",          "Ningbo",
+    "myo",          
+    "neutrino",     "Ningbo",
     "octavo",       "oregano",      "Orinoco",
-    "Orlando",      "Oslo",         "^oto",
+    "Orlando",      "Oslo",         
     "panto",        "Paramaribo",   "Pardusco",
     "pedalo",       "photo",        "pimento",
     "pinto",        "pleco",        "Pluto",
@@ -368,7 +392,9 @@ pl_sb_U_o_os = enclose('|'.join ([
     "WTO",          "Yamoussoukro", "yo-yo",        
     "zero",         "Zibo",         
     ] + pl_sb_C_o_i
-))
+
+pl_sb_U_o_os_bysize = bysize(pl_sb_U_o_os_endings)
+si_sb_U_o_os_bysize = bysize(['%ss' % w for w in pl_sb_U_o_os_endings])
 
 
 # UNCONDITIONAL "..ch" -> "..chs"
@@ -424,7 +450,7 @@ pl_sb_U_man_mans = enclose('|'.join (
 """.split()
 ))
 
-pl_sb_uninflected_s = [
+pl_sb_uninflected_s_complete = [
 # PAIRS OR GROUPS SUBSUMED TO A SINGULAR...
     "breeches", "britches", "pajamas", "pyjamas", "clippers", "gallows",
     "hijinks", "headquarters", "pliers", "scissors", "testes", "herpes",
@@ -436,15 +462,26 @@ pl_sb_uninflected_s = [
 
 # RECENT IMPORTS...
     "contretemps", "corps", "debris",
-    ".*ois", "siemens",
+    "siemens",
     
 # DISEASES
-    ".*measles", "mumps",
+    "mumps",
 
 # MISCELLANEOUS OTHERS...
     "diabetes", "jackanapes", "series", "species", "rabies",
     "chassis", "innings", "news", "mews", "haggis",
 ]
+
+pl_sb_uninflected_s_endings = [
+# RECENT IMPORTS...
+    "ois",
+    
+# DISEASES
+    "measles",
+]
+
+pl_sb_uninflected_s = pl_sb_uninflected_s_complete + [ '.*%s' % w
+                            for w in pl_sb_uninflected_s_endings]
 
 pl_sb_uninflected_herd = (
 # DON'T INFLECT IN CLASSICAL MODE, OTHERWISE NORMAL INFLECTION
@@ -456,12 +493,12 @@ pl_sb_uninflected_herd = (
     'snipe', 'teal', 'turbot', 'water fowl', 'water-fowl',
 )
 
-pl_sb_uninflected = enclose('|'.join ([
+pl_sb_uninflected_complete = [
 # SOME FISH AND HERD ANIMALS
-    ".*fish", "tuna", "salmon", "mackerel", "trout",
-    "bream", "sea[- ]bass", "carp", "cod", "flounder", "whiting", 
+    "tuna", "salmon", "mackerel", "trout",
+    "bream", "sea-bass", "sea bass", "carp", "cod", "flounder", "whiting", 
 
-    ".*deer", ".*sheep", "moose",
+    "moose",
 
 # ALL NATIONALS ENDING IN -ese
     "Portuguese", "Amoyese", "Borghese", "Congoese", "Faroese",
@@ -469,22 +506,39 @@ pl_sb_uninflected = enclose('|'.join ([
     "Kiplingese", "Kongoese", "Lucchese", "Maltese", "Nankingese",
     "Niasese", "Pekingese", "Piedmontese", "Pistoiese", "Sarawakese",
     "Shavese", "Vermontese", "Wenchowese", "Yengeese",
-    ".*[nrlm]ese",
-
-# DISEASES
-    ".*pox",
 
 
 # OTHER ODDITIES
     "graffiti", "djinn", 'samuri',
-    '.*craft$', 'offspring', 'pence', 'quid', 'hertz',
-   ] + 
-
+    'offspring', 'pence', 'quid', 'hertz',
+   ] + pl_sb_uninflected_s_complete
 # SOME WORDS ENDING IN ...s (OFTEN PAIRS TAKEN AS A WHOLE)
 
-    pl_sb_uninflected_s
 
-))
+
+
+pl_sb_uninflected_endings = [
+# SOME FISH AND HERD ANIMALS
+    "fish",
+
+    "deer", "sheep",
+
+# ALL NATIONALS ENDING IN -ese
+    "nese",    "rese",    "lese",    "mese",
+
+# DISEASES
+    "pox",
+
+
+# OTHER ODDITIES
+    'craft', 
+   ] + pl_sb_uninflected_s_endings
+# SOME WORDS ENDING IN ...s (OFTEN PAIRS TAKEN AS A WHOLE)
+
+
+pl_sb_uninflected_bysize = bysize(pl_sb_uninflected_endings)
+
+
 
 # SINGULAR WORDS ENDING IN ...s (ALL INFLECT WITH ...es)
 
@@ -920,7 +974,6 @@ no_classical = dict((k,0) for k in def_classical.keys())
 #        except:
 #            print3("\nBad .inflectrc file (%s):\n" % rcfile)
 #            raise BadRcFileError
-
 
 
 class engine:
@@ -1514,6 +1567,7 @@ class engine:
             count = ''
         return count
 
+    #@profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1536,8 +1590,15 @@ class engine:
 
         lowerword = word.lower()
 
-        if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
+        if lowerword in pl_sb_uninflected_complete:
             return word
+
+        for k, v in pl_sb_uninflected_bysize.iteritems():
+            if lowerword[-k:] in v:
+                return word
+        
+        #if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
+        #    return word
 
         if (self.classical_dict['herd'] and
                lowerword in pl_sb_uninflected_herd):
@@ -1656,7 +1717,7 @@ class engine:
                   (r"(%s)$" % pl_sb_C_a_ae, "%se"),
                   (r"(%s)a$" % pl_sb_C_a_ata_stems, "%sata"),
                   (r"(%s)is$" % pl_sb_C_is_ides_stems, "%sides"),
-                  (r"(%s)o$" % pl_sb_C_o_i_stems, "%si"),
+                  #(r"(%s)o$" % pl_sb_C_o_i_stems, "%si"),
                   (r"(%s)on$" % pl_sb_C_on_a, "%sa"),
                   (r"(%s)$" % pl_sb_C_im, "%sim"),
                   (r"(%s)$" % pl_sb_C_i, "%si"),
@@ -1665,7 +1726,10 @@ class engine:
                 if mo:
                     return a[1] % mo.group(1)
 
-
+            for k, v in pl_sb_C_o_i_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-1] + 'i'
+            
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
         mo = search(r"(%s)$" % pl_sb_singular_s, word, IGNORECASE)
         if mo:
@@ -1735,6 +1799,7 @@ class engine:
 
 # HANDLE ...o
 
+        '''
         for a in (
                   (r"%s$" % pl_sb_U_o_os, "s"),
                   (r"[aeiou]o$", "s"),
@@ -1743,7 +1808,22 @@ class engine:
             mo = search(a[0], word, IGNORECASE)
             if mo:
                 return "%s%s" % (word, a[1])
+        '''
+        
+        if lowerword in pl_sb_U_o_os_complete:
+            return word + 's'
 
+        for k, v in pl_sb_U_o_os_bysize.iteritems():
+            if lowerword[-k:] in v:
+                return word + 's'
+        
+
+        if lowerword[-2:] in ('ao', 'eo', 'io', 'oo', 'uo'):
+            return word + 's'
+
+        if lowerword[-1] == 'o':
+            return word + 'es'
+        
 # OTHERWISE JUST ADD ...s
 
         return "%ss" % word
@@ -1894,7 +1974,6 @@ class engine:
 
         return False
 
-
     def _sinoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1921,8 +2000,15 @@ class engine:
         if word in si_sb_ois_oi_case:
             return word[:-1]
 
-        if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
+        if lowerword in pl_sb_uninflected_complete:
             return word
+
+        for k, v in pl_sb_uninflected_bysize.iteritems():
+            if lowerword[-k:] in v:
+                return word
+
+        #if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
+        #    return word
 
         if (self.classical_dict['herd'] and
                lowerword in pl_sb_uninflected_herd):
@@ -2044,7 +2130,7 @@ class engine:
                   (r"(%s)e$" % pl_sb_C_a_ae, "%s"),
                   (r"(%s)ata$" % pl_sb_C_a_ata_stems, "%sa"),
                   (r"(%s)ides$" % pl_sb_C_is_ides_stems, "%sis"),
-                  (r"(%s)i$" % pl_sb_C_o_i_stems, "%so"),
+                  #(r"(%s)i$" % pl_sb_C_o_i_stems, "%so"),
                   (r"(%s)a$" % pl_sb_C_on_a, "%son"),
                   (r"(%s)im$" % pl_sb_C_im, "%s"),
                   (r"(%s)i$" % pl_sb_C_i, "%s"),
@@ -2052,6 +2138,10 @@ class engine:
                 mo = search(a[0], word, IGNORECASE)
                 if mo:
                     return a[1] % mo.group(1)
+
+            for k, v in si_sb_C_o_i_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-1] + 'o'
 
 
 # HANDLE PLURLS ENDING IN uses -> use
@@ -2164,14 +2254,30 @@ class engine:
 
 # HANDLE ...o
 
-        for a, num in (
-                  (r"(%s)s$" % pl_sb_U_o_os, -1),
-                  (r"(.*[aeiou]o)s$", -1),
-                  (r"(.*o)es$", -2),
-                 ):
-            mo = search(a, word, IGNORECASE)
-            if mo:
-                return word[:num]
+        if lowerword[-2:] == 'os':
+            '''
+            for a, num in (
+                      #(r"(%s)s$" % pl_sb_U_o_os, -1),
+                      #(r"(.*[aeiou]o)s$", -1),
+                      #(r"(.*o)es$", -2),
+                     ):
+                mo = search(a, word, IGNORECASE)
+                if mo:
+                    return word[:num]
+            '''
+            
+            if lowerword in si_sb_U_o_os_complete:
+                return word[:-1]
+
+            for k, v in si_sb_U_o_os_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-1]
+
+            if lowerword[-3:] in ('aos', 'eos', 'ios', 'oos', 'uos'):
+                return word[:-1]
+
+        if lowerword[-3:] == 'oes':
+            return word[:-2]
 
 # UNASSIMILATED IMPORTS FINAL RULE
 
