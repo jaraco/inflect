@@ -500,7 +500,8 @@ class test(unittest.TestCase):
                 ('tomato', 'tomatoes'),
                 ):
             self.assertEqual(p._plnoun(sing), plur,
-                             msg = 'p._plnoun("%s") != "%s"' % (sing, plur))
+                             msg = 'p._plnoun("%s") == %s != "%s"' % (
+                                 sing, p._plnoun(sing), plur))
 
             self.assertEqual(p._sinoun(plur), sing,
                              msg = 'p._sinoun("%s") != "%s"' % (plur, sing))

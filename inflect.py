@@ -728,12 +728,15 @@ si_sb_es_is = (
 'tuberculoses', 'urinalyses',
 )
 
-pl_prep = enclose('|'.join( """
+pl_prep_list =  """
     about above across after among around at athwart before behind
     below beneath beside besides between betwixt beyond but by
     during except for from in into near of off on onto out over
     since till to under until unto upon with""".split()
-))
+
+pl_prep_bysize = bysize(pl_prep_list)
+
+pl_prep = enclose('|'.join(pl_prep_list))
 
 pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+pl_prep+r'|d[eua])(?:-|\s+))a(?:-|\s+)(.*)'
 
@@ -780,11 +783,13 @@ pl_pron_acc = {
 }
 
 pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
+pl_pron_acc_keys_bysize = bysize(pl_pron_acc.keys())
 
 si_pron_acc = dict([(v, k) for (k, v) in pl_pron_acc.iteritems()])
 si_pron_acc['them'] = 'it'
 si_pron_acc['themselves'] = 'itself'
 si_pron_acc_keys = enclose('|'.join(si_pron_acc.keys()))
+si_pron_acc_keys_bysize = bysize(si_pron_acc.keys())
 
 
 plverb_irregular_pres = {
@@ -1623,10 +1628,17 @@ class engine:
 
 # HANDLE PRONOUNS
 
-        mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, pl_pron_acc_keys), word,
-                                                         IGNORECASE)
-        if mo:
-            return "%s%s" % (mo.group(1), pl_pron_acc[mo.group(2).lower()])
+        for k, v in pl_pron_acc_keys_bysize.iteritems():
+            if lowerword[-k:] in v: # ends with accusivate pronoun
+                for pk, pv in pl_prep_bysize.iteritems():
+                    if lowerword[:pk] in pv: # starts with a prep
+                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
+                            return lowerword[:-k] + pl_pron_acc[lowerword[-k:]]
+
+        #mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, pl_pron_acc_keys), word,
+        #                                                 IGNORECASE)
+        #if mo:
+        #    return "%s%s" % (mo.group(1), pl_pron_acc[mo.group(2).lower()])
 
         try:
             return pl_pron_nom[word.lower()]
@@ -2034,10 +2046,17 @@ class engine:
 
 # HANDLE PRONOUNS
 
-        mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, si_pron_acc_keys), word,
-                                                         IGNORECASE)
-        if mo:
-            return "%s%s" % (mo.group(1), si_pron_acc[mo.group(2).lower()])
+        for k, v in si_pron_acc_keys_bysize.iteritems():
+            if lowerword[-k:] in v: # ends with accusivate pronoun
+                for pk, pv in pl_prep_bysize.iteritems():
+                    if lowerword[:pk] in pv: # starts with a prep
+                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
+                            return lowerword[:-k] + si_pron_acc[lowerword[-k:]]
+
+        # mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, si_pron_acc_keys), word,
+        #                                                  IGNORECASE)
+        # if mo:
+        #     return "%s%s" % (mo.group(1), si_pron_acc[mo.group(2).lower()])
 
         try:
             return si_pron_nom[word.lower()]
