@@ -77,7 +77,6 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
         assert_not_equal(singular, '')
         eq_(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
 
-        print singular, mod_plural
         if is_nv != '_V':
             eq_(p.sinoun(mod_plural, 1), singular,
                          msg="p.sinoun(%s) == %s != %s" % (

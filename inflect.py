@@ -145,7 +145,6 @@ pl_sb_irregular = {
     "ox"          : "oxen",
     "cow"         : "cows|kine",
     "graffito"    : "graffiti",
-    "prima donna" : "prima donnas|prime donne",
     "octopus"     : "octopuses|octopodes",
     "genie"       : "genies|genii",
     "ganglion"    : "ganglions|ganglia",
@@ -159,21 +158,28 @@ pl_sb_irregular = {
     'lowlife'     : 'lowlifes',
     'flatfoot'    : 'flatfoots',
     'tenderfoot'  : 'tenderfoots',
-    'Romany'      : 'Romanies',
     'romany'      : 'romanies',
-    'Jerry'       : 'Jerrys',
     'jerry'       : 'jerries',
-    'Mary'        : 'Marys',
     'mary'        : 'maries',
     'talouse'     : 'talouses',
     'blouse'      : 'blouses',
-    'Rom'         : 'Roma',
     'rom'         : 'roma',
     'carmen'      : 'carmina',
 }
 
 pl_sb_irregular.update(pl_sb_irregular_s)
 #pl_sb_irregular_keys = enclose('|'.join(pl_sb_irregular.keys()))
+
+pl_sb_irregular_caps = {
+    'Romany'      : 'Romanies',
+    'Jerry'       : 'Jerrys',
+    'Mary'        : 'Marys',
+    'Rom'         : 'Roma',
+    }
+
+pl_sb_irregular_compound = {
+    "prima donna" : "prima donnas|prime donne",
+    }
 
 si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.iteritems()])
 keys = si_sb_irregular.keys()
@@ -182,6 +188,14 @@ for k in keys:
         k1, k2 = k.split('|')
         si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
         del si_sb_irregular[k]
+si_sb_irregular_caps = dict([(v, k) for (k, v) in pl_sb_irregular_caps.iteritems()])
+si_sb_irregular_compound = dict([(v, k) for (k, v) in pl_sb_irregular_compound.iteritems()])
+keys = si_sb_irregular_compound.keys()
+for k in keys:
+    if '|' in k:
+        k1, k2 = k.split('|')
+        si_sb_irregular_compound[k1] = si_sb_irregular_compound[k2] = si_sb_irregular_compound[k]
+        del si_sb_irregular_compound[k]
         
 #si_sb_irregular_keys = enclose('|'.join(si_sb_irregular.keys()))
 
@@ -500,12 +514,6 @@ pl_sb_uninflected_complete = [
 
     "moose",
 
-# ALL NATIONALS ENDING IN -ese
-    "Portuguese", "Amoyese", "Borghese", "Congoese", "Faroese",
-    "Foochowese", "Genevese", "Genoese", "Gilbertese", "Hottentotese",
-    "Kiplingese", "Kongoese", "Lucchese", "Maltese", "Nankingese",
-    "Niasese", "Pekingese", "Piedmontese", "Pistoiese", "Sarawakese",
-    "Shavese", "Vermontese", "Wenchowese", "Yengeese",
 
 
 # OTHER ODDITIES
@@ -514,6 +522,14 @@ pl_sb_uninflected_complete = [
    ] + pl_sb_uninflected_s_complete
 # SOME WORDS ENDING IN ...s (OFTEN PAIRS TAKEN AS A WHOLE)
 
+pl_sb_uninflected_caps = [
+# ALL NATIONALS ENDING IN -ese
+    "Portuguese", "Amoyese", "Borghese", "Congoese", "Faroese",
+    "Foochowese", "Genevese", "Genoese", "Gilbertese", "Hottentotese",
+    "Kiplingese", "Kongoese", "Lucchese", "Maltese", "Nankingese",
+    "Niasese", "Pekingese", "Piedmontese", "Pistoiese", "Sarawakese",
+    "Shavese", "Vermontese", "Wenchowese", "Yengeese",
+]
 
 
 
@@ -1508,6 +1524,8 @@ class engine:
             return True
         if pair in pl_sb_irregular.values():
             return True
+        if pair in pl_sb_irregular_caps.values():
+            return True
 
         for (stems, end1, end2) in (
                    (pl_sb_C_a_ata_stems,   "as","ata"),
@@ -1572,7 +1590,7 @@ class engine:
             count = ''
         return count
 
-    @profile
+    #@profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1596,6 +1614,9 @@ class engine:
         lowerword = word.lower()
 
         if lowerword in pl_sb_uninflected_complete:
+            return word
+
+        if word in pl_sb_uninflected_caps:
             return word
 
         for k, v in pl_sb_uninflected_bysize.iteritems():
@@ -1652,12 +1673,24 @@ class engine:
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
-        lowerwordsplit = lowerword.split()
-        if lowerwordsplit[-1] in pl_sb_irregular.keys():
-            llen = len(lowerwordsplit[-1])
-            return '%s%s' % (lowerword[:-llen],
-                             pl_sb_irregular.get(lowerwordsplit[-1],
-                             pl_sb_irregular[lowerwordsplit[-1].lower()]))
+        wordsplit = word.split()
+        wordlast = wordsplit[-1]
+        lowerwordlast = wordlast.lower()
+        
+        if wordlast in pl_sb_irregular_caps.keys():
+            llen = len(wordlast)
+            return '%s%s' % (word[:-llen],
+                             pl_sb_irregular_caps[wordlast])
+
+        if lowerwordlast in pl_sb_irregular.keys():
+            llen = len(lowerwordlast)
+            return '%s%s' % (word[:-llen],
+                             pl_sb_irregular[lowerwordlast])
+
+        if (' '.join(wordsplit[-2:])).lower() in pl_sb_irregular_compound.keys():
+            llen = len(' '.join(wordsplit[-2:])) #TODO: what if 2 spaces between these words?
+            return '%s%s' % (word[:-llen],
+                             pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
         
         #mo = search(r"(.*)\b(%s)$" % pl_sb_irregular_keys, word, IGNORECASE)
         #if mo:
@@ -2023,6 +2056,9 @@ class engine:
         if lowerword in pl_sb_uninflected_complete:
             return word
 
+        if word in pl_sb_uninflected_caps:
+            return word
+
         for k, v in pl_sb_uninflected_bysize.iteritems():
             if lowerword[-k:] in v:
                 return word
@@ -2077,12 +2113,25 @@ class engine:
 
 # HANDLE ISOLATED IRREGULAR PLURALS 
 
-        lowerwordsplit = lowerword.split()
-        if lowerwordsplit[-1] in si_sb_irregular.keys():
-            llen = len(lowerwordsplit[-1])
-            return '%s%s' % (lowerword[:-llen],
-                             si_sb_irregular.get(lowerwordsplit[-1],
-                             si_sb_irregular[lowerwordsplit[-1].lower()]))
+
+        wordsplit = word.split()
+        wordlast = wordsplit[-1]
+        lowerwordlast = wordlast.lower()
+        
+        if wordlast in si_sb_irregular_caps.keys():
+            llen = len(wordlast)
+            return '%s%s' % (word[:-llen],
+                            si_sb_irregular_caps[wordlast])
+
+        if lowerwordlast in si_sb_irregular.keys():
+            llen = len(lowerwordlast)
+            return '%s%s' % (word[:-llen],
+                             si_sb_irregular[lowerwordlast])
+
+        if (' '.join(wordsplit[-2:])).lower() in si_sb_irregular_compound.keys():
+            llen = len(' '.join(wordsplit[-2:])) #TODO: what if 2 spaces between these words?
+            return '%s%s' % (word[:-llen],
+                             si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
 
 
         # mo = search(r"(.*)\b(%s)$" % si_sb_irregular_keys, word, IGNORECASE)
