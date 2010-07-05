@@ -210,19 +210,21 @@ pl_sb_z_zes = enclose('|'.join(pl_sb_z_zes))
 
 # CLASSICAL "..is" -> "..ides"
 
-pl_sb_C_is_ides = [
+pl_sb_C_is_ides_complete = [
 # GENERAL WORDS...
 
     "ephemeris", "iris", "clitoris",
     "chrysalis", "epididymis",
+]
 
+pl_sb_C_is_ides_endings = [
 # INFLAMATIONS...
 
     ".*itis", 
 
 ]
 
-pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides)
+pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides_complete + pl_sb_C_is_ides_endings)
 
 # CLASSICAL "..a" -> "..ata"
 
@@ -558,17 +560,29 @@ pl_sb_uninflected_bysize = bysize(pl_sb_uninflected_endings)
 
 # SINGULAR WORDS ENDING IN ...s (ALL INFLECT WITH ...es)
 
-pl_sb_singular_s = enclose('|'.join ([
-    ".*ss",
+pl_sb_singular_s_complete = [
     "acropolis", "aegis", "alias", "asbestos", "bathos", "bias",
     "bronchitis", "bursitis", "caddis", "cannabis",
     "canvas", "chaos", "cosmos", "dais", "digitalis",
     "epidermis", "ethos", "eyas", "gas", "glottis", 
     "hubris", "ibis", "lens", "mantis", "marquis", "metropolis",
     "pathos", "pelvis", "polis", "rhinoceros",
-    "sassafras", "trellis", ".*us", "[A-Z].*es",
-   ] + pl_sb_C_is_ides
-))
+    "sassafras", "trellis",
+   ] + pl_sb_C_is_ides_complete
+
+pl_sb_singular_s_endings = [
+    "ss", "us",
+   ] + pl_sb_C_is_ides_endings
+
+pl_sb_singular_s_bysize = bysize(pl_sb_singular_s_endings)
+
+pl_sb_singular_s_es = [
+    "[A-Z].*es",
+   ]
+
+pl_sb_singular_s = enclose('|'.join (pl_sb_singular_s_complete +
+                                     ['.*%s' % w for w in pl_sb_singular_s_endings] +
+                                     pl_sb_singular_s_es))
 
 # PLURALS ENDING IN uses -> use
 
@@ -1590,7 +1604,7 @@ class engine:
             count = ''
         return count
 
-    #@profile
+    @profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1784,7 +1798,14 @@ class engine:
                     return word[:-1] + 'i'
             
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
-        mo = search(r"(%s)$" % pl_sb_singular_s, word, IGNORECASE)
+        if lowerword in pl_sb_singular_s_complete:
+            return word + 'es'
+
+        for k, v in pl_sb_singular_s_bysize.iteritems():
+            if lowerword[-k:] in v:
+                return word + 'es'
+        
+        mo = search(r"(%s)$" % pl_sb_singular_s_es, word)
         if mo:
             return "%ses" % mo.group(1)
 
