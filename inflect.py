@@ -571,21 +571,29 @@ pl_sb_singular_s_complete = [
     "sassafras", "trellis",
    ] + pl_sb_C_is_ides_complete
 
+
 pl_sb_singular_s_endings = [
     "ss", "us",
    ] + pl_sb_C_is_ides_endings
 
 pl_sb_singular_s_bysize = bysize(pl_sb_singular_s_endings)
 
+si_sb_singular_s_complete = ['%ses' % w for w in pl_sb_singular_s_complete]
+si_sb_singular_s_endings = ['%ses' % w for w in pl_sb_singular_s_endings]
+si_sb_singular_s_bysize = bysize(si_sb_singular_s_endings)
+
 pl_sb_singular_s_es = [
     "[A-Z].*es",
    ]
-
 pl_sb_singular_s = enclose('|'.join (pl_sb_singular_s_complete +
                                      ['.*%s' % w for w in pl_sb_singular_s_endings] +
                                      pl_sb_singular_s_es))
 
+si_sb_singular_s_es = ['%ses' % w for w in pl_sb_singular_s_es]
 pl_sb_singular_s_es = enclose('|'.join (pl_sb_singular_s_es))
+si_sb_singular_s_es = enclose('|'.join (si_sb_singular_s_es))
+
+
 
 # PLURALS ENDING IN uses -> use
 
@@ -2280,11 +2288,25 @@ class engine:
             lowerword in si_sb_sses_sse):
             return word[:-1]
 
-        mo = search(r"(%s)es$" % pl_sb_singular_s, word)
-        #TODO: stop [A-Z].*es matching all words, something sublter than above line which stopping any upper case matching other words
-        #mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
+
+
+        if lowerword in si_sb_singular_s_complete:
+            return word[:-2]
+
+        for k, v in si_sb_singular_s_bysize.iteritems():
+            if lowerword[-k:] in v:
+                return word[:-2]
+#        print 'here 1', word
+        
+        mo = search(r"(%s)$" % si_sb_singular_s_es, word)
         if mo:
-            return "%s" % mo.group(1)
+            return mo.group(1)[:-2]
+
+        # mo = search(r"(%s)es$" % pl_sb_singular_s, word)
+        # #TODO: stop [A-Z].*es matching all words, something sublter than above line which stopping any upper case matching other words
+        # #mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
+        # if mo:
+        #     return "%s" % mo.group(1)
 
 
 # Wouldn't special words
