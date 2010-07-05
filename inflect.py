@@ -220,11 +220,12 @@ pl_sb_C_is_ides_complete = [
 pl_sb_C_is_ides_endings = [
 # INFLAMATIONS...
 
-    ".*itis", 
+    "itis", 
 
 ]
 
-pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides_complete + pl_sb_C_is_ides_endings)
+pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides_complete +
+                                 ['.*%s' % w for w in pl_sb_C_is_ides_endings])
 
 # CLASSICAL "..a" -> "..ata"
 
@@ -583,6 +584,8 @@ pl_sb_singular_s_es = [
 pl_sb_singular_s = enclose('|'.join (pl_sb_singular_s_complete +
                                      ['.*%s' % w for w in pl_sb_singular_s_endings] +
                                      pl_sb_singular_s_es))
+
+pl_sb_singular_s_es = enclose('|'.join (pl_sb_singular_s_es))
 
 # PLURALS ENDING IN uses -> use
 
@@ -1604,7 +1607,7 @@ class engine:
             count = ''
         return count
 
-    @profile
+    #@profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1798,12 +1801,14 @@ class engine:
                     return word[:-1] + 'i'
             
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
+
         if lowerword in pl_sb_singular_s_complete:
             return word + 'es'
 
         for k, v in pl_sb_singular_s_bysize.iteritems():
             if lowerword[-k:] in v:
                 return word + 'es'
+#        print 'here 1', word
         
         mo = search(r"(%s)$" % pl_sb_singular_s_es, word)
         if mo:
