@@ -1648,9 +1648,6 @@ class engine:
             if lowerword[-k:] in v:
                 return word
         
-        #if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
-        #    return word
-
         if (self.classical_dict['herd'] and
                lowerword in pl_sb_uninflected_herd):
             return word
@@ -1680,11 +1677,6 @@ class engine:
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
                             return lowerword[:-k] + pl_pron_acc[lowerword[-k:]]
-
-        #mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, pl_pron_acc_keys), word,
-        #                                                 IGNORECASE)
-        #if mo:
-        #    return "%s%s" % (mo.group(1), pl_pron_acc[mo.group(2).lower()])
 
         try:
             return pl_pron_nom[word.lower()]
@@ -1717,13 +1709,6 @@ class engine:
             return '%s%s' % (word[:-llen],
                              pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
         
-        #mo = search(r"(.*)\b(%s)$" % pl_sb_irregular_keys, word, IGNORECASE)
-        #if mo:
-        #    return "%s%s" % (mo.group(1),
-        #                     pl_sb_irregular.get(mo.group(2),
-        #                     pl_sb_irregular[mo.group(2).lower()]))
-
-
         mo = search(r"(\S*)quy$", word, IGNORECASE)
         if mo:
             return "%squies" % mo.group(1)
@@ -1752,17 +1737,6 @@ class engine:
             return word[:-5] + 'teeth'
         if lowerword[-4:] == 'foot':
             return word[:-4] + 'feet'
-
-        # for a in (
-        #           (r"(.*)man$", "%smen"),
-        #           (r"(.*[ml])ouse$", "%sice"),
-        #           (r"(.*)goose$", "%sgeese"),
-        #           (r"(.*)tooth$", "%steeth"),
-        #           (r"(.*)foot$", "%sfeet"),
-        #          ):
-        #     mo = search(a[0], word, IGNORECASE)
-        #     if mo:
-        #         return a[1] % mo.group(1)
 
         if lowerword == 'die':
             return 'dice'
@@ -1898,17 +1872,6 @@ class engine:
 
 
 # HANDLE ...o
-
-        '''
-        for a in (
-                  (r"%s$" % pl_sb_U_o_os, "s"),
-                  (r"[aeiou]o$", "s"),
-                  (r"o$", "es"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return "%s%s" % (word, a[1])
-        '''
         
         if lowerword in pl_sb_U_o_os_complete:
             return word + 's'
@@ -2110,9 +2073,6 @@ class engine:
             if lowerword[-k:] in v:
                 return word
 
-        #if search(r"^%s$" % pl_sb_uninflected, word, IGNORECASE):
-        #    return word
-
         if (self.classical_dict['herd'] and
                lowerword in pl_sb_uninflected_herd):
             return word
@@ -2142,11 +2102,6 @@ class engine:
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
                             return lowerword[:-k] + si_pron_acc[lowerword[-k:]]
-
-        # mo = search(r"^((?:%s)\s+)(%s)$" % (pl_prep, si_pron_acc_keys), word,
-        #                                                  IGNORECASE)
-        # if mo:
-        #     return "%s%s" % (mo.group(1), si_pron_acc[mo.group(2).lower()])
 
         try:
             return si_pron_nom[word.lower()]
@@ -2180,17 +2135,6 @@ class engine:
             return '%s%s' % (word[:-llen],
                              si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
 
-
-        # mo = search(r"(.*)\b(%s)$" % si_sb_irregular_keys, word, IGNORECASE)
-        # if mo:
-        #     try:
-        #         return "%s%s" % (mo.group(1),
-        #                      si_sb_irregular[mo.group(2)])
-        #     except KeyError:
-        #         return "%s%s" % (mo.group(1),
-        #                      si_sb_irregular[mo.group(2).lower()])
-
-
         mo = search(r"(\S*)quies$", word, IGNORECASE)
         if mo:
             return "%squy" % mo.group(1)
@@ -2221,19 +2165,6 @@ class engine:
             return word[:-5] + 'tooth'
         if lowerword[-4:] == 'feet':
             return word[:-4] + 'foot'
-
-
-
-        # for a in (
-        #          (r"(.*)men$", "%sman"),
-        #          (r"(.*[ml])ice$", "%souse"),
-        #          (r"(.*)geese$", "%sgoose"),
-        #          (r"(.*)teeth$", "%stooth"),
-        #          (r"(.*)feet$", "%sfoot"),
-        #         ):
-        #    mo = search(a[0], word, IGNORECASE)
-        #    if mo:
-        #        return a[1] % mo.group(1)
             
         if lowerword == 'dice':
             return 'die'
@@ -2325,17 +2256,10 @@ class engine:
         for k, v in si_sb_singular_s_bysize.iteritems():
             if lowerword[-k:] in v:
                 return word[:-2]
-#        print 'here 1', word
         
         mo = search(r"(%s)$" % si_sb_singular_s_es, word)
         if mo:
             return mo.group(1)[:-2]
-
-        # mo = search(r"(%s)es$" % pl_sb_singular_s, word)
-        # #TODO: stop [A-Z].*es matching all words, something sublter than above line which stopping any upper case matching other words
-        # #mo = search(r"(%s)es$" % pl_sb_singular_s, word, IGNORECASE)
-        # if mo:
-        #     return "%s" % mo.group(1)
 
 
 # Wouldn't special words
@@ -2416,16 +2340,6 @@ class engine:
 # HANDLE ...o
 
         if lowerword[-2:] == 'os':
-            '''
-            for a, num in (
-                      #(r"(%s)s$" % pl_sb_U_o_os, -1),
-                      #(r"(.*[aeiou]o)s$", -1),
-                      #(r"(.*o)es$", -2),
-                     ):
-                mo = search(a, word, IGNORECASE)
-                if mo:
-                    return word[:num]
-            '''
             
             if lowerword in si_sb_U_o_os_complete:
                 return word[:-1]
