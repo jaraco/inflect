@@ -256,9 +256,15 @@ pl_sb_C_a_ae = enclose('|'.join ((
 
 # CLASSICAL "..en" -> "..ina"
 
-pl_sb_C_en_ina = joinstem(-2, ((
+pl_sb_C_en_ina_list = (
     "stamen", "foramen", "lumen",
-)))
+)
+si_sb_C_en_ina_list = [w[:-2] + 'ina' for w in pl_sb_C_en_ina_list]
+pl_sb_C_en_ina_bysize = bysize(pl_sb_C_en_ina_list)
+si_sb_C_en_ina_bysize = bysize(si_sb_C_en_ina_list)
+
+pl_sb_C_en_ina = joinstem(-2, (pl_sb_C_en_ina_list))
+
 
 # UNCONDITIONAL "..um" -> "..a"
 
@@ -1744,36 +1750,42 @@ class engine:
 
 # HANDLE UNASSIMILATED IMPORTS
 
-        if search(r"(.*)ceps$", word, IGNORECASE):
+        if lowerword[-4:] == 'ceps':
             return word
+        if lowerword[-4:] == 'zoon':
+            return word[:-2] + 'a'
+        if lowerword[-3:] in ('cis', 'sis', 'xis'):
+            return word[:-2] + 'es'
 
-
-        for a in (
-                  (r"(.*)zoon$", "%szoa"),
-                  (r"(.*[csx])is$", "%ses"),
-                  (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
-                  (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
-                  (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
-                  (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
-                  (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
-                  (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
-                  (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
+        if lowerword[-1] in 'hxmsna':
+            for a in (
+                      (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
+                      (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
+                      (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
+                      (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
+                      (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
+                      (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
+                      (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
+                     ):
+                mo = search(a[0], word, IGNORECASE)
+                if mo:
+                    return a[1] % mo.group(1)
 
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
         if (self.classical_dict['ancient']):
+            if lowerword[-4:] == 'trix':
+                return word[:-1] + 'ces'
+            if lowerword[-3:] in ('eau', 'ieu'):
+                return word + 'x'
 
             for a in (
-                  (r"(.*)trix$", "%strices"),
-                  (r"(.*)eau$", "%seaux"),
-                  (r"(.*)ieu$", "%sieux"),
+                  #(r"(.*)trix$", "%strices"),
+                  #(r"(.*)eau$", "%seaux"),
+                  #(r"(.*)ieu$", "%sieux"),
                   (r"(.{2,}[yia])nx$", "%snges"),
-                  (r"(%s)en$" % pl_sb_C_en_ina, "%sina"),
+                  #(r"(%s)en$" % pl_sb_C_en_ina, "%sina"),
                   (r"(%s)ex$" % pl_sb_C_ex_ices, "%sices"),
                   (r"(%s)ix$" % pl_sb_C_ix_ices, "%sices"),
                   (r"(%s)um$" % pl_sb_C_um_a, "%sa"),
@@ -1791,6 +1803,9 @@ class engine:
                 if mo:
                     return a[1] % mo.group(1)
 
+            for k, v in pl_sb_C_en_ina_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-2] + 'ina'
             for k, v in pl_sb_C_o_i_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word[:-1] + 'i'
@@ -2172,11 +2187,13 @@ class engine:
 
 # HANDLE UNASSIMILATED IMPORTS
 
-        if search(r"(.*)ceps$", word, IGNORECASE):
+        if lowerword[-4:] == 'ceps':
             return word
+        if lowerword[-3:] == 'zoa':
+            return word[:-1] + 'on'
 
         for a in (
-                  (r"(.*)zoa$", "%szoon"),
+#                  (r"(.*)zoa$", "%szoon"),
                   #(r"(.*[csx])es$", "%sis"), # test too general to have this early
                   (r"(.*%s)chs$" % pl_sb_U_ch_chs, "%sch"),
                   (r"(.*%s)ices$" % pl_sb_U_ex_ices, "%sex"),
@@ -2190,16 +2207,21 @@ class engine:
             if mo:
                 return a[1] % mo.group(1)
 
-# HANDLE INCOMPLETELY ASSIMILATED IMPORTS
+# HANDLE INCMPLETELY ASSIMILATED IMPORTS
 
         if (self.classical_dict['ancient']):
 
+            if lowerword[-6:] == 'trices':
+                return word[:-3] + 'x'
+            if lowerword[-4:] in ('eaux', 'ieux'):
+                return word[:-1]
+
             for a in (
-                  (r"(.*)trices$", "%strix"),
-                  (r"(.*)eaux$", "%seau"),
-                  (r"(.*)ieux$", "%sieu"),
+#                  (r"(.*)trices$", "%strix"),
+#                  (r"(.*)eaux$", "%seau"),
+#                  (r"(.*)ieux$", "%sieu"),
                   (r"(.{2,}[yia])nges$", "%snx"),
-                  (r"(%s)ina$" % pl_sb_C_en_ina, "%sen"),
+#                  (r"(%s)ina$" % pl_sb_C_en_ina, "%sen"),
                   (r"(%s)ices$" % pl_sb_C_ex_ices, "%sex"),
                   (r"(%s)ices$" % pl_sb_C_ix_ices, "%six"),
                   (r"(%s)a$" % pl_sb_C_um_a, "%sum"),
@@ -2217,6 +2239,9 @@ class engine:
                 if mo:
                     return a[1] % mo.group(1)
 
+            for k, v in si_sb_C_en_ina_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-3] + 'en'
             for k, v in si_sb_C_o_i_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word[:-1] + 'o'
