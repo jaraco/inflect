@@ -1615,7 +1615,7 @@ class engine:
             count = ''
         return count
 
-    #@profile
+    @profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1723,9 +1723,6 @@ class engine:
         #                     pl_sb_irregular.get(mo.group(2),
         #                     pl_sb_irregular[mo.group(2).lower()]))
 
-        mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
-        if mo:
-            return "%ss" % word
 
         mo = search(r"(\S*)quy$", word, IGNORECASE)
         if mo:
@@ -1740,16 +1737,32 @@ class engine:
 
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
-        for a in (
-                  (r"(.*)man$", "%smen"),
-                  (r"(.*[ml])ouse$", "%sice"),
-                  (r"(.*)goose$", "%sgeese"),
-                  (r"(.*)tooth$", "%steeth"),
-                  (r"(.*)foot$", "%sfeet"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
+        if lowerword[-3:] == 'man':
+            mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
             if mo:
-                return a[1] % mo.group(1)
+                return "%ss" % word
+            return word[:-3] + 'men'
+        if lowerword[-5:] == 'mouse':
+            return word[:-5] + 'mice'
+        if lowerword[-5:] == 'louse':
+            return word[:-5] + 'lice'
+        if lowerword[-5:] == 'goose':
+            return word[:-5] + 'geese'
+        if lowerword[-5:] == 'tooth':
+            return word[:-5] + 'teeth'
+        if lowerword[-4:] == 'foot':
+            return word[:-4] + 'feet'
+
+        # for a in (
+        #           (r"(.*)man$", "%smen"),
+        #           (r"(.*[ml])ouse$", "%sice"),
+        #           (r"(.*)goose$", "%sgeese"),
+        #           (r"(.*)tooth$", "%steeth"),
+        #           (r"(.*)foot$", "%sfeet"),
+        #          ):
+        #     mo = search(a[0], word, IGNORECASE)
+        #     if mo:
+        #         return a[1] % mo.group(1)
 
         if lowerword == 'die':
             return 'dice'
@@ -2177,9 +2190,6 @@ class engine:
         #         return "%s%s" % (mo.group(1),
         #                      si_sb_irregular[mo.group(2).lower()])
 
-        mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
-        if mo:
-            return word[:-1]
 
         mo = search(r"(\S*)quies$", word, IGNORECASE)
         if mo:
@@ -2195,16 +2205,35 @@ class engine:
 
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
-        for a in (
-                  (r"(.*)men$", "%sman"),
-                  (r"(.*[ml])ice$", "%souse"),
-                  (r"(.*)geese$", "%sgoose"),
-                  (r"(.*)teeth$", "%stooth"),
-                  (r"(.*)feet$", "%sfoot"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
+        if lowerword[-4:] == 'mans':
+            mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
             if mo:
-                return a[1] % mo.group(1)
+                return word[:-1]
+        if lowerword[-3:] == 'men':
+            return word[:-3] + 'man'
+        if lowerword[-4:] == 'mice':
+            return word[:-4] + 'mouse'
+        if lowerword[-4:] == 'lice':
+            return word[:-4] + 'louce'
+        if lowerword[-5:] == 'geese':
+            return word[:-5] + 'goose'
+        if lowerword[-5:] == 'teeth':
+            return word[:-5] + 'tooth'
+        if lowerword[-4:] == 'feet':
+            return word[:-4] + 'foot'
+
+
+
+        # for a in (
+        #          (r"(.*)men$", "%sman"),
+        #          (r"(.*[ml])ice$", "%souse"),
+        #          (r"(.*)geese$", "%sgoose"),
+        #          (r"(.*)teeth$", "%stooth"),
+        #          (r"(.*)feet$", "%sfoot"),
+        #         ):
+        #    mo = search(a[0], word, IGNORECASE)
+        #    if mo:
+        #        return a[1] % mo.group(1)
             
         if lowerword == 'dice':
             return 'die'
