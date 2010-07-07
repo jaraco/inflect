@@ -1710,7 +1710,7 @@ class engine:
             count = ''
         return count
 
-    @profile
+    #@profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1963,20 +1963,29 @@ class engine:
 
 # HANDLE ...f -> ...ves
 
-        for a in (
-                  (r"(.*[eao])lf$", "%slves"),
-                  (r"(.*[^d])eaf$", "%seaves"),
-                  (r"(.*[nlw])ife$", "%sives"),
-                  (r"(.*)arf$", "%sarves"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
+        if lowerword[-3:] in ('elf', 'alf', 'olf'):
+            return word[:-1] + 'ves'
+        if lowerword[-3:] == 'eaf' and lowerword[-4:-3] != 'd':
+            return word[:-1] + 'ves'
+        if lowerword[-4:] in ('nife', 'life', 'wife'):
+            return word[:-2] + 'ves'
+        if lowerword[-3:] == 'arf':
+            return word[:-1] + 'ves'
+            
+##        for a in (
+##                  (r"(.*[eao])lf$", "%slves"),
+##                  (r"(.*[^d])eaf$", "%seaves"),
+##                  (r"(.*[nlw])ife$", "%sives"),
+##                  (r"(.*)arf$", "%sarves"),
+##                 ):
+##            mo = search(a[0], word, IGNORECASE)
+##            if mo:
+##                return a[1] % mo.group(1)
 
 # HANDLE ...y
 
         if lowerword[-1] == 'y':
-            if lowerword[-2] in 'aeiou':
+            if lowerword[-2:-1] in 'aeiou':
                 return word + 's'
 
             if (self.classical_dict['names']):
@@ -2152,7 +2161,7 @@ class engine:
 
         return False
 
-    @profile
+    #@profile
     def _sinoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -2442,16 +2451,25 @@ class engine:
             lowerword in si_sb_ves_ve):
             return word[:-1]
 
-        if word[-3:] == 'ves':
-            for a in (
-                      (r"(.*[eao])lves$", "%slf"),
-                      (r"(.*[^d])eaves$", "%seaf"),
-                      (r"(.*[nlw])ives$", "%sife"),
-                      (r"(.*)arves$", "%sarf"),
-                     ):
-                mo = search(a[0], word, IGNORECASE)
-                if mo:
-                    return a[1] % mo.group(1)
+        if lowerword[-3:] == 'ves':
+            if lowerword[-5:-3] in ('el', 'al', 'ol'):
+                return word[:-3] + 'f'
+            if lowerword[-5:-3] == 'ea' and word[-6:-5] != 'd':
+                return word[:-3] + 'f'
+            if lowerword[-5:-3] in ('ni', 'li', 'wi'):
+                return word[:-3] + 'fe'
+            if lowerword[-5:-3] == 'ar':
+                return word[:-3] + 'f'
+                
+##            for a in (
+##                      (r"(.*[eao])lves$", "%slf"),
+##                      (r"(.*[^d])eaves$", "%seaf"),
+##                      (r"(.*[nlw])ives$", "%sife"),
+##                      (r"(.*)arves$", "%sarf"),
+##                     ):
+##                mo = search(a[0], word, IGNORECASE)
+##                if mo:
+##                    return a[1] % mo.group(1)
 
 # HANDLE ...y
 
