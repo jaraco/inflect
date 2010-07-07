@@ -120,12 +120,17 @@ def bysize(words):
         ret[len(w)].add(w)
     return ret
 
-def make_pl_si_lists(lst, plending, siendginsize):
-    si_list = [w[:-siendginsize] + plending for w in lst]
+def make_pl_si_lists(lst, plending, siendginsize, dojoinstem=True):
+    if siendginsize is not None:
+        siendginsize = -siendginsize
+    si_list = [w[:siendginsize] + plending for w in lst]
     pl_bysize = bysize(lst)
     si_bysize = bysize(si_list)
-    stem = joinstem(-siendginsize, lst)
-    return si_list, si_bysize, pl_bysize, stem
+    if dojoinstem:
+        stem = joinstem(siendginsize, lst)        
+        return si_list, si_bysize, pl_bysize, stem
+    else:
+        return si_list, si_bysize, pl_bysize
 
 
 
@@ -233,12 +238,19 @@ pl_sb_C_is_ides_endings = [
 
 ]
 
-pl_sb_C_is_ides_stems = joinstem(-2, pl_sb_C_is_ides_complete +
-                                 ['.*%s' % w for w in pl_sb_C_is_ides_endings])
+pl_sb_C_is_ides = joinstem(-2, pl_sb_C_is_ides_complete +
+                          ['.*%s' % w for w in pl_sb_C_is_ides_endings] )
+
+pl_sb_C_is_ides_list = pl_sb_C_is_ides_complete + pl_sb_C_is_ides_endings
+
+(si_sb_C_is_ides_list, si_sb_C_is_ides_bysize,
+ pl_sb_C_is_ides_bysize) = make_pl_si_lists(
+      pl_sb_C_is_ides_list, 'ides', 2, dojoinstem=False)
+
 
 # CLASSICAL "..a" -> "..ata"
 
-pl_sb_C_a_ata = (
+pl_sb_C_a_ata_list = (
     "anathema", "bema", "carcinoma", "charisma", "diploma",
     "dogma", "drama", "edema", "enema", "enigma", "lemma",
     "lymphoma", "magma", "melisma", "miasma", "oedema",
@@ -246,22 +258,32 @@ pl_sb_C_a_ata = (
     "gumma", "pragma",
 )
 
-pl_sb_C_a_ata_stems = joinstem(-1, pl_sb_C_a_ata)
+(si_sb_C_a_ata_list, si_sb_C_a_ata_bysize,
+ pl_sb_C_a_ata_bysize, pl_sb_C_a_ata) = make_pl_si_lists(
+      pl_sb_C_a_ata_list, 'ata', 1)
 
 # UNCONDITIONAL "..a" -> "..ae"
 
-pl_sb_U_a_ae = enclose('|'.join ((
+pl_sb_U_a_ae_list = (
     "alumna", "alga", "vertebra", "persona"
-)))
+)
+(si_sb_U_a_ae_list, si_sb_U_a_ae_bysize,
+ pl_sb_U_a_ae_bysize, pl_sb_U_a_ae) = make_pl_si_lists(
+      pl_sb_U_a_ae_list, 'e', None)
 
 # CLASSICAL "..a" -> "..ae"
 
-pl_sb_C_a_ae = enclose('|'.join ((
+pl_sb_C_a_ae_list = (
     "amoeba", "antenna", "formula", "hyperbola",
     "medusa", "nebula", "parabola", "abscissa",
-    "hydra", "nova", "lacuna", "aurora", ".*umbra",
+    "hydra", "nova", "lacuna", "aurora", "umbra",
     "flora", "fauna",
-)))
+)
+(si_sb_C_a_ae_list, si_sb_C_a_ae_bysize,
+ pl_sb_C_a_ae_bysize, pl_sb_C_a_ae) = make_pl_si_lists(
+      pl_sb_C_a_ae_list, 'e', None)
+
+
 
 # CLASSICAL "..en" -> "..ina"
 
@@ -276,11 +298,14 @@ pl_sb_C_en_ina_list = (
 
 # UNCONDITIONAL "..um" -> "..a"
 
-pl_sb_U_um_a = joinstem(-2, ((
+pl_sb_U_um_a_list = (
     "bacterium",    "agendum",  "desideratum",  "erratum",
     "stratum",  "datum",    "ovum",     "extremum",
     "candelabrum",
-)))
+)
+(si_sb_U_um_a_list, si_sb_U_um_a_bysize,
+ pl_sb_U_um_a_bysize, pl_sb_U_um_a) = make_pl_si_lists(
+      pl_sb_U_um_a_list, 'a', 2)
 
 # CLASSICAL "..um" -> "..a"
 
@@ -303,42 +328,60 @@ pl_sb_C_um_a_list = (
 
 # UNCONDITIONAL "..us" -> "i"
 
-pl_sb_U_us_i = joinstem(-2, ((
+pl_sb_U_us_i_list = (
     "alumnus",  "alveolus", "bacillus", "bronchus",
     "locus",    "nucleus",  "stimulus", "meniscus",
     "sarcophagus",
-)))
+)
+(si_sb_U_us_i_list, si_sb_U_us_i_bysize,
+ pl_sb_U_us_i_bysize, pl_sb_U_us_i) = make_pl_si_lists(
+      pl_sb_U_us_i_list, 'i', 2)
 
 # CLASSICAL "..us" -> "..i"
 
-pl_sb_C_us_i = joinstem(-2, ((
+pl_sb_C_us_i_list = (
     "focus",    "radius",   "genius",
     "incubus",  "succubus", "nimbus",
     "fungus",   "nucleolus",    "stylus",
     "torus",    "umbilicus",    "uterus",
     "hippopotamus", "cactus",
-)))
+)
+
+(si_sb_C_us_i_list, si_sb_C_us_i_bysize,
+ pl_sb_C_us_i_bysize, pl_sb_C_us_i) = make_pl_si_lists(
+      pl_sb_C_us_i_list, 'i', 2)
+
+
 
 # CLASSICAL "..us" -> "..us"  (ASSIMILATED 4TH DECLENSION LATIN NOUNS)
 
-pl_sb_C_us_us = enclose('|'.join ((
+pl_sb_C_us_us = (
     "status", "apparatus", "prospectus", "sinus",
     "hiatus", "impetus", "plexus",
-)))
+)
+pl_sb_C_us_us_bysize = bysize(pl_sb_C_us_us)
 
 # UNCONDITIONAL "..on" -> "a"
 
-pl_sb_U_on_a = joinstem(-2, ((
+pl_sb_U_on_a_list = (
     "criterion",    "perihelion",   "aphelion",
     "phenomenon",   "prolegomenon", "noumenon",
     "organon",  "asyndeton",    "hyperbaton",
-)))
+)
+(si_sb_U_on_a_list, si_sb_U_on_a_bysize,
+ pl_sb_U_on_a_bysize, pl_sb_U_on_a) = make_pl_si_lists(
+      pl_sb_U_on_a_list, 'a', 2)
 
 # CLASSICAL "..on" -> "..a"
 
-pl_sb_C_on_a = joinstem(-2, ((
+pl_sb_C_on_a_list = (
     "oxymoron",
-)))
+)
+
+(si_sb_C_on_a_list, si_sb_C_on_a_bysize,
+ pl_sb_C_on_a_bysize, pl_sb_C_on_a) = make_pl_si_lists(
+      pl_sb_C_on_a_list, 'a', 2)
+
 
 # CLASSICAL "..o" -> "..i"  (BUT NORMALLY -> "..os")
 
@@ -436,19 +479,30 @@ si_sb_U_o_os_bysize = bysize(['%ss' % w for w in pl_sb_U_o_os_endings])
 
 # UNCONDITIONAL "..ch" -> "..chs"
 
-pl_sb_U_ch_chs = joinstem(-2, ((
+pl_sb_U_ch_chs_list = (
     "czech",  "eunuch",   "stomach"
-)))
+)
+
+(si_sb_U_ch_chs_list, si_sb_U_ch_chs_bysize,
+pl_sb_U_ch_chs_bysize, pl_sb_U_ch_chs) = make_pl_si_lists(
+    pl_sb_U_ch_chs_list, 's', None)
+
 
 # UNCONDITIONAL "..[ei]x" -> "..ices"
 
-pl_sb_U_ex_ices = joinstem(-2, ((
+pl_sb_U_ex_ices_list = (
     "codex",    "murex",    "silex",
-)))
+)
+(si_sb_U_ex_ices_list, si_sb_U_ex_ices_bysize,
+pl_sb_U_ex_ices_bysize, pl_sb_U_ex_ices) = make_pl_si_lists(
+    pl_sb_U_ex_ices_list, 'ices', 2)
 
-pl_sb_U_ix_ices = joinstem(-2, ((
+pl_sb_U_ix_ices_list = (
     "radix",    "helix",
-)))
+)
+(si_sb_U_ix_ices_list, si_sb_U_ix_ices_bysize,
+pl_sb_U_ix_ices_bysize, pl_sb_U_ix_ices) = make_pl_si_lists(
+    pl_sb_U_ix_ices_list, 'ices', 2)
 
 # CLASSICAL "..[ei]x" -> "..ices"
 
@@ -473,15 +527,26 @@ pl_sb_C_ix_ices_bysize, pl_sb_C_ix_ices) = make_pl_si_lists(
 
 # ARABIC: ".." -> "..i"
 
-pl_sb_C_i = enclose('|'.join ((
+pl_sb_C_i_list = (
     "afrit",    "afreet",   "efreet",
-)))
+)
+
+(si_sb_C_i_list, si_sb_C_i_bysize,
+pl_sb_C_i_bysize, pl_sb_C_i) = make_pl_si_lists(
+    pl_sb_C_i_list, 'i', None)
+
+
 
 # HEBREW: ".." -> "..im"
 
-pl_sb_C_im = enclose('|'.join ((
+pl_sb_C_im_list = (
     "goy",      "seraph",   "cherub",
-)))
+)
+
+(si_sb_C_im_list, si_sb_C_im_bysize,
+pl_sb_C_im_bysize, pl_sb_C_im) = make_pl_si_lists(
+    pl_sb_C_im_list, 'im', None)
+
 
 # UNCONDITIONAL "..man" -> "..mans"
 
@@ -1583,8 +1648,8 @@ class engine:
             return True
 
         for (stems, end1, end2) in (
-                   (pl_sb_C_a_ata_stems,   "as","ata"),
-                   (pl_sb_C_is_ides_stems, "is","ides"),
+                   (pl_sb_C_a_ata,   "as","ata"),
+                   (pl_sb_C_is_ides, "is","ides"),
                    (pl_sb_C_a_ae,    "s","e"),
                    (pl_sb_C_en_ina,  "ens","ina"),
                    (pl_sb_C_um_a,    "ums","a"),
@@ -1781,19 +1846,34 @@ class engine:
         if lowerword[-3:] in ('cis', 'sis', 'xis'):
             return word[:-2] + 'es'
 
-        if lowerword[-1] in 'hxmsna':
-            for a in (
-                      (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
-                      (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
-                      (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
-                      (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
-                      (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
-                      (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
-                      (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
-                     ):
-                mo = search(a[0], word, IGNORECASE)
-                if mo:
-                    return a[1] % mo.group(1)
+##        if lowerword[-1] in 'hxmsna':
+##            for a in (
+##                      (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
+##                      (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
+##                      (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
+##                      (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
+##                      (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
+##                      (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
+##                      (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
+##                     ):
+##                mo = search(a[0], word, IGNORECASE)
+##                if mo:
+##                    return a[1] % mo.group(1)
+
+        for lastlet, d, numend, post in (
+            ('h', pl_sb_U_ch_chs_bysize, None, 's'),
+            ('x', pl_sb_U_ex_ices_bysize, -2, 'ices'),
+            ('x', pl_sb_U_ix_ices_bysize, -2, 'ices'),
+            ('m', pl_sb_U_um_a_bysize, -2, 'a'),
+            ('s', pl_sb_U_us_i_bysize, -2, 'i'),
+            ('n', pl_sb_U_on_a_bysize, -2, 'a'),
+            ('a', pl_sb_U_a_ae_bysize, None, 'e'),
+                        ):
+            if lowerword[-1] == lastlet: # this test to add speed
+                for k, v in d.iteritems():
+                    if lowerword[-k:] in v:
+                        return word[:numend] + post
+
 
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
@@ -1803,48 +1883,36 @@ class engine:
                 return word[:-1] + 'ces'
             if lowerword[-3:] in ('eau', 'ieu'):
                 return word + 'x'
+            if lowerword[-3:] in ('ynx', 'inx', 'anx') and len(word) > 4:
+                return word[:-1] + 'ges'
 
-            for a in (
-                  #(r"(.*)trix$", "%strices"),
-                  #(r"(.*)eau$", "%seaux"),
-                  #(r"(.*)ieu$", "%sieux"),
-                  (r"(.{2,}[yia])nx$", "%snges"),
-                  #(r"(%s)en$" % pl_sb_C_en_ina, "%sina"),
-                  #(r"(%s)ex$" % pl_sb_C_ex_ices, "%sices"),
-                  #(r"(%s)ix$" % pl_sb_C_ix_ices, "%sices"),
-                  #(r"(%s)um$" % pl_sb_C_um_a, "%sa"),
-                  (r"(%s)us$" % pl_sb_C_us_i, "%si"),
-                  (r"(%s)$" % pl_sb_C_us_us, "%s"),
-                  (r"(%s)$" % pl_sb_C_a_ae, "%se"),
-                  (r"(%s)a$" % pl_sb_C_a_ata_stems, "%sata"),
-                  (r"(%s)is$" % pl_sb_C_is_ides_stems, "%sides"),
-                  #(r"(%s)o$" % pl_sb_C_o_i_stems, "%si"),
-                  (r"(%s)on$" % pl_sb_C_on_a, "%sa"),
-                  (r"(%s)$" % pl_sb_C_im, "%sim"),
-                  (r"(%s)$" % pl_sb_C_i, "%si"),
-                 ):
-                mo = search(a[0], word, IGNORECASE)
-                if mo:
-                    return a[1] % mo.group(1)
+            for lastlet, d, numend, post in (
+                ('n', pl_sb_C_en_ina_bysize, -2, 'ina'),
+                ('x', pl_sb_C_ex_ices_bysize, -2, 'ices'),
+                ('x', pl_sb_C_ix_ices_bysize, -2, 'ices'),
+                ('m', pl_sb_C_um_a_bysize, -2, 'a'),
+                ('s', pl_sb_C_us_i_bysize, -2, 'i'),
+                ('s', pl_sb_C_us_us_bysize, None, ''),
+                ('a', pl_sb_C_a_ae_bysize, None, 'e'),
+                ('a', pl_sb_C_a_ata_bysize, None, 'ta'),
+                ('s', pl_sb_C_is_ides_bysize, -1, 'des'),
+                ('o', pl_sb_C_o_i_bysize, -1, 'i'),
+                ('n', pl_sb_C_on_a_bysize, -2, 'a'),
+                            ):
+                if lowerword[-1] == lastlet: # this test to add speed
+                    for k, v in d.iteritems():
+                        if lowerword[-k:] in v:
+                            return word[:numend] + post
 
-            for k, v in pl_sb_C_en_ina_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-2] + 'ina'
-            for k, v in pl_sb_C_ex_ices_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-2] + 'ices'
-            for k, v in pl_sb_C_ix_ices_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-2] + 'ices'
-            for k, v in pl_sb_C_um_a_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-2] + 'a'
-                
+            for d, numend, post in (
+                (pl_sb_C_i_bysize, None, 'i'),
+                (pl_sb_C_im_bysize, None, 'im'),
+                            ):
+                for k, v in d.iteritems():
+                    if lowerword[-k:] in v:
+                        return word[:numend] + post
 
-            for k, v in pl_sb_C_o_i_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-1] + 'i'
-            
+                                
 # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
         if lowerword in pl_sb_singular_s_complete:
@@ -1907,19 +1975,16 @@ class engine:
 
 # HANDLE ...y
 
-        mo = search(r"(.*[aeiou])y$", word, IGNORECASE)
-        if mo:
-            return "%sys" % mo.group(1)
+        if lowerword[-1] == 'y':
+            if lowerword[-2] in 'aeiou':
+                return word + 's'
 
-        if (self.classical_dict['names']):
-            mo = search(r"([A-Z].*y)$", word)
-            if mo:
-                return "%ss" % mo.group(1)
-
-        mo = search(r"(.*)y$", word, IGNORECASE)
-        if mo:
-            return "%sies" % mo.group(1)
-
+            if (self.classical_dict['names']):
+                mo = search(r"([A-Z].*y)$", word)
+                if mo:
+                    return "%ss" % mo.group(1)
+                
+            return word[:-1] + 'ies'
 
 # HANDLE ...o
         
@@ -2087,6 +2152,7 @@ class engine:
 
         return False
 
+    @profile
     def _sinoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -2227,20 +2293,34 @@ class engine:
         if lowerword[-3:] == 'zoa':
             return word[:-1] + 'on'
 
-        for a in (
-#                  (r"(.*)zoa$", "%szoon"),
-                  #(r"(.*[csx])es$", "%sis"), # test too general to have this early
-                  (r"(.*%s)chs$" % pl_sb_U_ch_chs, "%sch"),
-                  (r"(.*%s)ices$" % pl_sb_U_ex_ices, "%sex"),
-                  (r"(.*%s)ices$" % pl_sb_U_ix_ices, "%six"),
-                  (r"(.*%s)a$" % pl_sb_U_um_a, "%sum"),
-                  (r"(.*%s)i$" % pl_sb_U_us_i, "%sus"),
-                  (r"(.*%s)a$" % pl_sb_U_on_a, "%son"),
-                  (r"(.*%s)e$" % pl_sb_U_a_ae, "%s"),
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % mo.group(1)
+##        for a in (
+##                  (r"(.*%s)chs$" % pl_sb_U_ch_chs, "%sch"),
+##                  (r"(.*%s)ices$" % pl_sb_U_ex_ices, "%sex"),
+##                  (r"(.*%s)ices$" % pl_sb_U_ix_ices, "%six"),
+##                  (r"(.*%s)a$" % pl_sb_U_um_a, "%sum"),
+##                  (r"(.*%s)i$" % pl_sb_U_us_i, "%sus"),
+##                  (r"(.*%s)a$" % pl_sb_U_on_a, "%son"),
+##                  (r"(.*%s)e$" % pl_sb_U_a_ae, "%s"),
+##                 ):
+##            mo = search(a[0], word, IGNORECASE)
+##            if mo:
+##                return a[1] % mo.group(1)
+
+        for lastlet, d, numend, post in (
+            ('s', si_sb_U_ch_chs_bysize, -1, ''),
+            ('s', si_sb_U_ex_ices_bysize, -4, 'ex'),
+            ('s', si_sb_U_ix_ices_bysize, -4, 'ix'),
+            ('a', si_sb_U_um_a_bysize, -1, 'um'),
+            ('i', si_sb_U_us_i_bysize, -1, 'us'),
+            ('a', si_sb_U_on_a_bysize, -1, 'on'),
+            ('e', si_sb_U_a_ae_bysize, -1, ''),
+                        ):
+            if lowerword[-1] == lastlet: # this test to add speed
+                for k, v in d.iteritems():
+                    if lowerword[-k:] in v:
+                        return word[:numend] + post
+
+
 
 # HANDLE INCMPLETELY ASSIMILATED IMPORTS
 
@@ -2250,53 +2330,28 @@ class engine:
                 return word[:-3] + 'x'
             if lowerword[-4:] in ('eaux', 'ieux'):
                 return word[:-1]
+            if lowerword[-5:] in ('ynges', 'inges', 'anges') and len(word) > 6:
+                return word[:-3] + 'x'
 
-            for a in (
-#                  (r"(.*)trices$", "%strix"),
-#                  (r"(.*)eaux$", "%seau"),
-#                  (r"(.*)ieux$", "%sieu"),
-                  (r"(.{2,}[yia])nges$", "%snx"),
-#                  (r"(%s)ina$" % pl_sb_C_en_ina, "%sen"),
-#                  (r"(%s)ices$" % pl_sb_C_ex_ices, "%sex"),
-                  #(r"(%s)ices$" % pl_sb_C_ix_ices, "%six"),
-                  #(r"(%s)a$" % pl_sb_C_um_a, "%sum"),
-                  (r"(%s)i$" % pl_sb_C_us_i, "%sus"),
-                  (r"(%s)$" % pl_sb_C_us_us, "%s"),
-                  (r"(%s)e$" % pl_sb_C_a_ae, "%s"),
-                  (r"(%s)ata$" % pl_sb_C_a_ata_stems, "%sa"),
-                  (r"(%s)ides$" % pl_sb_C_is_ides_stems, "%sis"),
-                  #(r"(%s)i$" % pl_sb_C_o_i_stems, "%so"),
-                  (r"(%s)a$" % pl_sb_C_on_a, "%son"),
-                  (r"(%s)im$" % pl_sb_C_im, "%s"),
-                  (r"(%s)i$" % pl_sb_C_i, "%s"),
-                 ):
-                mo = search(a[0], word, IGNORECASE)
-                if mo:
-                    return a[1] % mo.group(1)
-
-            for k, v in si_sb_C_en_ina_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-3] + 'en'
-            for k, v in si_sb_C_ex_ices_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-4] + 'ex'
-            for k, v in si_sb_C_ix_ices_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-3] + 'x'
-            for k, v in si_sb_C_um_a_bysize.iteritems():
-                if lowerword[-k:] in v:
-                    return word[:-1] + 'um'
-
-
-
-
-            for k, v in si_sb_C_o_i_bysize.iteritems():
-                if lowerword[-k:] in v:
-
-
-
-                    
-                    return word[:-1] + 'o'
+            for lastlet, d, numend, post in (
+                ('a', si_sb_C_en_ina_bysize, -3, 'en'),
+                ('s', si_sb_C_ex_ices_bysize, -4, 'ex'),
+                ('s', si_sb_C_ix_ices_bysize, -4, 'ix'),
+                ('a', si_sb_C_um_a_bysize, -1, 'um'),
+                ('i', si_sb_C_us_i_bysize, -1, 'us'),
+                ('s', pl_sb_C_us_us_bysize, None, ''),
+                ('e', si_sb_C_a_ae_bysize, -1, ''),
+                ('a', si_sb_C_a_ata_bysize, -2, ''),
+                ('s', si_sb_C_is_ides_bysize, -3, 's'),
+                ('i', si_sb_C_o_i_bysize, -1, 'o'),
+                ('a', si_sb_C_on_a_bysize, -1, 'on'),
+                ('m', si_sb_C_im_bysize, -2, ''),
+                ('i', si_sb_C_i_bysize, -1, ''),
+                            ):
+                if lowerword[-1] == lastlet: # this test to add speed
+                    for k, v in d.iteritems():
+                        if lowerword[-k:] in v:
+                            return word[:numend] + post
 
 
 # HANDLE PLURLS ENDING IN uses -> use
@@ -2400,18 +2455,17 @@ class engine:
 
 # HANDLE ...y
 
-        mo = search(r"(.*[aeiou])ys$", word, IGNORECASE)
-        if mo:
-            return "%sy" % mo.group(1)
+        if lowerword[-2:] == 'ys':
+            if lowerword[-3] in 'aeiou':
+                return word[:-1]
 
-        if (self.classical_dict['names']):
-            mo = search(r"([A-Z].*y)s$", word)
-            if mo:
-                return "%s" % mo.group(1)
+            if (self.classical_dict['names']):
+                mo = search(r"([A-Z].*y)s$", word)
+                if mo:
+                    return "%s" % mo.group(1)
 
-        mo = search(r"(.*)ies$", word, IGNORECASE)
-        if mo:
-            return "%sy" % mo.group(1)
+        if lowerword[-3:] == 'ies':
+            return word[:-3] + 'y'
 
 
 # HANDLE ...o
