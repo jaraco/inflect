@@ -120,6 +120,15 @@ def bysize(words):
         ret[len(w)].add(w)
     return ret
 
+def make_pl_si_lists(lst, plending, siendginsize):
+    si_list = [w[:-siendginsize] + plending for w in lst]
+    pl_bysize = bysize(lst)
+    si_bysize = bysize(si_list)
+    stem = joinstem(-siendginsize, lst)
+    return si_list, si_bysize, pl_bysize, stem
+
+
+
 # 1. PLURALS
 
 pl_sb_irregular_s = {
@@ -259,11 +268,10 @@ pl_sb_C_a_ae = enclose('|'.join ((
 pl_sb_C_en_ina_list = (
     "stamen", "foramen", "lumen",
 )
-si_sb_C_en_ina_list = [w[:-2] + 'ina' for w in pl_sb_C_en_ina_list]
-pl_sb_C_en_ina_bysize = bysize(pl_sb_C_en_ina_list)
-si_sb_C_en_ina_bysize = bysize(si_sb_C_en_ina_list)
 
-pl_sb_C_en_ina = joinstem(-2, (pl_sb_C_en_ina_list))
+(si_sb_C_en_ina_list, si_sb_C_en_ina_bysize,
+ pl_sb_C_en_ina_bysize, pl_sb_C_en_ina) = make_pl_si_lists(
+      pl_sb_C_en_ina_list, 'ina', 2)
 
 
 # UNCONDITIONAL "..um" -> "..a"
@@ -276,7 +284,7 @@ pl_sb_U_um_a = joinstem(-2, ((
 
 # CLASSICAL "..um" -> "..a"
 
-pl_sb_C_um_a = joinstem(-2, ((
+pl_sb_C_um_a_list = (
     "maximum",  "minimum",    "momentum",   "optimum",
     "quantum",  "cranium",    "curriculum", "dictum",
     "phylum",   "aquarium",   "compendium", "emporium",
@@ -285,7 +293,13 @@ pl_sb_C_um_a = joinstem(-2, ((
     "spectrum", "speculum",   "stadium",    "trapezium",
     "ultimatum",    "medium",   "vacuum",   "velum", 
     "consortium",
-)))
+)
+
+(si_sb_C_um_a_list, si_sb_C_um_a_bysize,
+ pl_sb_C_um_a_bysize, pl_sb_C_um_a) = make_pl_si_lists(
+      pl_sb_C_um_a_list, 'ina', 2)
+
+
 
 # UNCONDITIONAL "..us" -> "i"
 
@@ -438,14 +452,24 @@ pl_sb_U_ix_ices = joinstem(-2, ((
 
 # CLASSICAL "..[ei]x" -> "..ices"
 
-pl_sb_C_ex_ices = joinstem(-2, ((
+pl_sb_C_ex_ices_list = (
     "vortex",   "vertex",   "cortex",   "latex",
     "pontifex", "apex",     "index",    "simplex",
-)))
+)
 
-pl_sb_C_ix_ices = joinstem(-2, ((
+(si_sb_C_ex_ices_list, si_sb_C_ex_ices_bysize,
+pl_sb_C_ex_ices_bysize, pl_sb_C_ex_ices) = make_pl_si_lists(
+    pl_sb_C_ex_ices_list, 'ices', 2)
+
+
+pl_sb_C_ix_ices_list = (
     "appendix",
-)))
+)
+
+(si_sb_C_ix_ices_list, si_sb_C_ix_ices_bysize,
+pl_sb_C_ix_ices_bysize, pl_sb_C_ix_ices) = make_pl_si_lists(
+    pl_sb_C_ix_ices_list, 'ices', 2)
+
 
 # ARABIC: ".." -> "..i"
 
@@ -1786,9 +1810,9 @@ class engine:
                   #(r"(.*)ieu$", "%sieux"),
                   (r"(.{2,}[yia])nx$", "%snges"),
                   #(r"(%s)en$" % pl_sb_C_en_ina, "%sina"),
-                  (r"(%s)ex$" % pl_sb_C_ex_ices, "%sices"),
-                  (r"(%s)ix$" % pl_sb_C_ix_ices, "%sices"),
-                  (r"(%s)um$" % pl_sb_C_um_a, "%sa"),
+                  #(r"(%s)ex$" % pl_sb_C_ex_ices, "%sices"),
+                  #(r"(%s)ix$" % pl_sb_C_ix_ices, "%sices"),
+                  #(r"(%s)um$" % pl_sb_C_um_a, "%sa"),
                   (r"(%s)us$" % pl_sb_C_us_i, "%si"),
                   (r"(%s)$" % pl_sb_C_us_us, "%s"),
                   (r"(%s)$" % pl_sb_C_a_ae, "%se"),
@@ -1806,6 +1830,17 @@ class engine:
             for k, v in pl_sb_C_en_ina_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word[:-2] + 'ina'
+            for k, v in pl_sb_C_ex_ices_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-2] + 'ices'
+            for k, v in pl_sb_C_ix_ices_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-2] + 'ices'
+            for k, v in pl_sb_C_um_a_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-2] + 'a'
+                
+
             for k, v in pl_sb_C_o_i_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word[:-1] + 'i'
@@ -2222,9 +2257,9 @@ class engine:
 #                  (r"(.*)ieux$", "%sieu"),
                   (r"(.{2,}[yia])nges$", "%snx"),
 #                  (r"(%s)ina$" % pl_sb_C_en_ina, "%sen"),
-                  (r"(%s)ices$" % pl_sb_C_ex_ices, "%sex"),
-                  (r"(%s)ices$" % pl_sb_C_ix_ices, "%six"),
-                  (r"(%s)a$" % pl_sb_C_um_a, "%sum"),
+#                  (r"(%s)ices$" % pl_sb_C_ex_ices, "%sex"),
+                  #(r"(%s)ices$" % pl_sb_C_ix_ices, "%six"),
+                  #(r"(%s)a$" % pl_sb_C_um_a, "%sum"),
                   (r"(%s)i$" % pl_sb_C_us_i, "%sus"),
                   (r"(%s)$" % pl_sb_C_us_us, "%s"),
                   (r"(%s)e$" % pl_sb_C_a_ae, "%s"),
@@ -2242,8 +2277,25 @@ class engine:
             for k, v in si_sb_C_en_ina_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word[:-3] + 'en'
+            for k, v in si_sb_C_ex_ices_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-4] + 'ex'
+            for k, v in si_sb_C_ix_ices_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-3] + 'x'
+            for k, v in si_sb_C_um_a_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-1] + 'um'
+
+
+
+
             for k, v in si_sb_C_o_i_bysize.iteritems():
                 if lowerword[-k:] in v:
+
+
+
+                    
                     return word[:-1] + 'o'
 
 
