@@ -297,7 +297,7 @@ pl_sb_C_um_a_list = (
 
 (si_sb_C_um_a_list, si_sb_C_um_a_bysize,
  pl_sb_C_um_a_bysize, pl_sb_C_um_a) = make_pl_si_lists(
-      pl_sb_C_um_a_list, 'ina', 2)
+      pl_sb_C_um_a_list, 'a', 2)
 
 
 
@@ -2208,7 +2208,7 @@ class engine:
         if lowerword[-4:] == 'mice':
             return word[:-4] + 'mouse'
         if lowerword[-4:] == 'lice':
-            return word[:-4] + 'louce'
+            return word[:-4] + 'louse'
         if lowerword[-5:] == 'geese':
             return word[:-5] + 'goose'
         if lowerword[-5:] == 'teeth':
