@@ -550,8 +550,7 @@ pl_sb_C_im_bysize, pl_sb_C_im) = make_pl_si_lists(
 
 # UNCONDITIONAL "..man" -> "..mans"
 
-pl_sb_U_man_mans = enclose('|'.join (
-"""
+pl_sb_U_man_mans_list = """
     ataman caiman cayman ceriman
     desman dolman farman harman hetman
     human leman ottoman shaman talisman
@@ -560,7 +559,11 @@ pl_sb_U_man_mans = enclose('|'.join (
     Panaman Roman Selman Sonaman Tacoman Yakiman
     Yokohaman Yuman
 """.split()
-))
+
+(si_sb_U_man_mans_list, si_sb_U_man_mans_bysize,
+pl_sb_U_man_mans_bysize) = make_pl_si_lists(
+    pl_sb_U_man_mans_list, 's', None, dojoinstem=False)
+
 
 pl_sb_uninflected_s_complete = [
 # PAIRS OR GROUPS SUBSUMED TO A SINGULAR...
@@ -1710,7 +1713,7 @@ class engine:
             count = ''
         return count
 
-    #@profile
+    @profile
     def _plnoun(self, word, count=None):
         count = self.get_count(count)
 
@@ -1803,24 +1806,22 @@ class engine:
             llen = len(' '.join(wordsplit[-2:])) #TODO: what if 2 spaces between these words?
             return '%s%s' % (word[:-llen],
                              pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
-        
-        mo = search(r"(\S*)quy$", word, IGNORECASE)
-        if mo:
-            return "%squies" % mo.group(1)
 
-        mo = search(r"(\S*)(person)$", word, IGNORECASE)
-        if mo:
+        if lowerword[-3:] == 'quy':
+            return word[:-1] + 'ies'
+
+        if lowerword[-6:] == 'person':
              if self.classical_dict['persons']:
-                 return "%spersons" % mo.group(1)
+                 return word + 's'
              else:
-                 return "%speople" % mo.group(1)
+                 return word[:-4] + 'ople'
 
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
         if lowerword[-3:] == 'man':
-            mo = search(r"(%s)$" % pl_sb_U_man_mans, word, IGNORECASE)
-            if mo:
-                return "%ss" % word
+            for k, v in pl_sb_U_man_mans_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word + 's'
             return word[:-3] + 'men'
         if lowerword[-5:] == 'mouse':
             return word[:-5] + 'mice'
@@ -1846,20 +1847,6 @@ class engine:
         if lowerword[-3:] in ('cis', 'sis', 'xis'):
             return word[:-2] + 'es'
 
-##        if lowerword[-1] in 'hxmsna':
-##            for a in (
-##                      (r"(.*%s)ch$" % pl_sb_U_ch_chs, "%schs"),
-##                      (r"(.*%s)ex$" % pl_sb_U_ex_ices, "%sices"),
-##                      (r"(.*%s)ix$" % pl_sb_U_ix_ices, "%sices"),
-##                      (r"(.*%s)um$" % pl_sb_U_um_a, "%sa"),
-##                      (r"(.*%s)us$" % pl_sb_U_us_i, "%si"),
-##                      (r"(.*%s)on$" % pl_sb_U_on_a, "%sa"),
-##                      (r"(.*%s)$" % pl_sb_U_a_ae, "%se"),
-##                     ):
-##                mo = search(a[0], word, IGNORECASE)
-##                if mo:
-##                    return a[1] % mo.group(1)
-
         for lastlet, d, numend, post in (
             ('h', pl_sb_U_ch_chs_bysize, None, 's'),
             ('x', pl_sb_U_ex_ices_bysize, -2, 'ices'),
@@ -1873,7 +1860,6 @@ class engine:
                 for k, v in d.iteritems():
                     if lowerword[-k:] in v:
                         return word[:numend] + post
-
 
 
 # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
@@ -1952,13 +1938,10 @@ class engine:
         if mo:
             return "%szzes" % mo.group(1)
 
-        for a in (
-                  (r"^(.*)([cs]h|x|zz|ss)$",  "%s%ses"),
-#                  (r"(.*)(us)$", "%s%ses"),  TODO: why is this commented?
-                 ):
-            mo = search(a[0], word, IGNORECASE)
-            if mo:
-                return a[1] % (mo.group(1), mo.group(2))
+        if lowerword[-2:] in ('ch', 'sh', 'zz', 'ss') or lowerword[-1] == 'x':
+            return word + 'es'
+
+###                  (r"(.*)(us)$", "%s%ses"),  TODO: why is this commented?
 
 
 # HANDLE ...f -> ...ves
@@ -1971,21 +1954,12 @@ class engine:
             return word[:-2] + 'ves'
         if lowerword[-3:] == 'arf':
             return word[:-1] + 'ves'
-            
-##        for a in (
-##                  (r"(.*[eao])lf$", "%slves"),
-##                  (r"(.*[^d])eaf$", "%seaves"),
-##                  (r"(.*[nlw])ife$", "%sives"),
-##                  (r"(.*)arf$", "%sarves"),
-##                 ):
-##            mo = search(a[0], word, IGNORECASE)
-##            if mo:
-##                return a[1] % mo.group(1)
 
+            
 # HANDLE ...y
 
         if lowerword[-1] == 'y':
-            if lowerword[-2:-1] in 'aeiou':
+            if lowerword[-2:-1] in 'aeiou' or len(word) == 1:
                 return word + 's'
 
             if (self.classical_dict['names']):
@@ -2003,7 +1977,6 @@ class engine:
         for k, v in pl_sb_U_o_os_bysize.iteritems():
             if lowerword[-k:] in v:
                 return word + 's'
-        
 
         if lowerword[-2:] in ('ao', 'eo', 'io', 'oo', 'uo'):
             return word + 's'
@@ -2071,22 +2044,25 @@ class engine:
 
 # HANDLE STANDARD 3RD PERSON (CHOP THE ...(e)s OFF SINGLE WORDS)
 
-        mo = search(r"^(.*)([cs]h|[x]|zz|ss)es$",
-                    word, IGNORECASE)
-        if mo:
-            return "%s%s" % (mo.group(1), mo.group(2))
+        if lowerword[-4:] in ('ches', 'shes', 'zzes', 'sses') or \
+                lowerword[-3:] == 'xes':
+            return word[:-2]
 
-        mo = search(r"^(..+)ies$",
-                    word, IGNORECASE)
-        if mo:
-            return "%sy" % mo.group(1)
+
+##        mo = search(r"^(.*)([cs]h|[x]|zz|ss)es$",
+##                    word, IGNORECASE)
+##        if mo:
+##            return "%s%s" % (mo.group(1), mo.group(2))
+
+        if lowerword[-3:] == 'ies' and len(word) > 3:
+            return lowerword[:-3] + 'y'
 
         if (lowerword in pl_v_oes_oe or
             lowerword[-4:] in pl_v_oes_oe_endings_size4 or
             lowerword[-5:] in pl_v_oes_oe_endings_size5):
                 return word[:-1]
 
-        if lowerword.endswith('oes') and len(lowerword)>3:
+        if lowerword.endswith('oes') and len(word) > 3:
             return lowerword[:-2]
 
         mo = search(r"^(.*[^s])s$",
@@ -2260,24 +2236,21 @@ class engine:
             return '%s%s' % (word[:-llen],
                              si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
 
-        mo = search(r"(\S*)quies$", word, IGNORECASE)
-        if mo:
-            return "%squy" % mo.group(1)
+        if lowerword[-5:] == 'quies':
+            return word[:-3] + 'y'
 
-        mo = search(r"(\S*)(persons)$", word, IGNORECASE)
-        if mo:
-             return "%sperson" % mo.group(1)
-
-        mo = search(r"(\S*)(people)$", word, IGNORECASE)
-        if mo:
-             return "%sperson" % mo.group(1)
+        if lowerword[-7:] == 'persons':
+            return word[:-1]
+        if lowerword[-6:] == 'people':
+            return word[:-4] + 'rson'
+        
 
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
         if lowerword[-4:] == 'mans':
-            mo = search(r"(%s)s$" % pl_sb_U_man_mans, word, IGNORECASE)
-            if mo:
-                return word[:-1]
+            for k, v in si_sb_U_man_mans_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word[:-1]
         if lowerword[-3:] == 'men':
             return word[:-3] + 'man'
         if lowerword[-4:] == 'mice':
@@ -2302,19 +2275,6 @@ class engine:
         if lowerword[-3:] == 'zoa':
             return word[:-1] + 'on'
 
-##        for a in (
-##                  (r"(.*%s)chs$" % pl_sb_U_ch_chs, "%sch"),
-##                  (r"(.*%s)ices$" % pl_sb_U_ex_ices, "%sex"),
-##                  (r"(.*%s)ices$" % pl_sb_U_ix_ices, "%six"),
-##                  (r"(.*%s)a$" % pl_sb_U_um_a, "%sum"),
-##                  (r"(.*%s)i$" % pl_sb_U_us_i, "%sus"),
-##                  (r"(.*%s)a$" % pl_sb_U_on_a, "%son"),
-##                  (r"(.*%s)e$" % pl_sb_U_a_ae, "%s"),
-##                 ):
-##            mo = search(a[0], word, IGNORECASE)
-##            if mo:
-##                return a[1] % mo.group(1)
-
         for lastlet, d, numend, post in (
             ('s', si_sb_U_ch_chs_bysize, -1, ''),
             ('s', si_sb_U_ex_ices_bysize, -4, 'ex'),
@@ -2328,7 +2288,6 @@ class engine:
                 for k, v in d.iteritems():
                     if lowerword[-k:] in v:
                         return word[:numend] + post
-
 
 
 # HANDLE INCMPLETELY ASSIMILATED IMPORTS
@@ -2375,7 +2334,6 @@ class engine:
         if word in si_sb_ies_ie_case or lowerword in si_sb_ies_ie:
             return word[:-1]
 
-
 # HANDLE PLURLS ENDING IN oes -> oe
 
         if (lowerword[-5:] == 'shoes' or
@@ -2388,8 +2346,6 @@ class engine:
         if (word in si_sb_sses_sse_case or
             lowerword in si_sb_sses_sse):
             return word[:-1]
-
-
 
         if lowerword in si_sb_singular_s_complete:
             return word[:-2]
@@ -2440,10 +2396,8 @@ class engine:
 
         if lowerword[-3:] == 'xes':
             return word[:-2]
-
             
 #                  (r"(.*)(us)es$", "%s%s"),  TODO: why is this commented?
-
 
 # HANDLE ...f -> ...ves
 
@@ -2461,16 +2415,6 @@ class engine:
             if lowerword[-5:-3] == 'ar':
                 return word[:-3] + 'f'
                 
-##            for a in (
-##                      (r"(.*[eao])lves$", "%slf"),
-##                      (r"(.*[^d])eaves$", "%seaf"),
-##                      (r"(.*[nlw])ives$", "%sife"),
-##                      (r"(.*)arves$", "%sarf"),
-##                     ):
-##                mo = search(a[0], word, IGNORECASE)
-##                if mo:
-##                    return a[1] % mo.group(1)
-
 # HANDLE ...y
 
         if lowerword[-2:] == 'ys':
