@@ -554,6 +554,8 @@ pl_sb_U_man_mans_list = """
     ataman caiman cayman ceriman
     desman dolman farman harman hetman
     human leman ottoman shaman talisman
+""".split()
+pl_sb_U_man_mans_caps_list = """
     Alabaman Bahaman Burman German
     Hiroshiman Liman Nakayaman Norman Oklahoman 
     Panaman Roman Selman Sonaman Tacoman Yakiman
@@ -563,6 +565,9 @@ pl_sb_U_man_mans_list = """
 (si_sb_U_man_mans_list, si_sb_U_man_mans_bysize,
 pl_sb_U_man_mans_bysize) = make_pl_si_lists(
     pl_sb_U_man_mans_list, 's', None, dojoinstem=False)
+(si_sb_U_man_mans_caps_list, si_sb_U_man_mans_caps_bysize,
+pl_sb_U_man_mans_caps_bysize) = make_pl_si_lists(
+    pl_sb_U_man_mans_caps_list, 's', None, dojoinstem=False)
 
 
 pl_sb_uninflected_s_complete = [
@@ -1822,6 +1827,9 @@ class engine:
             for k, v in pl_sb_U_man_mans_bysize.iteritems():
                 if lowerword[-k:] in v:
                     return word + 's'
+            for k, v in pl_sb_U_man_mans_caps_bysize.iteritems():
+                if word[-k:] in v:
+                    return word + 's'
             return word[:-3] + 'men'
         if lowerword[-5:] == 'mouse':
             return word[:-5] + 'mice'
@@ -2250,6 +2258,9 @@ class engine:
         if lowerword[-4:] == 'mans':
             for k, v in si_sb_U_man_mans_bysize.iteritems():
                 if lowerword[-k:] in v:
+                    return word[:-1]
+            for k, v in si_sb_U_man_mans_caps_bysize.iteritems():
+                if word[-k:] in v:
                     return word[:-1]
         if lowerword[-3:] == 'men':
             return word[:-3] + 'man'
