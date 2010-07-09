@@ -215,11 +215,13 @@ for k in keys:
 
 # Z's that don't double
 
-pl_sb_z_zes = (
-    "quartz", "topaz", "snooz(?=e)",
+pl_sb_z_zes_list = (
+    "quartz", "topaz",
 )
+pl_sb_z_zes_bysize = bysize(pl_sb_z_zes_list)
 
-pl_sb_z_zes = enclose('|'.join(pl_sb_z_zes))
+pl_sb_ze_zes_list = ( 'snooze', )
+pl_sb_ze_zes_bysize = bysize(pl_sb_ze_zes_list)
 
 
 # CLASSICAL "..is" -> "..ides"
@@ -688,14 +690,10 @@ si_sb_singular_s_bysize = bysize(si_sb_singular_s_endings)
 pl_sb_singular_s_es = [
     "[A-Z].*es",
    ]
+
 pl_sb_singular_s = enclose('|'.join (pl_sb_singular_s_complete +
                                      ['.*%s' % w for w in pl_sb_singular_s_endings] +
                                      pl_sb_singular_s_es))
-
-si_sb_singular_s_es = ['%ses' % w for w in pl_sb_singular_s_es]
-pl_sb_singular_s_es = enclose('|'.join (pl_sb_singular_s_es))
-si_sb_singular_s_es = enclose('|'.join (si_sb_singular_s_es))
-
 
 
 # PLURALS ENDING IN uses -> use
@@ -878,14 +876,16 @@ pl_prep_list =  """
     during except for from in into near of off on onto out over
     since till to under until unto upon with""".split()
 
-pl_prep_bysize = bysize(pl_prep_list)
+pl_prep_list_da = pl_prep_list + ['de', 'du', 'da']
 
-pl_prep = enclose('|'.join(pl_prep_list))
+pl_prep_bysize = bysize(pl_prep_list_da)
 
-pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+pl_prep+r'|d[eua])(?:-|\s+))a(?:-|\s+)(.*)'
+pl_prep = enclose('|'.join(pl_prep_list_da))
+
+pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+pl_prep+r')(?:-|\s+))a(?:-|\s+)(.*)'
 
 
-pl_sb_prep_compound = r'(.*?)((-|\s+)('+pl_prep+r'|d[eua])((-|\s+)(.*))?)'
+pl_sb_prep_compound = r'(.*?)((-|\s+)('+pl_prep+r'|)((-|\s+)(.*))?)'
 
 
 pl_pron_nom = {
@@ -1768,9 +1768,30 @@ class engine:
                                    mo.group(2),
                                    self._plnoun(mo.group(3)))
 
-        mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
-        if mo and mo.group(2) != '':
-                return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
+
+# pl_sb_prep_compound = r'(.*?)((-|\s+)('+pl_prep+r')((-|\s+)(.*))?)'
+        lowersplit = lowerword.split(' ')
+        if len(lowersplit) >= 3:
+            print lowersplit
+            for numword in range(1, len(lowersplit)-1):
+                if lowersplit[numword] in pl_prep_list_da:
+                    return ' '.join(lowersplit[:numword-1] +
+                        [self._plnoun(lowersplit[numword-1], 2)] +
+                        lowersplit[numword:] )
+        
+
+        lowersplit = lowerword.split('-')
+        if len(lowersplit) >= 3:
+            for numword in range(1, len(lowersplit)-1):
+                if lowersplit[numword] in pl_prep_list_da:
+                    return ' '.join(lowersplit[:numword-1] + 
+                        [self._plnoun(lowersplit[numword-1], 2) +
+                        '-' + lowersplit[numword] + '-']) + \
+                        ' '.join(lowersplit[(numword+1):])
+        
+##        mo = search(r"^(?:%s)$" % pl_sb_prep_compound, word, IGNORECASE)
+##        if mo and mo.group(2) != '':
+##                return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
 
 # HANDLE PRONOUNS
 
@@ -1916,10 +1937,12 @@ class engine:
             if lowerword[-k:] in v:
                 return word + 'es'
 #        print 'here 1', word
-        
-        mo = search(r"(%s)$" % pl_sb_singular_s_es, word)
-        if mo:
-            return "%ses" % mo.group(1)
+
+        if lowerword[-2:] == 'es' and word[0] == word[0].upper():
+            return word + 'es'
+##        mo = search(r"(%s)$" % pl_sb_singular_s_es, word)
+##        if mo:
+##            return "%ses" % mo.group(1)
 
 # Wouldn't special words
 # ending with 's' always have been caught, regardless of them starting
@@ -1937,14 +1960,28 @@ class engine:
 #            if mo:
 #                return "%ses" % mo.group(1)
 
-        mo = search(r"(%s)$" % pl_sb_z_zes, word, IGNORECASE)
-        if mo:
-            return "%ses" % mo.group(1)
+        if lowerword[-1] == 'z':
+            for k, v in pl_sb_z_zes_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word + 'es'
+
+            if lowerword[-2:-1] != 'z':
+                return word + 'zes'
+            
+        if lowerword[-2:] == 'ze':
+            for k, v in pl_sb_ze_zes_bysize.iteritems():
+                if lowerword[-k:] in v:
+                    return word + 's'
+            
+##        mo = search(r"(%s)$" % pl_sb_z_zes, word, IGNORECASE)
+##        if mo:
+##            return "%ses" % mo.group(1)
 
 
-        mo = search(r"^(.*[^z])(z)$", word, IGNORECASE)
-        if mo:
-            return "%szzes" % mo.group(1)
+
+##        mo = search(r"^(.*[^z])(z)$", word, IGNORECASE)
+##        if mo:
+##            return "%szzes" % mo.group(1)
 
         if lowerword[-2:] in ('ch', 'sh', 'zz', 'ss') or lowerword[-1] == 'x':
             return word + 'es'
@@ -1971,9 +2008,12 @@ class engine:
                 return word + 's'
 
             if (self.classical_dict['names']):
-                mo = search(r"([A-Z].*y)$", word)
-                if mo:
-                    return "%ss" % mo.group(1)
+                if lowerword[-1] == 'y' and word[0] == word[0].upper():
+                    return word + 's'
+
+##                mo = search(r"([A-Z].*y)$", word)
+##                if mo:
+##                    return "%ss" % mo.group(1)
                 
             return word[:-1] + 'ies'
 
@@ -2364,10 +2404,13 @@ class engine:
         for k, v in si_sb_singular_s_bysize.iteritems():
             if lowerword[-k:] in v:
                 return word[:-2]
+
+        if lowerword[-2:] == 'eses' and word[0] == word[0].upper():
+            return word[:-2]
         
-        mo = search(r"(%s)$" % si_sb_singular_s_es, word)
-        if mo:
-            return mo.group(1)[:-2]
+##        mo = search(r"(%s)$" % si_sb_singular_s_es, word)
+##        if mo:
+##            return mo.group(1)[:-2]
 
 
 # Wouldn't special words
@@ -2433,9 +2476,12 @@ class engine:
                 return word[:-1]
 
             if (self.classical_dict['names']):
-                mo = search(r"([A-Z].*y)s$", word)
-                if mo:
-                    return "%s" % mo.group(1)
+                if lowerword[-2:] == 'ys' and word[0] == word[0].upper():
+                    return word[:-1]
+
+##                mo = search(r"([A-Z].*y)s$", word)
+##                if mo:
+##                    return "%s" % mo.group(1)
 
         if lowerword[-3:] == 'ies':
             return word[:-3] + 'y'
