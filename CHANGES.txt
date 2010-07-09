@@ -1,4 +1,10 @@
 
+ver 0.1.7 (2010-07-09)
+
+* replace most of the regular expressions in _plnoun and _sinoun. They run several times faster now.
+
+
+
 ver 0.1.6 (2010-07-03)
 
 * add method sinoun() to generate the singular of a plural noun. Phew!
