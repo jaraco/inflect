@@ -10,7 +10,7 @@ inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite ar
 VERSION
 =======
 
-This document describes version 0.1.7 of inflect.py
+This document describes version 0.1.8 of inflect.py
 
 INSTALLATION
 ============

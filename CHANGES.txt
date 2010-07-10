@@ -1,4 +1,13 @@
 
+ver 0.1.8 (2010-07-10)
+
+* add line to setup showing that this provides 'inflect' so that
+inflect_dj can require it
+
+* add the rest of the tests from the Perl version
+
+
+
 ver 0.1.7 (2010-07-09)
 
 * replace most of the regular expressions in _plnoun and _sinoun. They run several times faster now.
