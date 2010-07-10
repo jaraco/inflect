@@ -10,6 +10,7 @@ setup(name='inflect',
       author_email='pwdyson@yahoo.com',
       url="http://pypi.python.org/pypi/inflect",
       py_modules=['inflect'],
+      provides=['inflect'],
       keywords = ['plural', 'inflect', 'participle'],
       classifiers = [
         "Programming Language :: Python",
