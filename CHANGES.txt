@@ -1,4 +1,9 @@
 
+ver 0.1.9
+
+* fix bug in numwords where hundreds was giving the wrong number when group=3
+
+
 ver 0.1.8 (2010-07-10)
 
 * add line to setup showing that this provides 'inflect' so that
