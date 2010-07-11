@@ -928,10 +928,8 @@ class test(unittest.TestCase):
         self.TODO(numwords('12345', group=3),
                          'one hundred and twenty-three',
                          'one twenty-three, forty-five')
-        #TODO: answer wrong!
-        self.TODO(numwords('123456', group=3),
-                         'one twenty-three, four fifty-six',
-                         'one twenty-three, six fifty-six')
+        self.assertEqual(numwords('123456', group=3),
+                         'one twenty-three, four fifty-six')
         self.assertEqual(numwords('12345', group=1),
                          'one, two, three, four, five')
         self.assertEqual(numwords('1234th', group=0, andword='and'),

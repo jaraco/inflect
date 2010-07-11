@@ -2768,7 +2768,8 @@ class engine:
         if hundreds==1:
             hunword = " %s" % self.number_args['one']
         elif hundreds:
-            hunword = "%s" % unit[units] #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+            hunword = "%s" % unit[hundreds]
+            #TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
         else:
             hunword = " %s" % self.number_args['zero']
         if tens:
