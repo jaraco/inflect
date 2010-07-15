@@ -905,11 +905,23 @@ pl_pron_nom = {
 "theirs" : "theirs",
 }
 
-si_pron_nom = dict([(v, k) for (k, v) in pl_pron_nom.iteritems()])
-si_pron_nom['they'] = 'it'
-si_pron_nom['themselves'] = 'itself'
-si_pron_nom['theirs'] = 'its'
-si_pron_nom['we'] = 'I'
+si_pron_nom = dict([(v, dict(n=k, f=k, m=k, t=k)) for (k, v) in pl_pron_nom.iteritems()])
+si_pron_nom['they']['n'] = 'it'
+si_pron_nom['they']['f'] = 'she'
+si_pron_nom['they']['m'] = 'he'
+si_pron_nom['they']['t'] = 'they'
+si_pron_nom['themselves']['n'] = 'itself'
+si_pron_nom['themselves']['f'] = 'herself'
+si_pron_nom['themselves']['m'] = 'himself'
+si_pron_nom['themselves']['t'] = 'themself'
+si_pron_nom['theirs']['n'] = 'its'
+si_pron_nom['theirs']['f'] = 'hers'
+si_pron_nom['theirs']['m'] = 'his'
+si_pron_nom['theirs']['t'] = 'theirs'
+si_pron_nom['we']['n'] = 'I'
+si_pron_nom['we']['f'] = 'I'
+si_pron_nom['we']['m'] = 'I'
+si_pron_nom['we']['t'] = 'I'
 
 
 pl_pron_acc = {
@@ -926,9 +938,15 @@ pl_pron_acc = {
 pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
 pl_pron_acc_keys_bysize = bysize(pl_pron_acc.keys())
 
-si_pron_acc = dict([(v, k) for (k, v) in pl_pron_acc.iteritems()])
-si_pron_acc['them'] = 'it'
-si_pron_acc['themselves'] = 'itself'
+si_pron_acc = dict([(v, dict(n=k, f=k, m=k, t=k)) for (k, v) in pl_pron_acc.iteritems()])
+si_pron_acc['them']['n'] = 'it'
+si_pron_acc['them']['f'] = 'her'
+si_pron_acc['them']['m'] = 'him'
+si_pron_acc['them']['t'] = 'them'
+si_pron_acc['themselves']['n'] = 'itself'
+si_pron_acc['themselves']['f'] = 'herself'
+si_pron_acc['themselves']['m'] = 'himself'
+si_pron_acc['themselves']['t'] = 'themself'
 si_pron_acc_keys = enclose('|'.join(si_pron_acc.keys()))
 si_pron_acc_keys_bysize = bysize(si_pron_acc.keys())
 
@@ -1134,6 +1152,7 @@ class engine:
         self.pl_adj_user_defined  = []
         self.si_sb_user_defined = []
         self.A_a_user_defined   = []
+        self.thegender = 'n' # n, f or m
 
     def defnoun(self, singular, plural):
         '''
@@ -1281,6 +1300,19 @@ class engine:
             self.persistent_count = None;
         return ''
 
+    def gender(self, gender):
+        '''
+        set the gender for plural to singular pronouns
+        only the first letter of gender is significant
+        n: neuter (they -> it)
+        f: feminine (they -> she)
+        m: masculine (they -> he)
+        t: they (they -> they) gender neutral singular
+        
+        '''
+        if gender[0:1].lower() in ('n', 'f', 'm', 't'):
+            self.thegender = gender[0].lower()
+    
     def nummo(self, matchobject):
         '''
         num but take a matchobject
@@ -2238,15 +2270,15 @@ class engine:
                 for pk, pv in pl_prep_bysize.iteritems():
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
-                            return lowerword[:-k] + si_pron_acc[lowerword[-k:]]
+                            return lowerword[:-k] + si_pron_acc[lowerword[-k:]][self.thegender]
 
         try:
-            return si_pron_nom[word.lower()]
+            return si_pron_nom[word.lower()][self.thegender]
         except KeyError:
             pass
 
         try:
-            return si_pron_acc[word.lower()]
+            return si_pron_acc[word.lower()][self.thegender]
         except KeyError:
             pass
 

@@ -316,6 +316,16 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing)
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
+        p.gender('f')
+        for plur, sing in (
+            ('they', 'she'),
+            ('themselves', 'herself'),
+            ('theirs', 'hers'),
+            ('to them','to her'),
+            ('to themselves', 'to herself'),
+            ):
+            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
+            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
         
 
     def test_plequal(self):
