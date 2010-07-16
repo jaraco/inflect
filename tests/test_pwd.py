@@ -317,16 +317,48 @@ class test(unittest.TestCase):
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
         p.gender('f')
-        for plur, sing in (
-            ('they', 'she'),
-            ('themselves', 'herself'),
-            ('theirs', 'hers'),
-            ('to them','to her'),
-            ('to themselves', 'to herself'),
+        for sing, plur in (
+            ('she', 'they'),
+            ('herself', 'themselves'),
+            ('hers', 'theirs'),
+            ('to her', 'to them'),
+            ('to herself', 'to themselves'),
             ):
             self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
         
+        p.gender('m')
+        for sing, plur in (
+            ('he', 'they'),
+            ('himself', 'themselves'),
+            ('his', 'theirs'),
+            ('to him', 'to them'),
+            ('to himself', 'to themselves'),
+            ):
+            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
+            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+
+        p.gender('t')
+        for sing, plur in (
+            ('they', 'they'),
+            ('themself', 'themselves'),
+            ('theirs', 'theirs'),
+            ('to them', 'to them'),
+            ('to themself', 'to themselves'),
+            ):
+            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
+            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+
+        p.gender('n')
+        for sing, plur in (
+            ('it', 'they'),
+            ('itself', 'themselves'),
+            ('its', 'theirs'),
+            ('to it', 'to them'),
+            ('to itself', 'to themselves'),
+            ):
+            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
+            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
     def test_plequal(self):
         p = inflect.engine()
