@@ -1,6 +1,8 @@
 
 ver 0.1.9
 
+* add gender() to select the gender of singular pronouns
+
 * fix bug in numwords where hundreds was giving the wrong number when group=3
 
 
