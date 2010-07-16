@@ -37,7 +37,7 @@ SYNOPSIS
  # prespart
  # ordinal numwords
  # wordlist
- # inflect classical
+ # inflect classical gender
  # defnoun defverb defadj defa defan
 
 
@@ -60,6 +60,12 @@ SYNOPSIS
  # FORM THE SINGULAR OF PLURAL NOUNS
 
       print "The singular of ", word, " is ", p.sinoun(word)
+
+ # SELECT THE GENDER OF SINGULAR PRONOUNS
+
+      print p.sinoun('they')  # 'it'
+      p.gender('f')
+      print p.sinoun('they')  # 'she'
 
 
  # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
@@ -213,7 +219,8 @@ Plural forms of all nouns, most verbs, and some adjectives are
 provided. Where appropriate, "classical" variants (for example: "brother" ->
 "brethren", "dogma" -> "dogmata", etc.) are also provided.
 
-Single forms of nouns are also provided.
+Single forms of nouns are also provided. The gender of singular pronouns
+can be chosen (for example "they" -> "it" or "she" or "he" or "they"). 
 
 Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
@@ -314,14 +321,26 @@ The various methods of ``inflect.engine`` are:
  The method ``sinoun()`` takes a *plural* English noun or
  pronoun and returns its singular. Pronouns in the nominative ("we" ->
  "I") and accusative ("us" -> "me") cases are handled, as are
- possessive pronouns ("ours" -> "mine"). Note that when third person
- singular pronouns are returned they take the neuter gender ("they" ->
- "it"), not ("they"-> "she") nor ("they" -> "he").
+ possessive pronouns ("ours" -> "mine"). When third person
+ singular pronouns are returned they take the neuter gender by default
+ ("they" -> "it"), not ("they"-> "she") nor ("they" -> "he"). This can be
+ changed with ``gender()``.
 
 Note that all these methods ignore any whitespace surrounding the
 word being inflected, but preserve that whitespace when the result is
 returned. For example, ``pl(" cat  ")`` returns " cats  ".
 
+
+``gender(genderletter)``
+
+ The third person plural pronoun takes the same form for the female, male and
+ neuter (e.g. "they"). The singular however, depends upon gender (e.g. "she",
+ "he", "it" and "they" -- "they" being the gender neutral form.) By default
+ ``sinoun`` returns the neuter form, however, the gender can be selected with
+ the ``gender`` method. Pass the first letter of the gender to
+ ``gender`` to return the f(eminine), m(asculine), n(euter) or t(hey)
+ form of the singular. e.g.
+ gender('f') followed by sinoun('themselves') returns 'herself'.
 
 Numbered plurals
 ----------------
