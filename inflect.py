@@ -57,6 +57,7 @@ Exceptions:
  NumOutOfRangeError
  BadUserDefinedPatternError
  BadRcFileError
+ BadGenderError
 
 '''
 
@@ -73,6 +74,9 @@ class BadChunkingOptionError(Exception): pass
 class NumOutOfRangeError(Exception): pass
 class BadUserDefinedPatternError(Exception): pass
 class BadRcFileError(Exception): pass
+class BadGenderError(Exception): pass
+
+class _CaseError(Exception): pass
 
 __ver_major__ = 0
 __ver_minor__ = 1
@@ -131,7 +135,6 @@ def make_pl_si_lists(lst, plending, siendginsize, dojoinstem=True):
         return si_list, si_bysize, pl_bysize, stem
     else:
         return si_list, si_bysize, pl_bysize
-
 
 
 # 1. PLURALS
@@ -885,6 +888,14 @@ pl_prep = enclose('|'.join(pl_prep_list_da))
 pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:'+pl_prep+r')(?:-|\s+))a(?:-|\s+)(.*)'
 
 
+
+singular_pronoun_genders = set(['neuter',
+                              'feminine',
+                              'masculine',
+                              'gender-neutral',
+                              'feminine or masculine',
+                              'masculine or feminine'])
+
 pl_pron_nom = {
 #   NOMINATIVE      REFLEXIVE
 
@@ -905,23 +916,9 @@ pl_pron_nom = {
 "theirs" : "theirs",
 }
 
-si_pron_nom = dict([(v, dict(n=k, f=k, m=k, t=k)) for (k, v) in pl_pron_nom.iteritems()])
-si_pron_nom['they']['n'] = 'it'
-si_pron_nom['they']['f'] = 'she'
-si_pron_nom['they']['m'] = 'he'
-si_pron_nom['they']['t'] = 'they'
-si_pron_nom['themselves']['n'] = 'itself'
-si_pron_nom['themselves']['f'] = 'herself'
-si_pron_nom['themselves']['m'] = 'himself'
-si_pron_nom['themselves']['t'] = 'themself'
-si_pron_nom['theirs']['n'] = 'its'
-si_pron_nom['theirs']['f'] = 'hers'
-si_pron_nom['theirs']['m'] = 'his'
-si_pron_nom['theirs']['t'] = 'theirs'
-si_pron_nom['we']['n'] = 'I'
-si_pron_nom['we']['f'] = 'I'
-si_pron_nom['we']['m'] = 'I'
-si_pron_nom['we']['t'] = 'I'
+si_pron = {}
+si_pron['nom'] = dict([(v, k) for (k, v) in pl_pron_nom.iteritems()])
+si_pron['nom']['we'] = 'I'
 
 
 pl_pron_acc = {
@@ -938,18 +935,59 @@ pl_pron_acc = {
 pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
 pl_pron_acc_keys_bysize = bysize(pl_pron_acc.keys())
 
-si_pron_acc = dict([(v, dict(n=k, f=k, m=k, t=k)) for (k, v) in pl_pron_acc.iteritems()])
-si_pron_acc['them']['n'] = 'it'
-si_pron_acc['them']['f'] = 'her'
-si_pron_acc['them']['m'] = 'him'
-si_pron_acc['them']['t'] = 'them'
-si_pron_acc['themselves']['n'] = 'itself'
-si_pron_acc['themselves']['f'] = 'herself'
-si_pron_acc['themselves']['m'] = 'himself'
-si_pron_acc['themselves']['t'] = 'themself'
-si_pron_acc_keys = enclose('|'.join(si_pron_acc.keys()))
-si_pron_acc_keys_bysize = bysize(si_pron_acc.keys())
+si_pron['acc'] = dict([(v, k) for (k, v) in pl_pron_acc.iteritems()])
 
+for thecase, plur, gend, sing in (
+        ('nom', 'they', 'neuter', 'it'),
+        ('nom', 'they', 'feminine', 'she'),
+        ('nom', 'they', 'masculine', 'he'),
+        ('nom', 'they', 'gender-neutral', 'they'),
+        ('nom', 'they', 'feminine or masculine', 'she or he'),
+        ('nom', 'they', 'masculine or feminine', 'he or she'),
+        ('nom', 'themselves', 'neuter', 'itself'),
+        ('nom', 'themselves', 'feminine', 'herself'),
+        ('nom', 'themselves', 'masculine', 'himself'),
+        ('nom', 'themselves', 'gender-neutral', 'themself'),
+        ('nom', 'themselves', 'feminine or masculine', 'herself or himself'),
+        ('nom', 'themselves', 'masculine or feminine', 'himself or herself'),
+        ('nom', 'theirs', 'neuter', 'its'),
+        ('nom', 'theirs', 'feminine', 'hers'),
+        ('nom', 'theirs', 'masculine', 'his'),
+        ('nom', 'theirs', 'gender-neutral', 'theirs'),
+        ('nom', 'theirs', 'feminine or masculine', 'hers or his'),
+        ('nom', 'theirs', 'masculine or feminine', 'his or hers'),
+        ('acc', 'them', 'neuter', 'it'),
+        ('acc', 'them', 'feminine', 'her'),
+        ('acc', 'them', 'masculine', 'him'),
+        ('acc', 'them', 'gender-neutral', 'them'),
+        ('acc', 'them', 'feminine or masculine', 'her or him'),
+        ('acc', 'them', 'masculine or feminine', 'him or her'),
+        ('acc', 'themselves', 'neuter', 'itself'),
+        ('acc', 'themselves', 'feminine', 'herself'),
+        ('acc', 'themselves', 'masculine', 'himself'),
+        ('acc', 'themselves', 'gender-neutral', 'themself'),
+        ('acc', 'themselves', 'feminine or masculine', 'herself or himself'),
+        ('acc', 'themselves', 'masculine or feminine', 'himself or herself'),
+        ):
+    try:
+        si_pron[thecase][plur][gend] = sing
+    except TypeError:
+        si_pron[thecase][plur] = {}
+        si_pron[thecase][plur][gend] = sing
+
+        
+si_pron_acc_keys = enclose('|'.join(si_pron['acc'].keys()))
+si_pron_acc_keys_bysize = bysize(si_pron['acc'].keys())
+
+def get_si_pron(thecase, word, gender):
+    try:
+        sing = si_pron[thecase][word]
+    except KeyError:
+       raise # not a pronoun
+    try:
+        return sing[gender] # has several types due to gender
+    except TypeError:
+        return sing # answer independent of gender
 
 plverb_irregular_pres = {
 #   1st PERS. SING.     2ND PERS. SING.     3RD PERS. SINGULAR
@@ -1152,8 +1190,8 @@ class engine:
         self.pl_adj_user_defined  = []
         self.si_sb_user_defined = []
         self.A_a_user_defined   = []
-        self.thegender = 'n' # n, f or m
-
+        self.thegender = 'neuter'
+ 
     def defnoun(self, singular, plural):
         '''
         Set the noun plural of singular to plural.
@@ -1310,8 +1348,10 @@ class engine:
         t: they (they -> they) gender neutral singular
         
         '''
-        if gender[0:1].lower() in ('n', 'f', 'm', 't'):
-            self.thegender = gender[0].lower()
+        if gender in singular_pronoun_genders:
+            self.thegender = gender
+        else:
+            raise BadGenderError
     
     def nummo(self, matchobject):
         '''
@@ -1620,7 +1660,7 @@ class engine:
         return self._plequal(word1, word2, self.pladj)
 
 
-    def sinoun(self, text, count=None):
+    def sinoun(self, text, count=None, gender=None):
         '''
         Return the singular of text, where text is a plural noun.
 
@@ -1634,10 +1674,10 @@ class engine:
         pre, word, post = self.partition_word(text)
         if not word:
             return text
-        sing = self._sinoun(word, count)
+        sing = self._sinoun(word, count=count, gender=gender)
         if sing != False:
             plural = self.postprocess(word,
-                  self._sinoun(word, count))
+                  self._sinoun(word, count=count, gender=gender))
             return "%s%s%s" % (pre, plural, post)
         return False
     
@@ -2191,7 +2231,7 @@ class engine:
         return False
 
     #@profile
-    def _sinoun(self, word, count=None):
+    def _sinoun(self, word, count=None, gender=None):
         count = self.get_count(count)
 
 
@@ -2200,6 +2240,16 @@ class engine:
         if count == 2:
             return word
 
+# SET THE GENDER
+
+        try:
+            if gender is None:
+                gender = self.thegender
+            elif gender not in singular_pronoun_genders:
+                raise BadGenderError            
+        except (TypeError, IndexError):
+            raise BadGenderError
+        
 # HANDLE USER-DEFINED NOUNS
 
         value = self.ud_match(word, self.si_sb_user_defined)
@@ -2234,7 +2284,7 @@ class engine:
 # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._sinoun(mo.group(1), 1), mo.group(2))
+            return "%s%s" % (self._sinoun(mo.group(1), 1, gender=gender), mo.group(2))
 
         #how to reverse this one?
         # mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
@@ -2249,7 +2299,7 @@ class engine:
             for numword in range(1, len(lowersplit)-1):
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(lowersplit[:numword-1] +
-                        [self._sinoun(lowersplit[numword-1], 1)] +
+                        [self._sinoun(lowersplit[numword-1], 1, gender=gender)] +
                         lowersplit[numword:] )
         
 
@@ -2258,7 +2308,7 @@ class engine:
             for numword in range(1, len(lowersplit)-1):
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(lowersplit[:numword-1] + 
-                        [self._sinoun(lowersplit[numword-1], 1) +
+                        [self._sinoun(lowersplit[numword-1], 1, gender=gender) +
                         '-' + lowersplit[numword] + '-']) + \
                         ' '.join(lowersplit[(numword+1):])
 
@@ -2270,15 +2320,15 @@ class engine:
                 for pk, pv in pl_prep_bysize.iteritems():
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
-                            return lowerword[:-k] + si_pron_acc[lowerword[-k:]][self.thegender]
+                            return lowerword[:-k] + get_si_pron('acc', lowerword[-k:], gender)
 
         try:
-            return si_pron_nom[word.lower()][self.thegender]
+            return get_si_pron('nom', word.lower(), gender)
         except KeyError:
             pass
 
         try:
-            return si_pron_acc[word.lower()][self.thegender]
+            return get_si_pron('acc', word.lower(), gender)
         except KeyError:
             pass
 

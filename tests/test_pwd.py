@@ -5,6 +5,7 @@ from re import error as reerror
 
 from ..inflect import BadChunkingOptionError, NumOutOfRangeError, UnknownClassicalModeError
 from ..inflect import UnknownClassicalModeError, BadNumValueError
+from ..inflect import BadGenderError
 from .. import inflect
 
 class test(unittest.TestCase):
@@ -316,7 +317,9 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing)
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
-        p.gender('f')
+    def test_gender(self):
+        p = inflect.engine()
+        p.gender('feminine')
         for sing, plur in (
             ('she', 'they'),
             ('herself', 'themselves'),
@@ -327,7 +330,7 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
         
-        p.gender('m')
+        p.gender('masculine')
         for sing, plur in (
             ('he', 'they'),
             ('himself', 'themselves'),
@@ -338,7 +341,7 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
-        p.gender('t')
+        p.gender('gender-neutral')
         for sing, plur in (
             ('they', 'they'),
             ('themself', 'themselves'),
@@ -349,7 +352,7 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
-        p.gender('n')
+        p.gender('neuter')
         for sing, plur in (
             ('it', 'they'),
             ('itself', 'themselves'),
@@ -360,6 +363,19 @@ class test(unittest.TestCase):
             self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
             self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
 
+        self.assertRaises(BadGenderError, p.gender, 'male')
+
+        for sing, plur, gen in (
+            ('it', 'they', 'neuter'),
+            ('she', 'they', 'feminine'),
+            ('he', 'they', 'masculine'),
+            ('they', 'they', 'gender-neutral'),
+            ('she or he', 'they', 'feminine or masculine'),
+            ('he or she', 'they', 'masculine or feminine'),
+                ):
+            self.assertEqual(p.sinoun(plur, gender=gen), sing)
+            
+        
     def test_plequal(self):
         p = inflect.engine()
         for fn, sing, plur, res in (
