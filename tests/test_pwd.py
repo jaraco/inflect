@@ -42,42 +42,36 @@ class test(unittest.TestCase):
         p.classical()
         self.assertEqual(p.classical_dict, inflect.all_classical)
 
-        p.classical(0)
-        self.assertEqual(p.classical_dict, inflect.no_classical)
-
-        p.classical(1)
-        self.assertEqual(p.classical_dict, inflect.all_classical)
+        self.assertRaises(TypeError, p.classical, 0)
+        self.assertRaises(TypeError, p.classical, 1)
+        self.assertRaises(TypeError, p.classical, 'names')
+        self.assertRaises(TypeError, p.classical, 'names', 'zero')
+        self.assertRaises(TypeError, p.classical, 'all')
         
-        p.classical(all=0)
+        p.classical(all=False)
         self.assertEqual(p.classical_dict, inflect.no_classical)
 
-        p.classical('names', 'zero')
+        p.classical(names=True, zero=True)
         mydict = inflect.def_classical.copy()
         mydict.update(dict(names=1,zero=1))
         self.assertEqual(p.classical_dict, mydict)
 
-        p.classical('all')
+        p.classical(all=True)
         self.assertEqual(p.classical_dict, inflect.all_classical)
 
-        p.classical(0)
-        p.classical(names=1, zero=1)
+        p.classical(all=False)
+        p.classical(names=True, zero=True)
         mydict = inflect.def_classical.copy()
-        mydict.update(dict(names=1,zero=1))
+        mydict.update(dict(names=True,zero=True))
         self.assertEqual(p.classical_dict, mydict)
 
-        p.classical(0)
-        p.classical('names', zero=1)
+        p.classical(all=False)
+        p.classical(names=True, zero=False)
         mydict = inflect.def_classical.copy()
-        mydict.update(dict(names=1,zero=1))
+        mydict.update(dict(names=True,zero=False))
         self.assertEqual(p.classical_dict, mydict)
 
-        p.classical(0)
-        p.classical('names', zero=0)
-        mydict = inflect.def_classical.copy()
-        mydict.update(dict(names=1,zero=0))
-        self.assertEqual(p.classical_dict, mydict)
-
-        self.assertRaises(UnknownClassicalModeError, p.classical, 'bogus', reallybogus=1)
+        self.assertRaises(UnknownClassicalModeError, p.classical, bogus=True)
 
     def test_num(self):
         # def num
@@ -298,7 +292,7 @@ class test(unittest.TestCase):
                     ):
             self.assertEqual(p.pl(sing, num), plur)
 
-        p.classical('zero')
+        p.classical(zero=True)
         self.assertEqual(p.pl('cow', 0), 'cow')
         self.assertEqual(p.pl('cow', 'zero'), 'cow')
         self.assertEqual(p.pl('runs', 0), 'runs')
@@ -589,17 +583,17 @@ class test(unittest.TestCase):
         p.num(3)
 
 
-        p.classical('herd')
+        p.classical(herd=True)
         self.assertEqual(p._plnoun('swine'), 'swine')
-        p.classical(herd=0)
+        p.classical(herd=False)
         self.assertEqual(p._plnoun('swine'), 'swines')
-        p.classical(persons=1)
+        p.classical(persons=True)
         self.assertEqual(p._plnoun('chairperson'), 'chairpersons')
-        p.classical(persons=0)
+        p.classical(persons=False)
         self.assertEqual(p._plnoun('chairperson'), 'chairpeople')
-        p.classical(ancient=1)
+        p.classical(ancient=True)
         self.assertEqual(p._plnoun('formula'), 'formulae')
-        p.classical(ancient=0)
+        p.classical(ancient=False)
         self.assertEqual(p._plnoun('formula'), 'formulas')
 
 
@@ -646,7 +640,7 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb('am'), 'are')
         self.assertEqual(p._pl_special_verb('am',0), 'are')
         self.assertEqual(p._pl_special_verb('runs',0), 'run')
-        p.classical('zero')
+        p.classical(zero=True)
         self.assertEqual(p._pl_special_verb('am',0), False)
         self.assertEqual(p._pl_special_verb('am',1), 'am')
         self.assertEqual(p._pl_special_verb('am',2), 'are')

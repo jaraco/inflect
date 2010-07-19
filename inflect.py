@@ -1153,16 +1153,16 @@ mill = ['', ' thousand', ' million', ' billion', ' trillion', ' quadrillion',
 # SUPPORT CLASSICAL PLURALIZATIONS
 
 def_classical = dict(
-    all      = 0,
-    zero     = 0,
-    herd     = 0,
-    names    = 1,
-    persons  = 0,
-    ancient  = 0,
+    all      = False,
+    zero     = False,
+    herd     = False,
+    names    = True,
+    persons  = False,
+    ancient  = False,
 )
 
-all_classical = dict((k,1) for k in def_classical.keys())
-no_classical = dict((k,0) for k in def_classical.keys())
+all_classical = dict((k, True) for k in def_classical.keys())
+no_classical = dict((k, False) for k in def_classical.keys())
 
 
 #TODO: .inflectrc file does not work
@@ -1285,37 +1285,39 @@ class engine:
 
 
 
-    def classical(self, *args, **kwargs):
+    def classical(self, **kwargs):
         """
-        Change the classical mode.
+        turn classical mode on and off for various categories
 
-        no args: all classical
-        single args: all classical if arg else no classical
-        if 'all' in args or all=<true value> then all_classical
-        if all=<false value> then no_classical
-        else set each that appears in args as long as it is a valid key
-        and set each according to kwargs as long as a valid key
+        turn on all classical modes:
+        classical()
+        classical(all=True)
 
+        turn on or off specific claassical modes:
+        e.g.
+        classical(herd=True)
+        classical(names=False)
+
+        By default all classical modes are off except names.
+        
         unknown value in args or key in kwargs rasies exception: UnknownClasicalModeError
 
         """
         classical_mode = def_classical.keys()
-        if not args and not kwargs:
+        if not kwargs:
             self.classical_dict = all_classical.copy()
             return
-        if (not kwargs) and len(args) == 1 and args[0] not in classical_mode:
-            self.classical_dict = all_classical.copy() if args[0] else no_classical.copy()
-            return
-        for arg in args:
-            if arg in classical_mode:
-                self.classical_dict[arg] = 1
+        if 'all' in kwargs:
+            if kwargs['all']:
+                self.classical_dict = all_classical.copy()
             else:
-                raise UnknownClassicalModeError
+                self.classical_dict = no_classical.copy()
+                
         for k, v in kwargs.items():
             if k in classical_mode:
                 self.classical_dict[k] = v
-        if 'all' in args or 'all' in kwargs:
-            self.classical_dict = all_classical.copy() if self.classical_dict['all'] else no_classical.copy()
+            else:
+                raise UnknownClassicalModeError
 
 
     def num(self, count=None, show=None):     # (;$count,$show)

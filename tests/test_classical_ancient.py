@@ -14,7 +14,7 @@ def test_ancient_1():
     
     # "person" PLURALS ACTIVATED...
     
-    p.classical('ancient')
+    p.classical(ancient=True)
     eq_ (p.plnoun('formula')     , 'formulae'         , msg="classical 'ancient' active")
     
     # OTHER CLASSICALS NOT ACTIVATED...

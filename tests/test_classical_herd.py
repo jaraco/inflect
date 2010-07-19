@@ -14,7 +14,7 @@ def test_ancient_1():
     
     # "person" PLURALS ACTIVATED...
     
-    p.classical('herd')
+    p.classical(herd=True)
     eq_ (p.plnoun('wildebeest')  , 'wildebeest'      , msg="classical 'herd' active")
     
     # OTHER CLASSICALS NOT ACTIVATED...

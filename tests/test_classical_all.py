@@ -20,7 +20,7 @@ class test(unittest.TestCase):
         
         # CLASSICAL PLURALS ACTIVATED...
         
-        p.classical('all')
+        p.classical(all=True)
         self.assertEqual(p.plnoun('error', 0)    , 'error'           , msg="classical 'zero' active")
         self.assertEqual(p.plnoun('wildebeest')  , 'wildebeest'      , msg="classical 'herd' active")
         self.assertEqual(p.plnoun('Sally')       , 'Sallys'          , msg="classical 'names' active")
