@@ -3089,7 +3089,10 @@ class engine:
             return words[0] 
 
         if conj_spaced:
-            conj = ' %s ' % conj
+            if conj == '':
+                conj = ' '
+            else:
+                conj = ' %s ' % conj
 
         if len(words) == 2:
             return "%s%s%s" % (words[0], conj, words[1])

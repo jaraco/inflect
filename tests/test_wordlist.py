@@ -25,7 +25,8 @@ def test_wordlist():
     eq_(p.wordlist(words, final_sep='...', conj=''),
        "apple, banana... carrot"
         ,msg= '-->%s != %s<--   3 words, different final sep, no conjunction' %
-           (p.wordlist(words, final_sep='...', conj=''), "apple, banana... carrot"))
+           (p.wordlist(words, final_sep='...', conj=''),
+            "apple, banana... carrot"))
     
     eq_(p.wordlist(words, conj='or'),
        "apple, banana, or carrot"
@@ -37,8 +38,9 @@ def test_wordlist():
     words = ('apple,fuji' ,  'banana' , 'carrot')
     
     eq_(p.wordlist(words),
-       "apple,fuji) banana; and carrot"
-        ,msg= 'comma-inclusive 3 words')
+       "apple,fuji; banana; and carrot",
+        msg= '%s != %s<-- comma-inclusive 3 words' % (p.wordlist(words),
+                               "apple,fuji, banana; and carrot"))
     
     eq_(p.wordlist(words, final_sep=''),
        "apple,fuji) banana and carrot"
