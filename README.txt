@@ -10,7 +10,7 @@ inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite ar
 VERSION
 =======
 
-This document describes version 0.1.9 of inflect.py
+This document describes version 0.2.0 of inflect.py
 
 INSTALLATION
 ============
@@ -155,26 +155,22 @@ SYNOPSIS
 
  # REQUIRE "CLASSICAL" PLURALS (EG: "focus"->"foci", "cherub"->"cherubim")
 
-      p.classical()          # USE ALL CLASSICAL PLURALS
+      p.classical()               # USE ALL CLASSICAL PLURALS
 
-      p.classical(1)          #  USE ALL CLASSICAL PLURALS
-      p.classical(0)          #  USE ALL MODERN PLURALS (DEFAULT)
+      p.classical(all=True)       # USE ALL CLASSICAL PLURALS
+      p.classical(all=False)      # SWITCH OFF CLASSICAL MODE
 
-      p.classical('zero')     #  "no error" INSTEAD OF "no errors"
-      p.classical(zero=1)     #  "no error" INSTEAD OF "no errors"
-      p.classical(zero=0)     #  "no errors" INSTEAD OF "no error" 
+      p.classical(zero=True)      #  "no error" INSTEAD OF "no errors"
+      p.classical(zero=False)     #  "no errors" INSTEAD OF "no error" 
 
-      p.classical('herd')     #  "2 buffalo" INSTEAD OF "2 buffalos"
-      p.classical(herd=1)     #  "2 buffalo" INSTEAD OF "2 buffalos"
-      p.classical(herd=0)     #  "2 buffalos" INSTEAD OF "2 buffalo"
+      p.classical(herd=True)      #  "2 buffalo" INSTEAD OF "2 buffalos"
+      p.classical(herd=False)     #  "2 buffalos" INSTEAD OF "2 buffalo"
 
-      p.classical('persons')  # "2 chairpersons" INSTEAD OF "2 chairpeople"
-      p.classical(persons=1)  # "2 chairpersons" INSTEAD OF "2 chairpeople"
-      p.classical(persons=0)  # "2 chairpeople" INSTEAD OF "2 chairpersons"
+      p.classical(persons=True)   # "2 chairpersons" INSTEAD OF "2 chairpeople"
+      p.classical(persons=False)  # "2 chairpeople" INSTEAD OF "2 chairpersons"
 
-      p.classical('ancient')  # "2 formulae" INSTEAD OF "2 formulas"
-      p.classical(ancient=1)  # "2 formulae" INSTEAD OF "2 formulas"
-      p.classical(ancient=0)  # "2 formulas" INSTEAD OF "2 formulae"
+      p.classical(ancient=True)   # "2 formulae" INSTEAD OF "2 formulas"
+      p.classical(ancient=False)  # "2 formulas" INSTEAD OF "2 formulae"
 
 
 
@@ -924,17 +920,17 @@ Thus::
         p.classical()                # SWITCH ON CLASSICAL MODE
         print p.pl("formula")        # -> "formulae"
 
-        p.classical(0)               # SWITCH OFF CLASSICAL MODE
+        p.classical(all=False)               # SWITCH OFF CLASSICAL MODE
         print p.pl("formula")        # -> "formulas"
 
-        p.classical(cmode)           # CLASSICAL MODE IFF cmode
+        p.classical(cmode=True)           # CLASSICAL MODE IFF cmode
         print p.pl("formula")        # -> "formulae" (IF cmode)
                                      # -> "formulas" (OTHERWISE)
 
-        p.classical(herd=1)          # SWITCH ON CLASSICAL MODE FOR "HERD" NOUNS
+        p.classical(herd=True)          # SWITCH ON CLASSICAL MODE FOR "HERD" NOUNS
         print p.pl("wilderbeest")    # -> "wilderbeest"
 
-        p.classical(names=1)         # SWITCH ON CLASSICAL MODE FOR NAMES
+        p.classical(names=True)         # SWITCH ON CLASSICAL MODE FOR NAMES
         print p.pl("sally")          # -> "sallies"
         print p.pl("Sally")          # -> "Sallys"
 
@@ -1251,7 +1247,7 @@ Thus, the sequence::
 
 produces "There were no choices", whereas::
 
-      p.classical('zero')     # or: classical('zero'=1)
+      p.classical(zero=True)
       p.num(0)
       print p.inflect("There pl(was) no(choice)")
 
