@@ -16,7 +16,8 @@ def test_loop():
                 eq_ ( numwords, threshed, msg="Wordified %s (<= %s)" % (n, thresh))
             else:
                 #$threshed =~ s/\D//gxms;
-                eq_ ( threshed, n, msg="Preserved %s (above %s)" % (n, thresh))
+                eq_ ( threshed, str(n), msg="p.numwords(%s, thresold=%s) == %s != %s" % (
+                                    n, thresh, threshed, str(n)))
 
 def test_lines():
     p = inflect.engine()
