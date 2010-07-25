@@ -123,7 +123,7 @@ def test_def():
     eq_( p.pl("red",0),  "red", msg="red -> red..." );
     eq_( p.pl("red",1),  "red" );
     eq_( p.pl("red",2),  "red" );
-    p.classical(1)
+    p.classical(all=True)
     eq_( p.pl("red",0),  "red" , msg="red -> gules...");
     eq_( p.pl("red",1),  "red" );
     eq_( p.pl("red",2),  "gules" );

@@ -447,7 +447,10 @@ def test_array():
         yield go, p, i
 
 def go(p, i):
-        eq_ ( p.numwords(i[0])           , i[1], msg="i[0] -> i[1]..." )
+        eq_ ( p.numwords(i[0])           , i[1], msg="numwords(%s) == %s != %s" % (
+                                                                                   i[0],
+                                                                                   p.numwords(i[0]),
+                                                                                   i[1]) )
         eq_ ( p.numwords(i[0], group=1) , i[2] )
         eq_ ( p.numwords(i[0], group=2) , i[3] )
         eq_ ( p.numwords(i[0], group=3) , i[4] )

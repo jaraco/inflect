@@ -44,7 +44,8 @@ def test_wordlist():
     
     eq_(p.wordlist(words, final_sep=''),
        "apple,fuji) banana and carrot"
-        ,msg= 'comma-inclusive 3 words, no final sep')
+        ,msg= 'wordlist(%s) == "%s" != "%s"' % (words, wordlist(words, final_sep=''),
+                                                "apple,fuji) banana and carrot"))
     
     eq_(p.wordlist(words, final_sep='...'),
        "apple,fuji) banana... and carrot"

@@ -809,7 +809,7 @@ class test(unittest.TestCase):
         self.assertEqual(millfn(1), ' thousand')
         self.assertEqual(millfn(2), ' million')
         self.assertEqual(millfn(3), ' billion')
-        self.assertEqual(millfn(0), '')
+        self.assertEqual(millfn(0), ' ')
         self.assertEqual(millfn(11), ' decillion')
         inflect.STDOUT_ON = False
         self.assertRaises(NumOutOfRangeError, millfn, 12)
@@ -821,8 +821,8 @@ class test(unittest.TestCase):
         self.assertEqual(unitfn(1,2), 'one million')
         self.assertEqual(unitfn(1,3), 'one billion')
         self.assertEqual(unitfn(5,3), 'five billion')
-        self.assertEqual(unitfn(5,0), 'five')
-        self.assertEqual(unitfn(0,0), '')
+        self.assertEqual(unitfn(5,0), 'five ')
+        self.assertEqual(unitfn(0,0), ' ')
 
     def test_tenfn(self):
         p = inflect.engine()
@@ -832,18 +832,18 @@ class test(unittest.TestCase):
         self.assertEqual(tenfn(0,1,2), 'one million')
         self.assertEqual(tenfn(1,1,2), 'eleven million')
         self.assertEqual(tenfn(1,0,2), 'ten million')
-        self.assertEqual(tenfn(1,0,0), 'ten')
-        self.assertEqual(tenfn(0,0,0), '')
+        self.assertEqual(tenfn(1,0,0), 'ten ')
+        self.assertEqual(tenfn(0,0,0), ' ')
 
     def test_hundfn(self):
         p = inflect.engine()
         hundfn = p.hundfn
         p.number_args = dict(andword='and')
-        self.assertEqual(hundfn(4,3,1,2), 'four hundred and thirty-one million, ')
-        self.assertEqual(hundfn(4,0,0,2), 'four hundred million, ')
-        self.assertEqual(hundfn(4,0,5,2), 'four hundred and five million, ')
-        self.assertEqual(hundfn(0,3,1,2), 'thirty-one million, ')
-        self.assertEqual(hundfn(0,0,7,2), 'seven million, ')
+        self.assertEqual(hundfn(4,3,1,2), 'four hundred and thirty-one  million, ')
+        self.assertEqual(hundfn(4,0,0,2), 'four hundred  million, ')
+        self.assertEqual(hundfn(4,0,5,2), 'four hundred and five  million, ')
+        self.assertEqual(hundfn(0,3,1,2), 'thirty-one  million, ')
+        self.assertEqual(hundfn(0,0,7,2), 'seven  million, ')
 
     def test_enword(self):
         p = inflect.engine()
@@ -859,11 +859,11 @@ class test(unittest.TestCase):
                          'three, four, seven, ')
         
         self.assertEqual(enword('34',2),
-                         'thirty-four, ')
+                         'thirty-four , ')
         self.assertEqual(enword('347',2),
-                         'thirty-four, seven, ')
+                         'thirty-four , seven, ')
         self.assertEqual(enword('34768',2),
-                         'thirty-four, seventy-six, eight, ')
+                         'thirty-four , seventy-six , eight, ')
         self.assertEqual(enword('1',2),
                          'one, ')
         p.number_args['one'] = 'single'
@@ -873,7 +873,7 @@ class test(unittest.TestCase):
         p.number_args['one'] = 'one'
 
         self.assertEqual(enword('134',3),
-                         ' one thirty-four, ')
+                         ' one thirty-four , ')
 
 
         self.assertEqual(enword('0',-1),
@@ -883,19 +883,19 @@ class test(unittest.TestCase):
 
 
         self.assertEqual(enword('3',-1),
-                         'three, ')
+                         'three , ')
         self.assertEqual(enword('12',-1),
-                         'twelve, ')
+                         'twelve , ')
         self.assertEqual(enword('123',-1),
-                         'one hundred and twenty-three, ')
+                         'one hundred and twenty-three  , ')
         self.assertEqual(enword('1234',-1),
-                         'one thousand, two hundred and thirty-four, ')
+                         'one thousand, two hundred and thirty-four  , ')
         self.assertEqual(enword('12345',-1),
-                         'twelve thousand, three hundred and forty-five, ')
+                         'twelve thousand, three hundred and forty-five  , ')
         self.assertEqual(enword('123456',-1),
-                         'one hundred and twenty-three thousand, four hundred and fifty-six, ')
+                         'one hundred and twenty-three  thousand, four hundred and fifty-six  , ')
         self.assertEqual(enword('1234567',-1),
-                         'one million, two hundred and thirty-four thousand, five hundred and sixty-seven, ')
+                         'one million, two hundred and thirty-four  thousand, five hundred and sixty-seven  , ')
 
     def test_numwords(self):
         p = inflect.engine()
@@ -921,7 +921,7 @@ class test(unittest.TestCase):
             #TODO: should be one point two three
             ('1.23', 'one point two three', 'one point twenty-three'), 
             ):
-            self.TODO(numwords(n), word, wrongword)
+            self.assertEqual(numwords(n), word)
             
         for n, txt in (
             (3, 'three bottles of beer on the wall'),

@@ -1144,7 +1144,7 @@ teen = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
         'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
 ten  = ['','','twenty', 'thirty', 'forty',
         'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
-mill = ['', ' thousand', ' million', ' billion', ' trillion', ' quadrillion',
+mill = [' ', ' thousand', ' million', ' billion', ' trillion', ' quadrillion',
         'quintillion', ' sextillion', ' septillion', ' octillion',
         ' nonillion', ' decillion']
 
@@ -2882,6 +2882,8 @@ class engine:
                               self.mill_count)
     
     def enword(self, num, group):
+        #import pdb
+        #pdb.set_trace()
 
         if group==1:
             num = resub(r"(\d)", self.group1sub, num)
@@ -3006,7 +3008,8 @@ class engine:
             if chunk == "":
                 chunk = "0"
 
-            if group == 0 and first == 0:
+
+            if group == 0 and (first == 0 or first == ''):
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)
@@ -3014,8 +3017,9 @@ class engine:
             if chunk[-2:] == ', ':
                 chunk = chunk[:-2]
             chunk = resub(r"\s+,", self.commafn, chunk)
-            if group != 0 and first:
-                chunk = resub(r", (\S+)\s+\Z", "%s \1" % andword, chunk)
+
+            if group == 0 and first:
+                chunk = resub(r", (\S+)\s+\Z", " %s \\1" % andword, chunk)
             chunk = resub(r"\s+", self.spacefn, chunk)
             #chunk = resub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
