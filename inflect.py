@@ -1145,7 +1145,7 @@ teen = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
 ten  = ['','','twenty', 'thirty', 'forty',
         'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
 mill = [' ', ' thousand', ' million', ' billion', ' trillion', ' quadrillion',
-        'quintillion', ' sextillion', ' septillion', ' octillion',
+        ' quintillion', ' sextillion', ' septillion', ' octillion',
         ' nonillion', ' decillion']
 
 
