@@ -912,7 +912,7 @@ class test(unittest.TestCase):
             ('10000000', 'ten million'),
             ('+10', 'plus ten'),
             ('-10', 'minus ten'),
-            ('10.','ten point zero'),
+            ('10.','ten point'),
             ('.10', 'point one zero'),
             ):
             self.assertEqual(numwords(n), word)

@@ -439,6 +439,12 @@ def test_array():
         "one, zero, one, point, two, zero, two, point, three, zero, three",
         "ten, one, point, twenty, two, point, thirty, three",
         "one zero one, point, two zero two, point, three zero three",
+    ],[
+        "98765.",
+        "ninety-eight thousand, seven hundred and sixty-five point",
+        "nine, eight, seven, six, five, point",
+        "ninety-eight, seventy-six, five, point",
+        "nine eighty-seven, sixty-five, point",
     ]
     ]
 
@@ -456,7 +462,9 @@ def go(p, i):
         eq_ ( p.numwords(i[0], group=2) , i[3] )
         eq_ ( p.numwords(i[0], group=3) , i[4] )
         if len(i) > 5:
-            eq_ ( p.numwords(p.ordinal(i[0]))      , i[5] )
+            eq_ ( p.numwords(p.ordinal(i[0]))      , i[5], msg="numwords(ordinal(%s)) == %s != %s" % (
+                                                                            i[0], p.numwords(p.ordinal(i[0])),
+                                                                            i[5]))
         if len(i) > 6:
             eq_ ( p.ordinal(p.numwords(i[0]))      , i[6] )
         else:

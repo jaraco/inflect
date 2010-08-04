@@ -2775,12 +2775,22 @@ class engine:
 
         '''
         if match(r"\d", str(num)):
-            n = int(num)
+            try:
+                num % 2
+                n = num
+            except TypeError:
+                if '.' in str(num):
+                    try:
+                        n = int(num[-1]) # numbers after decimal, so only need last one for ordinal
+                    except ValueError: # ends with '.', so need to use whole string
+                        n = int(num[:-1])                        
+                else:
+                    n = int(num)
             try:
                 post = nth[n%100]
             except KeyError:
                 post = nth[n%10]
-            return "%s%s" % (n, post)
+            return "%s%s" % (num, post)
         else:
             mo = search(r"(%s)\Z" % ordinal_suff, num)
             try:
@@ -2984,11 +2994,15 @@ class engine:
         myord =  (num[-2:] in ('st', 'nd', 'rd', 'th'))
         if myord:
             num = num[:-2]
+        finalpoint = False 
         if decimal:
             if group != 0:
                 chunks = num.split('.')
             else:
                 chunks = num.split('.',1)
+            if chunks[-1] == '': # remove blank string if nothing after decimal
+                chunks = chunks[:-1]
+                finalpoint = True # add 'point' to end of output
         else:
             chunks = [num]
 
@@ -3043,6 +3057,9 @@ class engine:
         for chunk in chunks[1:]:
             numchunks.append(decimal)
             numchunks.extend(chunk.split("%s " % comma))
+            
+        if finalpoint:
+            numchunks.append(decimal)            
 
         #wantlist: Perl list context. can explictly specify in Python
         if wantlist:
