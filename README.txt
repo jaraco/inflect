@@ -31,10 +31,10 @@ SYNOPSIS
 
  # METHODS:
 
- # pl plnoun plverb pladj sinoun no num
+ # plural plural_noun plural_verb plural_adj singular_noun no num
  # plequal plnounequal plverbequal pladjequal
  # a an
- # prespart
+ # present_participle
  # ordinal numwords
  # wordlist
  # inflect classical gender
@@ -43,46 +43,46 @@ SYNOPSIS
 
  # UNCONDITIONALLY FORM THE PLURAL
 
-      print "The plural of ", word, " is ", p.pl(word)
+      print "The plural of ", word, " is ", p.plural(word)
 
 
  # CONDITIONALLY FORM THE PLURAL
 
-      print "I saw", cat_count, p.pl("cat",cat_count)
+      print "I saw", cat_count, p.plural("cat",cat_count)
 
 
  # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
 
-      print p.plnoun("I",N1), p.plverb("saw",N1), p.pladj("my",N2), \
-            p.plnoun("saw",N2)
+      print p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \
+            p.plural_noun("saw",N2)
 
 
  # FORM THE SINGULAR OF PLURAL NOUNS
 
-      print "The singular of ", word, " is ", p.sinoun(word)
+      print "The singular of ", word, " is ", p.singular_noun(word)
 
  # SELECT THE GENDER OF SINGULAR PRONOUNS
 
-      print p.sinoun('they')  # 'it'
+      print p.singular_noun('they')  # 'it'
       p.gender('f')
-      print p.sinoun('they')  # 'she'
+      print p.singular_noun('they')  # 'she'
 
 
  # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
 
-      print "There ", p.plverb("was",errors), p.no(" error",errors)
+      print "There ", p.plural_verb("was",errors), p.no(" error",errors)
 
 
  # USE DEFAULT COUNTS:
 
-      print p.num(N1,""), p.pl("I"), p.plverb(" saw"), p.num(N2), p.plnoun(" saw")
-      print "There ", p.num(errors,''), p.plverb("was"), p.no(" error")
+      print p.num(N1,""), p.plural("I"), p.plural_verb(" saw"), p.num(N2), p.plural_noun(" saw")
+      print "There ", p.num(errors,''), p.plural_verb("was"), p.no(" error")
 
 
  # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
 
       print "same\n"      if p.plequal(word1, word2)
-      print "same noun\n" if p.plnounequal(word1, word2)
+      print "same noun\n" if p.plequal(word1, word2)
       print "same verb\n" if p.plverbequal(word1, word2)
       print "same adj.\n" if p.pladjequal(word1, word2)
 
@@ -174,17 +174,17 @@ SYNOPSIS
 
 
 
- # INTERPOLATE "pl()", "plnoun()", "plverb()", "pladj()", "sinoun()",
+ # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
  # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
 
-      print p.inflect("The plural of {0} is pl({0})".format(word))
-      print p.inflect("The singular of {0} is sinoun({0})".format(word))
-      print p.inflect("I saw {0} pl("cat",{0})".format(cat_count))
-      print p.inflect("pl(I,{0}) plverb(saw,{0}) pl(a,{1}) plnoun(saw,{1})".format(N1, N2))
-      print p.inflect("num({0},)pl(I) plverb(saw) num({1},)pl(a) plnoun(saw)".format(N1, N2))
-      print p.inflect("I saw num({0}) pl("cat")\nnum()".format(cat_count))
-      print p.inflect("There plverb(was,{0}) no(error,{0})".format(errors))
-      print p.inflect("There num({0},) plverb(was) no(error)".format(errors))
+      print p.inflect("The plural of {0} is plural({0})".format(word))
+      print p.inflect("The singular of {0} is singular_noun({0})".format(word))
+      print p.inflect("I saw {0} plural("cat",{0})".format(cat_count))
+      print p.inflect("plural(I,{0}) plural_verb(saw,{0}) plural(a,{1}) plural_noun(saw,{1})".format(N1, N2))
+      print p.inflect("num({0},)plural(I) plural_verb(saw) num({1},)plural(a) plural_noun(saw)".format(N1, N2))
+      print p.inflect("I saw num({0}) plural("cat")\nnum()".format(cat_count))
+      print p.inflect("There plural_verb(was,{0}) no(error,{0})".format(errors))
+      print p.inflect("There num({0},) plural_verb(was) no(error)".format(errors))
       print p.inflect("Did you want a({0}) or an({1})".format(thing, idea))
       print p.inflect("It was ordinal({0}) from the left".format(position))
 
@@ -244,14 +244,14 @@ FORMING PLURALS AND SINGULARS
 Inflecting Plurals and Singulars
 --------------------------------
 
-All of the ``pl...`` plural inflection methods take the word to be
+All of the ``plural...`` plural inflection methods take the word to be
 inflected as their first argument and return the corresponding inflection.
 Note that all such methods expect the *singular* form of the word. The
 results of passing a plural form are undefined (and unlikely to be correct).
 Similarly, the ``si...`` singular inflection method expects the *plural*
 form of the word.
 
-The ``pl...`` methods also take an optional second argument,
+The ``plural...`` methods also take an optional second argument,
 which indicates the grammatical "number" of the word (or of another word
 with which the word being inflected must agree). If the "number" argument is
 supplied and is not ``1`` (or ``"one"`` or ``"a"``, or some other adjective that
@@ -269,24 +269,24 @@ The various methods of ``inflect.engine`` are:
 
 
 
-``plnoun(word, count=None)``
+``plural_noun(word, count=None)``
 
- The method ``plnoun()`` takes a *singular* English noun or
+ The method ``plural_noun()`` takes a *singular* English noun or
  pronoun and returns its plural. Pronouns in the nominative ("I" ->
  "we") and accusative ("me" -> "us") cases are handled, as are
  possessive pronouns ("mine" -> "ours").
 
 
-``plverb(word, count=None)``
+``plural_verb(word, count=None)``
 
- The method ``plverb()`` takes the *singular* form of a
+ The method ``plural_verb()`` takes the *singular* form of a
  conjugated verb (that is, one which is already in the correct "person"
  and "mood") and returns the corresponding plural conjugation.
 
 
-``pladj(word, count=None)``
+``plural_adj(word, count=None)``
 
- The method ``pladj()`` takes the *singular* form of
+ The method ``plural_adj()`` takes the *singular* form of
  certain types of adjectives and returns the corresponding plural form.
  Adjectives that are correctly handled include: "numerical" adjectives
  ("a" -> "some"), demonstrative adjectives ("this" -> "these", "that" ->
@@ -294,27 +294,27 @@ The various methods of ``inflect.engine`` are:
  -> "childrens'", etc.)
 
 
-``pl(word, count=None)``
+``plural(word, count=None)``
 
- The method ``pl()`` takes a *singular* English noun,
+ The method ``plural()`` takes a *singular* English noun,
  pronoun, verb, or adjective and returns its plural form. Where a word
  has more than one inflection depending on its part of speech (for
  example, the noun "thought" inflects to "thoughts", the verb "thought"
  to "thought"), the (singular) noun sense is preferred to the (singular)
  verb sense.
 
- Hence ``pl("knife")`` will return "knives" ("knife" having been treated
- as a singular noun), whereas ``pl("knifes")`` will return "knife"
+ Hence ``plural("knife")`` will return "knives" ("knife" having been treated
+ as a singular noun), whereas ``plural("knifes")`` will return "knife"
  ("knifes" having been treated as a 3rd person singular verb).
 
  The inherent ambiguity of such cases suggests that,
- where the part of speech is known, ``plnoun``, ``plverb``, and
- ``pladj`` should be used in preference to ``pl``.
+ where the part of speech is known, ``plural_noun``, ``plural_verb``, and
+ ``plural_adj`` should be used in preference to ``plural``.
 
 
-``sinoun(word, count=None)``
+``singular_noun(word, count=None)``
 
- The method ``sinoun()`` takes a *plural* English noun or
+ The method ``singular_noun()`` takes a *plural* English noun or
  pronoun and returns its singular. Pronouns in the nominative ("we" ->
  "I") and accusative ("us" -> "me") cases are handled, as are
  possessive pronouns ("ours" -> "mine"). When third person
@@ -324,7 +324,7 @@ The various methods of ``inflect.engine`` are:
 
 Note that all these methods ignore any whitespace surrounding the
 word being inflected, but preserve that whitespace when the result is
-returned. For example, ``pl(" cat  ")`` returns " cats  ".
+returned. For example, ``plural(" cat  ")`` returns " cats  ".
 
 
 ``gender(genderletter)``
@@ -332,20 +332,20 @@ returned. For example, ``pl(" cat  ")`` returns " cats  ".
  The third person plural pronoun takes the same form for the female, male and
  neuter (e.g. "they"). The singular however, depends upon gender (e.g. "she",
  "he", "it" and "they" -- "they" being the gender neutral form.) By default
- ``sinoun`` returns the neuter form, however, the gender can be selected with
+ ``singular_noun`` returns the neuter form, however, the gender can be selected with
  the ``gender`` method. Pass the first letter of the gender to
  ``gender`` to return the f(eminine), m(asculine), n(euter) or t(hey)
  form of the singular. e.g.
- gender('f') followed by sinoun('themselves') returns 'herself'.
+ gender('f') followed by singular_noun('themselves') returns 'herself'.
 
 Numbered plurals
 ----------------
 
-The ``pl...`` methods return only the inflected word, not the count that
+The ``plural...`` methods return only the inflected word, not the count that
 was used to inflect it. Thus, in order to produce "I saw 3 ducks", it
 is necessary to use::
 
-    print "I saw", N, p.plnoun(animal,N)
+    print "I saw", N, p.plural_noun(animal,N)
 
 Since the usual purpose of producing a plural is to make it agree with
 a preceding count, inflect.py provides a method
@@ -375,10 +375,10 @@ Reducing the number of counts required
 --------------------------------------
 
 In some contexts, the need to supply an explicit count to the various
-``pl...`` methods makes for tiresome repetition. For example::
+``plural...`` methods makes for tiresome repetition. For example::
 
-    print pladj("This",errors), plnoun(" error",errors), \
-          plverb(" was",errors), " fatal."
+    print plural_adj("This",errors), plural_noun(" error",errors), \
+          plural_verb(" was",errors), " fatal."
 
 inflect.py therefore provides a method
 (``num(count=None, show=None)``) which may be used to set a persistent "default number"
@@ -388,15 +388,15 @@ can subsequently be removed by calling ``num()`` with no arguments.
 Hence we could rewrite the previous example::
 
     p.num(errors)
-    print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
+    print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
     p.num()
 
 Normally, ``num()`` returns its first argument, so that it may also
 be "inlined" in contexts like::
 
-    print p.num(errors), p.plnoun(" error"), p.plverb(" was"), " detected."
+    print p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected."
     if severity > 1:
-        print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
+        print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
 
 However, in certain contexts (see `INTERPOLATING INFLECTIONS IN STRINGS`)
 it is preferable that ``num()`` return an empty string. Hence ``num()``
@@ -404,9 +404,9 @@ provides an optional second argument. If that argument is supplied (that is, if
 it is defined) and evaluates to false, ``num`` returns an empty string
 instead of its first argument. For example::
 
-    print p.num(errors,0), p.no("error"), p.plverb(" was"), " detected."
+    print p.num(errors,0), p.no("error"), p.plural_verb(" was"), " detected."
     if severity > 1:
-        print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
+        print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
     
 
 
@@ -415,11 +415,11 @@ Number-insensitive equality
 
 inflect.py also provides a solution to the problem
 of comparing words of differing plurality through the methods
-``plequal(word1, word2)``, ``plnounequal(word1, word2)``,
+``plequal(word1, word2)``, ``plequal(word1, word2)``,
 ``plverbequal(word1, word2)``, and ``pladjequal(word1, word2)``.
 Each  of these methods takes two strings, and  compares them
-using the corresponding plural-inflection method (``pl()``, ``plnoun()``,
-``plverb()``, and ``pladj()`` respectively).
+using the corresponding plural-inflection method (``plural()``, ``plural_noun()``,
+``plural_verb()``, and ``plural_adj()`` respectively).
 
 The comparison returns true if:
 
@@ -459,9 +459,9 @@ Hence all of the following return false::
     p.plequal("taxi","taxes")       # ALTHOUGH "taxi" -> "taxis" -> "taxes"
 
 Note too that, although the comparison is "number-insensitive" it is *not*
-case-insensitive (that is, ``pl("time","Times")`` returns false. To obtain
+case-insensitive (that is, ``plural("time","Times")`` returns false. To obtain
 both number and case insensitivity, use the ``lower()`` method on both strings
-(that is, ``pl("time".lower(), "Times".lower())`` returns true).
+(that is, ``plural("time".lower(), "Times".lower())`` returns true).
 
 
 OTHER VERB FORMS
@@ -470,15 +470,15 @@ OTHER VERB FORMS
 Present participles
 -------------------
 
-``inflect.py`` also provides the ``prespart`` method,
+``inflect.py`` also provides the ``present_participle`` method,
 which can take a 3rd person singular verb and
 correctly inflect it to its present participle::
 
-    p.prespart("runs")   # "running"
-    p.prespart("loves")  # "loving"
-    p.prespart("eats")   # "eating"
-    p.prespart("bats")   # "batting"
-    p.prespart("spies")  # "spying"
+    p.present_participle("runs")   # "running"
+    p.present_participle("loves")  # "loving"
+    p.present_participle("eats")   # "eating"
+    p.present_participle("bats")   # "batting"
+    p.present_participle("spies")  # "spying"
 
 
 PROVIDING INDEFINITE ARTICLES
@@ -530,7 +530,7 @@ exists at the start of the string. Thus::
 
 
 ``a()`` and ``an()`` both take an optional second argument. As with the
-``pl...`` methods, this second argument is a "number" specifier. If
+``plural...`` methods, this second argument is a "number" specifier. If
 its value is ``1`` (or some other value implying singularity), ``a()`` and
 ``an()`` insert "a" or "an" as appropriate. If the number specifier 
 implies plurality, (``a()`` and ``an()`` insert the actual second argument instead.
@@ -552,19 +552,19 @@ has the value 2, then::
 
 prints "2 cat", instead of "2 cats". The correct approach is to use::
 
-      print p.a(p.pl("cat",N),N)
+      print p.a(p.plural("cat",N),N)
 
 or, better still::
 
       print p.no("cat",N)
 
-Note too that, like the various ``pl...`` methods, whenever ``a()``
+Note too that, like the various ``plural...`` methods, whenever ``a()``
 and ``an()`` are called with only one argument they are subject to the
 effects of any preceding call to ``num()``. Hence, another possible
 solution is::
 
       p.num(N)
-      print p.a(p.pl("cat"))
+      print p.a(p.plural("cat"))
     
 
 Indefinite articles and initialisms
@@ -749,7 +749,7 @@ occasionally other variants), depending on the context. So there is a
 
         for num in [3,2,1,0]:
               print p.numwords(num, one='a solitary', zero='no more'),
-              p.pl(" bottle of beer on the wall", num)
+              p.plural(" bottle of beer on the wall", num)
 
         # prints:
         #     three bottles of beer on the wall
@@ -863,9 +863,9 @@ INTERPOLATING INFLECTIONS IN STRINGS
 By far the commonest use of the inflection methods is to
 produce message strings for various purposes. For example::
 
-        print p.num(errors), p.plnoun(" error"), p.plverb(" was"), " detected."
+        print p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected."
         if severity > 1:
-            print p.pladj("This"), p.plnoun(" error"), p.plverb(" was"), "fatal."
+            print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
 
 Unfortunately the need to separate each method call detracts
 significantly from the readability of the resulting code. To ameliorate
@@ -875,9 +875,9 @@ methods within a string and interpolates them appropriately.
 
 Using ``inflect`` the previous example could be rewritten::
 
-        print p.inflect("num({0}) plnoun(error) plverb(was) detected.".format(errors))
+        print p.inflect("num({0}) plural_noun(error) plural_verb(was) detected.".format(errors))
         if severity > 1:
-            print p.inflect("pladj(This) plnoun(error) plverb(was) fatal.")
+            print p.inflect("plural_adj(This) plural_noun(error) plural_verb(was) fatal.")
 
 Note that ``inflect`` also correctly handles calls to the ``num()`` method
 (whether interpolated or antecedent). The ``inflect()`` method has
@@ -894,12 +894,12 @@ Certain words, mainly of Latin or Ancient Greek origin, can form
 plurals either using the standard English "-s" suffix, or with 
 their original Latin or Greek inflections. For example::
 
-        p.pl("stigma")            # -> "stigmas" or "stigmata"
-        p.pl("torus")             # -> "toruses" or "tori"
-        p.pl("index")             # -> "indexes" or "indices"
-        p.pl("millennium")        # -> "millenniums" or "millennia"
-        p.pl("ganglion")          # -> "ganglions" or "ganglia"
-        p.pl("octopus")           # -> "octopuses" or "octopodes"
+        p.plural("stigma")            # -> "stigmas" or "stigmata"
+        p.plural("torus")             # -> "toruses" or "tori"
+        p.plural("index")             # -> "indexes" or "indices"
+        p.plural("millennium")        # -> "millenniums" or "millennia"
+        p.plural("ganglion")          # -> "ganglions" or "ganglia"
+        p.plural("octopus")           # -> "octopuses" or "octopodes"
 
 
 inflect.py caters to such words by providing an
@@ -918,27 +918,27 @@ specify which aspects of classical behaviour are to be used.
 Thus::
 
         p.classical()                # SWITCH ON CLASSICAL MODE
-        print p.pl("formula")        # -> "formulae"
+        print p.plural("formula")        # -> "formulae"
 
         p.classical(all=False)               # SWITCH OFF CLASSICAL MODE
-        print p.pl("formula")        # -> "formulas"
+        print p.plural("formula")        # -> "formulas"
 
         p.classical(cmode=True)           # CLASSICAL MODE IFF cmode
-        print p.pl("formula")        # -> "formulae" (IF cmode)
+        print p.plural("formula")        # -> "formulae" (IF cmode)
                                      # -> "formulas" (OTHERWISE)
 
         p.classical(herd=True)          # SWITCH ON CLASSICAL MODE FOR "HERD" NOUNS
-        print p.pl("wilderbeest")    # -> "wilderbeest"
+        print p.plural("wilderbeest")    # -> "wilderbeest"
 
         p.classical(names=True)         # SWITCH ON CLASSICAL MODE FOR NAMES
-        print p.pl("sally")          # -> "sallies"
-        print p.pl("Sally")          # -> "Sallys"
+        print p.plural("sally")          # -> "sallies"
+        print p.plural("Sally")          # -> "Sallys"
 
 Note however that ``classical()`` has no effect on the inflection of words which
 are now fully assimilated. Hence::
 
-        p.pl("forum")             # ALWAYS -> "forums"
-        p.pl("criterion")         # ALWAYS -> "criteria"
+        p.plural("forum")             # ALWAYS -> "forums"
+        p.plural("criterion")         # ALWAYS -> "criteria"
 
 LEI assumes that a capitalized word is a person's name. So it forms the
 plural according to the rules for names (which is that you don't
@@ -1210,11 +1210,11 @@ can vary, depending on its "case". For example::
         It ate it                ->  They ate them
         I fed my homework to it  ->  I fed my homework to them
 
-As a consequence of this ambiguity, ``pl()`` or ``plnoun`` have been implemented
+As a consequence of this ambiguity, ``plural()`` or ``plural_noun`` have been implemented
 so that they always return the *nominative* plural (that is, "they").
 
 However, when asked for the plural of an unambiguously *accusative*
-"it" (namely, ``pl("to it")``, ``plnoun("from it")``, ``pl("with it")``,
+"it" (namely, ``plural("to it")``, ``plural_noun("from it")``, ``plural("with it")``,
 etc.), both methods will correctly return the accusative plural
 ("to them", "from them", "with them", etc.)
 
@@ -1243,13 +1243,13 @@ singular form is always returned.
 Thus, the sequence::
 
       p.num(0)
-      print p.inflect("There pl(was) no(choice)")
+      print p.inflect("There plural(was) no(choice)")
 
 produces "There were no choices", whereas::
 
       p.classical(zero=True)
       p.num(0)
-      print p.inflect("There pl(was) no(choice)")
+      print p.inflect("There plural(was) no(choice)")
 
 it will print "There was no choice".
 
@@ -1280,13 +1280,13 @@ inflect.py handles such words in two ways:
 
 - If each meaning of the word is a different part of speech (for
   example, "thought" is both a noun and a verb), then the noun's
-  plural is returned by ``pl()`` and ``plnoun()`` and the verb's plural is
-  returned only by ``plverb()``.
+  plural is returned by ``plural()`` and ``plural_noun()`` and the verb's plural is
+  returned only by ``plural_verb()``.
 
 
 Such contexts are, fortunately, uncommon (particularly
 "same-part-of-speech" examples). An informal study of nearly 600
-"difficult plurals" indicates that ``pl()`` can be relied upon to "get
+"difficult plurals" indicates that ``plural()`` can be relied upon to "get
 it right" about 98% of the time (although, of course, ichthyophilic
 guitarists or cyber-behaviouralists may experience higher rates of
 confusion).
@@ -1318,7 +1318,7 @@ AUTHORS
 
 Paul Dyson (pwdyson@yahoo.com)
 * converted code from Perl to Python
-* added sinoun functionality
+* added singular_noun functionality
 
 Original Perl version of the code and documentation:
 Damian Conway (damian@conway.org),
