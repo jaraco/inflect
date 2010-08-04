@@ -43,9 +43,9 @@ def test_many():
 
 
         p.classical(all=0, names=0)
-        mod_PL_V     = p.plverb(singular)
-        mod_PL_N     = p.plnoun(singular)
-        mod_PL       = p.pl(singular)
+        mod_PL_V     = p.plural_verb(singular)
+        mod_PL_N     = p.plural_noun(singular)
+        mod_PL       = p.plural(singular)
         if is_nv == '_V':
             mod_PL_val = mod_PL_V
         elif is_nv == '_N':
@@ -55,9 +55,9 @@ def test_many():
 
 
         p.classical(all=1)
-        class_PL_V     = p.plverb(singular)
-        class_PL_N     = p.plnoun(singular)
-        class_PL       = p.pl(singular)
+        class_PL_V     = p.plural_verb(singular)
+        class_PL_N     = p.plural_noun(singular)
+        class_PL       = p.plural(singular)
         if is_nv == '_V':
             class_PL_val = class_PL_V
         elif is_nv == '_N':
@@ -78,13 +78,13 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
         eq_(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
 
         if is_nv != '_V':
-            eq_(p.sinoun(mod_plural, 1), singular,
-                         msg="p.sinoun(%s) == %s != %s" % (
-                             mod_plural, p.sinoun(mod_plural, 1), singular) )
+            eq_(p.singular_noun(mod_plural, 1), singular,
+                         msg="p.singular_noun(%s) == %s != %s" % (
+                             mod_plural, p.singular_noun(mod_plural, 1), singular) )
 
-            eq_(p.sinoun(class_plural, 1), singular,
-                         msg="p.sinoun(%s) == %s != %s" % (
-                             class_plural, p.sinoun(class_plural, 1), singular) )
+            eq_(p.singular_noun(class_plural, 1), singular,
+                         msg="p.singular_noun(%s) == %s != %s" % (
+                             class_plural, p.singular_noun(class_plural, 1), singular) )
 
 
         '''
@@ -117,16 +117,16 @@ def test_def():
     
     eq_( p.no("regex",0),  "no regexen", msg="regex -> regexen (user defined)" );
 
-    eq_( p.pl("foobar",2),  "feebar", msg="foobar -> feebar (user defined)..." );
-    eq_( p.pl("foobars",2),  "feebar" );
+    eq_( p.plural("foobar",2),  "feebar", msg="foobar -> feebar (user defined)..." );
+    eq_( p.plural("foobars",2),  "feebar" );
 
-    eq_( p.pl("red",0),  "red", msg="red -> red..." );
-    eq_( p.pl("red",1),  "red" );
-    eq_( p.pl("red",2),  "red" );
+    eq_( p.plural("red",0),  "red", msg="red -> red..." );
+    eq_( p.plural("red",1),  "red" );
+    eq_( p.plural("red",2),  "red" );
     p.classical(all=True)
-    eq_( p.pl("red",0),  "red" , msg="red -> gules...");
-    eq_( p.pl("red",1),  "red" );
-    eq_( p.pl("red",2),  "gules" );
+    eq_( p.plural("red",0),  "red" , msg="red -> gules...");
+    eq_( p.plural("red",1),  "red" );
+    eq_( p.plural("red",2),  "gules" );
 
 def test_ordinal():
     p = inflect.engine()
@@ -194,12 +194,12 @@ def test_ordinal():
 
 def test_prespart():
     p = inflect.engine()
-    eq_( p.prespart("sees"),  "seeing", msg="sees -> seeing..." );
-    eq_( p.prespart("eats"),  "eating" );
-    eq_( p.prespart("bats"),  "batting" );
-    eq_( p.prespart("hates"),  "hating" );
-    eq_( p.prespart("spies"),  "spying" );
-    eq_( p.prespart("skis"),  "skiing" );
+    eq_( p.present_participle("sees"),  "seeing", msg="sees -> seeing..." );
+    eq_( p.present_participle("eats"),  "eating" );
+    eq_( p.present_participle("bats"),  "batting" );
+    eq_( p.present_participle("hates"),  "hating" );
+    eq_( p.present_participle("spies"),  "spying" );
+    eq_( p.present_participle("skis"),  "skiing" );
 
 def get_data():
         return '''
@@ -268,7 +268,7 @@ def get_data():
    TODO:siverb               ate  ->  ate
                 atlas  ->  atlases|atlantes
                 atman  ->  atmas
-  TODO:sinoun   attorney general  ->  attorneys general
+  TODO:singular_noun   attorney general  ->  attorneys general
    attorney of record  ->  attorneys of record
                aurora  ->  auroras|aurorae
                  auto  ->  autos
@@ -277,7 +277,7 @@ def get_data():
     TODO:siadj       aviatrix's  ->  aviatrixes'|aviatrices'
            Avignonese  ->  Avignonese
                   axe  ->  axes
-    TODO:sinoun 2 anwers!            axis  ->  axes
+    TODO:singular_noun 2 anwers!            axis  ->  axes
                 axman  ->  axmen
         Azerbaijanese  ->  Azerbaijanese
              bacillus  ->  bacilli
@@ -402,7 +402,7 @@ def get_data():
                corpus  ->  corpuses|corpora
                cortex  ->  cortexes|cortices
                cosmos  ->  cosmoses
-     TODO:sinoun   court martial  ->  courts martial
+     TODO:singular_noun   court martial  ->  courts martial
                   cow  ->  cows|kine
               cranium  ->  craniums|crania
             crescendo  ->  crescendos
@@ -490,7 +490,7 @@ def get_data():
                 forum  ->  forums
      TODO:siverb          fought  ->  fought
                   fox  ->  foxes
-     TODO:sinoun 2 different returns        from him  ->  from them
+     TODO:singular_noun 2 different returns        from him  ->  from them
               from it  ->  from them                      # ACCUSATIVE
                fungus  ->  funguses|fungi
              Gabunese  ->  Gabunese
@@ -503,7 +503,7 @@ def get_data():
         generalissimo  ->  generalissimos
              Genevese  ->  Genevese
                 genie  ->  genies|genii
-    TODO:sinoun 2 diff return values!           genius  ->  geniuses|genii
+    TODO:singular_noun 2 diff return values!           genius  ->  geniuses|genii
               Genoese  ->  Genoese
                 genus  ->  genera
                German  ->  Germans
@@ -513,10 +513,10 @@ def get_data():
               Goanese  ->  Goanese
                  goat  ->  goats
                 goose  ->  geese
-    TODO:sinoun Governor General  ->  Governors General
+    TODO:singular_noun Governor General  ->  Governors General
                   goy  ->  goys|goyim
              graffiti  ->  graffiti
-    TODO:sinoun 2 diff ret values         graffito  ->  graffiti
+    TODO:singular_noun 2 diff ret values         graffito  ->  graffiti
               grizzly  ->  grizzlies
                 guano  ->  guanos
             guardsman  ->  guardsmen
@@ -542,27 +542,27 @@ def get_data():
              Havanese  ->  Havanese
     TODO:siverb             have  ->  have
     TODO:siverb    have conceded  ->  have conceded
-    TODO:sinoun 2 values               he  ->  they
+    TODO:singular_noun 2 values               he  ->  they
          headquarters  ->  headquarters
             Heavenese  ->  Heavenese
                 helix  ->  helices
             hepatitis  ->  hepatitises|hepatitides
-    TODO:sinoun 2 values              her  ->  them                           # PRONOUN
-    TODO:sinoun 2 values              her  ->  their                          # POSSESSIVE ADJ
+    TODO:singular_noun 2 values              her  ->  them                           # PRONOUN
+    TODO:singular_noun 2 values              her  ->  their                          # POSSESSIVE ADJ
                  hero  ->  heroes
                herpes  ->  herpes
-    TODO:sinoun 2 values             hers  ->  theirs                         # POSSESSIVE NOUN
-    TODO:sinoun 2 values          herself  ->  themselves
+    TODO:singular_noun 2 values             hers  ->  theirs                         # POSSESSIVE NOUN
+    TODO:singular_noun 2 values          herself  ->  themselves
                hetman  ->  hetmans
                hiatus  ->  hiatuses|hiatus
             highlight  ->  highlights
               hijinks  ->  hijinks
-    TODO:sinoun 2 values              him  ->  them
-    TODO:sinoun 2 values          himself  ->  themselves
+    TODO:singular_noun 2 values              him  ->  them
+    TODO:singular_noun 2 values          himself  ->  themselves
          hippopotamus  ->  hippopotamuses|hippopotami
            Hiroshiman  ->  Hiroshimans
-    TODO:sinoun 2 values              his  ->  their                          # POSSESSIVE ADJ
-    TODO:sinoun 2 values              his  ->  theirs                         # POSSESSIVE NOUN
+    TODO:singular_noun 2 values              his  ->  their                          # POSSESSIVE ADJ
+    TODO:singular_noun 2 values              his  ->  theirs                         # POSSESSIVE NOUN
     TODO:siverb             hoes  ->  hoe
            honorarium  ->  honorariums|honoraria
                  hoof  ->  hoofs|hooves
@@ -586,7 +586,7 @@ def get_data():
           Indochinese  ->  Indochinese
               inferno  ->  infernos
               innings  ->  innings
-   TODO:sinoun Inspector General  ->  Inspectors General
+   TODO:singular_noun Inspector General  ->  Inspectors General
           interregnum  ->  interregnums|interregna
                  iris  ->  irises|irides
        TODO:siverb            is  ->  are
@@ -773,7 +773,7 @@ def get_data():
                 piano  ->  pianos|piani
           Piedmontese  ->  Piedmontese
                  pika  ->  pikas
-   TODO:sinoun ret mul value            pincer  ->  pincers
+   TODO:singular_noun ret mul value            pincer  ->  pincers
               pincers  ->  pincers
             Pistoiese  ->  Pistoiese
               plateau  ->  plateaus|plateaux
@@ -804,7 +804,7 @@ def get_data():
                  puma  ->  pumas
      TODO:siverb             put  ->  put
               quantum  ->  quantums|quanta
- TODO:sinoun quartermaster general  ->  quartermasters general
+ TODO:singular_noun quartermaster general  ->  quartermasters general
                quarto  ->  quartos
                  quiz  ->  quizzes
               quizzes  ->  quiz                           # VERB FORM
@@ -853,7 +853,7 @@ def get_data():
                shaman  ->  shamans
               Shavese  ->  Shavese
             Shawanese  ->  Shawanese
-    TODO:sinoun multivalue              she  ->  they
+    TODO:singular_noun multivalue              she  ->  they
                 sheaf  ->  sheaves
                shears  ->  shears
                 sheep  ->  sheep
@@ -878,7 +878,7 @@ def get_data():
             soliloquy  ->  soliloquies
                  solo  ->  solos|soli
                  soma  ->  somas|somata
-   TODO:sinoun tough    son of a bitch  ->  sons of bitches
+   TODO:singular_noun tough    son of a bitch  ->  sons of bitches
               Sonaman  ->  Sonamans
               soprano  ->  sopranos|soprani
    TODO:siverb            sought  ->  sought
@@ -909,11 +909,11 @@ def get_data():
                suffix  ->  suffixes
             Sundanese  ->  Sundanese
              superior  ->  superiors
-  TODO:sinoun    Surgeon-General  ->  Surgeons-General
+  TODO:singular_noun    Surgeon-General  ->  Surgeons-General
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
                 swine  ->  swines|swine
-      TODO:sinoun multiple return        syringe  ->  syringes
+      TODO:singular_noun multiple return        syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
               tableau  ->  tableaus|tableaux
               Tacoman  ->  Tacomans
@@ -924,11 +924,11 @@ def get_data():
            Tenggerese  ->  Tenggerese
             testatrix  ->  testatrixes|testatrices
                testes  ->  testes
-      TODO:sinoun multiple return         testis  ->  testes
+      TODO:singular_noun multiple return         testis  ->  testes
       TODO:siadj           that  ->  those
       TODO:siadj          their  ->  their                          # POSSESSIVE FORM (GENDER-INCLUSIVE)
-      TODO:sinoun multiple return       themself  ->  themselves                     # ugly but gaining currency
-      TODO:sinoun multiple return           they  ->  they                           # for indeterminate gender
+      TODO:singular_noun multiple return       themself  ->  themselves                     # ugly but gaining currency
+      TODO:singular_noun multiple return           they  ->  they                           # for indeterminate gender
                 thief  ->  thiefs|thieves
       TODO:siadj           this  ->  these
               thought  ->  thoughts                       # NOUN FORM
@@ -940,17 +940,17 @@ def get_data():
       TODO:siverb        tiptoes  ->  tiptoe
              Tirolese  ->  Tirolese
              titmouse  ->  titmice
-      TODO:sinoun multivalue         to her  ->  to them
-      TODO:sinoun multivalue     to herself  ->  to themselves
-      TODO:sinoun multivalue         to him  ->  to them
-      TODO:sinoun multivalue     to himself  ->  to themselves
+      TODO:singular_noun multivalue         to her  ->  to them
+      TODO:singular_noun multivalue     to herself  ->  to themselves
+      TODO:singular_noun multivalue         to him  ->  to them
+      TODO:singular_noun multivalue     to himself  ->  to themselves
                 to it  ->  to them
                 to it  ->  to them                        # ACCUSATIVE
             to itself  ->  to themselves
                 to me  ->  to us
             to myself  ->  to ourselves
-      TODO:sinoun multivalue        to them  ->  to them                        # for indeterminate gender
-      TODO:sinoun multivalue    to themself  ->  to themselves                  # ugly but gaining currency
+      TODO:singular_noun multivalue        to them  ->  to them                        # for indeterminate gender
+      TODO:singular_noun multivalue    to themself  ->  to themselves                  # ugly but gaining currency
                to you  ->  to you
           to yourself  ->  to yourselves
             Tocharese  ->  Tocharese
@@ -1004,7 +1004,7 @@ def get_data():
               whiting  ->  whiting
            Whitmanese  ->  Whitmanese
                  whiz  ->  whizzes
-   TODO:sinoun multivalue             whizz  ->  whizzes
+   TODO:singular_noun multivalue             whizz  ->  whizzes
                widget  ->  widgets
                  wife  ->  wives
            wildebeest  ->  wildebeests|wildebeest
@@ -1013,7 +1013,7 @@ def get_data():
              will eat  ->  will eat                       # VERB FORM
                 wills  ->  will                           # VERB FORM
                  wish  ->  wishes
-   TODO:sinoun multivalue          with him  ->  with them
+   TODO:singular_noun multivalue          with him  ->  with them
               with it  ->  with them                      # ACCUSATIVE
    TODO:siverb              woes  ->  woe
                  wolf  ->  wolves

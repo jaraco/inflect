@@ -25,7 +25,7 @@
 
 methods:
           classical inflect
-          pl plnoun plverb pladj sinoun no num a an
+          plural plural_noun plural_verb plural_adj singular_noun no num a an
           plequal plnounequal plverbequal pladjequal
           prespart
           ordinal
@@ -34,11 +34,11 @@ methods:
           defnoun defverb defadj defa defan
 
     INFLECTIONS:    classical inflect
-          pl plnoun plverb pladj sinoun plequal
+          plural plural_noun plural_verb plural_adj singular_noun plequal
           no num a an prespart
 
     PLURALS:   classical inflect
-          pl plnoun plverb pladj sinoun no num
+          plural plural_noun plural_verb plural_adj singular_noun no num
           plequal plnounequal plverbequal pladjequal
 
     COMPARISONS:    classical 
@@ -1364,38 +1364,38 @@ class engine:
 
     def plmo(self, matchobject):
         '''
-        pl but take a matchobject
+        plural but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.pl(matchobject.group(1), matchobject.group(3))
+        return self.plural(matchobject.group(1), matchobject.group(3))
 
     def plnounmo(self, matchobject):
         '''
-        plnoun but take a matchobject
+        plural_noun but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.plnoun(matchobject.group(1), matchobject.group(3))
+        return self.plural_noun(matchobject.group(1), matchobject.group(3))
 
     def plverbmo(self, matchobject):
         '''
-        plverb but take a matchobject
+        plural_verb but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.plverb(matchobject.group(1), matchobject.group(3))
+        return self.plural_verb(matchobject.group(1), matchobject.group(3))
 
     def pladjmo(self, matchobject):
         '''
-        pladj but take a matchobject
+        plural_adj but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.pladj(matchobject.group(1), matchobject.group(3))
+        return self.plural_adj(matchobject.group(1), matchobject.group(3))
 
     def sinounmo(self, matchobject):
         '''
-        sinoun but take a matchobject
+        singular_noun but take a matchobject
         use groups 1 and 3 in matchobject
         '''
-        return self.sinoun(matchobject.group(1), matchobject.group(3))
+        return self.singular_noun(matchobject.group(1), matchobject.group(3))
 
     def amo(self, matchobject):
         '''
@@ -1432,7 +1432,7 @@ class engine:
         prespart but take a matchobject
         use group 1
         '''
-        return self.prespart(matchobject.group(1))
+        return self.present_participle(matchobject.group(1))
 
 
 # 0. PERFORM GENERAL INFLECTIONS IN A STRING
@@ -1441,10 +1441,10 @@ class engine:
         '''
         Perform inflections in a string.
 
-        e.g. inflect('The plural of cat is pl(cat)') returns
+        e.g. inflect('The plural of cat is plural(cat)') returns
         'The plural of cat is cats'
 
-        can use pl, plnoun, plverb, pladj, sinoun, a, an, no, ordinal,
+        can use plural, plural_noun, plural_verb, plural_adj, singular_noun, a, an, no, ordinal,
         numwords and prespart
 
         '''
@@ -1458,22 +1458,22 @@ class engine:
                 total = -1
                 while total:
                     (section, total) = subn(
-                        r"(?x)\bpl     \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural     \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.plmo, section)
                     (section, count) = subn(
-                        r"(?x)\bplnoun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_noun   \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.plnounmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bplverb   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_verb   \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.plverbmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bpladj \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_adj \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.pladjmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bsinoun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bsingular_noun   \( ([^),]*) (, ([^)]*) )? \)  ",
                         self.sinounmo, section)
                     total += count
                     (section, count) = subn(
@@ -1493,7 +1493,7 @@ class engine:
                         self.numwordsmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bprespart \( ([^)]*) \)            ",
+                        r"(?x)\bpresent_participle \( ([^)]*) \)            ",
                         self.prespartmo, section)
                     total += count
 
@@ -1526,7 +1526,39 @@ class engine:
         except AttributeError: # empty string
             return '', '', ''
 
-    def pl(self, text, count=None):
+
+    def pl(self, *args, **kwds):
+        print 'pl() deprecated, use plural()'
+        #raise DeprecationWarning
+        return self.plural(*args, **kwds)
+
+    def plnoun(self, *args, **kwds):
+        print 'plnoun() deprecated, use plural_noun()'
+        raise DeprecationWarning
+        return self.plural_noun(*args, **kwds)
+
+    def plverb(self, *args, **kwds):
+        print 'plverb() deprecated, use plural_verb()'
+        raise DeprecationWarning
+        return self.plural_verb(*args, **kwds)
+
+    def pladj(self, *args, **kwds):
+        print 'pladj() deprecated, use plural_adj()'
+        raise DeprecationWarning
+        return self.plural_adj(*args, **kwds)
+
+    def sinoun(self, *args, **kwds):
+        print 'sinoun() deprecated, use singular_noun()'
+        raise DeprecationWarning
+        return self.singular_noun(*args, **kwds)
+
+    def prespart(self, *args, **kwds):
+        print 'prespart() deprecated, use present_paarticiple()'
+        raise DeprecationWarning
+        return self.present_participle(*args, **kwds)
+
+
+    def plural(self, text, count=None):
         '''
         Return the plural of text.
 
@@ -1546,7 +1578,8 @@ class engine:
               or self._plnoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def plnoun(self, text, count=None):
+        
+    def plural_noun(self, text, count=None):
         '''
         Return the plural of text, where text is a noun.
 
@@ -1563,7 +1596,7 @@ class engine:
         plural = self.postprocess(word, self._plnoun(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def plverb(self, text, count=None):
+    def plural_verb(self, text, count=None):
         '''
         Return the plural of text, where text is a verb.
 
@@ -1581,7 +1614,7 @@ class engine:
               or self._pl_general_verb(word, count))
         return "%s%s%s" % (pre, plural, post)
 
-    def pladj(self, text, count=None):
+    def plural_adj(self, text, count=None):
         '''
         Return the plural of text, where text is an adjective.
 
@@ -1612,9 +1645,9 @@ class engine:
 
         '''
         return (
-          self._plequal(word1, word2, self.plnoun) or
-          self._plequal(word1, word2, self.plverb) or
-          self._plequal(word1, word2, self.pladj))
+          self._plequal(word1, word2, self.plural_noun) or
+          self._plequal(word1, word2, self.plural_verb) or
+          self._plequal(word1, word2, self.plural_adj))
 
     def plnounequal(self, word1, word2):
         '''
@@ -1629,7 +1662,7 @@ class engine:
         False - otherwise
 
         '''
-        return self._plequal(word1, word2, self.plnoun)
+        return self._plequal(word1, word2, self.plural_noun)
 
     def plverbequal(self, word1, word2):
         '''
@@ -1644,7 +1677,7 @@ class engine:
         False - otherwise
 
         '''
-        return self._plequal(word1, word2, self.plverb)
+        return self._plequal(word1, word2, self.plural_verb)
 
     def pladjequal(self, word1, word2):
         '''
@@ -1659,10 +1692,10 @@ class engine:
         False - otherwise
 
         '''
-        return self._plequal(word1, word2, self.pladj)
+        return self._plequal(word1, word2, self.plural_adj)
 
 
-    def sinoun(self, text, count=None, gender=None):
+    def singular_noun(self, text, count=None, gender=None):
         '''
         Return the singular of text, where text is a plural noun.
 
@@ -1700,12 +1733,12 @@ class engine:
             return "s:p"
         self.classical_dict = classval.copy()
 
-        if pl == self.pl or pl == self.plnoun:
+        if pl == self.plural or pl == self.plural_noun:
             if self._pl_check_plurals_N(word1, word2):
                 return "p:p"
             if self._pl_check_plurals_N(word2, word1):
                 return "p:p"
-        if pl == self.pl or pl == self.pladj:
+        if pl == self.plural or pl == self.plural_adj:
             if self._pl_check_plurals_adj(word1, word2):
                 return "p:p"
         return False
@@ -2224,7 +2257,7 @@ class engine:
         mo = search(r"^(.*)'s?$",
                     word)
         if mo:
-            pl = self.plnoun(mo.group(1))
+            pl = self.plural_noun(mo.group(1))
             trailing_s = "" if pl[-1] == 's' else "s" 
             return "%s'%s" % (pl, trailing_s)
 
@@ -2697,7 +2730,7 @@ class engine:
         return "a %s" % word
 
 
-# 2. TRANSLATE ZERO-QUANTIFIED $word TO "no pl($word)"
+# 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
     def no(self, text, count=None):
         '''
@@ -2726,21 +2759,21 @@ class engine:
         post = mo.group(3)
 
         if str(count).lower() in pl_count_zero:
-            return "%sno %s%s" % (pre, self.pl(word, 0), post)
+            return "%sno %s%s" % (pre, self.plural(word, 0), post)
         else:
-            return "%s%s %s%s" % (pre, count, self.pl(word, count), post)
+            return "%s%s %s%s" % (pre, count, self.plural(word, count), post)
 
 
 # PARTICIPLES
 
-    def prespart(self, word):
+    def present_participle(self, word):
         '''
         Return the present participle for word.
 
         word is the 3rd person singular verb.
         
         '''
-        plv = self.plverb(word, 2)
+        plv = self.plural_verb(word, 2)
 
         for pat, repl in (
                           (r"ie$", r"y"),

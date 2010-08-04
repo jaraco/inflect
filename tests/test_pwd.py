@@ -115,14 +115,14 @@ class test(unittest.TestCase):
             self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
 
         for txt, ans in (
-        ("pl(rock)", "rocks"),
-        ("pl(rock)  pl(child)", "rocks  children"),
-        ("num(2) pl(rock)  pl(child)", "2 rocks  children"),
+        ("plural(rock)", "rocks"),
+        ("plural(rock)  plural(child)", "rocks  children"),
+        ("num(2) plural(rock)  plural(child)", "2 rocks  children"),
 
-        ("pl(rock) plnoun(rock) plverb(rocks) pladj(big) a(ant)",
+        ("plural(rock) plural_noun(rock) plural_verb(rocks) plural_adj(big) a(ant)",
                  "rocks rocks rock big an ant"),
 
-        ("an(rock) no(cat) ordinal(3) numwords(1234) prespart(runs)",
+        ("an(rock) no(cat) ordinal(3) numwords(1234) present_participle(runs)",
                  "a rock no cats 3rd one thousand, two hundred and thirty-four running"),
 
         ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"), # TODO: extra space when space before number. Is this desirable?
@@ -136,7 +136,7 @@ class test(unittest.TestCase):
 
         self.assertEqual(p.pl_sb_user_defined, [])
         p.defnoun('VAX','VAXen')
-        self.assertEqual(p.pl('VAX'),'VAXEN')
+        self.assertEqual(p.plural('VAX'),'VAXEN')
         self.assertEqual(p.pl_sb_user_defined, ['VAX','VAXen'])
 
         self.assertTrue(p.ud_match('word',p.pl_sb_user_defined)
@@ -147,33 +147,33 @@ class test(unittest.TestCase):
                         is None)
 
         p.defnoun('cow','cows|kine')
-        self.assertEqual(p.pl('cow'),'cows')
+        self.assertEqual(p.plural('cow'),'cows')
         p.classical()
-        self.assertEqual(p.pl('cow'),'kine')
+        self.assertEqual(p.plural('cow'),'kine')
         
         self.assertEqual(p.ud_match('cow',p.pl_sb_user_defined),
                         'cows|kine')
 
         p.defnoun('(.+i)o',r'$1i')
-        self.assertEqual(p.pl('studio'),'studii')
+        self.assertEqual(p.plural('studio'),'studii')
         self.assertEqual(p.ud_match('studio',p.pl_sb_user_defined),
                         'studii')
 
         p.defnoun('aviatrix','aviatrices')
-        self.assertEqual(p.pl('aviatrix'),'aviatrices')
+        self.assertEqual(p.plural('aviatrix'),'aviatrices')
         self.assertEqual(p.ud_match('aviatrix',p.pl_sb_user_defined),
                         'aviatrices')
         p.defnoun('aviatrix','aviatrixes')
-        self.assertEqual(p.pl('aviatrix'),'aviatrixes')
+        self.assertEqual(p.plural('aviatrix'),'aviatrixes')
         self.assertEqual(p.ud_match('aviatrix',p.pl_sb_user_defined),
                         'aviatrixes')
         p.defnoun('aviatrix',None)
-        self.assertEqual(p.pl('aviatrix'),'aviatrices')
+        self.assertEqual(p.plural('aviatrix'),'aviatrices')
         self.assertEqual(p.ud_match('aviatrix',p.pl_sb_user_defined),
                         None)
 
         p.defnoun('(cat)',r'$1s')
-        self.assertEqual(p.pl('cat'),'cats')
+        self.assertEqual(p.plural('cat'),'cats')
 
         inflect.STDOUT_ON = False
         self.assertRaises(inflect.BadUserDefinedPatternError, p.defnoun, '(??', None)
@@ -189,7 +189,7 @@ class test(unittest.TestCase):
                          'will','will')
         self.assertEqual(p.ud_match('will',p.pl_v_user_defined),
                          'will')
-        self.assertEqual(p.pl('will'),'will')
+        self.assertEqual(p.plural('will'),'will')
         #TODO: will -> shall. Tests below fail
         self.TODO(p.plequal('will','shall'),'s:p')
         self.TODO(p.plverbequal('will','shall'),'s:p')
@@ -197,7 +197,7 @@ class test(unittest.TestCase):
 
         #defadj
         p.defadj('hir','their')
-        self.assertEqual(p.pl('hir'),'their')
+        self.assertEqual(p.plural('hir'),'their')
         self.assertEqual(p.ud_match('hir',p.pl_adj_user_defined),
                         'their')
 
@@ -247,32 +247,32 @@ class test(unittest.TestCase):
     def test_pl(self):
         p = inflect.engine()
         for fn, sing, plur in (
-                            (p.pl, '', ''),
-                            (p.pl, 'cow', 'cows'),
-                            (p.pl, 'thought', 'thoughts'),
-                            (p.pl, 'mouse', 'mice'),
-                            (p.pl, 'knife', 'knives'),
-                            (p.pl, 'knifes', 'knife'),
-                            (p.pl, ' cat  ', ' cats  '),
-                            (p.pl, 'court martial', 'courts martial'),
-                            (p.pl, 'a', 'some'),
-                            (p.pl, 'carmen', 'carmina'),
-                            (p.pl, 'quartz', 'quartzes'),
-                            (p.pl, 'care', 'cares'),
-                            (p.plnoun, '',''),
-                            (p.plnoun, 'cow','cows'),
-                            (p.plnoun, 'thought','thoughts'),
-                            (p.plverb, '', ''),
-                            (p.plverb, 'runs', 'run'),
-                            (p.plverb, 'thought', 'thought'),
-                            (p.plverb, 'eyes', 'eye'),
-                            (p.pladj, '', ''),
-                            (p.pladj, 'a', 'some'),
-                            (p.pladj, 'this', 'these'),
-                            (p.pladj, 'that', 'those'),
-                            (p.pladj, 'my', 'our'),
-                            (p.pladj, "cat's", "cats'"),
-                            (p.pladj, "child's", "children's"),
+                            (p.plural, '', ''),
+                            (p.plural, 'cow', 'cows'),
+                            (p.plural, 'thought', 'thoughts'),
+                            (p.plural, 'mouse', 'mice'),
+                            (p.plural, 'knife', 'knives'),
+                            (p.plural, 'knifes', 'knife'),
+                            (p.plural, ' cat  ', ' cats  '),
+                            (p.plural, 'court martial', 'courts martial'),
+                            (p.plural, 'a', 'some'),
+                            (p.plural, 'carmen', 'carmina'),
+                            (p.plural, 'quartz', 'quartzes'),
+                            (p.plural, 'care', 'cares'),
+                            (p.plural_noun, '',''),
+                            (p.plural_noun, 'cow','cows'),
+                            (p.plural_noun, 'thought','thoughts'),
+                            (p.plural_verb, '', ''),
+                            (p.plural_verb, 'runs', 'run'),
+                            (p.plural_verb, 'thought', 'thought'),
+                            (p.plural_verb, 'eyes', 'eye'),
+                            (p.plural_adj, '', ''),
+                            (p.plural_adj, 'a', 'some'),
+                            (p.plural_adj, 'this', 'these'),
+                            (p.plural_adj, 'that', 'those'),
+                            (p.plural_adj, 'my', 'our'),
+                            (p.plural_adj, "cat's", "cats'"),
+                            (p.plural_adj, "child's", "children's"),
                             ):
             self.assertEqual(fn(sing), plur,
                              msg='%s("%s") == "%s" != "%s"' % (
@@ -290,17 +290,17 @@ class test(unittest.TestCase):
                 ('runs', 1, 'runs'),
                 ('am', 0, 'are'),
                     ):
-            self.assertEqual(p.pl(sing, num), plur)
+            self.assertEqual(p.plural(sing, num), plur)
 
         p.classical(zero=True)
-        self.assertEqual(p.pl('cow', 0), 'cow')
-        self.assertEqual(p.pl('cow', 'zero'), 'cow')
-        self.assertEqual(p.pl('runs', 0), 'runs')
-        self.assertEqual(p.pl('am', 0), 'am')
-        self.assertEqual(p.plverb('runs', 1), 'runs')
+        self.assertEqual(p.plural('cow', 0), 'cow')
+        self.assertEqual(p.plural('cow', 'zero'), 'cow')
+        self.assertEqual(p.plural('runs', 0), 'runs')
+        self.assertEqual(p.plural('am', 0), 'am')
+        self.assertEqual(p.plural_verb('runs', 1), 'runs')
 
-        self.assertEqual(p.pl('die'),'dice')
-        self.assertEqual(p.plnoun('die'),'dice')
+        self.assertEqual(p.plural('die'),'dice')
+        self.assertEqual(p.plural_noun('die'),'dice')
 
     def test_sinoun(self):
         p = inflect.engine()
@@ -308,8 +308,8 @@ class test(unittest.TestCase):
             ('cat', 'cats'),
             ('die', 'dice'),
             ):
-            self.assertEqual(p.sinoun(plur), sing)
-            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+            self.assertEqual(p.singular_noun(plur), sing)
+            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
     def test_gender(self):
         p = inflect.engine()
@@ -321,8 +321,8 @@ class test(unittest.TestCase):
             ('to her', 'to them'),
             ('to herself', 'to themselves'),
             ):
-            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
-            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+            self.assertEqual(p.singular_noun(plur), sing, "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
         
         p.gender('masculine')
         for sing, plur in (
@@ -332,8 +332,8 @@ class test(unittest.TestCase):
             ('to him', 'to them'),
             ('to himself', 'to themselves'),
             ):
-            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
-            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+            self.assertEqual(p.singular_noun(plur), sing, "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         p.gender('gender-neutral')
         for sing, plur in (
@@ -343,8 +343,8 @@ class test(unittest.TestCase):
             ('to them', 'to them'),
             ('to themself', 'to themselves'),
             ):
-            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
-            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+            self.assertEqual(p.singular_noun(plur), sing, "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         p.gender('neuter')
         for sing, plur in (
@@ -354,8 +354,8 @@ class test(unittest.TestCase):
             ('to it', 'to them'),
             ('to itself', 'to themselves'),
             ):
-            self.assertEqual(p.sinoun(plur), sing, "sinoun(%s) == %s != %s" % (plur, p.sinoun(plur), sing))
-            self.assertEqual(p.inflect('sinoun(%s)' % plur), sing)
+            self.assertEqual(p.singular_noun(plur), sing, "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         self.assertRaises(BadGenderError, p.gender, 'male')
 
@@ -367,7 +367,7 @@ class test(unittest.TestCase):
             ('she or he', 'they', 'feminine or masculine'),
             ('he or she', 'they', 'masculine or feminine'),
                 ):
-            self.assertEqual(p.sinoun(plur, gender=gen), sing)
+            self.assertEqual(p.singular_noun(plur, gender=gen), sing)
             
         
     def test_plequal(self):
@@ -631,7 +631,7 @@ class test(unittest.TestCase):
         for sing, plur in ( ('brother', 'brethren'),
                             ('dogma', 'dogmata'),
                             ):
-            self.assertEqual(p.pl(sing), plur)
+            self.assertEqual(p.plural(sing), plur)
 
 
     def test__pl_special_verb(self):
@@ -768,14 +768,14 @@ class test(unittest.TestCase):
                     ('loves', 'loving'),
                     ('spies', 'spying'),
                     ):
-            self.assertEqual(p.prespart(sing), plur)
+            self.assertEqual(p.present_participle(sing), plur)
             
-        self.assertEqual(p.prespart('hoes'), 'hoeing')
-        self.assertEqual(p.prespart('alibis'), 'alibiing')
-        self.assertEqual(p.prespart('is'), 'being')
-        self.assertEqual(p.prespart('are'), 'being')
-        self.assertEqual(p.prespart('had'), 'having')
-        self.assertEqual(p.prespart('has'), 'having')
+        self.assertEqual(p.present_participle('hoes'), 'hoeing')
+        self.assertEqual(p.present_participle('alibis'), 'alibiing')
+        self.assertEqual(p.present_participle('is'), 'being')
+        self.assertEqual(p.present_participle('are'), 'being')
+        self.assertEqual(p.present_participle('had'), 'having')
+        self.assertEqual(p.present_participle('has'), 'having')
         
 
     def test_ordinal(self):
@@ -931,7 +931,7 @@ class test(unittest.TestCase):
             ):
             self.assertEqual("%s%s" % (
                 numwords(n, one='a solitary', zero='no more'),
-                p.pl(" bottle of beer on the wall", n)),
+                p.plural(" bottle of beer on the wall", n)),
                          txt)
 
         self.assertEqual(numwords(0, one='one', zero='zero'), 'zero')
@@ -1061,24 +1061,24 @@ class test(unittest.TestCase):
         
     def test_doc_examples(self):
         p = inflect.engine()
-        self.assertEqual(p.plnoun('I'), 'we')
-        self.assertEqual(p.plverb('saw'), 'saw')
-        self.assertEqual(p.pladj('my'), 'our')
-        self.assertEqual(p.plnoun('saw'), 'saws')
-        self.assertEqual(p.pl('was'), 'were')
-        self.assertEqual(p.pl('was',1), 'was')
-        self.assertEqual(p.plverb('was',2), 'were')
-        self.assertEqual(p.plverb('was'), 'were')
-        self.assertEqual(p.plverb('was',1), 'was')
+        self.assertEqual(p.plural_noun('I'), 'we')
+        self.assertEqual(p.plural_verb('saw'), 'saw')
+        self.assertEqual(p.plural_adj('my'), 'our')
+        self.assertEqual(p.plural_noun('saw'), 'saws')
+        self.assertEqual(p.plural('was'), 'were')
+        self.assertEqual(p.plural('was',1), 'was')
+        self.assertEqual(p.plural_verb('was',2), 'were')
+        self.assertEqual(p.plural_verb('was'), 'were')
+        self.assertEqual(p.plural_verb('was',1), 'was')
 
         for errors, txt in ( (0, 'There were no errors'),
                              (1, 'There was 1 error'),
                              (2, 'There were 2 errors'),
                              ):
-            self.assertEqual("There %s%s" % (p.plverb('was',errors), p.no(" error", errors)),
+            self.assertEqual("There %s%s" % (p.plural_verb('was',errors), p.no(" error", errors)),
                                          txt)
 
-            self.assertEqual(p.inflect("There plverb(was,%d) no(error,%d)" % (errors, errors)),
+            self.assertEqual(p.inflect("There plural_verb(was,%d) no(error,%d)" % (errors, errors)),
                                          txt)
 
 
@@ -1089,15 +1089,15 @@ class test(unittest.TestCase):
                                 ):
             self.assertEqual("%s%s%s %s%s" % (
                             p.num(num1,""),
-                            p.pl("I"),
-                            p.plverb(" saw"),
+                            p.plural("I"),
+                            p.plural_verb(" saw"),
                             p.num(num2),
-                            p.plnoun(" saw")
+                            p.plural_noun(" saw")
                             ),
                             txt)
             
             self.assertEqual(p.inflect(
-                'num(%d,)pl(I) plverb(saw) num(%d) plnoun(saw)' % (num1, num2)
+                'num(%d,)plural(I) plural_verb(saw) num(%d) plural_noun(saw)' % (num1, num2)
                             ),
                             txt)
 

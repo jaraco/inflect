@@ -10,17 +10,17 @@ def test_ancient_1():
 
     # DEFAULT...
     
-    eq_ (p.plnoun('formula')     , 'formulas'         , msg="classical 'ancient' not active")
+    eq_ (p.plural_noun('formula')     , 'formulas'         , msg="classical 'ancient' not active")
     
     # "person" PLURALS ACTIVATED...
     
     p.classical(ancient=True)
-    eq_ (p.plnoun('formula')     , 'formulae'         , msg="classical 'ancient' active")
+    eq_ (p.plural_noun('formula')     , 'formulae'         , msg="classical 'ancient' active")
     
     # OTHER CLASSICALS NOT ACTIVATED...
     
-    eq_ (p.plnoun('wildebeest')  , 'wildebeests'      , msg="classical 'herd' not active")
-    eq_ (p.plnoun('error', 0)    , 'errors'           , msg="classical 'zero' not active")
-    eq_ (p.plnoun('Sally')       , 'Sallys'           , msg="classical 'names' active")
-    eq_ (p.plnoun('brother')     , 'brothers'         , msg="classical 'all' not active")
-    eq_ (p.plnoun('person')      , 'people'           , msg="classical 'persons' not active")
+    eq_ (p.plural_noun('wildebeest')  , 'wildebeests'      , msg="classical 'herd' not active")
+    eq_ (p.plural_noun('error', 0)    , 'errors'           , msg="classical 'zero' not active")
+    eq_ (p.plural_noun('Sally')       , 'Sallys'           , msg="classical 'names' active")
+    eq_ (p.plural_noun('brother')     , 'brothers'         , msg="classical 'all' not active")
+    eq_ (p.plural_noun('person')      , 'people'           , msg="classical 'persons' not active")
