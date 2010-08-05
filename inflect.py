@@ -27,15 +27,15 @@ methods:
           classical inflect
           plural plural_noun plural_verb plural_adj singular_noun no num a an
           compare compare_nouns compare_verbs compare_adjs
-          prespart
+          present_participle
           ordinal
           number_to_words
-          wordlist
+          join
           defnoun defverb defadj defa defan
 
     INFLECTIONS:    classical inflect
           plural plural_noun plural_verb plural_adj singular_noun compare
-          no num a an prespart
+          no num a an present_participle
 
     PLURALS:   classical inflect
           plural plural_noun plural_verb plural_adj singular_noun no num
@@ -1204,6 +1204,7 @@ class engine:
                               plnounequal='compare_nouns',
                               plverbequal='compare_verbs',
                               pladjequal='compare_adjs',
+                              wordlist='join',
                               )
     def __getattr__(self, meth):
         if meth in self.deprecated_methods:
@@ -3145,13 +3146,13 @@ class engine:
 
 # Join words with commas and a trailing 'and' (when appropriate)...
 
-    def wordlist(self, words, sep=None, sep_spaced=True,
+    def join(self, words, sep=None, sep_spaced=True,
                  final_sep=None,
                  conj='and', conj_spaced=True):
         '''
-        Join a words into a list.
+        Join words into a list.
 
-        e.g. wordlist(['ant', 'bee', 'fly']) returns 'ant, bee, and fly'
+        e.g. join(['ant', 'bee', 'fly']) returns 'ant, bee, and fly'
         
         options:
         conj: replacement for 'and'

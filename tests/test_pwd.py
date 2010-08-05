@@ -1011,7 +1011,7 @@ class test(unittest.TestCase):
 
     def test_wordlist(self):
         p = inflect.engine()
-        wordlist = p.wordlist
+        wordlist = p.join
         self.assertEqual(wordlist([]),
                          '')
         self.assertEqual(wordlist(('apple',)),
@@ -1127,6 +1127,7 @@ class test(unittest.TestCase):
                      'plnounequal',
                      'plverbequal',
                      'pladjequal',
+                     'wordlist',
                      ):
             self.assertRaises(DeprecationWarning, getattr, p, meth)
 
