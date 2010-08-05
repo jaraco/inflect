@@ -15,6 +15,7 @@ ver 0.2.0
   plnounequal -> compare_nouns
   plverbequal -> compare_verbs
   pladjequal -> compare_adjs
+  wordlist -> join
   
   
 * change classical() to only accept keyword args: only one way to do it

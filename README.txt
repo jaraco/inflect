@@ -32,11 +32,11 @@ SYNOPSIS
  # METHODS:
 
  # plural plural_noun plural_verb plural_adj singular_noun no num
- # plequal plnounequal plverbequal pladjequal
+ # compare compare_nouns compare_nouns compare_adjs
  # a an
  # present_participle
- # ordinal numwords
- # wordlist
+ # ordinal number_to_words
+ # join
  # inflect classical gender
  # defnoun defverb defadj defa defan
 
@@ -81,10 +81,10 @@ SYNOPSIS
 
  # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
 
-      print "same\n"      if p.plequal(word1, word2)
-      print "same noun\n" if p.plequal(word1, word2)
-      print "same verb\n" if p.plverbequal(word1, word2)
-      print "same adj.\n" if p.pladjequal(word1, word2)
+      print "same\n"      if p.compare(word1, word2)
+      print "same noun\n" if p.compare_nouns(word1, word2)
+      print "same verb\n" if p.compare_verbs(word1, word2)
+      print "same adj.\n" if p.compare_adjs(word1, word2)
 
 
  # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
@@ -99,57 +99,57 @@ SYNOPSIS
  # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
  # RETURNS A SINGLE STRING...
 
-    words = p.numwords(1234)      # "one thousand, two hundred and thirty-four"
-    words = p.numwords(p.ordinal(1234)) # "one thousand, two hundred and thirty-fourth"
+    words = p.number_to_words(1234)      # "one thousand, two hundred and thirty-four"
+    words = p.number_to_words(p.ordinal(1234)) # "one thousand, two hundred and thirty-fourth"
 
 
  # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
 
-    words = p.numwords(1234, getlist=True)    # ("one thousand","two hundred and thirty-four")
+    words = p.number_to_words(1234, getlist=True)    # ("one thousand","two hundred and thirty-four")
 
 
  # OPTIONAL PARAMETERS CHANGE TRANSLATION:
 
-    words = p.numwords(12345, group=1)
+    words = p.number_to_words(12345, group=1)
     # "one, two, three, four, five"
 
-    words = p.numwords(12345, group=2)
+    words = p.number_to_words(12345, group=2)
     # "twelve, thirty-four, five"
 
-    words = p.numwords(12345, group=3)
+    words = p.number_to_words(12345, group=3)
     # "one twenty-three, forty-five"
 
-    words = p.numwords(1234, andword='')
+    words = p.number_to_words(1234, andword='')
     # "one thousand, two hundred thirty-four"
 
-    words = p.numwords(1234, andword=', plus')
+    words = p.number_to_words(1234, andword=', plus')
     # "one thousand, two hundred, plus thirty-four" #TODO: I get no comma before plus: check perl
 
-    words = p.numwords(555_1202, group=1, zero='oh')
+    words = p.number_to_words(555_1202, group=1, zero='oh')
     # "five, five, five, one, two, oh, two"
 
-    words = p.numwords(555_1202, group=1, one='unity')
+    words = p.number_to_words(555_1202, group=1, one='unity')
     # "five, five, five, unity, two, oh, two"
 
-    words = p.numwords(123.456, group=1, decimal='mark')
+    words = p.number_to_words(123.456, group=1, decimal='mark')
     # "one two three mark four five six"  #TODO: DOCBUG: perl gives commas here as do I
 
  # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
 
-    words = p.numwords(   9, threshold=10);    # "nine"
-    words = p.numwords(  10, threshold=10);    # "ten"
-    words = p.numwords(  11, threshold=10);    # "11"
-    words = p.numwords(1000, threshold=10);    # "1,000"
+    words = p.number_to_words(   9, threshold=10);    # "nine"
+    words = p.number_to_words(  10, threshold=10);    # "ten"
+    words = p.number_to_words(  11, threshold=10);    # "11"
+    words = p.number_to_words(1000, threshold=10);    # "1,000"
 
  # JOIN WORDS INTO A LIST:
 
-    mylist = wordlist(("apple", "banana", "carrot"))
+    mylist = join(("apple", "banana", "carrot"))
         # "apple, banana, and carrot"
 
-    mylist = wordlist(("apple", "banana"))
+    mylist = join(("apple", "banana"))
         # "apple and banana"
 
-    mylist = wordlist(("apple", "banana", "carrot"), final_sep="")
+    mylist = join(("apple", "banana", "carrot"), final_sep="")
         # "apple, banana and carrot"
 
 
@@ -415,8 +415,8 @@ Number-insensitive equality
 
 inflect.py also provides a solution to the problem
 of comparing words of differing plurality through the methods
-``plequal(word1, word2)``, ``plequal(word1, word2)``,
-``plverbequal(word1, word2)``, and ``pladjequal(word1, word2)``.
+``compare(word1, word2)``, ``compare_nouns(word1, word2)``,
+``compare_verbs(word1, word2)``, and ``compare_adjs(word1, word2)``.
 Each  of these methods takes two strings, and  compares them
 using the corresponding plural-inflection method (``plural()``, ``plural_noun()``,
 ``plural_verb()``, and ``plural_adj()`` respectively).
@@ -430,17 +430,17 @@ The comparison returns true if:
 
 Hence all of the following return true::
 
-    p.plequal("index","index")      # RETURNS "eq"
-    p.plequal("index","indexes")    # RETURNS "s:p"
-    p.plequal("index","indices")    # RETURNS "s:p"
-    p.plequal("indexes","index")    # RETURNS "p:s"
-    p.plequal("indices","index")    # RETURNS "p:s"
-    p.plequal("indices","indexes")  # RETURNS "p:p"
-    p.plequal("indexes","indices")  # RETURNS "p:p"
-    p.plequal("indices","indices")  # RETURNS "eq"
+    p.compare("index","index")      # RETURNS "eq"
+    p.compare("index","indexes")    # RETURNS "s:p"
+    p.compare("index","indices")    # RETURNS "s:p"
+    p.compare("indexes","index")    # RETURNS "p:s"
+    p.compare("indices","index")    # RETURNS "p:s"
+    p.compare("indices","indexes")  # RETURNS "p:p"
+    p.compare("indexes","indices")  # RETURNS "p:p"
+    p.compare("indices","indices")  # RETURNS "eq"
 
 As indicated by the comments in the previous example, the actual value
-returned by the various ``plequal`` methods encodes which of the
+returned by the various ``compare`` methods encodes which of the
 three equality rules succeeded: "eq" is returned if the strings were
 identical, "s:p" if the strings were singular and plural respectively,
 "p:s" for plural and singular, and "p:p" for two distinct plurals.
@@ -451,12 +451,12 @@ the same plural form are *not* considered equal, nor are cases where
 one (singular) word's plural is the other (plural) word's singular.
 Hence all of the following return false::
 
-    p.plequal("base","basis")       # ALTHOUGH BOTH -> "bases"
-    p.plequal("syrinx","syringe")   # ALTHOUGH BOTH -> "syringes"
-    p.plequal("she","he")           # ALTHOUGH BOTH -> "they"
+    p.compare("base","basis")       # ALTHOUGH BOTH -> "bases"
+    p.compare("syrinx","syringe")   # ALTHOUGH BOTH -> "syringes"
+    p.compare("she","he")           # ALTHOUGH BOTH -> "they"
 
-    p.plequal("opus","operas")      # ALTHOUGH "opus" -> "opera" -> "operas"
-    p.plequal("taxi","taxes")       # ALTHOUGH "taxi" -> "taxis" -> "taxes"
+    p.compare("opus","operas")      # ALTHOUGH "opus" -> "opera" -> "operas"
+    p.compare("taxi","taxes")       # ALTHOUGH "taxi" -> "taxis" -> "taxes"
 
 Note too that, although the comparison is "number-insensitive" it is *not*
 case-insensitive (that is, ``plural("time","Times")`` returns false. To obtain
@@ -648,12 +648,12 @@ If the argument isn't a numerical integer, it just adds "-th".
 CONVERTING NUMBERS TO WORDS
 ===========================
 
-The method ``numwords`` takes a number (cardinal or ordinal)
+The method ``number_to_words`` takes a number (cardinal or ordinal)
 and returns an English representation of that number.
 
 ::
 
-    word = p.numwords(1234567)
+    word = p.number_to_words(1234567)
 
 puts the string::
 
@@ -664,7 +664,7 @@ into ``words``.
 A list can be return where each comma-separated chunk is returned as a separate element.
 Hence::
 
-    words = p.numwords(1234567, wantlist=True)
+    words = p.number_to_words(1234567, wantlist=True)
 
 puts the list::
 
@@ -678,16 +678,16 @@ Non-digits (apart from an optional leading plus or minus sign,
 any decimal points, and ordinal suffixes -- see below) are silently
 ignored, so the following all produce identical results::
 
-        p.numwords(5551202)
-        p.numwords(5_551_202)
-        p.numwords("5,551,202")
-        p.numwords("555-1202")
+        p.number_to_words(5551202)
+        p.number_to_words(5_551_202)
+        p.number_to_words("5,551,202")
+        p.number_to_words("555-1202")
 
 That last case is a little awkward since it's almost certainly a phone number,
 and "five million, five hundred and fifty-one thousand, two hundred and two"
 probably isn't what's wanted.
 
-To overcome this, ``numwords()`` takes an optional argument, 'group',
+To overcome this, ``number_to_words()`` takes an optional argument, 'group',
 which changes how numbers are translated. The argument must be a
 positive integer less than four, which indicated how the digits of the
 number are to be grouped. If the argument is ``1``, then each digit is
@@ -695,15 +695,15 @@ translated separately. If the argument is ``2``, pairs of digits
 (starting from the *left*) are grouped together. If the argument is
 ``3``, triples of numbers (again, from the *left*) are grouped. Hence::
 
-        p.numwords("555-1202", group=1)
+        p.number_to_words("555-1202", group=1)
 
 returns ``"five, five, five, one, two, zero, two"``, whilst::
 
-        p.numwords("555-1202", group=2)
+        p.number_to_words("555-1202", group=2)
 
 returns ``"fifty-five, fifty-one, twenty, two"``, and::
 
-        p.numwords("555-1202", group=3)
+        p.number_to_words("555-1202", group=3)
 
 returns ``"five fifty-five, one twenty, two"``.
 
@@ -711,11 +711,11 @@ Phone numbers are often written in words as
 ``"five..five..five..one..two..zero..two"``, which is also easy to
 achieve::
 
-        join '..', p.numwords("555-1202", group=>1)
+        join '..', p.number_to_words("555-1202", group=>1)
 
-``numwords`` also handles decimal fractions. Hence::
+``number_to_words`` also handles decimal fractions. Hence::
 
-        p.numwords("1.2345")
+        p.number_to_words("1.2345")
 
 returns ``"one point two three four five"`` in a scalar context
 and ``("one","point","two","three","four","five")``) in an array context.
@@ -724,21 +724,21 @@ Exponent form (``"1.234e56"``) is not yet handled.
 Multiple decimal points are only translated in one of the "grouping" modes.
 Hence::
 
-        p.numwords(101.202.303)
+        p.number_to_words(101.202.303)
 
 returns ``"one hundred and one point two zero two three zero three"``,
 whereas::
 
-        p.numwords(101.202.303, group=1)
+        p.number_to_words(101.202.303, group=1)
 
 returns ``"one zero one point two zero two point three zero three"``.
 
 The digit ``'0'`` is unusual in that in may be translated to English as "zero",
-"oh", or "nought". To cater for this diversity, ``numwords`` may be passed
+"oh", or "nought". To cater for this diversity, ``number_to_words`` may be passed
 a named argument, 'zero', which may be set to
 the desired translation of ``'0'``. For example::
 
-        print join "..", p.numwords("555-1202", group=3, zero='oh')
+        print join "..", p.number_to_words("555-1202", group=3, zero='oh')
 
 prints ``"five..five..five..one..two..oh..two"``.
 By default, zero is rendered as "zero".
@@ -748,7 +748,7 @@ occasionally other variants), depending on the context. So there is a
 ``'one'`` argument as well::
 
         for num in [3,2,1,0]:
-              print p.numwords(num, one='a solitary', zero='no more'),
+              print p.number_to_words(num, one='a solitary', zero='no more'),
               p.plural(" bottle of beer on the wall", num)
 
         # prints:
@@ -763,7 +763,7 @@ to use the ``A`` function as well::
 
 
         for word in ["cat aardvark ewe hour".split()]:
-            print p.a("{0} {1}".format(p.numwords(1, one='a'), word))
+            print p.a("{0} {1}".format(p.number_to_words(1, one='a'), word))
 
     # prints:
     #     a cat
@@ -775,7 +775,7 @@ Another major regional variation in number translation is the use of
 "and" in certain contexts. The named argument 'and'
 allows the programmer to specify how "and" should be handled. Hence::
 
-        print scalar p.numwords("765", andword='')
+        print scalar p.number_to_words("765", andword='')
 
 prints "seven hundred sixty-five", instead of "seven hundred and sixty-five".
 By default, the "and" is included.
@@ -785,17 +785,17 @@ The translation of the decimal point is also subject to variation
 The named argument 'decimal' allows the
 programmer to how the decimal point should be rendered. Hence::
 
-        print scalar p.numwords("666.124.64.101", group=3, decimal='dot')
+        print scalar p.number_to_words("666.124.64.101", group=3, decimal='dot')
 
 prints "six sixty-six, dot, one twenty-four, dot, sixty-four, dot, one zero one"
 By default, the decimal point is rendered as "point".
 
-``numwords`` also handles the ordinal forms of numbers. So::
+``number_to_words`` also handles the ordinal forms of numbers. So::
 
-        print p.numwords('1st')
-        print p.numwords('3rd')
-        print p.numwords('202nd')
-        print p.numwords('1000000th')
+        print p.number_to_words('1st')
+        print p.number_to_words('3rd')
+        print p.number_to_words('202nd')
+        print p.number_to_words('1000000th')
 
 prints::
 
@@ -806,17 +806,17 @@ prints::
 
 Two common idioms in this regard are::
 
-        print p.numwords(ordinal(number))
+        print p.number_to_words(ordinal(number))
 
 and::
 
-        print p.ordinal(p.numwords(number))
+        print p.ordinal(p.number_to_words(number))
 
 These are identical in effect, except when ``number`` contains a decimal::
 
         number = 99.09
-        print p.numwords(p.ordinal(number));    # ninety-ninth point zero nine
-        print p.ordinal(p.numwords(number));    # ninety-nine point zero ninth
+        print p.number_to_words(p.ordinal(number));    # ninety-ninth point zero nine
+        print p.ordinal(p.number_to_words(number));    # ninety-nine point zero ninth
 
 Use whichever you feel is most appropriate.
 
@@ -832,18 +832,18 @@ before it. And although it's technically incorrect (and sometimes
 misleading), some people prefer to omit the comma before that final
 conjunction, even when there are more than two items.
 
-That's complicated enough to warrant its own method: ``wordlist()``.
+That's complicated enough to warrant its own method: ``join()``.
 This method expects a tuple of words, possibly with one or more
 options. It returns a string that joins the list
 together in the normal English usage. For example::
 
-    print "You chose ", p.wordlist(selected_items)
+    print "You chose ", p.join(selected_items)
     # You chose barley soup, roast beef, and Yorkshire pudding
 
-    print "You chose ", p.wordlist(selected_items, final_sep=>"")
+    print "You chose ", p.join(selected_items, final_sep=>"")
     # You chose barley soup, roast beef and Yorkshire pudding
 
-    print "Please chose ", p.wordlist(side_orders, conj=>"or")
+    print "Please chose ", p.join(side_orders, conj=>"or")
     # Please chose salad, vegetables, or ice-cream
 
 The available options are::
@@ -1146,7 +1146,7 @@ Specific diagnostics related to user-defined inflections are:
 
 
 There are *no* diagnosable run-time error conditions for the actual
-inflection methods, except ``numwords`` and hence no run-time
+inflection methods, except ``number_to_words`` and hence no run-time
 diagnostics. If the inflection methods are unable to form a plural
 via a user-definition or an inbuilt rule, they just "guess" the
 commonest English inflection: adding "-s" for nouns, removing "-s" for
@@ -1156,11 +1156,11 @@ verbs, and no inflection for adjectives.
 
 ``BadChunkingOptionError``
 
- The optional argument to ``numwords()`` wasn't 1, 2 or 3.
+ The optional argument to ``number_to_words()`` wasn't 1, 2 or 3.
 
 ``NumOutOfRangeError``
 
- ``numwords()`` was passed a number larger than
+ ``number_to_words()`` was passed a number larger than
  999,999,999,999,999,999,999,999,999,999,999,999 (that is: nine hundred
  and ninety-nine decillion, nine hundred and ninety-nine nonillion, nine
  hundred and ninety-nine octillion, nine hundred and ninety-nine
@@ -1170,7 +1170,7 @@ verbs, and no inflection for adjectives.
  nine hundred and ninety-nine million, nine hundred and ninety-nine
  thousand, nine hundred and ninety-nine :-) 
 
- The problem is that ``numwords`` doesn't know any
+ The problem is that ``number_to_words`` doesn't know any
  words for number components bigger than "decillion".
 
 
