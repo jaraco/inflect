@@ -10,6 +10,12 @@ ver 0.2.0
   pladj -> plural_adjective
   sinoun -> singular_noun
   prespart -> present_participle
+  numwords -> number_to_words
+  plequal -> compare
+  plnounequal -> compare_nouns
+  plverbequal -> compare_verbs
+  pladjequal -> compare_adjs
+  
   
 * change classical() to only accept keyword args: only one way to do it
 

@@ -26,27 +26,27 @@
 methods:
           classical inflect
           plural plural_noun plural_verb plural_adj singular_noun no num a an
-          plequal plnounequal plverbequal pladjequal
+          compare compare_nouns compare_verbs compare_adjs
           prespart
           ordinal
-          numwords
+          number_to_words
           wordlist
           defnoun defverb defadj defa defan
 
     INFLECTIONS:    classical inflect
-          plural plural_noun plural_verb plural_adj singular_noun plequal
+          plural plural_noun plural_verb plural_adj singular_noun compare
           no num a an prespart
 
     PLURALS:   classical inflect
           plural plural_noun plural_verb plural_adj singular_noun no num
-          plequal plnounequal plverbequal pladjequal
+          compare compare_nouns compare_verbs compare_adjs
 
     COMPARISONS:    classical 
-          plequal plnounequal plverbequal pladjequal
+          compare compare_nouns compare_verbs compare_adjs
 
     ARTICLES:   classical inflect num a an 
 
-    NUMERICAL:      ordinal numwords
+    NUMERICAL:      ordinal number_to_words
 
     USER_DEFINED:   defnoun defverb defadj defa defan
 
@@ -67,6 +67,7 @@ from re import error as reerror
 from re import sub as resub
 from os.path import dirname, isfile, expanduser
 from os.path import join as pathjoin
+from gnome_sudoku.pausable import MethodWrapper
 
 class UnknownClassicalModeError(Exception): pass
 class BadNumValueError(Exception): pass
@@ -1191,6 +1192,25 @@ class engine:
         self.si_sb_user_defined = []
         self.A_a_user_defined   = []
         self.thegender = 'neuter'
+
+    deprecated_methods = dict(pl='plural',
+                              plnoun='plural_noun',
+                              plverb='plural_verb',
+                              pladj='plural_adj',
+                              sinoun='single_noun',
+                              prespart='present_participle',
+                              numwords='number_to_words',
+                              plequal='compare',
+                              plnounequal='compare_nouns',
+                              plverbequal='compare_verbs',
+                              pladjequal='compare_adjs',
+                              )
+    def __getattr__(self, meth):
+        if meth in self.deprecated_methods:
+            print3('%s() deprecated, use %s()' % (meth, self.deprecated_methods[meth])) 
+            raise DeprecationWarning
+        raise AttributeError
+
  
     def defnoun(self, singular, plural):
         '''
@@ -1422,10 +1442,10 @@ class engine:
 
     def numwordsmo(self, matchobject):
         '''
-        numwords but take a matchobject
+        number_to_words but take a matchobject
         use group 1
         '''
-        return self.numwords(matchobject.group(1))
+        return self.number_to_words(matchobject.group(1))
 
     def prespartmo(self, matchobject):
         '''
@@ -1445,7 +1465,7 @@ class engine:
         'The plural of cat is cats'
 
         can use plural, plural_noun, plural_verb, plural_adj, singular_noun, a, an, no, ordinal,
-        numwords and prespart
+        number_to_words and prespart
 
         '''
         save_persistent_count = self.persistent_count
@@ -1526,37 +1546,41 @@ class engine:
         except AttributeError: # empty string
             return '', '', ''
 
-
-    def pl(self, *args, **kwds):
-        print 'pl() deprecated, use plural()'
-        #raise DeprecationWarning
-        return self.plural(*args, **kwds)
-
-    def plnoun(self, *args, **kwds):
-        print 'plnoun() deprecated, use plural_noun()'
-        raise DeprecationWarning
-        return self.plural_noun(*args, **kwds)
-
-    def plverb(self, *args, **kwds):
-        print 'plverb() deprecated, use plural_verb()'
-        raise DeprecationWarning
-        return self.plural_verb(*args, **kwds)
-
-    def pladj(self, *args, **kwds):
-        print 'pladj() deprecated, use plural_adj()'
-        raise DeprecationWarning
-        return self.plural_adj(*args, **kwds)
-
-    def sinoun(self, *args, **kwds):
-        print 'sinoun() deprecated, use singular_noun()'
-        raise DeprecationWarning
-        return self.singular_noun(*args, **kwds)
-
-    def prespart(self, *args, **kwds):
-        print 'prespart() deprecated, use present_paarticiple()'
-        raise DeprecationWarning
-        return self.present_participle(*args, **kwds)
-
+        
+#    def pl(self, *args, **kwds):
+#        print 'pl() deprecated, use plural()'
+#        raise DeprecationWarning
+#        return self.plural(*args, **kwds)
+#
+#    def plnoun(self, *args, **kwds):
+#        print 'plnoun() deprecated, use plural_noun()'
+#        raise DeprecationWarning
+#        return self.plural_noun(*args, **kwds)
+#
+#    def plverb(self, *args, **kwds):
+#        print 'plverb() deprecated, use plural_verb()'
+#        raise DeprecationWarning
+#        return self.plural_verb(*args, **kwds)
+#
+#    def pladj(self, *args, **kwds):
+#        print 'pladj() deprecated, use plural_adj()'
+#        raise DeprecationWarning
+#        return self.plural_adj(*args, **kwds)
+#
+#    def sinoun(self, *args, **kwds):
+#        print 'sinoun() deprecated, use singular_noun()'
+#        raise DeprecationWarning
+#        return self.singular_noun(*args, **kwds)
+#
+#    def prespart(self, *args, **kwds):
+#        print 'prespart() deprecated, use present_participle()'
+#        raise DeprecationWarning
+#        return self.present_participle(*args, **kwds)
+#
+#    def numwords(self, *args, **kwds):
+#        print 'numwords() deprecated, use number_to_words()'
+#        raise DeprecationWarning
+#        return self.number_to_words(*args, **kwds)
 
     def plural(self, text, count=None):
         '''
@@ -1632,7 +1656,7 @@ class engine:
               or word)
         return "%s%s%s" % (pre, plural, post)
 
-    def plequal(self, word1, word2):
+    def compare(self, word1, word2):
         '''
         compare word1 and word2 for equality regardless of plurality
 
@@ -1649,7 +1673,7 @@ class engine:
           self._plequal(word1, word2, self.plural_verb) or
           self._plequal(word1, word2, self.plural_adj))
 
-    def plnounequal(self, word1, word2):
+    def compare_nouns(self, word1, word2):
         '''
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as nouns
@@ -1664,7 +1688,7 @@ class engine:
         '''
         return self._plequal(word1, word2, self.plural_noun)
 
-    def plverbequal(self, word1, word2):
+    def compare_verbs(self, word1, word2):
         '''
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as verbs
@@ -1679,7 +1703,7 @@ class engine:
         '''
         return self._plequal(word1, word2, self.plural_verb)
 
-    def pladjequal(self, word1, word2):
+    def compare_adjs(self, word1, word2):
         '''
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as adjectives
@@ -2980,7 +3004,7 @@ class engine:
         '''
         return ' '
 
-    def numwords(self, num, wantlist=False,
+    def number_to_words(self, num, wantlist=False,
                  group=0, comma=',', andword='and',
                  zero='zero', one='one', decimal='point',
                  threshold=None):

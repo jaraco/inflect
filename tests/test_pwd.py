@@ -191,8 +191,8 @@ class test(unittest.TestCase):
                          'will')
         self.assertEqual(p.plural('will'),'will')
         #TODO: will -> shall. Tests below fail
-        self.TODO(p.plequal('will','shall'),'s:p')
-        self.TODO(p.plverbequal('will','shall'),'s:p')
+        self.TODO(p.compare('will','shall'),'s:p')
+        self.TODO(p.compare_verbs('will','shall'),'s:p')
 
 
         #defadj
@@ -373,63 +373,63 @@ class test(unittest.TestCase):
     def test_plequal(self):
         p = inflect.engine()
         for fn, sing, plur, res in (
-                    (p.plequal, 'index','index','eq'),
-                    (p.plequal, 'index','indexes','s:p'),
-                    (p.plequal, 'index','indices','s:p'),
-                    (p.plequal, 'indexes','index','p:s'),
-                    (p.plequal, 'indices','index','p:s'),
-                    (p.plequal, 'indices','indexes','p:p'),
-                    (p.plequal, 'indexes','indices','p:p'),
-                    (p.plequal, 'indices','indices','eq'),
-                    (p.plequal, 'opuses','opera','p:p'),
-                    (p.plequal, 'opera','opuses','p:p'),
-                    (p.plequal, 'brothers','brethren','p:p'),                  
-                    (p.plequal, 'cats','cats','eq'),
-                    (p.plequal, 'base', 'basis', False),
-                    (p.plequal, 'syrinx', 'syringe', False),
-                    (p.plequal, 'she', 'he', False),
-                    (p.plequal, 'opus', 'operas', False),
-                    (p.plequal, 'taxi', 'taxes', False),
-                    (p.plequal, 'time', 'Times', False),
-                    (p.plequal, 'time'.lower(), 'Times'.lower(), 's:p'),
-                    (p.plequal, 'courts martial', 'court martial', 'p:s'),
-                    (p.plequal, 'my','my','eq'),
-                    (p.plequal, 'my','our','s:p'),
-                    (p.plequal, 'our','our','eq'),
-                    (p.plnounequal, 'index','index','eq'),
-                    (p.plnounequal, 'index','indexes','s:p'),
-                    (p.plnounequal, 'index','indices','s:p'),
-                    (p.plnounequal, 'indexes','index','p:s'),
-                    (p.plnounequal, 'indices','index','p:s'),
-                    (p.plnounequal, 'indices','indexes','p:p'),
-                    (p.plnounequal, 'indexes','indices','p:p'),
-                    (p.plnounequal, 'indices','indices','eq'),
-                    (p.plverbequal, 'runs','runs','eq'),
-                    (p.plverbequal, 'runs','run','s:p'),
-                    (p.plverbequal, 'run','run','eq'),
-                    (p.pladjequal, 'my','my','eq'),
-                    (p.pladjequal, 'my','our','s:p'),
-                    (p.pladjequal, 'our','our','eq'),
+                    (p.compare, 'index','index','eq'),
+                    (p.compare, 'index','indexes','s:p'),
+                    (p.compare, 'index','indices','s:p'),
+                    (p.compare, 'indexes','index','p:s'),
+                    (p.compare, 'indices','index','p:s'),
+                    (p.compare, 'indices','indexes','p:p'),
+                    (p.compare, 'indexes','indices','p:p'),
+                    (p.compare, 'indices','indices','eq'),
+                    (p.compare, 'opuses','opera','p:p'),
+                    (p.compare, 'opera','opuses','p:p'),
+                    (p.compare, 'brothers','brethren','p:p'),                  
+                    (p.compare, 'cats','cats','eq'),
+                    (p.compare, 'base', 'basis', False),
+                    (p.compare, 'syrinx', 'syringe', False),
+                    (p.compare, 'she', 'he', False),
+                    (p.compare, 'opus', 'operas', False),
+                    (p.compare, 'taxi', 'taxes', False),
+                    (p.compare, 'time', 'Times', False),
+                    (p.compare, 'time'.lower(), 'Times'.lower(), 's:p'),
+                    (p.compare, 'courts martial', 'court martial', 'p:s'),
+                    (p.compare, 'my','my','eq'),
+                    (p.compare, 'my','our','s:p'),
+                    (p.compare, 'our','our','eq'),
+                    (p.compare_nouns, 'index','index','eq'),
+                    (p.compare_nouns, 'index','indexes','s:p'),
+                    (p.compare_nouns, 'index','indices','s:p'),
+                    (p.compare_nouns, 'indexes','index','p:s'),
+                    (p.compare_nouns, 'indices','index','p:s'),
+                    (p.compare_nouns, 'indices','indexes','p:p'),
+                    (p.compare_nouns, 'indexes','indices','p:p'),
+                    (p.compare_nouns, 'indices','indices','eq'),
+                    (p.compare_verbs, 'runs','runs','eq'),
+                    (p.compare_verbs, 'runs','run','s:p'),
+                    (p.compare_verbs, 'run','run','eq'),
+                    (p.compare_adjs, 'my','my','eq'),
+                    (p.compare_adjs, 'my','our','s:p'),
+                    (p.compare_adjs, 'our','our','eq'),
                         ):
             self.assertEqual(fn(sing, plur), res)
 
         for fn, sing, plur, res, badres in (
-                    (p.plequal, "dresses's","dresses'", 'p:p', 'p:s'), # TODO: should return p:p 
-                    (p.pladjequal, "dresses's","dresses'", 'p:p', False), # TODO: should return p:p
+                    (p.compare, "dresses's","dresses'", 'p:p', 'p:s'), # TODO: should return p:p 
+                    (p.compare_adjs, "dresses's","dresses'", 'p:p', False), # TODO: should return p:p
 
                     # TODO: future: support different singulars one day.
-                    (p.plequal, "dress's","dress'",'s:s', 'p:s'),
-                    (p.pladjequal, "dress's","dress'",'s:s', False),
-                    (p.plequal, "Jess's","Jess'",'s:s', 'p:s'),
-                    (p.pladjequal, "Jess's","Jess'",'s:s', False),
+                    (p.compare, "dress's","dress'",'s:s', 'p:s'),
+                    (p.compare_adjs, "dress's","dress'",'s:s', False),
+                    (p.compare, "Jess's","Jess'",'s:s', 'p:s'),
+                    (p.compare_adjs, "Jess's","Jess'",'s:s', False),
                         ):
             self.TODO(fn(sing, plur), res, badres)
 
 
         #TODO: pass upstream. multiple adjective plurals not supported
-        self.assertEqual(p.plequal('your', 'our'), False)
+        self.assertEqual(p.compare('your', 'our'), False)
         p.defadj('my', 'our|your') # what's ours is yours
-        self.TODO(p.plequal('your', 'our'), 'p:p')
+        self.TODO(p.compare('your', 'our'), 'p:p')
 
     def test__pl_reg_plurals(self):
         p = inflect.engine()
@@ -899,7 +899,7 @@ class test(unittest.TestCase):
 
     def test_numwords(self):
         p = inflect.engine()
-        numwords = p.numwords
+        numwords = p.number_to_words
 
         for n, word in (
             ('1', 'one'),
@@ -973,7 +973,7 @@ class test(unittest.TestCase):
         
     def test_numwords_group(self):
         p = inflect.engine()
-        numwords = p.numwords
+        numwords = p.number_to_words
         self.assertEqual(numwords('12345', group=2),
                          'twelve, thirty-four, five')
         #TODO: 'hundred and' missing
@@ -1110,9 +1110,27 @@ class test(unittest.TestCase):
             ('ewe', 'a ewe'),
             ('hour', 'an hour'),
             ):
-            self.assertEqual(p.a('%s %s' % (p.numwords(1, one='a'),word)), txt)
+            self.assertEqual(p.a('%s %s' % (p.number_to_words(1, one='a'),word)), txt)
 
         p.num(2)
+
+    def test_deprecation(self):
+        p = inflect.engine()
+        for meth in ('pl',
+                     'plnoun',
+                     'plverb',
+                     'pladj',
+                     'sinoun',
+                     'prespart',
+                     'numwords',
+                     'plequal',
+                     'plnounequal',
+                     'plverbequal',
+                     'pladjequal',
+                     ):
+            self.assertRaises(DeprecationWarning, getattr, p, meth)
+
+
 
 #TODO: test .inflectrc file code        
 

@@ -9,41 +9,41 @@ def test_loop():
 
     for thresh in range(21):
         for n in range(21):
-            threshed = p.numwords(n, threshold=thresh)
-            numwords = p.numwords(n)
+            threshed = p.number_to_words(n, threshold=thresh)
+            numwords = p.number_to_words(n)
 
             if (n <= thresh):
                 eq_ ( numwords, threshed, msg="Wordified %s (<= %s)" % (n, thresh))
             else:
                 #$threshed =~ s/\D//gxms;
-                eq_ ( threshed, str(n), msg="p.numwords(%s, thresold=%s) == %s != %s" % (
+                eq_ ( threshed, str(n), msg="p.number_to_words(%s, thresold=%s) == %s != %s" % (
                                     n, thresh, threshed, str(n)))
 
 def test_lines():
     p = inflect.engine()
-    eq_( p.numwords(    999, threshold=500) ,      '999', msg=      ' 999 -> 999')
-    eq_( p.numwords(   1000, threshold=500) ,    '1,000', msg=      '1000 -> 1,000')
-    eq_( p.numwords(  10000, threshold=500) ,   '10,000', msg=     '10000 -> 10,000')
-    eq_( p.numwords( 100000, threshold=500) ,  '100,000', msg=    '100000 -> 100,000')
-    eq_( p.numwords(1000000, threshold=500) , '1,000,000', msg=  '1000000 -> 1,000,000')
+    eq_( p.number_to_words(    999, threshold=500) ,      '999', msg=      ' 999 -> 999')
+    eq_( p.number_to_words(   1000, threshold=500) ,    '1,000', msg=      '1000 -> 1,000')
+    eq_( p.number_to_words(  10000, threshold=500) ,   '10,000', msg=     '10000 -> 10,000')
+    eq_( p.number_to_words( 100000, threshold=500) ,  '100,000', msg=    '100000 -> 100,000')
+    eq_( p.number_to_words(1000000, threshold=500) , '1,000,000', msg=  '1000000 -> 1,000,000')
 
-    eq_( p.numwords(    999.3, threshold=500) ,      '999.3', msg=      ' 999.3 -> 999.3')
-    eq_( p.numwords(   1000.3, threshold=500) ,    '1,000.3', msg=      '1000.3 -> 1,000.3')
-    eq_( p.numwords(  10000.3, threshold=500) ,   '10,000.3', msg=     '10000.3 -> 10,000.3')
-    eq_( p.numwords( 100000.3, threshold=500) ,  '100,000.3', msg=    '100000.3 -> 100,000.3')
-    eq_( p.numwords(1000000.3, threshold=500) , '1,000,000.3', msg=  '1000000.3 -> 1,000,000.3')
+    eq_( p.number_to_words(    999.3, threshold=500) ,      '999.3', msg=      ' 999.3 -> 999.3')
+    eq_( p.number_to_words(   1000.3, threshold=500) ,    '1,000.3', msg=      '1000.3 -> 1,000.3')
+    eq_( p.number_to_words(  10000.3, threshold=500) ,   '10,000.3', msg=     '10000.3 -> 10,000.3')
+    eq_( p.number_to_words( 100000.3, threshold=500) ,  '100,000.3', msg=    '100000.3 -> 100,000.3')
+    eq_( p.number_to_words(1000000.3, threshold=500) , '1,000,000.3', msg=  '1000000.3 -> 1,000,000.3')
 
-    eq_( p.numwords(    999, threshold=500, comma=0) ,      '999', msg=      ' 999 -> 999')
-    eq_( p.numwords(   1000, threshold=500, comma=0) ,    '1000', msg=      '1000 -> 1000')
-    eq_( p.numwords(  10000, threshold=500, comma=0) ,   '10000', msg=     '10000 -> 10000')
-    eq_( p.numwords( 100000, threshold=500, comma=0) ,  '100000', msg=    '100000 -> 100000')
-    eq_( p.numwords(1000000, threshold=500, comma=0) , '1000000', msg=  '1000000 -> 1000000')
+    eq_( p.number_to_words(    999, threshold=500, comma=0) ,      '999', msg=      ' 999 -> 999')
+    eq_( p.number_to_words(   1000, threshold=500, comma=0) ,    '1000', msg=      '1000 -> 1000')
+    eq_( p.number_to_words(  10000, threshold=500, comma=0) ,   '10000', msg=     '10000 -> 10000')
+    eq_( p.number_to_words( 100000, threshold=500, comma=0) ,  '100000', msg=    '100000 -> 100000')
+    eq_( p.number_to_words(1000000, threshold=500, comma=0) , '1000000', msg=  '1000000 -> 1000000')
 
-    eq_( p.numwords(    999.3, threshold=500, comma=0) ,      '999.3', msg=      ' 999.3 -> 999.3')
-    eq_( p.numwords(   1000.3, threshold=500, comma=0) ,    '1000.3', msg=      '1000.3 -> 1000.3')
-    eq_( p.numwords(  10000.3, threshold=500, comma=0) ,   '10000.3', msg=     '10000.3 -> 10000.3')
-    eq_( p.numwords( 100000.3, threshold=500, comma=0) ,  '100000.3', msg=    '100000.3 -> 100000.3')
-    eq_( p.numwords(1000000.3, threshold=500, comma=0) , '1000000.3', msg=  '1000000.3 -> 1000000.3')
+    eq_( p.number_to_words(    999.3, threshold=500, comma=0) ,      '999.3', msg=      ' 999.3 -> 999.3')
+    eq_( p.number_to_words(   1000.3, threshold=500, comma=0) ,    '1000.3', msg=      '1000.3 -> 1000.3')
+    eq_( p.number_to_words(  10000.3, threshold=500, comma=0) ,   '10000.3', msg=     '10000.3 -> 10000.3')
+    eq_( p.number_to_words( 100000.3, threshold=500, comma=0) ,  '100000.3', msg=    '100000.3 -> 100000.3')
+    eq_( p.number_to_words(1000000.3, threshold=500, comma=0) , '1000000.3', msg=  '1000000.3 -> 1000000.3')
     
 
 def test_array():
@@ -454,22 +454,22 @@ def test_array():
         yield go, p, i
 
 def go(p, i):
-        eq_ ( p.numwords(i[0])           , i[1], msg="numwords(%s) == %s != %s" % (
+        eq_ ( p.number_to_words(i[0])           , i[1], msg="number_to_words(%s) == %s != %s" % (
                                                                                    i[0],
-                                                                                   p.numwords(i[0]),
+                                                                                   p.number_to_words(i[0]),
                                                                                    i[1]) )
-        eq_ ( p.numwords(i[0], group=1) , i[2] )
-        eq_ ( p.numwords(i[0], group=2) , i[3] )
-        eq_ ( p.numwords(i[0], group=3) , i[4] )
+        eq_ ( p.number_to_words(i[0], group=1) , i[2] )
+        eq_ ( p.number_to_words(i[0], group=2) , i[3] )
+        eq_ ( p.number_to_words(i[0], group=3) , i[4] )
         if len(i) > 5:
-            eq_ ( p.numwords(p.ordinal(i[0]))      , i[5], msg="numwords(ordinal(%s)) == %s != %s" % (
-                                                                            i[0], p.numwords(p.ordinal(i[0])),
+            eq_ ( p.number_to_words(p.ordinal(i[0]))      , i[5], msg="number_to_words(ordinal(%s)) == %s != %s" % (
+                                                                            i[0], p.number_to_words(p.ordinal(i[0])),
                                                                             i[5]))
         if len(i) > 6:
-            eq_ ( p.ordinal(p.numwords(i[0]))      , i[6] )
+            eq_ ( p.ordinal(p.number_to_words(i[0]))      , i[6] )
         else:
             if len(i) > 5:
-                eq_ ( p.ordinal(p.numwords(i[0]))      , i[5] )
+                eq_ ( p.ordinal(p.number_to_words(i[0]))      , i[5] )
 
-        #eq_ !eval { p.numwords(42, and=>); 1; };
+        #eq_ !eval { p.number_to_words(42, and=>); 1; };
         #eq_ $@ =~ 'odd number of';

@@ -4,7 +4,7 @@ from nose.tools import eq_, assert_not_equal
 from .. import inflect
 
 def is_eq(p, a, b):
-    return (p.plequal(a, b) or
+    return (p.compare(a, b) or
     p.plnounequal(a, b) or
     p.plverbequal(a, b) or
     p.pladjequal(a, b) )
