@@ -1,4 +1,10 @@
 
+
+ver 0.2.1
+
+* remove incorrect gnome_sudoku import
+
+
 ver 0.2.0
 
 * add gender() to select the gender of singular pronouns
