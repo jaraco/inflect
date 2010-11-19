@@ -65,8 +65,8 @@ from re import match, search, subn, IGNORECASE, VERBOSE
 from re import split as splitre
 from re import error as reerror
 from re import sub as resub
-from os.path import dirname, isfile, expanduser
-from os.path import join as pathjoin
+#from os.path import dirname, isfile, expanduser
+#from os.path import join as pathjoin
 
 class UnknownClassicalModeError(Exception): pass
 class BadNumValueError(Exception): pass
@@ -80,7 +80,7 @@ class _CaseError(Exception): pass
 
 __ver_major__ = 0
 __ver_minor__ = 2
-__ver_patch__ = 1
+__ver_patch__ = 2
 __ver_sub__ = ""
 __version__ = "%d.%d.%d%s" % (__ver_major__,__ver_minor__,
                               __ver_patch__,__ver_sub__)
