@@ -76,8 +76,6 @@ class BadUserDefinedPatternError(Exception): pass
 class BadRcFileError(Exception): pass
 class BadGenderError(Exception): pass
 
-class _CaseError(Exception): pass
-
 __ver_major__ = 0
 __ver_minor__ = 2
 __ver_patch__ = 2
