@@ -102,18 +102,19 @@ def joinstem(cutpoint=0, words=''):
 
     e.g.
     joinstem(-2, ["ephemeris", "iris", ".*itis"]) returns
-    (?:ephemer|ir|.*it
+    (?:ephemer|ir|.*it)
  
     '''
     return enclose('|'.join(w[:cutpoint] for w in words))
 
 def bysize(words):
     '''
-    take a list of words and return a dict of lists sorted by word length
+    take a list of words and return a dict of sets sorted by word length
     e.g.
-    ret[3]=['ant', 'cat', 'dog', 'eel']
-    ret[4]=['frog', 'goat']
-    ret[5]=['horse']
+    ret[3]=set(['ant', 'cat', 'dog', 'pig'])
+    ret[4]=set(['frog', 'goat'])
+    ret[5]=set(['horse'])
+    ret[8]=set(['elephant'])
     '''
     ret = {}
     for w in words:
@@ -122,14 +123,27 @@ def bysize(words):
         ret[len(w)].add(w)
     return ret
 
-def make_pl_si_lists(lst, plending, siendginsize, dojoinstem=True):
-    if siendginsize is not None:
-        siendginsize = -siendginsize
-    si_list = [w[:siendginsize] + plending for w in lst]
+def make_pl_si_lists(lst, plending, siendingsize, dojoinstem=True):
+    '''
+    given a list of singular words: lst
+    an ending to append to make the plural: plending
+    the number of characters to remove from the singular before appending plending: siendingsize
+    a flag whether to create a joinstem: dojoinstem
+
+    return:
+    a list of pluralised words: si_list (called si because this is what you need to
+                                         look for to make the singular)
+    the pluralised words as a dict of sets sorted by word length: si_bysize
+    the singular words as a dict of sets sorted by word length: pl_bysize
+    if dojoinstem is True: a regular expression that matches any of the stems: stem
+    '''
+    if siendingsize is not None:
+        siendingsize = -siendingsize
+    si_list = [w[:siendingsize] + plending for w in lst]
     pl_bysize = bysize(lst)
     si_bysize = bysize(si_list)
     if dojoinstem:
-        stem = joinstem(siendginsize, lst)        
+        stem = joinstem(siendingsize, lst)        
         return si_list, si_bysize, pl_bysize, stem
     else:
         return si_list, si_bysize, pl_bysize
@@ -1360,13 +1374,15 @@ class engine:
 
     def gender(self, gender):
         '''
-        set the gender for plural to singular pronouns
-        only the first letter of gender is significant
-        n: neuter (they -> it)
-        f: feminine (they -> she)
-        m: masculine (they -> he)
-        t: they (they -> they) gender neutral singular
-        
+        set the gender for the singular of plural pronouns
+
+        can be one of:
+        'neuter'                ('they' -> 'it')
+        'feminine'              ('they' -> 'she')
+        'masculine'             ('they' -> 'he')
+        'gender-neutral'        ('they' -> 'they')
+        'feminine or masculine' ('they' -> 'she or he')
+        'masculine or feminine' ('they' -> 'he or she')
         '''
         if gender in singular_pronoun_genders:
             self.thegender = gender
