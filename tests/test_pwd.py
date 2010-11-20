@@ -122,7 +122,7 @@ class test(unittest.TestCase):
         ("plural(rock) plural_noun(rock) plural_verb(rocks) plural_adj(big) a(ant)",
                  "rocks rocks rock big an ant"),
 
-        ("an(rock) no(cat) ordinal(3) numwords(1234) present_participle(runs)",
+        ("an(rock) no(cat) ordinal(3) number_to_words(1234) present_participle(runs)",
                  "a rock no cats 3rd one thousand, two hundred and thirty-four running"),
 
         ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"), # TODO: extra space when space before number. Is this desirable?

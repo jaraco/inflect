@@ -1523,7 +1523,7 @@ class engine:
                         self.ordinalmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bnumwords  \( ([^)]*) \)            ",
+                        r"(?x)\bnumber_to_words  \( ([^)]*) \)            ",
                         self.numwordsmo, section)
                     total += count
                     (section, count) = subn(
