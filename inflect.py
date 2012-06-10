@@ -2709,7 +2709,7 @@ class engine:
 # HANDLE SPECIAL CASES
 
         for a in (
-                  (r"(%s)" % A_explicit_an, "an"),
+                  (r"^(%s)" % A_explicit_an, "an"),
                   (r"^[aefhilmnorsx]$", "an"),
                   (r"^[bcdgjkpqtuvwyz]$", "a"),
                  ):
