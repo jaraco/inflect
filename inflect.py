@@ -1102,9 +1102,14 @@ A_y_cons = 'y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)'
 
 # EXCEPTIONS TO EXCEPTIONS
 
+A_explicit_a = enclose('|'.join((
+    "unabomber", "unanimous", "US",
+    )))
+
 A_explicit_an = enclose('|'.join((
     "euler",
-    "hour(?!i)", "heir", "honest", "hono",
+    "hour(?!i)", "heir", "honest", "hono[ur]",
+    "mpeg",
     )))
 
 A_ordinal_an = enclose('|'.join((
@@ -2739,8 +2744,11 @@ class engine:
         for a in (
                   (r"^e[uw]", "a"),
                   (r"^onc?e\b", "a"),
+                  (r"^onetime\b", "a"),
                   (r"^uni([^nmd]|mo)", "a"),
-                  (r"^u[bcfhjkqrst][aeiou]", "a"),
+                  (r"^u[bcfghjkqrst][aeiou]", "a"),
+                  (r"^ukr", "a"),
+                  (r"^(%s)" % A_explicit_a, "a"),
                  ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
