@@ -1,6 +1,10 @@
 
 ver 0.2.2
 
+* change numwords to number_to_words in strings
+* improve some docstrings
+* comment out imports for unused .inflectrc
+* remove unused execption class
 
 ver 0.2.1
 
