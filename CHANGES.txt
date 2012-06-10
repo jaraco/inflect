@@ -5,6 +5,7 @@ ver 0.2.3
   Unabomber, unanimous, US
 * merge in 'subspecies' fix by UltraNurd
 * add arboretum to classical plurals
+* prevent crash with singular_noun('ys')
 
 ver 0.2.2
 

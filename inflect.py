@@ -2614,7 +2614,7 @@ class engine:
 # HANDLE ...y
 
         if lowerword[-2:] == 'ys':
-            if lowerword[-3] in 'aeiou':
+            if len(lowerword) > 2 and lowerword[-3] in 'aeiou':
                 return word[:-1]
 
             if (self.classical_dict['names']):
