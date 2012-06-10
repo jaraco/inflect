@@ -334,7 +334,7 @@ pl_sb_C_um_a_list = (
     "lustrum",  "memorandum", "millennium", "rostrum", 
     "spectrum", "speculum",   "stadium",    "trapezium",
     "ultimatum",    "medium",   "vacuum",   "velum", 
-    "consortium",
+    "consortium",  "arboretum",
 )
 
 (si_sb_C_um_a_list, si_sb_C_um_a_bysize,

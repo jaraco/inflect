@@ -3,6 +3,8 @@ ver 0.2.3
 
 * fix a/an for dishonor, Honolulu, mpeg, onetime, Ugandan, Ukranian,
   Unabomber, unanimous, US
+* merge in 'subspecies' fix by UltraNurd
+* add arboretum to classical plurals
 
 ver 0.2.2
 
