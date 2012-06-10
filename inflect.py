@@ -605,7 +605,7 @@ pl_sb_uninflected_s_complete = [
     "mumps",
 
 # MISCELLANEOUS OTHERS...
-    "diabetes", "jackanapes", "series", "species", "rabies",
+    "diabetes", "jackanapes", "series", "species", "subspecies", "rabies",
     "chassis", "innings", "news", "mews", "haggis",
 ]
 
