@@ -2385,10 +2385,14 @@ class engine:
         if len(lowersplit) >= 3:
             for numword in range(1, len(lowersplit)-1):
                 if lowersplit[numword] in pl_prep_list_da:
-                    return ' '.join(lowersplit[:numword-1] + 
-                        [self._sinoun(lowersplit[numword-1], 1, gender=gender) +
-                        '-' + lowersplit[numword] + '-']) + \
-                        ' '.join(lowersplit[(numword+1):])
+                    v = self._sinoun(lowersplit[numword-1], 1, gender=gender)
+                    if v:
+                        return ' '.join(lowersplit[:numword-1] + 
+                                        [v +
+                                         '-' + lowersplit[numword] + '-']) + \
+                                         ' '.join(lowersplit[(numword+1):])
+                    else:
+                        return False
 
 
 # HANDLE PRONOUNS
