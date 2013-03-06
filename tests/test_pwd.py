@@ -17,7 +17,7 @@ class test(unittest.TestCase):
         so can easily rename these to assertEqual when code ready        
         '''
         if ans == answer_wanted:
-            print 'test unexpectedly passed!: %s == %s' % (ans, answer_wanted)
+            print('test unexpectedly passed!: %s == %s' % (ans, answer_wanted))
         if answer_gives_now != "default_that_will_never_occur__can't_use_None_as_that_is_a_possible_valid_value":
             self.assertEqual(ans, answer_gives_now)
         

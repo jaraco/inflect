@@ -210,16 +210,16 @@ pl_sb_irregular_compound = {
     "prima donna" : "prima donnas|prime donne",
     }
 
-si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.iteritems()])
-keys = si_sb_irregular.keys()
+si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.items()])
+keys = list(si_sb_irregular.keys())
 for k in keys:
     if '|' in k:
         k1, k2 = k.split('|')
         si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
         del si_sb_irregular[k]
-si_sb_irregular_caps = dict([(v, k) for (k, v) in pl_sb_irregular_caps.iteritems()])
-si_sb_irregular_compound = dict([(v, k) for (k, v) in pl_sb_irregular_compound.iteritems()])
-keys = si_sb_irregular_compound.keys()
+si_sb_irregular_caps = dict([(v, k) for (k, v) in pl_sb_irregular_caps.items()])
+si_sb_irregular_compound = dict([(v, k) for (k, v) in pl_sb_irregular_compound.items()])
+keys = list(si_sb_irregular_compound.keys())
 for k in keys:
     if '|' in k:
         k1, k2 = k.split('|')
@@ -845,7 +845,7 @@ si_sb_ves_ve = (
 plverb_special_s = enclose('|'.join (
     [pl_sb_singular_s] +
     pl_sb_uninflected_s +
-    pl_sb_irregular_s.keys() + [
+    list(pl_sb_irregular_s.keys()) + [
     '(.*[csx])is',
     '(.*)ceps',
     '[A-Z].*s',
@@ -856,12 +856,12 @@ pl_sb_postfix_adj = {
     'martial' : ['court'],
 }
 
-for k in pl_sb_postfix_adj.keys():
+for k in list(pl_sb_postfix_adj.keys()):
     pl_sb_postfix_adj[k] = enclose(
                    enclose('|'.join(pl_sb_postfix_adj[k]))
                    + "(?=(?:-|\\s+)%s)" % k)
 
-pl_sb_postfix_adj_stems = '(' + '|'.join(pl_sb_postfix_adj.values()) + ')(.*)'
+pl_sb_postfix_adj_stems = '(' + '|'.join(list(pl_sb_postfix_adj.values())) + ')(.*)'
 
 
 # PLURAL WORDS ENDING IS es GO TO SINGULAR is
@@ -929,7 +929,7 @@ pl_pron_nom = {
 }
 
 si_pron = {}
-si_pron['nom'] = dict([(v, k) for (k, v) in pl_pron_nom.iteritems()])
+si_pron['nom'] = dict([(v, k) for (k, v) in pl_pron_nom.items()])
 si_pron['nom']['we'] = 'I'
 
 
@@ -944,10 +944,10 @@ pl_pron_acc = {
 "them"  : "them",  "themself" :   "themselves",
 }
 
-pl_pron_acc_keys = enclose('|'.join(pl_pron_acc.keys()))
-pl_pron_acc_keys_bysize = bysize(pl_pron_acc.keys())
+pl_pron_acc_keys = enclose('|'.join(list(pl_pron_acc.keys())))
+pl_pron_acc_keys_bysize = bysize(list(pl_pron_acc.keys()))
 
-si_pron['acc'] = dict([(v, k) for (k, v) in pl_pron_acc.iteritems()])
+si_pron['acc'] = dict([(v, k) for (k, v) in pl_pron_acc.items()])
 
 for thecase, plur, gend, sing in (
         ('nom', 'they', 'neuter', 'it'),
@@ -988,8 +988,8 @@ for thecase, plur, gend, sing in (
         si_pron[thecase][plur][gend] = sing
 
         
-si_pron_acc_keys = enclose('|'.join(si_pron['acc'].keys()))
-si_pron_acc_keys_bysize = bysize(si_pron['acc'].keys())
+si_pron_acc_keys = enclose('|'.join(list(si_pron['acc'].keys())))
+si_pron_acc_keys_bysize = bysize(list(si_pron['acc'].keys()))
 
 def get_si_pron(thecase, word, gender):
     try:
@@ -1034,7 +1034,7 @@ plverb_ambiguous_pres = {
 "view"  : "view",  "view"  : "view",  "views"   : "view",
 }
 
-plverb_ambiguous_pres_keys = enclose('|'.join(plverb_ambiguous_pres.keys()));
+plverb_ambiguous_pres_keys = enclose('|'.join(list(plverb_ambiguous_pres.keys())));
 
 
 plverb_irregular_non_pres = (
@@ -1068,7 +1068,7 @@ pl_adj_special = {
 "this" : "these",  "that" : "those",
 }
 
-pl_adj_special_keys = enclose('|'.join(pl_adj_special.keys()))
+pl_adj_special_keys = enclose('|'.join(list(pl_adj_special.keys())))
 
 pl_adj_poss = {
 "my"    : "our",
@@ -1079,7 +1079,7 @@ pl_adj_poss = {
 "their" : "their",
 }
 
-pl_adj_poss_keys = enclose('|'.join(pl_adj_poss.keys()))
+pl_adj_poss_keys = enclose('|'.join(list(pl_adj_poss.keys())))
 
 
 # 2. INDEFINITE ARTICLES
@@ -1149,7 +1149,7 @@ ordinal = dict(ty='tieth',
                twelve='twelfth',
               )
 
-ordinal_suff = '|'.join(ordinal.keys())
+ordinal_suff = '|'.join(list(ordinal.keys()))
 
 
 
@@ -1178,8 +1178,8 @@ def_classical = dict(
     ancient  = False,
 )
 
-all_classical = dict((k, True) for k in def_classical.keys())
-no_classical = dict((k, False) for k in def_classical.keys())
+all_classical = dict((k, True) for k in list(def_classical.keys()))
+no_classical = dict((k, False) for k in list(def_classical.keys()))
 
 
 #TODO: .inflectrc file does not work
@@ -1340,7 +1340,7 @@ class engine:
         unknown value in args or key in kwargs rasies exception: UnknownClasicalModeError
 
         """
-        classical_mode = def_classical.keys()
+        classical_mode = list(def_classical.keys())
         if not kwargs:
             self.classical_dict = all_classical.copy()
             return
@@ -1350,7 +1350,7 @@ class engine:
             else:
                 self.classical_dict = no_classical.copy()
                 
-        for k, v in kwargs.items():
+        for k, v in list(kwargs.items()):
             if k in classical_mode:
                 self.classical_dict[k] = v
             else:
@@ -1795,11 +1795,11 @@ class engine:
 
     def _pl_check_plurals_N(self, word1, word2):
         pair = "%s|%s" % (word1, word2)
-        if pair in pl_sb_irregular_s.values():
+        if pair in list(pl_sb_irregular_s.values()):
             return True
-        if pair in pl_sb_irregular.values():
+        if pair in list(pl_sb_irregular.values()):
             return True
-        if pair in pl_sb_irregular_caps.values():
+        if pair in list(pl_sb_irregular_caps.values()):
             return True
 
         for (stems, end1, end2) in (
@@ -1894,7 +1894,7 @@ class engine:
         if word in pl_sb_uninflected_caps:
             return word
 
-        for k, v in pl_sb_uninflected_bysize.iteritems():
+        for k, v in pl_sb_uninflected_bysize.items():
             if lowerword[-k:] in v:
                 return word
         
@@ -1936,9 +1936,9 @@ class engine:
         
 # HANDLE PRONOUNS
 
-        for k, v in pl_pron_acc_keys_bysize.iteritems():
+        for k, v in pl_pron_acc_keys_bysize.items():
             if lowerword[-k:] in v: # ends with accusivate pronoun
-                for pk, pv in pl_prep_bysize.iteritems():
+                for pk, pv in pl_prep_bysize.items():
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
                             return lowerword[:-k] + pl_pron_acc[lowerword[-k:]]
@@ -1959,17 +1959,17 @@ class engine:
         wordlast = wordsplit[-1]
         lowerwordlast = wordlast.lower()
         
-        if wordlast in pl_sb_irregular_caps.keys():
+        if wordlast in list(pl_sb_irregular_caps.keys()):
             llen = len(wordlast)
             return '%s%s' % (word[:-llen],
                              pl_sb_irregular_caps[wordlast])
 
-        if lowerwordlast in pl_sb_irregular.keys():
+        if lowerwordlast in list(pl_sb_irregular.keys()):
             llen = len(lowerwordlast)
             return '%s%s' % (word[:-llen],
                              pl_sb_irregular[lowerwordlast])
 
-        if (' '.join(wordsplit[-2:])).lower() in pl_sb_irregular_compound.keys():
+        if (' '.join(wordsplit[-2:])).lower() in list(pl_sb_irregular_compound.keys()):
             llen = len(' '.join(wordsplit[-2:])) #TODO: what if 2 spaces between these words?
             return '%s%s' % (word[:-llen],
                              pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
@@ -1986,10 +1986,10 @@ class engine:
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
         if lowerword[-3:] == 'man':
-            for k, v in pl_sb_U_man_mans_bysize.iteritems():
+            for k, v in pl_sb_U_man_mans_bysize.items():
                 if lowerword[-k:] in v:
                     return word + 's'
-            for k, v in pl_sb_U_man_mans_caps_bysize.iteritems():
+            for k, v in pl_sb_U_man_mans_caps_bysize.items():
                 if word[-k:] in v:
                     return word + 's'
             return word[:-3] + 'men'
@@ -2027,7 +2027,7 @@ class engine:
             ('a', pl_sb_U_a_ae_bysize, None, 'e'),
                         ):
             if lowerword[-1] == lastlet: # this test to add speed
-                for k, v in d.iteritems():
+                for k, v in d.items():
                     if lowerword[-k:] in v:
                         return word[:numend] + post
 
@@ -2056,7 +2056,7 @@ class engine:
                 ('n', pl_sb_C_on_a_bysize, -2, 'a'),
                             ):
                 if lowerword[-1] == lastlet: # this test to add speed
-                    for k, v in d.iteritems():
+                    for k, v in d.items():
                         if lowerword[-k:] in v:
                             return word[:numend] + post
 
@@ -2064,7 +2064,7 @@ class engine:
                 (pl_sb_C_i_bysize, None, 'i'),
                 (pl_sb_C_im_bysize, None, 'im'),
                             ):
-                for k, v in d.iteritems():
+                for k, v in d.items():
                     if lowerword[-k:] in v:
                         return word[:numend] + post
 
@@ -2074,7 +2074,7 @@ class engine:
         if lowerword in pl_sb_singular_s_complete:
             return word + 'es'
 
-        for k, v in pl_sb_singular_s_bysize.iteritems():
+        for k, v in pl_sb_singular_s_bysize.items():
             if lowerword[-k:] in v:
                 return word + 'es'
 
@@ -2098,7 +2098,7 @@ class engine:
 #                return "%ses" % mo.group(1)
 
         if lowerword[-1] == 'z':
-            for k, v in pl_sb_z_zes_bysize.iteritems():
+            for k, v in pl_sb_z_zes_bysize.items():
                 if lowerword[-k:] in v:
                     return word + 'es'
 
@@ -2106,7 +2106,7 @@ class engine:
                 return word + 'zes'
             
         if lowerword[-2:] == 'ze':
-            for k, v in pl_sb_ze_zes_bysize.iteritems():
+            for k, v in pl_sb_ze_zes_bysize.items():
                 if lowerword[-k:] in v:
                     return word + 's'
             
@@ -2145,7 +2145,7 @@ class engine:
         if lowerword in pl_sb_U_o_os_complete:
             return word + 's'
 
-        for k, v in pl_sb_U_o_os_bysize.iteritems():
+        for k, v in pl_sb_U_o_os_bysize.items():
             if lowerword[-k:] in v:
                 return word + 's'
 
@@ -2184,7 +2184,7 @@ class engine:
         except IndexError:
             return False # word is ''
         
-        if firstword in plverb_irregular_pres.keys():
+        if firstword in list(plverb_irregular_pres.keys()):
             return "%s%s" % (plverb_irregular_pres[firstword],
                                 word[len(firstword):])
 
@@ -2195,7 +2195,7 @@ class engine:
 
 # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
-        if firstword.endswith("n't") and firstword[:-3] in plverb_irregular_pres.keys():
+        if firstword.endswith("n't") and firstword[:-3] in list(plverb_irregular_pres.keys()):
             return "%sn't%s" % (plverb_irregular_pres[firstword[:-3]],
                                  word[len(firstword):])
 
@@ -2351,7 +2351,7 @@ class engine:
         if word in pl_sb_uninflected_caps:
             return word
 
-        for k, v in pl_sb_uninflected_bysize.iteritems():
+        for k, v in pl_sb_uninflected_bysize.items():
             if lowerword[-k:] in v:
                 return word
 
@@ -2393,9 +2393,9 @@ class engine:
 
 # HANDLE PRONOUNS
 
-        for k, v in si_pron_acc_keys_bysize.iteritems():
+        for k, v in si_pron_acc_keys_bysize.items():
             if lowerword[-k:] in v: # ends with accusivate pronoun
-                for pk, pv in pl_prep_bysize.iteritems():
+                for pk, pv in pl_prep_bysize.items():
                     if lowerword[:pk] in pv: # starts with a prep
                         if lowerword.split() == [lowerword[:pk], lowerword[-k:]]: #only whitespace in between
                             return lowerword[:-k] + get_si_pron('acc', lowerword[-k:], gender)
@@ -2416,17 +2416,17 @@ class engine:
         wordlast = wordsplit[-1]
         lowerwordlast = wordlast.lower()
         
-        if wordlast in si_sb_irregular_caps.keys():
+        if wordlast in list(si_sb_irregular_caps.keys()):
             llen = len(wordlast)
             return '%s%s' % (word[:-llen],
                             si_sb_irregular_caps[wordlast])
 
-        if lowerwordlast in si_sb_irregular.keys():
+        if lowerwordlast in list(si_sb_irregular.keys()):
             llen = len(lowerwordlast)
             return '%s%s' % (word[:-llen],
                              si_sb_irregular[lowerwordlast])
 
-        if (' '.join(wordsplit[-2:])).lower() in si_sb_irregular_compound.keys():
+        if (' '.join(wordsplit[-2:])).lower() in list(si_sb_irregular_compound.keys()):
             llen = len(' '.join(wordsplit[-2:])) #TODO: what if 2 spaces between these words?
             return '%s%s' % (word[:-llen],
                              si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
@@ -2443,10 +2443,10 @@ class engine:
 # HANDLE FAMILIES OF IRREGULAR PLURALS 
 
         if lowerword[-4:] == 'mans':
-            for k, v in si_sb_U_man_mans_bysize.iteritems():
+            for k, v in si_sb_U_man_mans_bysize.items():
                 if lowerword[-k:] in v:
                     return word[:-1]
-            for k, v in si_sb_U_man_mans_caps_bysize.iteritems():
+            for k, v in si_sb_U_man_mans_caps_bysize.items():
                 if word[-k:] in v:
                     return word[:-1]
         if lowerword[-3:] == 'men':
@@ -2483,7 +2483,7 @@ class engine:
             ('e', si_sb_U_a_ae_bysize, -1, ''),
                         ):
             if lowerword[-1] == lastlet: # this test to add speed
-                for k, v in d.iteritems():
+                for k, v in d.items():
                     if lowerword[-k:] in v:
                         return word[:numend] + post
 
@@ -2515,7 +2515,7 @@ class engine:
                 ('i', si_sb_C_i_bysize, -1, ''),
                             ):
                 if lowerword[-1] == lastlet: # this test to add speed
-                    for k, v in d.iteritems():
+                    for k, v in d.items():
                         if lowerword[-k:] in v:
                             return word[:numend] + post
 
@@ -2548,7 +2548,7 @@ class engine:
         if lowerword in si_sb_singular_s_complete:
             return word[:-2]
 
-        for k, v in si_sb_singular_s_bysize.iteritems():
+        for k, v in si_sb_singular_s_bysize.items():
             if lowerword[-k:] in v:
                 return word[:-2]
 
@@ -2632,7 +2632,7 @@ class engine:
             if lowerword in si_sb_U_o_os_complete:
                 return word[:-1]
 
-            for k, v in si_sb_U_o_os_bysize.iteritems():
+            for k, v in si_sb_U_o_os_bysize.items():
                 if lowerword[-k:] in v:
                     return word[:-1]
 

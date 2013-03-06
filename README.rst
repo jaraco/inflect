@@ -2,24 +2,20 @@
 inflect.py
 ==========
 
-
 NAME
 ====
-inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
+
+inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words. Python 3 compatibility added.
 
 VERSION
 =======
 
-This document describes version 0.2.3 of inflect.py
+This document describes version 0.2.3 of inflect.py which has been made Python 3 compatible
 
 INSTALLATION
 ============
 
-``pip install inflect``
-
-or
-
-``easy_install inflect``
+``pip install -e git+https://github.com/benthor/inflect.py#egg=inflect``
 
 SYNOPSIS
 ========
@@ -43,58 +39,58 @@ SYNOPSIS
 
  # UNCONDITIONALLY FORM THE PLURAL
 
-      print "The plural of ", word, " is ", p.plural(word)
+      print("The plural of ", word, " is ", p.plural(word))
 
 
  # CONDITIONALLY FORM THE PLURAL
 
-      print "I saw", cat_count, p.plural("cat",cat_count)
+      print("I saw", cat_count, p.plural("cat",cat_count))
 
 
  # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
 
-      print p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \
+      print(p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \)
             p.plural_noun("saw",N2)
 
 
  # FORM THE SINGULAR OF PLURAL NOUNS
 
-      print "The singular of ", word, " is ", p.singular_noun(word)
+      print("The singular of ", word, " is ", p.singular_noun(word))
 
  # SELECT THE GENDER OF SINGULAR PRONOUNS
 
-      print p.singular_noun('they')  # 'it'
+      print(p.singular_noun('they')  # 'it')
       p.gender('f')
-      print p.singular_noun('they')  # 'she'
+      print(p.singular_noun('they')  # 'she')
 
 
  # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
 
-      print "There ", p.plural_verb("was",errors), p.no(" error",errors)
+      print("There ", p.plural_verb("was",errors), p.no(" error",errors))
 
 
  # USE DEFAULT COUNTS:
 
-      print p.num(N1,""), p.plural("I"), p.plural_verb(" saw"), p.num(N2), p.plural_noun(" saw")
-      print "There ", p.num(errors,''), p.plural_verb("was"), p.no(" error")
+      print(p.num(N1,""), p.plural("I"), p.plural_verb(" saw"), p.num(N2), p.plural_noun(" saw"))
+      print("There ", p.num(errors,''), p.plural_verb("was"), p.no(" error"))
 
 
  # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
 
-      print "same\n"      if p.compare(word1, word2)
-      print "same noun\n" if p.compare_nouns(word1, word2)
-      print "same verb\n" if p.compare_verbs(word1, word2)
-      print "same adj.\n" if p.compare_adjs(word1, word2)
+      print("same\n"      if p.compare(word1, word2))
+      print("same noun\n" if p.compare_nouns(word1, word2))
+      print("same verb\n" if p.compare_verbs(word1, word2))
+      print("same adj.\n" if p.compare_adjs(word1, word2))
 
 
  # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
 
-      print "Did you want ", p.a(thing), " or ", p.an(idea)
+      print("Did you want ", p.a(thing), " or ", p.an(idea))
 
 
  # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
 
-      print "It was", p.ordinal(position), " from the left\n"
+      print("It was", p.ordinal(position), " from the left\n")
 
  # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
  # RETURNS A SINGLE STRING...
@@ -177,16 +173,16 @@ SYNOPSIS
  # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
  # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
 
-      print p.inflect("The plural of {0} is plural({0})".format(word))
-      print p.inflect("The singular of {0} is singular_noun({0})".format(word))
-      print p.inflect("I saw {0} plural("cat",{0})".format(cat_count))
-      print p.inflect("plural(I,{0}) plural_verb(saw,{0}) plural(a,{1}) plural_noun(saw,{1})".format(N1, N2))
-      print p.inflect("num({0},)plural(I) plural_verb(saw) num({1},)plural(a) plural_noun(saw)".format(N1, N2))
-      print p.inflect("I saw num({0}) plural("cat")\nnum()".format(cat_count))
-      print p.inflect("There plural_verb(was,{0}) no(error,{0})".format(errors))
-      print p.inflect("There num({0},) plural_verb(was) no(error)".format(errors))
-      print p.inflect("Did you want a({0}) or an({1})".format(thing, idea))
-      print p.inflect("It was ordinal({0}) from the left".format(position))
+      print(p.inflect("The plural of {0} is plural({0})".format(word)))
+      print(p.inflect("The singular of {0} is singular_noun({0})".format(word)))
+      print(p.inflect("I saw {0} plural("cat",{0})".format(cat_count)))
+      print(p.inflect("plural(I,{0}) plural_verb(saw,{0}) plural(a,{1}) plural_noun(saw,{1})".format(N1, N2)))
+      print(p.inflect("num({0},)plural(I) plural_verb(saw) num({1},)plural(a) plural_noun(saw)".format(N1, N2)))
+      print(p.inflect("I saw num({0}) plural("cat")\nnum()".format(cat_count)))
+      print(p.inflect("There plural_verb(was,{0}) no(error,{0})".format(errors)))
+      print(p.inflect("There num({0},) plural_verb(was) no(error)".format(errors)))
+      print(p.inflect("Did you want a({0}) or an({1})".format(thing, idea)))
+      print(p.inflect("It was ordinal({0}) from the left".format(position)))
 
 
  # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
@@ -345,7 +341,7 @@ The ``plural...`` methods return only the inflected word, not the count that
 was used to inflect it. Thus, in order to produce "I saw 3 ducks", it
 is necessary to use::
 
-    print "I saw", N, p.plural_noun(animal,N)
+    print("I saw", N, p.plural_noun(animal,N))
 
 Since the usual purpose of producing a plural is to make it agree with
 a preceding count, inflect.py provides a method
@@ -353,12 +349,12 @@ a preceding count, inflect.py provides a method
 count followed by the correctly inflected word. Hence the previous
 example can be rewritten::
 
-    print "I saw ", p.no(animal,N)
+    print("I saw ", p.no(animal,N))
 
 In addition, if the count is zero (or some other term which implies
 zero, such as ``"zero"``, ``"nil"``, etc.) the count is replaced by the
 word "no". Hence, if ``N`` had the value zero, the previous example
-would print the somewhat more elegant::
+would print(the somewhat more elegant::)
 
     I saw no animals
 
@@ -377,7 +373,7 @@ Reducing the number of counts required
 In some contexts, the need to supply an explicit count to the various
 ``plural...`` methods makes for tiresome repetition. For example::
 
-    print plural_adj("This",errors), plural_noun(" error",errors), \
+    print(plural_adj("This",errors), plural_noun(" error",errors), \)
           plural_verb(" was",errors), " fatal."
 
 inflect.py therefore provides a method
@@ -388,15 +384,15 @@ can subsequently be removed by calling ``num()`` with no arguments.
 Hence we could rewrite the previous example::
 
     p.num(errors)
-    print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
+    print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
     p.num()
 
 Normally, ``num()`` returns its first argument, so that it may also
 be "inlined" in contexts like::
 
-    print p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected."
+    print(p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected.")
     if severity > 1:
-        print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
+        print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
 
 However, in certain contexts (see `INTERPOLATING INFLECTIONS IN STRINGS`)
 it is preferable that ``num()`` return an empty string. Hence ``num()``
@@ -404,9 +400,9 @@ provides an optional second argument. If that argument is supplied (that is, if
 it is defined) and evaluates to false, ``num`` returns an empty string
 instead of its first argument. For example::
 
-    print p.num(errors,0), p.no("error"), p.plural_verb(" was"), " detected."
+    print(p.num(errors,0), p.no("error"), p.plural_verb(" was"), " detected.")
     if severity > 1:
-        print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
+        print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
     
 
 
@@ -502,8 +498,8 @@ The two methods are *identical* in function and may be used
 interchangeably. The only reason that two versions are provided is to
 enhance the readability of code such as::
 
-    print "That is ", an(errortype), " error
-    print "That is ", a(fataltype), " fatal error
+    print("That is ", an(errortype), " error)
+    print("That is ", a(fataltype), " fatal error)
 
 Note that in both cases the actual article provided depends *only* on
 the pronunciation of the first argument, *not* on the name of the
@@ -520,7 +516,7 @@ exists at the start of the string. Thus::
     ]
 
     for txt in half_arked:
-        print p.a(txt)
+        print(p.a(txt))
 
     # prints:
     #     an elephant
@@ -548,15 +544,15 @@ In other words, they assume that the word they are given has
 already been correctly inflected for plurality. Hence, if ``N`` 
 has the value 2, then::
 
-      print p.a("cat",N)
+      print(p.a("cat",N))
 
 prints "2 cat", instead of "2 cats". The correct approach is to use::
 
-      print p.a(p.plural("cat",N),N)
+      print(p.a(p.plural("cat",N),N))
 
 or, better still::
 
-      print p.no("cat",N)
+      print(p.no("cat",N))
 
 Note too that, like the various ``plural...`` methods, whenever ``a()``
 and ``an()`` are called with only one argument they are subject to the
@@ -564,7 +560,7 @@ effects of any preceding call to ``num()``. Hence, another possible
 solution is::
 
       p.num(N)
-      print p.a(p.plural("cat"))
+      print(p.a(p.plural("cat")))
     
 
 Indefinite articles and initialisms
@@ -738,7 +734,7 @@ The digit ``'0'`` is unusual in that in may be translated to English as "zero",
 a named argument, 'zero', which may be set to
 the desired translation of ``'0'``. For example::
 
-        print join "..", p.number_to_words("555-1202", group=3, zero='oh')
+        print(join "..", p.number_to_words("555-1202", group=3, zero='oh'))
 
 prints ``"five..five..five..one..two..oh..two"``.
 By default, zero is rendered as "zero".
@@ -748,7 +744,7 @@ occasionally other variants), depending on the context. So there is a
 ``'one'`` argument as well::
 
         for num in [3,2,1,0]:
-              print p.number_to_words(num, one='a solitary', zero='no more'),
+              print(p.number_to_words(num, one='a solitary', zero='no more'),)
               p.plural(" bottle of beer on the wall", num)
 
         # prints:
@@ -763,7 +759,7 @@ to use the ``A`` function as well::
 
 
         for word in ["cat aardvark ewe hour".split()]:
-            print p.a("{0} {1}".format(p.number_to_words(1, one='a'), word))
+            print(p.a("{0} {1}".format(p.number_to_words(1, one='a'), word)))
 
     # prints:
     #     a cat
@@ -775,7 +771,7 @@ Another major regional variation in number translation is the use of
 "and" in certain contexts. The named argument 'and'
 allows the programmer to specify how "and" should be handled. Hence::
 
-        print scalar p.number_to_words("765", andword='')
+        print(scalar p.number_to_words("765", andword=''))
 
 prints "seven hundred sixty-five", instead of "seven hundred and sixty-five".
 By default, the "and" is included.
@@ -785,17 +781,17 @@ The translation of the decimal point is also subject to variation
 The named argument 'decimal' allows the
 programmer to how the decimal point should be rendered. Hence::
 
-        print scalar p.number_to_words("666.124.64.101", group=3, decimal='dot')
+        print(scalar p.number_to_words("666.124.64.101", group=3, decimal='dot'))
 
 prints "six sixty-six, dot, one twenty-four, dot, sixty-four, dot, one zero one"
 By default, the decimal point is rendered as "point".
 
 ``number_to_words`` also handles the ordinal forms of numbers. So::
 
-        print p.number_to_words('1st')
-        print p.number_to_words('3rd')
-        print p.number_to_words('202nd')
-        print p.number_to_words('1000000th')
+        print(p.number_to_words('1st'))
+        print(p.number_to_words('3rd'))
+        print(p.number_to_words('202nd'))
+        print(p.number_to_words('1000000th'))
 
 prints::
 
@@ -806,17 +802,17 @@ prints::
 
 Two common idioms in this regard are::
 
-        print p.number_to_words(ordinal(number))
+        print(p.number_to_words(ordinal(number)))
 
 and::
 
-        print p.ordinal(p.number_to_words(number))
+        print(p.ordinal(p.number_to_words(number)))
 
 These are identical in effect, except when ``number`` contains a decimal::
 
         number = 99.09
-        print p.number_to_words(p.ordinal(number));    # ninety-ninth point zero nine
-        print p.ordinal(p.number_to_words(number));    # ninety-nine point zero ninth
+        print(p.number_to_words(p.ordinal(number));    # ninety-ninth point zero nine)
+        print(p.ordinal(p.number_to_words(number));    # ninety-nine point zero ninth)
 
 Use whichever you feel is most appropriate.
 
@@ -837,13 +833,13 @@ This method expects a tuple of words, possibly with one or more
 options. It returns a string that joins the list
 together in the normal English usage. For example::
 
-    print "You chose ", p.join(selected_items)
+    print("You chose ", p.join(selected_items))
     # You chose barley soup, roast beef, and Yorkshire pudding
 
-    print "You chose ", p.join(selected_items, final_sep=>"")
+    print("You chose ", p.join(selected_items, final_sep=>""))
     # You chose barley soup, roast beef and Yorkshire pudding
 
-    print "Please chose ", p.join(side_orders, conj=>"or")
+    print("Please chose ", p.join(side_orders, conj=>"or"))
     # Please chose salad, vegetables, or ice-cream
 
 The available options are::
@@ -863,9 +859,9 @@ INTERPOLATING INFLECTIONS IN STRINGS
 By far the commonest use of the inflection methods is to
 produce message strings for various purposes. For example::
 
-        print p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected."
+        print(p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected.")
         if severity > 1:
-            print p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal."
+            print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
 
 Unfortunately the need to separate each method call detracts
 significantly from the readability of the resulting code. To ameliorate
@@ -875,9 +871,9 @@ methods within a string and interpolates them appropriately.
 
 Using ``inflect`` the previous example could be rewritten::
 
-        print p.inflect("num({0}) plural_noun(error) plural_verb(was) detected.".format(errors))
+        print(p.inflect("num({0}) plural_noun(error) plural_verb(was) detected.".format(errors)))
         if severity > 1:
-            print p.inflect("plural_adj(This) plural_noun(error) plural_verb(was) fatal.")
+            print(p.inflect("plural_adj(This) plural_noun(error) plural_verb(was) fatal."))
 
 Note that ``inflect`` also correctly handles calls to the ``num()`` method
 (whether interpolated or antecedent). The ``inflect()`` method has
@@ -918,21 +914,21 @@ specify which aspects of classical behaviour are to be used.
 Thus::
 
         p.classical()                # SWITCH ON CLASSICAL MODE
-        print p.plural("formula")        # -> "formulae"
+        print(p.plural("formula")        # -> "formulae")
 
         p.classical(all=False)               # SWITCH OFF CLASSICAL MODE
-        print p.plural("formula")        # -> "formulas"
+        print(p.plural("formula")        # -> "formulas")
 
         p.classical(cmode=True)           # CLASSICAL MODE IFF cmode
-        print p.plural("formula")        # -> "formulae" (IF cmode)
+        print(p.plural("formula")        # -> "formulae" (IF cmode))
                                      # -> "formulas" (OTHERWISE)
 
         p.classical(herd=True)          # SWITCH ON CLASSICAL MODE FOR "HERD" NOUNS
-        print p.plural("wilderbeest")    # -> "wilderbeest"
+        print(p.plural("wilderbeest")    # -> "wilderbeest")
 
         p.classical(names=True)         # SWITCH ON CLASSICAL MODE FOR NAMES
-        print p.plural("sally")          # -> "sallies"
-        print p.plural("Sally")          # -> "Sallys"
+        print(p.plural("sally")          # -> "sallies")
+        print(p.plural("Sally")          # -> "Sallys")
 
 Note however that ``classical()`` has no effect on the inflection of words which
 are now fully assimilated. Hence::
@@ -1243,15 +1239,15 @@ singular form is always returned.
 Thus, the sequence::
 
       p.num(0)
-      print p.inflect("There plural(was) no(choice)")
+      print(p.inflect("There plural(was) no(choice)"))
 
 produces "There were no choices", whereas::
 
       p.classical(zero=True)
       p.num(0)
-      print p.inflect("There plural(was) no(choice)")
+      print(p.inflect("There plural(was) no(choice)"))
 
-it will print "There was no choice".
+it will print("There was no choice".)
 
 
 Homographs with heterogeneous plurals
@@ -1315,6 +1311,9 @@ There will be no further correspondence on:
 
 AUTHORS
 =======
+
+Thorben Krüger (github@benthor.name)
+* established Python 3 compatibility
 
 Paul Dyson (pwdyson@yahoo.com)
 * converted code from Perl to Python
