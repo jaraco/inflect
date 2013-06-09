@@ -3,3 +3,4 @@ MANIFEST
 dist/*
 cover/*
 htmlcov/*
+.tox/*
