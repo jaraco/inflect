@@ -1,4 +1,10 @@
 
+ver 0.2.4
+
+* new maintainer (Alex Grönholm)
+* added Python 3 compatibility (by Thorben Krüger)
+
+
 ver 0.2.3
 
 * fix a/an for dishonor, Honolulu, mpeg, onetime, Ugandan, Ukranian,
@@ -7,12 +13,14 @@ ver 0.2.3
 * add arboretum to classical plurals
 * prevent crash with singular_noun('ys')
 
+
 ver 0.2.2
 
 * change numwords to number_to_words in strings
 * improve some docstrings
 * comment out imports for unused .inflectrc
-* remove unused execption class
+* remove unused exception class
+
 
 ver 0.2.1
 

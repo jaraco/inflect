@@ -5,12 +5,12 @@ inflect.py
 NAME
 ====
 
-inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words. Python 3 compatibility added.
+inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
 
 VERSION
 =======
 
-This document describes version 0.2.3 of inflect.py which has been made Python 3 compatible
+This document describes version 0.2.4 of inflect.py
 
 INSTALLATION
 ============
