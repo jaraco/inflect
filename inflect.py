@@ -2324,7 +2324,7 @@ class engine:
             for numword in range(1, len(lowersplit) - 1):
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(lowersplit[:numword - 1] +
-                                    [self._sinoun(lowersplit[numword - 1], 1, gender=gender)] +
+                                    [self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword-1]] +
                                     lowersplit[numword:])
 
         lowersplit = lowerword.split('-')
@@ -2333,7 +2333,7 @@ class engine:
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(
                         lowersplit[:numword - 1] +
-                        [self._sinoun(lowersplit[numword - 1], 1, gender=gender) +
+                        [(self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword-1]) +
                             '-' + lowersplit[numword] + '-']) + ' '.join(lowersplit[(numword + 1):])
 
 # HANDLE PRONOUNS
