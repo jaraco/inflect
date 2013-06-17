@@ -1,3 +1,7 @@
+ver 0.2.5
+
+* Fixed TypeError while parsing compounds (by yavarhusain)
+
 
 ver 0.2.4
 

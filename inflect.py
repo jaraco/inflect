@@ -96,8 +96,8 @@ class BadGenderError(Exception):
 
 __ver_major__ = 0
 __ver_minor__ = 2
-__ver_patch__ = 4
-__ver_sub__ = ""
+__ver_patch__ = 5
+__ver_sub__ = "pre1"
 __version__ = "%d.%d.%d%s" % (__ver_major__, __ver_minor__,
                               __ver_patch__, __ver_sub__)
 
@@ -2324,8 +2324,8 @@ class engine:
             for numword in range(1, len(lowersplit) - 1):
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(lowersplit[:numword - 1] +
-                                    [self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword-1]] +
-                                    lowersplit[numword:])
+                                    [self._sinoun(lowersplit[numword - 1], 1, gender=gender) or
+                                     lowersplit[numword - 1]] + lowersplit[numword:])
 
         lowersplit = lowerword.split('-')
         if len(lowersplit) >= 3:
@@ -2333,7 +2333,7 @@ class engine:
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(
                         lowersplit[:numword - 1] +
-                        [(self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword-1]) +
+                        [(self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword - 1]) +
                             '-' + lowersplit[numword] + '-']) + ' '.join(lowersplit[(numword + 1):])
 
 # HANDLE PRONOUNS
