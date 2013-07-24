@@ -218,7 +218,7 @@ Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
 
 It is also possible to inflect numerals (1,2,3) to ordinals (1st, 2nd, 3rd)
-and to english words ("one", "two", "three).
+and to english words ("one", "two", "three").
 
 In generating these inflections, ``inflect.py`` follows the Oxford
 English Dictionary and the guidelines in Fowler's Modern English
