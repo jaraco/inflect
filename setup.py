@@ -6,7 +6,7 @@ import inflect
 
 here = os.path.dirname(__file__)
 readme_path = os.path.join(here, 'README.rst')
-readme = open(readme_path).read()
+readme = open(readme_path, encoding='utf-8').read()
 
 setup(
     name='inflect',
