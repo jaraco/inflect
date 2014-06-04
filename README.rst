@@ -15,7 +15,7 @@ This document describes version 0.2.4 of inflect.py
 INSTALLATION
 ============
 
-``pip install -e git+https://github.com/benthor/inflect.py#egg=inflect``
+``pip install -e git+https://github.com/pwdyson/inflect.py#egg=inflect``
 
 SYNOPSIS
 ========
