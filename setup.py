@@ -1,12 +1,17 @@
 from distutils.core import setup
 import os
+import sys
 
 import inflect
 
 
 here = os.path.dirname(__file__)
 readme_path = os.path.join(here, 'README.rst')
-readme = open(readme_path).read()
+
+if sys.version_info >= (3, 0):
+    readme = open(readme_path, encoding='utf-8').read()
+else:
+    readme = open(readme_path).read()
 
 setup(
     name='inflect',
