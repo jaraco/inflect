@@ -1,6 +1,7 @@
 ver 0.2.5
 
 * Fixed TypeError while parsing compounds (by yavarhusain)
+* Fixed encoding issue in setup.py on Python 3
 
 
 ver 0.2.4
