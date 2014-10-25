@@ -28,11 +28,4 @@ after_script:
  - pyflakes *.py | tee >(wc -l)
 
 matrix:
-  allow_failures:
-    - python: 2.6
-    - python: 3.2
-    - python: 3.3
-    - python: 3.4
-    - python: pypy
-    - python: pypy3
   fast_finish: true
