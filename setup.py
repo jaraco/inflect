@@ -1,12 +1,13 @@
 from distutils.core import setup
 import os
+import io
 
 import inflect
 
 
 here = os.path.dirname(__file__)
 readme_path = os.path.join(here, 'README.rst')
-readme = open(readme_path, 'rb').read().decode('utf-8')
+readme = io.open(readme_path, encoding='utf-8').read()
 
 setup(
     name='inflect',
