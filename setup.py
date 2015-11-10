@@ -1,7 +1,11 @@
-from distutils.core import setup
 import os
 
 import inflect
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 here = os.path.dirname(__file__)
