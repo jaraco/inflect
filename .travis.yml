@@ -4,11 +4,14 @@ python:
  - pypy
  - pypy3
  - 2.7
+ - 3.5
  - 3.4
  - 3.3
  - 3.2
  - 2.6
- 
+
+sudo: false # Use container-based infrastructure
+
 install:
  - pip install nose
  - pip install coverage
