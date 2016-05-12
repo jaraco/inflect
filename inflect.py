@@ -2306,6 +2306,9 @@ class engine:
         if (self.classical_dict['herd'] and lowerword in pl_sb_uninflected_herd):
             return word
 
+        if lowerword in pl_sb_C_us_us:
+            return word
+
 # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
