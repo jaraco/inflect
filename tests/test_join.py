@@ -24,8 +24,10 @@ def test_join():
         (p.join(words, final_sep='...', conj=''), "apple, banana... carrot"))
 
     eq_(p.join(words, conj='or'),
-        "apple, banana, or carrot", msg='%s != %s    3 words, different conjunction' % (p.join(words, conj='or'),
-        "apple, banana, or carrot"))
+        "apple, banana, or carrot",
+        msg='%s != %s    3 words, different conjunction' % (
+            p.join(words, conj='or'),
+            "apple, banana, or carrot"))
 
     # Three words with semicolons...
     words = ('apple,fuji', 'banana', 'carrot')
