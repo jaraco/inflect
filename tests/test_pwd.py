@@ -298,6 +298,9 @@ class test(unittest.TestCase):
         for sing, plur in (
             ('cat', 'cats'),
             ('die', 'dice'),
+            ('status', 'status'),
+            ('hiatus', 'hiatus'),
+            ('goose', 'geese'),
         ):
             self.assertEqual(p.singular_noun(plur), sing)
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
