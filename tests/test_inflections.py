@@ -72,9 +72,17 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
     eq_(mod_plural, mod_PL_val)
     eq_(class_plural, class_PL_val)
     eq_(is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True,
-        msg='is_eq(%s,%s) == %s != %s' % (singular, mod_plural, is_eq(p, singular, mod_plural), 's:p, p:s or eq'))
+        msg='is_eq(%s,%s) == %s != %s' % (
+            singular,
+            mod_plural,
+            is_eq(p, singular, mod_plural),
+            's:p, p:s or eq'))
     eq_(is_eq(p, mod_plural, singular) in ('p:s', 's:p', 'eq'), True,
-        msg='is_eq(%s,%s) == %s != %s' % (mod_plural, singular, is_eq(p, mod_plural, singular), 's:p, p:s or eq'))
+        msg='is_eq(%s,%s) == %s != %s' % (
+            mod_plural,
+            singular,
+            is_eq(p, mod_plural, singular),
+            's:p, p:s or eq'))
     eq_(is_eq(p, singular, class_plural) in ('s:p', 'p:s', 'eq'), True)
     eq_(is_eq(p, class_plural, singular) in ('p:s', 's:p', 'eq'), True)
     assert_not_equal(singular, '')
@@ -82,10 +90,12 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
 
     if is_nv != '_V':
         eq_(p.singular_noun(mod_plural, 1), singular,
-            msg="p.singular_noun(%s) == %s != %s" % (mod_plural, p.singular_noun(mod_plural, 1), singular))
+            msg="p.singular_noun(%s) == %s != %s" % (
+                mod_plural, p.singular_noun(mod_plural, 1), singular))
 
         eq_(p.singular_noun(class_plural, 1), singular,
-            msg="p.singular_noun(%s) == %s != %s" % (class_plural, p.singular_noun(class_plural, 1), singular))
+            msg="p.singular_noun(%s) == %s != %s" % (
+                class_plural, p.singular_noun(class_plural, 1), singular))
 
     '''
     don't see any test data for this ???
@@ -552,10 +562,12 @@ def get_data():
                 helix  ->  helices
             hepatitis  ->  hepatitises|hepatitides
     TODO:singular_noun 2 values              her  ->  them                           # PRONOUN
-    TODO:singular_noun 2 values              her  ->  their                          # POSSESSIVE ADJ
+    TODO:singular_noun 2 values              her  ->  their
+         # POSSESSIVE ADJ
                  hero  ->  heroes
                herpes  ->  herpes
-    TODO:singular_noun 2 values             hers  ->  theirs                         # POSSESSIVE NOUN
+    TODO:singular_noun 2 values             hers  ->  theirs
+         # POSSESSIVE NOUN
     TODO:singular_noun 2 values          herself  ->  themselves
                hetman  ->  hetmans
                hiatus  ->  hiatuses|hiatus
@@ -565,8 +577,10 @@ def get_data():
     TODO:singular_noun 2 values          himself  ->  themselves
          hippopotamus  ->  hippopotamuses|hippopotami
            Hiroshiman  ->  Hiroshimans
-    TODO:singular_noun 2 values              his  ->  their                          # POSSESSIVE ADJ
-    TODO:singular_noun 2 values              his  ->  theirs                         # POSSESSIVE NOUN
+    TODO:singular_noun 2 values              his  ->  their
+         # POSSESSIVE ADJ
+    TODO:singular_noun 2 values              his  ->  theirs
+         # POSSESSIVE NOUN
     TODO:siverb             hoes  ->  hoe
            honorarium  ->  honorariums|honoraria
                  hoof  ->  hoofs|hooves
@@ -930,9 +944,12 @@ def get_data():
                testes  ->  testes
       TODO:singular_noun multiple return         testis  ->  testes
       TODO:siadj           that  ->  those
-      TODO:siadj          their  ->  their                          # POSSESSIVE FORM (GENDER-INCLUSIVE)
-      TODO:singular_noun multiple return       themself  ->  themselves                     # ugly but gaining currency
-      TODO:singular_noun multiple return           they  ->  they                           # for indeterminate gender
+      TODO:siadj          their  ->  their
+           # POSSESSIVE FORM (GENDER-INCLUSIVE)
+      TODO:singular_noun multiple return       themself  ->  themselves
+           # ugly but gaining currency
+      TODO:singular_noun multiple return           they  ->  they
+           # for indeterminate gender
                 thief  ->  thiefs|thieves
       TODO:siadj           this  ->  these
               thought  ->  thoughts                       # NOUN FORM
@@ -953,8 +970,10 @@ def get_data():
             to itself  ->  to themselves
                 to me  ->  to us
             to myself  ->  to ourselves
-      TODO:singular_noun multivalue        to them  ->  to them                        # for indeterminate gender
-      TODO:singular_noun multivalue    to themself  ->  to themselves                  # ugly but gaining currency
+      TODO:singular_noun multivalue        to them  ->  to them
+           # for indeterminate gender
+      TODO:singular_noun multivalue    to themself  ->  to themselves
+            # ugly but gaining currency
                to you  ->  to you
           to yourself  ->  to yourselves
             Tocharese  ->  Tocharese
