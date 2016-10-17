@@ -275,7 +275,8 @@ pl_sb_C_is_ides_endings = [
     "itis",
 ]
 
-pl_sb_C_is_ides = joinstem(-2, pl_sb_C_is_ides_complete + ['.*%s' % w for w in pl_sb_C_is_ides_endings])
+pl_sb_C_is_ides = joinstem(-2, pl_sb_C_is_ides_complete + [
+    '.*%s' % w for w in pl_sb_C_is_ides_endings])
 
 pl_sb_C_is_ides_list = pl_sb_C_is_ides_complete + pl_sb_C_is_ides_endings
 
@@ -579,7 +580,8 @@ pl_sb_U_man_mans_caps_list = """
 (si_sb_U_man_mans_list, si_sb_U_man_mans_bysize,
     pl_sb_U_man_mans_bysize) = make_pl_si_lists(pl_sb_U_man_mans_list, 's', None, dojoinstem=False)
 (si_sb_U_man_mans_caps_list, si_sb_U_man_mans_caps_bysize,
-    pl_sb_U_man_mans_caps_bysize) = make_pl_si_lists(pl_sb_U_man_mans_caps_list, 's', None, dojoinstem=False)
+    pl_sb_U_man_mans_caps_bysize) = make_pl_si_lists(
+        pl_sb_U_man_mans_caps_list, 's', None, dojoinstem=False)
 
 
 pl_sb_uninflected_s_complete = [
@@ -612,7 +614,8 @@ pl_sb_uninflected_s_endings = [
     "measles",
 ]
 
-pl_sb_uninflected_s = pl_sb_uninflected_s_complete + ['.*%s' % w for w in pl_sb_uninflected_s_endings]
+pl_sb_uninflected_s = pl_sb_uninflected_s_complete + [
+    '.*%s' % w for w in pl_sb_uninflected_s_endings]
 
 pl_sb_uninflected_herd = (
     # DON'T INFLECT IN CLASSICAL MODE, OTHERWISE NORMAL INFLECTION
@@ -1796,7 +1799,7 @@ class engine:
         return False
 
     def _pl_check_plurals_adj(self, word1, word2):
-# VERSION: tuple in endswith requires python 2.5
+        # VERSION: tuple in endswith requires python 2.5
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s", "'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s", "'")) else ''
         # TODO: BUG? report upstream. I don't think you should chop off the s'
@@ -1807,8 +1810,8 @@ class engine:
         # then they return False because they are the same. Need to fix this.
 
         if word1a:
-            if word2a and (self._pl_check_plurals_N(word1a, word2a)
-                           or self._pl_check_plurals_N(word2a, word1a)):
+            if word2a and (self._pl_check_plurals_N(word1a, word2a) or
+                           self._pl_check_plurals_N(word2a, word1a)):
                 return True
         #    if word2b and ( self._pl_check_plurals_N(word1a, word2b)
         #                    or self._pl_check_plurals_N(word2b, word1a) ):
@@ -1830,7 +1833,8 @@ class engine:
 
         if count is not None:
             count = 1 if ((str(count) in pl_count_one) or
-                          (self.classical_dict['zero'] and str(count).lower() in pl_count_zero)) else 2
+                          (self.classical_dict['zero'] and
+                           str(count).lower() in pl_count_zero)) else 2
         else:
             count = ''
         return count
@@ -1898,7 +1902,8 @@ class engine:
                     return ' '.join(
                         lowersplit[:numword - 1] +
                         [self._plnoun(lowersplit[numword - 1], 2) +
-                            '-' + lowersplit[numword] + '-']) + ' '.join(lowersplit[(numword + 1):])
+                            '-' + lowersplit[numword] + '-']
+                        ) + ' '.join(lowersplit[(numword + 1):])
 
 # HANDLE PRONOUNS
 
@@ -1906,7 +1911,8 @@ class engine:
             if lowerword[-k:] in v:  # ends with accusivate pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if lowerword[:pk] in pv:  # starts with a prep
-                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]:  # only whitespace in between
+                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]:
+                            # only whitespace in between
                             return lowerword[:-k] + pl_pron_acc[lowerword[-k:]]
 
         try:
@@ -2336,8 +2342,12 @@ class engine:
                 if lowersplit[numword] in pl_prep_list_da:
                     return ' '.join(
                         lowersplit[:numword - 1] +
-                        [(self._sinoun(lowersplit[numword - 1], 1, gender=gender) or lowersplit[numword - 1]) +
-                            '-' + lowersplit[numword] + '-']) + ' '.join(lowersplit[(numword + 1):])
+                        [(self._sinoun(lowersplit[numword - 1],
+                                       1,
+                                       gender=gender) or
+                         lowersplit[numword - 1]) +
+                            '-' + lowersplit[numword] + '-']
+                        ) + ' '.join(lowersplit[(numword + 1):])
 
 # HANDLE PRONOUNS
 
@@ -2345,7 +2355,8 @@ class engine:
             if lowerword[-k:] in v:  # ends with accusivate pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if lowerword[:pk] in pv:  # starts with a prep
-                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]:  # only whitespace in between
+                        if lowerword.split() == [lowerword[:pk], lowerword[-k:]]:
+                            # only whitespace in between
                             return lowerword[:-k] + get_si_pron('acc', lowerword[-k:], gender)
 
         try:
@@ -2793,7 +2804,10 @@ class engine:
             except TypeError:
                 if '.' in str(num):
                     try:
-                        n = int(num[-1])  # numbers after decimal, so only need last one for ordinal
+                        # numbers after decimal,
+                        # so only need last one for ordinal
+                        n = int(num[-1])
+
                     except ValueError:  # ends with '.', so need to use whole string
                         n = int(num[:-1])
                 else:
@@ -2830,8 +2844,9 @@ class engine:
 
     def hundfn(self, hundreds, tens, units, mindex):
         if hundreds:
+            andword = " %s " % self.number_args['andword'] if tens or units else ''
             return "%s hundred%s%s%s, " % (unit[hundreds],  # use unit not unitfn as simpler
-                                           " %s " % self.number_args['andword'] if tens or units else '',
+                                           andword,
                                            self.tenfn(tens, units),
                                            self.millfn(mindex))
         if tens or units:
@@ -2843,7 +2858,8 @@ class engine:
         if units == 1:
             return " %s, " % self.number_args['one']
         elif units:
-            # TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+            # TODO: bug one and zero are padded with a space but other numbers
+            # aren't. check this in perl
             return "%s, " % unit[units]
         else:
             return " %s, " % self.number_args['zero']
@@ -2851,7 +2867,8 @@ class engine:
     def group1bsub(self, mo):
         units = int(mo.group(1))
         if units:
-            # TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+            # TODO: bug one and zero are padded with a space but other numbers
+            # aren't. check this in perl
             return "%s, " % unit[units]
         else:
             return " %s, " % self.number_args['zero']
@@ -2873,7 +2890,8 @@ class engine:
             hunword = " %s" % self.number_args['one']
         elif hundreds:
             hunword = "%s" % unit[hundreds]
-            # TODO: bug one and zero are padded with a space but other numbers aren't. check this in perl
+            # TODO: bug one and zero are padded with a space but other numbers
+            # aren't. check this in perl
         else:
             hunword = " %s" % self.number_args['zero']
         if tens:

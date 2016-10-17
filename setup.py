@@ -15,7 +15,8 @@ readme = open(readme_path, 'rb').read().decode('utf-8')
 setup(
     name='inflect',
     version=inflect.__version__,
-    description='Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words',
+    description='Correctly generate plurals, singular nouns, ordinals, '
+                'indefinite articles; convert numbers to words',
     long_description=readme,
     author='Paul Dyson',
     author_email='pwdyson@yahoo.com',
@@ -28,10 +29,8 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',

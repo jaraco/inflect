@@ -2,6 +2,11 @@
 inflect.py
 ==========
 
+.. image:: https://travis-ci.org/pwdyson/inflect.py.svg?branch=travis
+    :target: https://travis-ci.org/pwdyson/inflect.py
+.. image:: https://coveralls.io/repos/pwdyson/inflect.py/badge.png?branch=travis
+    :target: https://coveralls.io/r/pwdyson/inflect.py?branch=travis
+
 NAME
 ====
 

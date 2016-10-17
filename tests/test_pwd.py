@@ -9,7 +9,8 @@ import inflect
 
 class test(unittest.TestCase):
     def TODO(self, ans, answer_wanted,
-             answer_gives_now="default_that_will_never_occur__can't_use_None_as_that_is_a_possible_valid_value"):
+             answer_gives_now="default_that_will_never_occur__can't_use_None"
+                              "_as_that_is_a_possible_valid_value"):
         '''
         make this test for future testing
 
@@ -17,7 +18,8 @@ class test(unittest.TestCase):
         '''
         if ans == answer_wanted:
             print('test unexpectedly passed!: %s == %s' % (ans, answer_wanted))
-        if answer_gives_now != "default_that_will_never_occur__can't_use_None_as_that_is_a_possible_valid_value":
+        if answer_gives_now != ("default_that_will_never_occur__can't_use_None"
+                                "_as_that_is_a_possible_valid_value"):
             self.assertEqual(ans, answer_gives_now)
 
     def test_enclose(self):
@@ -253,6 +255,7 @@ class test(unittest.TestCase):
             (p.plural_noun, '', ''),
             (p.plural_noun, 'cow', 'cows'),
             (p.plural_noun, 'thought', 'thoughts'),
+            (p.plural_noun, 'snooze', 'snoozes'),
             (p.plural_verb, '', ''),
             (p.plural_verb, 'runs', 'run'),
             (p.plural_verb, 'thought', 'thought'),
@@ -304,6 +307,23 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing)
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+
+        self.assertEqual(p.singular_noun('cats', count=2), 'cats')
+
+        self.assertEqual(p.singular_noun('zombies'), 'zombie')
+
+        self.assertEqual(p.singular_noun('shoes'), 'shoe')
+
+        self.assertEqual(p.singular_noun('Matisses'), 'Matisse')
+        self.assertEqual(p.singular_noun('bouillabaisses'), 'bouillabaisse')
+
+        self.assertEqual(p.singular_noun('quartzes'), 'quartz')
+
+        self.assertEqual(p.singular_noun('Nietzsches'), 'Nietzsche')
+        self.assertEqual(p.singular_noun('aches'), 'ache')
+
+        self.assertEqual(p.singular_noun('Clives'), 'Clive')
+        self.assertEqual(p.singular_noun('weaves'), 'weave')
 
     def test_gender(self):
         p = inflect.engine()
@@ -366,6 +386,9 @@ class test(unittest.TestCase):
             ('he or she', 'they', 'masculine or feminine'),
         ):
             self.assertEqual(p.singular_noun(plur, gender=gen), sing)
+
+        with self.assertRaises(BadGenderError):
+            p.singular_noun('cats', gender='unknown gender')
 
     def test_plequal(self):
         p = inflect.engine()
@@ -649,7 +672,8 @@ class test(unittest.TestCase):
         self.assertEqual(p._pl_special_verb('canoes'), 'canoe')
         self.assertEqual(p._pl_special_verb('horseshoes'), 'horseshoe')
         self.assertEqual(p._pl_special_verb('does'), 'do')
-        self.assertEqual(p._pl_special_verb('zzzoes'), 'zzzo')  # TODO: what's a real word to test this case?
+        # TODO: what's a real word to test this case?
+        self.assertEqual(p._pl_special_verb('zzzoes'), 'zzzo')
         self.assertEqual(p._pl_special_verb('runs'), 'run')
 
     def test__pl_general_verb(self):
@@ -724,6 +748,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.a('cat', 2), '2 cat')
 
         self.assertEqual(p.a, p.an)
+        self.assertEqual(p.a(''), '')
 
     def test_no(self):
         p = inflect.engine()
@@ -876,7 +901,8 @@ class test(unittest.TestCase):
         self.assertEqual(enword('123456', -1),
                          'one hundred and twenty-three  thousand, four hundred and fifty-six  , ')
         self.assertEqual(enword('1234567', -1),
-                         'one million, two hundred and thirty-four  thousand, five hundred and sixty-seven  , ')
+                         'one million, two hundred and thirty-four  thousand, '
+                         'five hundred and sixty-seven  , ')
 
     def test_numwords(self):
         p = inflect.engine()
@@ -950,7 +976,8 @@ class test(unittest.TestCase):
         self.assertEqual(numwords('1', decimal=None),
                          'one')
         self.assertEqual(numwords('1234.5678', decimal=None),
-                         'twelve million, three hundred and forty-five thousand, six hundred and seventy-eight')
+                         'twelve million, three hundred and forty-five '
+                         'thousand, six hundred and seventy-eight')
 
     def test_numwords_group(self):
         p = inflect.engine()
@@ -1056,7 +1083,8 @@ class test(unittest.TestCase):
             self.assertEqual("There %s%s" % (p.plural_verb('was', errors), p.no(" error", errors)),
                              txt)
 
-            self.assertEqual(p.inflect("There plural_verb(was,%d) no(error,%d)" % (errors, errors)),
+            self.assertEqual(p.inflect(
+                "There plural_verb(was,%d) no(error,%d)" % (errors, errors)),
                              txt)
 
         for num1, num2, txt in (
@@ -1104,6 +1132,11 @@ class test(unittest.TestCase):
                      'wordlist',
                      ):
             self.assertRaises(DeprecationWarning, getattr, p, meth)
+
+    def test_unknown_method(self):
+        p = inflect.engine()
+        with self.assertRaises(AttributeError):
+            p.unknown_method
 
 
 # TODO: test .inflectrc file code

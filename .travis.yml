@@ -1,0 +1,26 @@
+language: python
+
+python:
+ - pypy
+ - pypy3
+ - 2.7
+ - 3.5
+ - 3.4
+ - 3.3
+
+sudo: false # Use container-based infrastructure
+
+install:
+ - pip install coverage tox-travis
+
+script: tox
+
+after_success:
+ - pip install coveralls
+ - coveralls
+
+after_script:
+ - coverage report
+
+matrix:
+  fast_finish: true

@@ -20,29 +20,37 @@ def test_join():
         "apple, banana... and carrot", msg='3 words, different final sep')
 
     eq_(p.join(words, final_sep='...', conj=''),
-        "apple, banana... carrot", msg='-->%s != %s<--   3 words, different final sep, no conjunction' %
-        (p.join(words, final_sep='...', conj=''), "apple, banana... carrot"))
+        "apple, banana... carrot",
+        msg='-->%s != %s<--   3 words, different final sep, no conjunction' % (
+        p.join(words, final_sep='...', conj=''), "apple, banana... carrot"))
 
     eq_(p.join(words, conj='or'),
-        "apple, banana, or carrot", msg='%s != %s    3 words, different conjunction' % (p.join(words, conj='or'),
-        "apple, banana, or carrot"))
+        "apple, banana, or carrot",
+        msg='%s != %s    3 words, different conjunction' % (
+            p.join(words, conj='or'),
+            "apple, banana, or carrot"))
 
     # Three words with semicolons...
     words = ('apple,fuji', 'banana', 'carrot')
 
     eq_(p.join(words),
         "apple,fuji; banana; and carrot",
-        msg='%s != %s<-- comma-inclusive 3 words' % (p.join(words), "apple,fuji, banana; and carrot"))
+        msg='%s != %s<-- comma-inclusive 3 words' % (
+            p.join(words), "apple,fuji, banana; and carrot"))
 
     eq_(p.join(words, final_sep=''),
-        "apple,fuji; banana and carrot", msg='join(%s) == "%s" != "%s"' % (words, p.join(words, final_sep=''),
-                                                                           "apple,fuji) banana and carrot"))
+        "apple,fuji; banana and carrot",
+        msg='join(%s) == "%s" != "%s"' % (
+            words,
+            p.join(words, final_sep=''),
+            "apple,fuji) banana and carrot"))
 
     eq_(p.join(words, final_sep='...'),
         "apple,fuji; banana... and carrot", msg='comma-inclusive 3 words, different final sep')
 
     eq_(p.join(words, final_sep='...', conj=''),
-        "apple,fuji; banana... carrot", msg='comma-inclusive 3 words, different final sep, no conjunction')
+        "apple,fuji; banana... carrot",
+        msg='comma-inclusive 3 words, different final sep, no conjunction')
 
     eq_(p.join(words, conj='or'),
         "apple,fuji; banana; or carrot", msg='comma-inclusive 3 words, different conjunction')
