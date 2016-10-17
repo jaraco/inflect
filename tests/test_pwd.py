@@ -255,6 +255,7 @@ class test(unittest.TestCase):
             (p.plural_noun, '', ''),
             (p.plural_noun, 'cow', 'cows'),
             (p.plural_noun, 'thought', 'thoughts'),
+            (p.plural_noun, 'snooze', 'snoozes'),
             (p.plural_verb, '', ''),
             (p.plural_verb, 'runs', 'run'),
             (p.plural_verb, 'thought', 'thought'),
@@ -303,6 +304,23 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing)
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+
+        self.assertEqual(p.singular_noun('cats', count=2), 'cats')
+
+        self.assertEqual(p.singular_noun('zombies'), 'zombie')
+
+        self.assertEqual(p.singular_noun('shoes'), 'shoe')
+
+        self.assertEqual(p.singular_noun('Matisses'), 'Matisse')
+        self.assertEqual(p.singular_noun('bouillabaisses'), 'bouillabaisse')
+
+        self.assertEqual(p.singular_noun('quartzes'), 'quartz')
+
+        self.assertEqual(p.singular_noun('Nietzsches'), 'Nietzsche')
+        self.assertEqual(p.singular_noun('aches'), 'ache')
+
+        self.assertEqual(p.singular_noun('Clives'), 'Clive')
+        self.assertEqual(p.singular_noun('weaves'), 'weave')
 
     def test_gender(self):
         p = inflect.engine()
@@ -365,6 +383,9 @@ class test(unittest.TestCase):
             ('he or she', 'they', 'masculine or feminine'),
         ):
             self.assertEqual(p.singular_noun(plur, gender=gen), sing)
+
+        with self.assertRaises(BadGenderError):
+            p.singular_noun('cats', gender='unknown gender')
 
     def test_plequal(self):
         p = inflect.engine()
@@ -724,6 +745,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.a('cat', 2), '2 cat')
 
         self.assertEqual(p.a, p.an)
+        self.assertEqual(p.a(''), '')
 
     def test_no(self):
         p = inflect.engine()
@@ -1107,6 +1129,11 @@ class test(unittest.TestCase):
                      'wordlist',
                      ):
             self.assertRaises(DeprecationWarning, getattr, p, meth)
+
+    def test_unknown_method(self):
+        p = inflect.engine()
+        with self.assertRaises(AttributeError):
+            p.unknown_method
 
 
 # TODO: test .inflectrc file code
