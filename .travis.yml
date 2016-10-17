@@ -11,8 +11,7 @@ python:
 sudo: false # Use container-based infrastructure
 
 install:
- - pip install coverage
- - pip install tox-travis
+ - pip install coverage tox-travis
 
 script: tox
 
