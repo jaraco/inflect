@@ -1478,42 +1478,42 @@ class engine:
                 total = -1
                 while total:
                     (section, total) = subn(
-                        r"(?x)\bplural     \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural     \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.plmo, section)
                     (section, count) = subn(
-                        r"(?x)\bplural_noun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_noun   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.plnounmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bplural_verb   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_verb   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.plverbmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bplural_adj \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bplural_adj \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.pladjmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bsingular_noun   \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bsingular_noun   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.sinounmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\ban?    \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\ban?    \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.amo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bno    \( ([^),]*) (, ([^)]*) )? \)  ",
+                        r"(?x)\bno    \( ([^),]*) (, ([^)]*\)*) )? \)  ",
                         self.nomo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bordinal        \( ([^)]*) \)            ",
+                        r"(?x)\bordinal        \( ([^)]*\)*) \)            ",
                         self.ordinalmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bnumber_to_words  \( ([^)]*) \)            ",
+                        r"(?x)\bnumber_to_words  \( ([^)]*\)*) \)            ",
                         self.numwordsmo, section)
                     total += count
                     (section, count) = subn(
-                        r"(?x)\bpresent_participle \( ([^)]*) \)            ",
+                        r"(?x)\bpresent_participle \( ([^)]*\)*) \)            ",
                         self.prespartmo, section)
                     total += count
 
