@@ -215,6 +215,16 @@ def test_prespart():
     eq_(p.present_participle("skis"), "skiing")
 
 
+def test_inflect_on_tuple_sets():
+    p = inflect.engine()
+    eq_(p.inflect("plural(error, (0, 1, 2)"), "errors")
+    eq_(p.inflect("plural_noun(error, (0, 1, 2))"), "errors")
+    eq_(p.inflect("plural_adj(a, (0, 1, 2))"), "some")
+    eq_(p.inflect("plural_verb(was, (0, 1, 2))"), "were")
+    eq_(p.inflect("an(error, (1, 2, 3))"), " (1, 2, 3) error")
+    eq_(p.inflect("number_to_words((10, 20))"), 'one thousand and twenty')
+
+
 def get_data():
     return '''
                     a  ->  as                             # NOUN FORM
