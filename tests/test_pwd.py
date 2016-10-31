@@ -107,7 +107,7 @@ class test(unittest.TestCase):
         p = inflect.engine()
         for txt, ans in (
             ("num(1)", "1"),
-            ("num(1,0)", "1"),
+            ("num(1,0)", ""),
             ("num(1,1)", "1"),
             ("num(1)   ", "1   "),
             ("   num(1)   ", "   1   "),
@@ -127,7 +127,7 @@ class test(unittest.TestCase):
              "a rock no cats 3rd one thousand, two hundred and thirty-four running"),
 
             # TODO: extra space when space before number. Is this desirable?
-            ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"),
+            ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat 2 cat"),
         ):
             self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
 
@@ -306,7 +306,7 @@ class test(unittest.TestCase):
             ('goose', 'geese'),
         ):
             self.assertEqual(p.singular_noun(plur), sing)
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         self.assertEqual(p.singular_noun('cats', count=2), 'cats')
 
@@ -337,7 +337,7 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing,
                              "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('masculine')
         for sing, plur in (
@@ -349,7 +349,7 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing,
                              "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('gender-neutral')
         for sing, plur in (
@@ -361,7 +361,7 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing,
                              "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('neuter')
         for sing, plur in (
@@ -373,7 +373,7 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(p.singular_noun(plur), sing,
                              "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         self.assertRaises(BadGenderError, p.gender, 'male')
 
@@ -1101,7 +1101,7 @@ class test(unittest.TestCase):
 
             self.assertEqual(
                 p.inflect(
-                    'num(%d,)plural(I) plural_verb(saw) num(%d) plural_noun(saw)' % (num1, num2)
+                    'num(%d,0)plural(I) plural_verb(saw) num(%d) plural_noun(saw)' % (num1, num2)
                 ), txt)
 
         self.assertEqual(p.a('a cat'), 'a cat')
