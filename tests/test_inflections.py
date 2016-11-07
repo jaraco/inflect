@@ -218,11 +218,13 @@ def test_prespart():
 def test_inflect_on_tuples():
     p = inflect.engine()
     eq_(p.inflect("plural(egg, ('a', 'b', 'c'))"), "eggs")
+    eq_(p.inflect("plural(egg, ['a', 'b', 'c'])"), "eggs")
     eq_(p.inflect("plural_noun(egg, ('a', 'b', 'c'))"), "eggs")
     eq_(p.inflect("plural_adj(a, ('a', 'b', 'c'))"), "some")
     eq_(p.inflect("plural_verb(was, ('a', 'b', 'c'))"), "were")
     eq_(p.inflect("singular_noun(eggs, ('a', 'b', 'c'))"), "eggs")
     eq_(p.inflect("an(error, ('a', 'b', 'c'))"), "('a', 'b', 'c') error")
+    eq_(p.inflect("This is not a function(name)"), "This is not a function(name)")
 
 
 def get_data():
