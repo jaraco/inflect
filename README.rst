@@ -142,18 +142,6 @@ SYNOPSIS
     words = p.number_to_words(  11, threshold=10);    # "11"
     words = p.number_to_words(1000, threshold=10);    # "1,000"
 
- # JOIN WORDS INTO A LIST:
-
-    mylist = join(("apple", "banana", "carrot"))
-        # "apple, banana, and carrot"
-
-    mylist = join(("apple", "banana"))
-        # "apple and banana"
-
-    mylist = join(("apple", "banana", "carrot"), final_sep="")
-        # "apple, banana and carrot"
-
-
  # REQUIRE "CLASSICAL" PLURALS (EG: "focus"->"foci", "cherub"->"cherubim")
 
       p.classical()               # USE ALL CLASSICAL PLURALS
