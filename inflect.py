@@ -94,6 +94,7 @@ class BadRcFileError(Exception):
 class BadGenderError(Exception):
     pass
 
+
 __ver_major__ = 0
 __ver_minor__ = 2
 __ver_patch__ = 5
@@ -990,6 +991,7 @@ def get_si_pron(thecase, word, gender):
         return sing[gender]  # has several types due to gender
     except TypeError:
         return sing  # answer independent of gender
+
 
 plverb_irregular_pres = {
     # 1st PERS. SING.   2ND PERS. SING.   3RD PERS. SINGULAR
