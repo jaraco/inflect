@@ -2,10 +2,10 @@
 inflect.py
 ==========
 
-.. image:: https://travis-ci.org/jazzband/inflect.py.svg?branch=master
-    :target: https://travis-ci.org/jazzband/inflect.py
-.. image:: https://coveralls.io/repos/github/jazzband/inflect.py/badge.svg?branch=master
-    :target: https://coveralls.io/github/jazzband/inflect.py?branch=master
+.. image:: https://travis-ci.org/jazzband/inflect.svg?branch=master
+    :target: https://travis-ci.org/jazzband/inflect
+.. image:: https://coveralls.io/repos/github/jazzband/inflect/badge.svg?branch=master
+    :target: https://coveralls.io/github/jazzband/inflect?branch=master
 .. image:: https://jazzband.co/static/img/jazzband.svg
    :target: https://jazzband.co/
    :alt: Jazzband
