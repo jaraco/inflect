@@ -6,6 +6,11 @@ inflect.py
     :target: https://travis-ci.org/jazzband/inflect.py
 .. image:: https://coveralls.io/repos/github/jazzband/inflect.py/badge.svg?branch=master
     :target: https://coveralls.io/github/jazzband/inflect.py?branch=master
+.. image:: https://jazzband.co/static/img/jazzband.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
+
+This is a `Jazzband <https://jazzband.co>`_ project. By contributing you agree to abide by the `Contributor Code of Conduct <https://jazzband.co/about/conduct>`_ and follow the `guidelines <https://jazzband.co/about/guidelines>`_.
 
 NAME
 ====
