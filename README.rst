@@ -17,11 +17,6 @@ NAME
 
 inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
 
-VERSION
-=======
-
-This document describes the latest version of inflect.
-
 INSTALLATION
 ============
 
