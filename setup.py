@@ -42,5 +42,6 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Linguistic',
-    ]
+    ],
+    python_requires=">=2.7,!=3.2",
 )
