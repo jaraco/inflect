@@ -1,5 +1,6 @@
 ver 0.3.0
 
+* Moved hosting to `jazzband <https://github.com/jazzband/inflect>`_.
 
 ver 0.2.5
 

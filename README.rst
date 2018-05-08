@@ -2,10 +2,10 @@
 inflect.py
 ==========
 
-.. image:: https://travis-ci.org/pwdyson/inflect.py.svg?branch=master
-    :target: https://travis-ci.org/pwdyson/inflect.py
-.. image:: https://coveralls.io/repos/github/pwdyson/inflect.py/badge.svg?branch=master
-    :target: https://coveralls.io/github/pwdyson/inflect.py?branch=master
+.. image:: https://travis-ci.org/jazzband/inflect.py.svg?branch=master
+    :target: https://travis-ci.org/jazzband/inflect.py
+.. image:: https://coveralls.io/repos/github/jazzband/inflect.py/badge.svg?branch=master
+    :target: https://coveralls.io/github/jazzband/inflect.py?branch=master
 
 NAME
 ====
@@ -15,12 +15,12 @@ inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite ar
 VERSION
 =======
 
-This document describes version 0.2.4 of inflect.py
+This document describes the latest version of inflect.
 
 INSTALLATION
 ============
 
-``pip install -e git+https://github.com/pwdyson/inflect.py#egg=inflect``
+``pip install inflect``
 
 SYNOPSIS
 ========
@@ -162,7 +162,7 @@ SYNOPSIS
       p.classical(all=False)      # SWITCH OFF CLASSICAL MODE
 
       p.classical(zero=True)      #  "no error" INSTEAD OF "no errors"
-      p.classical(zero=False)     #  "no errors" INSTEAD OF "no error" 
+      p.classical(zero=False)     #  "no errors" INSTEAD OF "no error"
 
       p.classical(herd=True)      #  "2 buffalo" INSTEAD OF "2 buffalos"
       p.classical(herd=False)     #  "2 buffalos" INSTEAD OF "2 buffalo"
@@ -217,7 +217,7 @@ provided. Where appropriate, "classical" variants (for example: "brother" ->
 "brethren", "dogma" -> "dogmata", etc.) are also provided.
 
 Single forms of nouns are also provided. The gender of singular pronouns
-can be chosen (for example "they" -> "it" or "she" or "he" or "they"). 
+can be chosen (for example "they" -> "it" or "she" or "he" or "they").
 
 Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
@@ -384,7 +384,7 @@ In some contexts, the need to supply an explicit count to the various
 inflect.py therefore provides a method
 (``num(count=None, show=None)``) which may be used to set a persistent "default number"
 value. If such a value is set, it is subsequently used whenever an
-optional second "number" argument is omitted. The default value thus set 
+optional second "number" argument is omitted. The default value thus set
 can subsequently be removed by calling ``num()`` with no arguments.
 Hence we could rewrite the previous example::
 
@@ -408,7 +408,7 @@ instead of its first argument. For example::
     print(p.num(errors,0), p.no("error"), p.plural_verb(" was"), " detected.")
     if severity > 1:
         print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
-    
+
 
 
 Number-insensitive equality
@@ -533,7 +533,7 @@ exists at the start of the string. Thus::
 ``a()`` and ``an()`` both take an optional second argument. As with the
 ``plural...`` methods, this second argument is a "number" specifier. If
 its value is ``1`` (or some other value implying singularity), ``a()`` and
-``an()`` insert "a" or "an" as appropriate. If the number specifier 
+``an()`` insert "a" or "an" as appropriate. If the number specifier
 implies plurality, (``a()`` and ``an()`` insert the actual second argument instead.
 For example::
 
@@ -546,7 +546,7 @@ Note that, as implied by the previous examples, ``a()`` and
 ``an()`` both assume that their job is merely to provide the correct
 qualifier for a word (that is: "a", "an", or the specified count).
 In other words, they assume that the word they are given has
-already been correctly inflected for plurality. Hence, if ``N`` 
+already been correctly inflected for plurality. Hence, if ``N``
 has the value 2, then::
 
       print(p.a("cat",N))
@@ -566,7 +566,7 @@ solution is::
 
       p.num(N)
       print(p.a(p.plural("cat")))
-    
+
 
 Indefinite articles and initialisms
 -----------------------------------
@@ -659,7 +659,7 @@ and returns an English representation of that number.
 puts the string::
 
     "one million, two hundred and thirty-four thousand, five hundred and sixty-seven"
-    
+
 into ``words``.
 
 A list can be return where each comma-separated chunk is returned as a separate element.
@@ -757,7 +757,7 @@ occasionally other variants), depending on the context. So there is a
         #     two bottles of beer on the wall
         #     a solitary bottle of beer on the wall
         #     no more bottles of beer on the wall
-              
+
 Care is needed if the word "a/an" is to be used as a ``'one'`` value.
 Unless the next word is known in advance, it's almost always necessary
 to use the ``A`` function as well::
@@ -892,7 +892,7 @@ MODERN VS CLASSICAL INFLECTIONS
 ===============================
 
 Certain words, mainly of Latin or Ancient Greek origin, can form
-plurals either using the standard English "-s" suffix, or with 
+plurals either using the standard English "-s" suffix, or with
 their original Latin or Greek inflections. For example::
 
         p.plural("stigma")            # -> "stigmas" or "stigmata"
@@ -906,14 +906,14 @@ their original Latin or Greek inflections. For example::
 inflect.py caters to such words by providing an
 "alternate state" of inflection known as "classical mode".
 By default, words are inflected using their contemporary English
-plurals, but if classical mode is invoked, the more traditional 
+plurals, but if classical mode is invoked, the more traditional
 plural forms are returned instead.
 
 The method ``classical()`` controls this feature.
 If ``classical()`` is called with no arguments, it unconditionally
 invokes classical mode. If it is called with a single argument, it
 turns all classical inflects on or off (depending on whether the argument is
-true or false). If called with two or more arguments, those arguments 
+true or false). If called with two or more arguments, those arguments
 specify which aspects of classical behaviour are to be used.
 
 Thus::
@@ -960,7 +960,7 @@ the programmer to override the module's behaviour for specific cases:
 ``defnoun(singular, plural)``
 
  The ``defnoun`` method takes a pair of string arguments: the singular and the
- plural forms of the noun being specified. The singular form 
+ plural forms of the noun being specified. The singular form
  specifies a pattern to be interpolated (as ``m/^(?:$first_arg)$/i``).
  Any noun matching this pattern is then replaced by the string in the
  second argument. The second argument specifies a string which is
@@ -1136,12 +1136,12 @@ Specific diagnostics related to user-defined inflections are:
 
  The plural form(s) of a user-defined noun or verb
  (as defined by a call to ``defnoun``, ``defverb`` or ``defadj``)
- is not a valid Perl interpolated string (usually because it 
+ is not a valid Perl interpolated string (usually because it
  interpolates some undefined variable).
 
 ``"Bad .inflectrc file (%s): %s"``
 
- Some other problem occurred in loading the named local 
+ Some other problem occurred in loading the named local
  or global F<.inflectrc> file. The Perl error message (including
  the line number) is also given.
 
@@ -1169,7 +1169,7 @@ verbs, and no inflection for adjectives.
  ninety-nine quintillion, nine hundred and ninety-nine quadrillion, nine
  hundred and ninety-nine trillion, nine hundred and ninety-nine billion,
  nine hundred and ninety-nine million, nine hundred and ninety-nine
- thousand, nine hundred and ninety-nine :-) 
+ thousand, nine hundred and ninety-nine :-)
 
  The problem is that ``number_to_words`` doesn't know any
  words for number components bigger than "decillion".
@@ -1360,7 +1360,7 @@ COPYRIGHT
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    The original Perl module Lingua::EN::Inflect by Damian Conway is 
+    The original Perl module Lingua::EN::Inflect by Damian Conway is
     available from http://search.cpan.org/~dconway/
 
     This module can be downloaded at http://pypi.python.org/pypi/inflect
