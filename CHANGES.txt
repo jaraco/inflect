@@ -1,3 +1,6 @@
+ver 0.3.0
+
+
 ver 0.2.5
 
 * Fixed TypeError while parsing compounds (by yavarhusain)
@@ -49,8 +52,8 @@ ver 0.2.0
   plverbequal -> compare_verbs
   pladjequal -> compare_adjs
   wordlist -> join
-  
-  
+
+
 * change classical() to only accept keyword args: only one way to do it
 
 * fix bug in numwords where hundreds was giving the wrong number when group=3
