@@ -99,18 +99,6 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
             msg="p.singular_noun(%s) == %s != %s" % (
                 class_plural, p.singular_noun(class_plural, 1), singular))
 
-    '''
-    don't see any test data for this ???
-    elsif (/^\s+(an?)\s+(.*?)\s*$/)
-    {
-        $article = $1
-        $word    = $2
-        $Aword   = A($word)
-
-        ok ("$article $word" eq $Aword, "$article $word")
-    }
-    '''
-
 
 def test_def():
     p = inflect.engine()
