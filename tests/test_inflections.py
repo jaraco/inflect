@@ -1,6 +1,8 @@
 import os
 import io
 
+import six
+
 from nose.tools import eq_, assert_not_equal
 
 import inflect
@@ -208,4 +210,4 @@ def test_prespart():
 def get_data():
     filename = os.path.join(os.path.dirname(__file__), 'inflections.txt')
     with io.open(filename) as strm:
-        return list(map(str.strip, strm))
+        return list(map(six.text_type.strip, strm))
