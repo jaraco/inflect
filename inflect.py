@@ -846,7 +846,7 @@ plverb_special_s = enclose('|'.join(
 ))
 
 pl_sb_postfix_adj = {
-    'general': ['(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
+    'general': [r'(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
     'martial': ['court'],
 }
 
@@ -2780,7 +2780,7 @@ class engine:
                 (r"^(hoe)$", r"\g<1>"),
                 (r"([^e])e$", r"\g<1>"),
                 (r"er$", r"er"),
-                (r"([^aeiou][aeiouy]([bdgmnprst]))$", "\g<1>\g<2>"),
+                (r"([^aeiou][aeiouy]([bdgmnprst]))$", r"\g<1>\g<2>"),
         ):
             (ans, num) = subn(pat, repl, plv)
             if num:
