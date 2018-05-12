@@ -3,3 +3,4 @@ include CHANGES.txt
 include README.rst
 include tests/test*.py
 include tests/words.txt
+include tests/inflections.txt
