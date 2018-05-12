@@ -44,4 +44,7 @@ setup(
         'Topic :: Text Processing :: Linguistic',
     ],
     python_requires=">=2.7,!=3.2",
+    setup_requires=[
+        'setuptools_scm',
+    ],
 )
