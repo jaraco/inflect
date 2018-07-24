@@ -76,13 +76,13 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
     eq_(mod_plural, mod_PL_val)
     eq_(class_plural, class_PL_val)
     eq_(is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True,
-        msg='is_eq(%s,%s) == %s != %s' % (
+        msg='is_eq({},{}) == {} != {}'.format(
             singular,
             mod_plural,
             is_eq(p, singular, mod_plural),
             's:p, p:s or eq'))
     eq_(is_eq(p, mod_plural, singular) in ('p:s', 's:p', 'eq'), True,
-        msg='is_eq(%s,%s) == %s != %s' % (
+        msg='is_eq({},{}) == {} != {}'.format(
             mod_plural,
             singular,
             is_eq(p, mod_plural, singular),
@@ -94,11 +94,11 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
 
     if is_nv != '_V':
         eq_(p.singular_noun(mod_plural, 1), singular,
-            msg="p.singular_noun(%s) == %s != %s" % (
+            msg="p.singular_noun({}) == {} != {}".format(
                 mod_plural, p.singular_noun(mod_plural, 1), singular))
 
         eq_(p.singular_noun(class_plural, 1), singular,
-            msg="p.singular_noun(%s) == %s != %s" % (
+            msg="p.singular_noun({}) == {} != {}".format(
                 class_plural, p.singular_noun(class_plural, 1), singular))
 
 

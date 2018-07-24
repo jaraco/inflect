@@ -17,7 +17,7 @@ class test(unittest.TestCase):
         so can easily rename these to assertEqual when code ready
         '''
         if ans == answer_wanted:
-            print('test unexpectedly passed!: %s == %s' % (ans, answer_wanted))
+            print('test unexpectedly passed!: {} == {}'.format(ans, answer_wanted))
         if answer_gives_now != ("default_that_will_never_occur__can't_use_None"
                                 "_as_that_is_a_possible_valid_value"):
             self.assertEqual(ans, answer_gives_now)
@@ -113,7 +113,7 @@ class test(unittest.TestCase):
             ("   num(1)   ", "   1   "),
             ("num(3) num(1)", "3 1"),
         ):
-            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
+            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans))
 
         for txt, ans in (
             ("plural(rock)", "rocks"),
@@ -129,7 +129,7 @@ class test(unittest.TestCase):
             # TODO: extra space when space before number. Is this desirable?
             ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"),
         ):
-            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("%s") != "%s"' % (txt, ans))
+            self.assertEqual(p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans))
 
     def test_user_input_fns(self):
         p = inflect.engine()
@@ -269,7 +269,7 @@ class test(unittest.TestCase):
             (p.plural_adj, "child's", "children's"),
         ):
             self.assertEqual(fn(sing), plur,
-                             msg='%s("%s") == "%s" != "%s"' % (
+                             msg='{}("{}") == "{}" != "{}"'.format(
                                  fn.__name__, sing, fn(sing), plur))
 
         for sing, num, plur in (
@@ -336,7 +336,10 @@ class test(unittest.TestCase):
             ('to herself', 'to themselves'),
         ):
             self.assertEqual(p.singular_noun(plur), sing,
-                             "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+                             "singular_noun({}) == {} != {}".format(
+                                plur,
+                                p.singular_noun(plur),
+                                sing))
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         p.gender('masculine')
@@ -348,7 +351,10 @@ class test(unittest.TestCase):
             ('to himself', 'to themselves'),
         ):
             self.assertEqual(p.singular_noun(plur), sing,
-                             "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+                             "singular_noun({}) == {} != {}".format(
+                                plur,
+                                p.singular_noun(plur),
+                                sing))
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         p.gender('gender-neutral')
@@ -360,7 +366,10 @@ class test(unittest.TestCase):
             ('to themself', 'to themselves'),
         ):
             self.assertEqual(p.singular_noun(plur), sing,
-                             "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+                             "singular_noun({}) == {} != {}".format(
+                                plur,
+                                p.singular_noun(plur),
+                                sing))
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         p.gender('neuter')
@@ -372,7 +381,10 @@ class test(unittest.TestCase):
             ('to itself', 'to themselves'),
         ):
             self.assertEqual(p.singular_noun(plur), sing,
-                             "singular_noun(%s) == %s != %s" % (plur, p.singular_noun(plur), sing))
+                             "singular_noun({}) == {} != {}".format(
+                                plur,
+                                p.singular_noun(plur),
+                                sing))
             self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
 
         self.assertRaises(BadGenderError, p.gender, 'male')
@@ -567,11 +579,11 @@ class test(unittest.TestCase):
             ('tomato', 'tomatoes'),
         ):
             self.assertEqual(p._plnoun(sing), plur,
-                             msg='p._plnoun("%s") == %s != "%s"' % (
+                             msg='p._plnoun("{}") == {} != "{}"'.format(
                                  sing, p._plnoun(sing), plur))
 
             self.assertEqual(p._sinoun(plur), sing,
-                             msg='p._sinoun("%s") != "%s"' % (plur, sing))
+                             msg='p._sinoun("{}") != "{}"'.format(plur, sing))
 
         # words where forming singular is ambiguious or not attempted
         for sing, plur in (
@@ -581,7 +593,7 @@ class test(unittest.TestCase):
             ('Jess', 'Jesses'),
         ):
             self.assertEqual(p._plnoun(sing), plur,
-                             msg='p._plnoun("%s") != "%s"' % (sing, plur))
+                             msg='p._plnoun("{}") != "{}"'.format(sing, plur))
 
         for sing, plur in (
             # TODO: does not keep case
@@ -936,7 +948,7 @@ class test(unittest.TestCase):
             (1, 'a solitary bottle of beer on the wall'),
             (0, 'no more bottles of beer on the wall'),
         ):
-            self.assertEqual("%s%s" % (
+            self.assertEqual("{}{}".format(
                 numwords(n, one='a solitary', zero='no more'),
                 p.plural(" bottle of beer on the wall", n)),
                 txt)
@@ -1080,7 +1092,8 @@ class test(unittest.TestCase):
             (1, 'There was 1 error'),
             (2, 'There were 2 errors'),
         ):
-            self.assertEqual("There %s%s" % (p.plural_verb('was', errors), p.no(" error", errors)),
+            self.assertEqual("There {}{}".format(p.plural_verb('was', errors),
+                                                 p.no(" error", errors)),
                              txt)
 
             self.assertEqual(p.inflect(
@@ -1091,7 +1104,7 @@ class test(unittest.TestCase):
             (1, 2, 'I saw 2 saws'),
             (2, 1, 'we saw 1 saw'),
         ):
-            self.assertEqual("%s%s%s %s%s" % (
+            self.assertEqual("{}{}{} {}{}".format(
                 p.num(num1, ""),
                 p.plural("I"),
                 p.plural_verb(" saw"),
@@ -1112,7 +1125,7 @@ class test(unittest.TestCase):
             ('ewe', 'a ewe'),
             ('hour', 'an hour'),
         ):
-            self.assertEqual(p.a('%s %s' % (p.number_to_words(1, one='a'), word)), txt)
+            self.assertEqual(p.a('{} {}'.format(p.number_to_words(1, one='a'), word)), txt)
 
         p.num(2)
 

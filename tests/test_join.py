@@ -21,12 +21,12 @@ def test_join():
 
     eq_(p.join(words, final_sep='...', conj=''),
         "apple, banana... carrot",
-        msg='-->%s != %s<--   3 words, different final sep, no conjunction' % (
+        msg='-->{} != {}<--   3 words, different final sep, no conjunction'.format(
         p.join(words, final_sep='...', conj=''), "apple, banana... carrot"))
 
     eq_(p.join(words, conj='or'),
         "apple, banana, or carrot",
-        msg='%s != %s    3 words, different conjunction' % (
+        msg='{} != {}    3 words, different conjunction'.format(
             p.join(words, conj='or'),
             "apple, banana, or carrot"))
 
@@ -35,12 +35,12 @@ def test_join():
 
     eq_(p.join(words),
         "apple,fuji; banana; and carrot",
-        msg='%s != %s<-- comma-inclusive 3 words' % (
+        msg='{} != {}<-- comma-inclusive 3 words'.format(
             p.join(words), "apple,fuji, banana; and carrot"))
 
     eq_(p.join(words, final_sep=''),
         "apple,fuji; banana and carrot",
-        msg='join(%s) == "%s" != "%s"' % (
+        msg='join({}) == "{}" != "{}"'.format(
             words,
             p.join(words, final_sep=''),
             "apple,fuji) banana and carrot"))
@@ -68,11 +68,11 @@ def test_join():
         "apple and carrot", msg='2 words, different final sep')
 
     eq_(p.join(words, final_sep='...', conj=''),
-        "apple carrot", msg="join(%s, final_sep='...', conj='') == %s != %s" % (
+        "apple carrot", msg="join({}, final_sep='...', conj='') == {} != {}".format(
             words, p.join(words, final_sep='...', conj=''), 'apple carrot'))
 
     eq_(p.join(words, final_sep='...', conj='', conj_spaced=False),
-        "applecarrot", msg="join(%s, final_sep='...', conj='') == %s != %s" % (
+        "applecarrot", msg="join({}, final_sep='...', conj='') == {} != {}".format(
             words, p.join(words, final_sep='...', conj=''), 'applecarrot'))
 
     eq_(p.join(words, conj='or'),
