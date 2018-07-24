@@ -70,6 +70,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.plural_noun('formula'), 'formulae',
                          msg="classical 'ancient' active")
 
+
 if __name__ == '__main__':
     try:
         unittest.main()

@@ -1,5 +1,0 @@
-include COPYING.txt
-include CHANGES.txt
-include README.rst
-include tests/test*.py
-include tests/words.txt

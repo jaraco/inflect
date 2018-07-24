@@ -94,12 +94,8 @@ class BadRcFileError(Exception):
 class BadGenderError(Exception):
     pass
 
-__ver_major__ = 0
-__ver_minor__ = 2
-__ver_patch__ = 5
-__ver_sub__ = ""
-__version__ = "%d.%d.%d%s" % (__ver_major__, __ver_minor__,
-                              __ver_patch__, __ver_sub__)
+
+__version__ = "0.3.1"
 
 
 STDOUT_ON = False
@@ -845,7 +841,7 @@ plverb_special_s = enclose('|'.join(
 ))
 
 pl_sb_postfix_adj = {
-    'general': ['(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
+    'general': [r'(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
     'martial': ['court'],
 }
 
@@ -990,6 +986,7 @@ def get_si_pron(thecase, word, gender):
         return sing[gender]  # has several types due to gender
     except TypeError:
         return sing  # answer independent of gender
+
 
 plverb_irregular_pres = {
     # 1st PERS. SING.   2ND PERS. SING.   3RD PERS. SINGULAR
@@ -2778,7 +2775,7 @@ class engine:
                 (r"^(hoe)$", r"\g<1>"),
                 (r"([^e])e$", r"\g<1>"),
                 (r"er$", r"er"),
-                (r"([^aeiou][aeiouy]([bdgmnprst]))$", "\g<1>\g<2>"),
+                (r"([^aeiou][aeiouy]([bdgmnprst]))$", r"\g<1>\g<2>"),
         ):
             (ans, num) = subn(pat, repl, plv)
             if num:

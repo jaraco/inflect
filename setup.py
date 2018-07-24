@@ -1,4 +1,5 @@
 import os
+import io
 
 import inflect
 
@@ -10,7 +11,7 @@ except ImportError:
 
 here = os.path.dirname(__file__)
 readme_path = os.path.join(here, 'README.rst')
-readme = open(readme_path, 'rb').read().decode('utf-8')
+readme = io.open(readme_path, encoding='utf-8').read()
 
 setup(
     name='inflect',
@@ -22,23 +23,28 @@ setup(
     author_email='pwdyson@yahoo.com',
     maintainer='Alex Gronholm',
     maintainer_email='alex.gronholm@nextday.fi',
-    url='http://pypi.python.org/pypi/inflect',
+    url='https://github.com/jazzband/inflect',
     py_modules=['inflect'],
     provides=['inflect'],
     keywords=['plural', 'inflect', 'participle'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Linguistic',
-    ]
+    ],
+    python_requires=">=2.7,!=3.2",
+    setup_requires=[
+        'setuptools_scm',
+    ],
 )
