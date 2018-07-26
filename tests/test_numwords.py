@@ -14,10 +14,10 @@ def test_loop():
             numwords = p.number_to_words(n)
 
             if (n <= thresh):
-                eq_(numwords, threshed, msg="Wordified %s (<= %s)" % (n, thresh))
+                eq_(numwords, threshed, msg="Wordified {} (<= {})".format(n, thresh))
             else:
                 # $threshed =~ s/\D//gxms;
-                eq_(threshed, str(n), msg="p.number_to_words(%s, thresold=%s) == %s != %s" % (
+                eq_(threshed, str(n), msg="p.number_to_words({}, thresold={}) == {} != {}".format(
                     n, thresh, threshed, str(n)))
 
 
@@ -485,7 +485,7 @@ def test_array():
 
 
 def go(p, i):
-        eq_(p.number_to_words(i[0]), i[1], msg="number_to_words(%s) == %s != %s" % (
+        eq_(p.number_to_words(i[0]), i[1], msg="number_to_words({}) == {} != {}".format(
             i[0],
             p.number_to_words(i[0]),
             i[1]))
@@ -494,7 +494,7 @@ def go(p, i):
         eq_(p.number_to_words(i[0], group=3), i[4])
         if len(i) > 5:
             eq_(p.number_to_words(p.ordinal(i[0])), i[5],
-                msg="number_to_words(ordinal(%s)) == %s != %s" % (
+                msg="number_to_words(ordinal({})) == {} != {}".format(
                 i[0], p.number_to_words(p.ordinal(i[0])),
                 i[5]))
         if len(i) > 6:
