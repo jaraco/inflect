@@ -94,12 +94,8 @@ class BadRcFileError(Exception):
 class BadGenderError(Exception):
     pass
 
-__ver_major__ = 0
-__ver_minor__ = 2
-__ver_patch__ = 5
-__ver_sub__ = ""
-__version__ = "%d.%d.%d%s" % (__ver_major__, __ver_minor__,
-                              __ver_patch__, __ver_sub__)
+
+__version__ = "1.0.1"
 
 
 STDOUT_ON = False
@@ -233,15 +229,15 @@ pl_sb_irregular_compound = {
     "prima donna": "prima donnas|prime donne",
 }
 
-si_sb_irregular = dict([(v, k) for (k, v) in pl_sb_irregular.items()])
+si_sb_irregular = {v: k for (k, v) in pl_sb_irregular.items()}
 keys = list(si_sb_irregular.keys())
 for k in keys:
     if '|' in k:
         k1, k2 = k.split('|')
         si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
         del si_sb_irregular[k]
-si_sb_irregular_caps = dict([(v, k) for (k, v) in pl_sb_irregular_caps.items()])
-si_sb_irregular_compound = dict([(v, k) for (k, v) in pl_sb_irregular_compound.items()])
+si_sb_irregular_caps = {v: k for (k, v) in pl_sb_irregular_caps.items()}
+si_sb_irregular_compound = {v: k for (k, v) in pl_sb_irregular_compound.items()}
 keys = list(si_sb_irregular_compound.keys())
 for k in keys:
     if '|' in k:
@@ -420,10 +416,10 @@ pl_sb_C_o_i_stems = joinstem(-1, pl_sb_C_o_i)
 
 # ALWAYS "..o" -> "..os"
 
-pl_sb_U_o_os_complete = set((
+pl_sb_U_o_os_complete = {
     "ado", "ISO", "NATO", "NCO", "NGO", "oto",
-))
-si_sb_U_o_os_complete = set('%ss' % w for w in pl_sb_U_o_os_complete)
+}
+si_sb_U_o_os_complete = {'%ss' % w for w in pl_sb_U_o_os_complete}
 
 
 pl_sb_U_o_os_endings = [
@@ -845,7 +841,7 @@ plverb_special_s = enclose('|'.join(
 ))
 
 pl_sb_postfix_adj = {
-    'general': ['(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
+    'general': [r'(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
     'martial': ['court'],
 }
 
@@ -893,12 +889,14 @@ pl_prep = enclose('|'.join(pl_prep_list_da))
 pl_sb_prep_dual_compound = r'(.*?)((?:-|\s+)(?:' + pl_prep + r')(?:-|\s+))a(?:-|\s+)(.*)'
 
 
-singular_pronoun_genders = set(['neuter',
-                                'feminine',
-                                'masculine',
-                                'gender-neutral',
-                                'feminine or masculine',
-                                'masculine or feminine'])
+singular_pronoun_genders = {
+    'neuter',
+    'feminine',
+    'masculine',
+    'gender-neutral',
+    'feminine or masculine',
+    'masculine or feminine',
+}
 
 pl_pron_nom = {
     # NOMINATIVE    REFLEXIVE
@@ -919,7 +917,7 @@ pl_pron_nom = {
 }
 
 si_pron = {}
-si_pron['nom'] = dict([(v, k) for (k, v) in pl_pron_nom.items()])
+si_pron['nom'] = {v: k for (k, v) in pl_pron_nom.items()}
 si_pron['nom']['we'] = 'I'
 
 
@@ -936,7 +934,7 @@ pl_pron_acc = {
 pl_pron_acc_keys = enclose('|'.join(list(pl_pron_acc.keys())))
 pl_pron_acc_keys_bysize = bysize(list(pl_pron_acc.keys()))
 
-si_pron['acc'] = dict([(v, k) for (k, v) in pl_pron_acc.items()])
+si_pron['acc'] = {v: k for (k, v) in pl_pron_acc.items()}
 
 for thecase, plur, gend, sing in (
     ('nom', 'they', 'neuter', 'it'),
@@ -990,6 +988,7 @@ def get_si_pron(thecase, word, gender):
         return sing[gender]  # has several types due to gender
     except TypeError:
         return sing  # answer independent of gender
+
 
 plverb_irregular_pres = {
     # 1st PERS. SING.   2ND PERS. SING.   3RD PERS. SINGULAR
@@ -1163,8 +1162,8 @@ def_classical = dict(
     ancient=False,
 )
 
-all_classical = dict((k, True) for k in list(def_classical.keys()))
-no_classical = dict((k, False) for k in list(def_classical.keys()))
+all_classical = {k: True for k in list(def_classical.keys())}
+no_classical = {k: False for k in list(def_classical.keys())}
 
 
 # TODO: .inflectrc file does not work
@@ -1210,7 +1209,7 @@ class engine:
 
     def __getattr__(self, meth):
         if meth in self.deprecated_methods:
-            print3('%s() deprecated, use %s()' % (meth, self.deprecated_methods[meth]))
+            print3('{}() deprecated, use {}()'.format(meth, self.deprecated_methods[meth]))
             raise DeprecationWarning
         raise AttributeError
 
@@ -1462,8 +1461,8 @@ class engine:
         if orig == orig.upper():
             return inflected.upper()
         if orig[0] == orig[0].upper():
-            return '%s%s' % (inflected[0].upper(),
-                             inflected[1:])
+            return '{}{}'.format(inflected[0].upper(),
+                                 inflected[1:])
         return inflected
 
     def partition_word(self, text):
@@ -1527,7 +1526,7 @@ class engine:
             self._pl_special_adjective(word, count) or
             self._pl_special_verb(word, count) or
             self._plnoun(word, count))
-        return "%s%s%s" % (pre, plural, post)
+        return "{}{}{}".format(pre, plural, post)
 
     def plural_noun(self, text, count=None):
         '''
@@ -1544,7 +1543,7 @@ class engine:
         if not word:
             return text
         plural = self.postprocess(word, self._plnoun(word, count))
-        return "%s%s%s" % (pre, plural, post)
+        return "{}{}{}".format(pre, plural, post)
 
     def plural_verb(self, text, count=None):
         '''
@@ -1562,7 +1561,7 @@ class engine:
             return text
         plural = self.postprocess(word, self._pl_special_verb(word, count) or
                                   self._pl_general_verb(word, count))
-        return "%s%s%s" % (pre, plural, post)
+        return "{}{}{}".format(pre, plural, post)
 
     def plural_adj(self, text, count=None):
         '''
@@ -1579,7 +1578,7 @@ class engine:
         if not word:
             return text
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
-        return "%s%s%s" % (pre, plural, post)
+        return "{}{}{}".format(pre, plural, post)
 
     def compare(self, word1, word2):
         '''
@@ -1660,7 +1659,7 @@ class engine:
         sing = self._sinoun(word, count=count, gender=gender)
         if sing is not False:
             plural = self.postprocess(word, self._sinoun(word, count=count, gender=gender))
-            return "%s%s%s" % (pre, plural, post)
+            return "{}{}{}".format(pre, plural, post)
         return False
 
     def _plequal(self, word1, word2, pl):
@@ -1690,12 +1689,12 @@ class engine:
         return False
 
     def _pl_reg_plurals(self, pair, stems, end1, end2):
-        if search(r"(%s)(%s\|\1%s|%s\|\1%s)" % (stems, end1, end2, end2, end1), pair):
+        if search(r"({})({}\|\1{}|{}\|\1{})".format(stems, end1, end2, end2, end1), pair):
             return True
         return False
 
     def _pl_check_plurals_N(self, word1, word2):
-        pair = "%s|%s" % (word1, word2)
+        pair = "{}|{}".format(word1, word2)
         if pair in list(pl_sb_irregular_s.values()):
             return True
         if pair in list(pl_sb_irregular.values()):
@@ -1805,14 +1804,14 @@ class engine:
 
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._plnoun(mo.group(1), 2), mo.group(2))
+            return "{}{}".format(self._plnoun(mo.group(1), 2), mo.group(2))
 
         if ' a ' in lowerword or '-a-' in lowerword:
             mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
             if mo and mo.group(2) != '' and mo.group(3) != '':
-                return "%s%s%s" % (self._plnoun(mo.group(1), 2),
-                                   mo.group(2),
-                                   self._plnoun(mo.group(3)))
+                return "{}{}{}".format(self._plnoun(mo.group(1), 2),
+                                       mo.group(2),
+                                       self._plnoun(mo.group(3)))
 
         lowersplit = lowerword.split(' ')
         if len(lowersplit) >= 3:
@@ -1860,18 +1859,18 @@ class engine:
 
         if wordlast in list(pl_sb_irregular_caps.keys()):
             llen = len(wordlast)
-            return '%s%s' % (word[:-llen],
-                             pl_sb_irregular_caps[wordlast])
+            return '{}{}'.format(word[:-llen],
+                                 pl_sb_irregular_caps[wordlast])
 
         if lowerwordlast in list(pl_sb_irregular.keys()):
             llen = len(lowerwordlast)
-            return '%s%s' % (word[:-llen],
-                             pl_sb_irregular[lowerwordlast])
+            return '{}{}'.format(word[:-llen],
+                                 pl_sb_irregular[lowerwordlast])
 
         if (' '.join(wordsplit[-2:])).lower() in list(pl_sb_irregular_compound.keys()):
             llen = len(' '.join(wordsplit[-2:]))  # TODO: what if 2 spaces between these words?
-            return '%s%s' % (word[:-llen],
-                             pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
+            return '{}{}'.format(word[:-llen],
+                                 pl_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
 
         if lowerword[-3:] == 'quy':
             return word[:-1] + 'ies'
@@ -2077,7 +2076,7 @@ class engine:
             return False  # word is ''
 
         if firstword in list(plverb_irregular_pres.keys()):
-            return "%s%s" % (plverb_irregular_pres[firstword], word[len(firstword):])
+            return "{}{}".format(plverb_irregular_pres[firstword], word[len(firstword):])
 
 # HANDLE IRREGULAR FUTURE, PRETERITE AND PERFECT TENSES
 
@@ -2087,7 +2086,7 @@ class engine:
 # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
         if firstword.endswith("n't") and firstword[:-3] in list(plverb_irregular_pres.keys()):
-            return "%sn't%s" % (plverb_irregular_pres[firstword[:-3]], word[len(firstword):])
+            return "{}n't{}".format(plverb_irregular_pres[firstword[:-3]], word[len(firstword):])
 
         if firstword.endswith("n't"):
             return word
@@ -2142,7 +2141,7 @@ class engine:
 
         mo = search(r"^(%s)((\s.*)?)$" % plverb_ambiguous_pres_keys, word, IGNORECASE)
         if mo:
-            return "%s%s" % (plverb_ambiguous_pres[mo.group(1).lower()], mo.group(2))
+            return "{}{}".format(plverb_ambiguous_pres[mo.group(1).lower()], mo.group(2))
 
 # HANDLE AMBIGUOUS PRETERITE AND PERFECT TENSES
 
@@ -2185,7 +2184,7 @@ class engine:
         if mo:
             pl = self.plural_noun(mo.group(1))
             trailing_s = "" if pl[-1] == 's' else "s"
-            return "%s'%s" % (pl, trailing_s)
+            return "{}'{}".format(pl, trailing_s)
 
 # OTHERWISE, NO IDEA
 
@@ -2246,7 +2245,7 @@ class engine:
 
         mo = search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, IGNORECASE)
         if mo and mo.group(2) != '':
-            return "%s%s" % (self._sinoun(mo.group(1), 1, gender=gender), mo.group(2))
+            return "{}{}".format(self._sinoun(mo.group(1), 1, gender=gender), mo.group(2))
 
         # how to reverse this one?
         # mo = search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, IGNORECASE)
@@ -2304,18 +2303,18 @@ class engine:
 
         if wordlast in list(si_sb_irregular_caps.keys()):
             llen = len(wordlast)
-            return '%s%s' % (word[:-llen],
-                             si_sb_irregular_caps[wordlast])
+            return '{}{}'.format(word[:-llen],
+                                 si_sb_irregular_caps[wordlast])
 
         if lowerwordlast in list(si_sb_irregular.keys()):
             llen = len(lowerwordlast)
-            return '%s%s' % (word[:-llen],
-                             si_sb_irregular[lowerwordlast])
+            return '{}{}'.format(word[:-llen],
+                                 si_sb_irregular[lowerwordlast])
 
         if (' '.join(wordsplit[-2:])).lower() in list(si_sb_irregular_compound.keys()):
             llen = len(' '.join(wordsplit[-2:]))  # TODO: what if 2 spaces between these words?
-            return '%s%s' % (word[:-llen],
-                             si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
+            return '{}{}'.format(word[:-llen],
+                                 si_sb_irregular_compound[(' '.join(wordsplit[-2:])).lower()])
 
         if lowerword[-5:] == 'quies':
             return word[:-3] + 'y'
@@ -2559,7 +2558,7 @@ class engine:
             pre = mo.group(1)
             post = mo.group(3)
             result = self._indef_article(word, count)
-            return "%s%s%s" % (pre, result, post)
+            return "{}{}{}".format(pre, result, post)
         return ''
 
     an = a
@@ -2568,13 +2567,13 @@ class engine:
         mycount = self.get_count(count)
 
         if mycount != 1:
-            return "%s %s" % (count, word)
+            return "{} {}".format(count, word)
 
 # HANDLE USER-DEFINED VARIANTS
 
         value = self.ud_match(word, self.A_a_user_defined)
         if value is not None:
-            return "%s %s" % (value, word)
+            return "{} {}".format(value, word)
 
 # HANDLE ORDINAL FORMS
 
@@ -2584,7 +2583,7 @@ class engine:
         ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
-                return "%s %s" % (a[1], word)
+                return "{} {}".format(a[1], word)
 
 # HANDLE SPECIAL CASES
 
@@ -2595,7 +2594,7 @@ class engine:
         ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
-                return "%s %s" % (a[1], word)
+                return "{} {}".format(a[1], word)
 
 # HANDLE ABBREVIATIONS
 
@@ -2606,7 +2605,7 @@ class engine:
         ):
             mo = search(a[0], word, a[2])
             if mo:
-                return "%s %s" % (a[1], word)
+                return "{} {}".format(a[1], word)
 
 # HANDLE CONSONANTS
 
@@ -2627,7 +2626,7 @@ class engine:
         ):
             mo = search(a[0], word, IGNORECASE)
             if mo:
-                return "%s %s" % (a[1], word)
+                return "{} {}".format(a[1], word)
 
 # HANDLE SPECIAL CAPITALS
 
@@ -2679,9 +2678,9 @@ class engine:
         post = mo.group(3)
 
         if str(count).lower() in pl_count_zero:
-            return "%sno %s%s" % (pre, self.plural(word, 0), post)
+            return "{}no {}{}".format(pre, self.plural(word, 0), post)
         else:
-            return "%s%s %s%s" % (pre, count, self.plural(word, count), post)
+            return "{}{} {}{}".format(pre, count, self.plural(word, count), post)
 
 # PARTICIPLES
 
@@ -2705,7 +2704,7 @@ class engine:
                 (r"^(hoe)$", r"\g<1>"),
                 (r"([^e])e$", r"\g<1>"),
                 (r"er$", r"er"),
-                (r"([^aeiou][aeiouy]([bdgmnprst]))$", "\g<1>\g<2>"),
+                (r"([^aeiou][aeiouy]([bdgmnprst]))$", r"\g<1>\g<2>"),
         ):
             (ans, num) = subn(pat, repl, plv)
             if num:
@@ -2743,7 +2742,7 @@ class engine:
                 post = nth[n % 100]
             except KeyError:
                 post = nth[n % 10]
-            return "%s%s" % (num, post)
+            return "{}{}".format(num, post)
         else:
             mo = search(r"(%s)\Z" % ordinal_suff, num)
             try:
@@ -2759,25 +2758,25 @@ class engine:
         return mill[ind]
 
     def unitfn(self, units, mindex=0):
-        return "%s%s" % (unit[units], self.millfn(mindex))
+        return "{}{}".format(unit[units], self.millfn(mindex))
 
     def tenfn(self, tens, units, mindex=0):
         if tens != 1:
-            return "%s%s%s%s" % (ten[tens],
-                                 '-' if tens and units else '',
-                                 unit[units],
-                                 self.millfn(mindex))
-        return "%s%s" % (teen[units], mill[mindex])
+            return "{}{}{}{}".format(ten[tens],
+                                     '-' if tens and units else '',
+                                     unit[units],
+                                     self.millfn(mindex))
+        return "{}{}".format(teen[units], mill[mindex])
 
     def hundfn(self, hundreds, tens, units, mindex):
         if hundreds:
             andword = " %s " % self.number_args['andword'] if tens or units else ''
-            return "%s hundred%s%s%s, " % (unit[hundreds],  # use unit not unitfn as simpler
-                                           andword,
-                                           self.tenfn(tens, units),
-                                           self.millfn(mindex))
+            return "{} hundred{}{}{}, ".format(unit[hundreds],  # use unit not unitfn as simpler
+                                               andword,
+                                               self.tenfn(tens, units),
+                                               self.millfn(mindex))
         if tens or units:
-            return "%s%s, " % (self.tenfn(tens, units), self.millfn(mindex))
+            return "{}{}, ".format(self.tenfn(tens, units), self.millfn(mindex))
         return ''
 
     def group1sub(self, mo):
@@ -2806,8 +2805,8 @@ class engine:
         if tens:
             return "%s, " % self.tenfn(tens, units)
         if units:
-            return " %s %s, " % (self.number_args['zero'], unit[units])
-        return " %s %s, " % (self.number_args['zero'], self.number_args['zero'])
+            return " {} {}, ".format(self.number_args['zero'], unit[units])
+        return " {} {}, ".format(self.number_args['zero'], self.number_args['zero'])
 
     def group3sub(self, mo):
         hundreds = int(mo.group(1))
@@ -2824,10 +2823,10 @@ class engine:
         if tens:
             tenword = self.tenfn(tens, units)
         elif units:
-            tenword = " %s %s" % (self.number_args['zero'], unit[units])
+            tenword = " {} {}".format(self.number_args['zero'], unit[units])
         else:
-            tenword = " %s %s" % (self.number_args['zero'], self.number_args['zero'])
-        return "%s %s, " % (hunword, tenword)
+            tenword = " {} {}".format(self.number_args['zero'], self.number_args['zero'])
+        return "{} {}, ".format(hunword, tenword)
 
     def hundsub(self, mo):
         ret = self.hundfn(int(mo.group(1)), int(mo.group(2)), int(mo.group(3)), self.mill_count)
@@ -2925,7 +2924,7 @@ class engine:
                 if n == 0:
                     break
             try:
-                return "%s.%s" % (spnum[0], spnum[1])
+                return "{}.{}".format(spnum[0], spnum[1])
             except IndexError:
                 return "%s" % spnum[0]
 
@@ -3014,10 +3013,10 @@ class engine:
             return numchunks
         elif group:
             signout = "%s " % sign if sign else ''
-            return "%s%s" % (signout, ", ".join(numchunks))
+            return "{}{}".format(signout, ", ".join(numchunks))
         else:
             signout = "%s " % sign if sign else ''
-            num = "%s%s" % (signout, numchunks.pop(0))
+            num = "{}{}".format(signout, numchunks.pop(0))
             if decimal is None:
                 first = True
             else:
@@ -3027,7 +3026,7 @@ class engine:
                     num += " %s" % nc
                     first = 0
                 elif first:
-                    num += "%s %s" % (comma, nc)
+                    num += "{} {}".format(comma, nc)
                 else:
                     num += " %s" % nc
             return num
@@ -3060,7 +3059,7 @@ class engine:
                 conj = ' %s ' % conj
 
         if len(words) == 2:
-            return "%s%s%s" % (words[0], conj, words[1])
+            return "{}{}{}".format(words[0], conj, words[1])
 
         if sep is None:
             if ',' in ''.join(words):
@@ -3070,9 +3069,9 @@ class engine:
         if final_sep is None:
             final_sep = sep
 
-        final_sep = "%s%s" % (final_sep, conj)
+        final_sep = "{}{}".format(final_sep, conj)
 
         if sep_spaced:
             sep += ' '
 
-        return "%s%s%s" % (sep.join(words[0:-1]), final_sep, words[-1])
+        return "{}{}{}".format(sep.join(words[0:-1]), final_sep, words[-1])

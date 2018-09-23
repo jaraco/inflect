@@ -36,8 +36,8 @@ def test_pl_si():
 def check_pl_si(p, word):
     if p.singular_noun(p.plural_noun(word, 2), 1) != word:
         f = open('badsi.txt', 'a')
-        f.write('%s %s %s\n' % (word, p.plural_noun(word, 2),
-                                p.singular_noun(p.plural_noun(word, 2), 1)))
+        f.write('{} {} {}\n'.format(word, p.plural_noun(word, 2),
+                                    p.singular_noun(p.plural_noun(word, 2), 1)))
         f.close()
         eq_(p.singular_noun(p.plural_noun(word, 2), 1), word,
             msg='''word==%s
