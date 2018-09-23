@@ -8,9 +8,11 @@ import inflect
 
 
 class TestUnicode(unittest.TestCase):
-    def test_unicode(self):
+    """ Unicode compatibility test cases """
+
+    def test_unicode_plural(self):
+        """ Unicode compatibility test cases for plural """
         engine = inflect.engine()
-        # Unicode compatability test
         unicode_test_cases = {
             'cliché': 'clichés',
             'ångström': 'ångströms'
