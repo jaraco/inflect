@@ -1,3 +1,7 @@
+ver 1.0.1
+
+* #31: fix extraneous close parentheses.
+
 ver 1.0.0
 
 * Dropped support for Python 3.3.
