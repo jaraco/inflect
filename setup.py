@@ -21,6 +21,7 @@ setup(
     long_description=readme,
     author='Paul Dyson',
     author_email='pwdyson@yahoo.com',
+    license='AGPL-3.0',
     maintainer='Alex Gronholm',
     maintainer_email='alex.gronholm@nextday.fi',
     url='https://github.com/jazzband/inflect',
