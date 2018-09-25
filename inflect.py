@@ -1524,19 +1524,21 @@ class engine:
 # ## PLURAL SUBROUTINES
 
     def postprocess(self, orig, inflected):
-        """
-        FIX PEDANTRY AND CAPITALIZATION :-)
-        """
         if '|' in inflected:
             inflected = inflected.split('|')[self.classical_dict['all']]
-        if orig == "I":
-            return inflected
-        if orig == orig.upper():
-            return inflected.upper()
-        if orig[0] == orig[0].upper():
-            return '{}{}'.format(inflected[0].upper(),
-                                 inflected[1:])
-        return inflected
+        result = inflected.split(' ')
+        # Try to fix word wise capitalization
+        for index, word in enumerate(orig.split(' ')):
+            if word == 'I':
+                # Is this the only word for exceptions like this
+                # Where the original is fully capitalized without 'meaning' capitalization?
+                # Also this fails to handle a capitalizaion in context
+                continue
+            if word.capitalize() == word:
+                result[index] = result[index].capitalize()
+            if word == word.upper():
+                result[index] = result[index].upper()
+        return ' '.join(result)
 
     def partition_word(self, text):
         mo = search(r'\A(\s*)(.+?)(\s*)\Z', text)
