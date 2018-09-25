@@ -214,6 +214,7 @@ class test(unittest.TestCase):
             ('COW', 'cows', 'COWS'),
             ('Cow', 'cows', 'Cows'),
             ('cow', 'cows|kine', 'cows'),
+            ('Entry', 'entries', 'Entries')
         ):
             self.assertEqual(p.postprocess(orig, infl), txt)
 
