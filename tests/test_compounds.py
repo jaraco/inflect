@@ -23,9 +23,11 @@ def test_compound_4():
 
 def test_unit_handling_degree():
     test_cases = {
-        'degree Celsius': 'degrees Celsius',
+        'degree celsius': 'degrees celsius',
+        # 'degree Celsius': 'degrees Celsius',
         'degree fahrenheit': 'degrees fahrenheit',
-        'degree rankine': 'degrees rankine'
+        'degree rankine': 'degrees rankine',
+        'degree fahrenheit second': 'degree fahrenheit seconds'
     }
     for singular, plural in test_cases.items():
         eq_(p.plural(singular), plural)
@@ -51,7 +53,12 @@ def test_unit_handling_combined():
     test_cases = {
         # Heat transfer coefficient unit
         'watt per square meter degree celsius': 'watts per square meter degree celsius',
-        'degree Celsius per hour': 'degrees Celsius per hour'
+        'degree celsius per hour': 'degrees celsius per hour',
+        'degree fahrenheit hour square foot per btuit inch':
+            'degree fahrenheit hour square feet per btuit inch',
+        # 'degree Celsius per hour': 'degrees Celsius per hour',
+        # 'degree Fahrenheit hour square foot per BtuIT inch':
+        #   'degree Fahrenheit hour square feet per BtuIT inch'
     }
     for singular, plural in test_cases.items():
         eq_(p.plural(singular), plural)

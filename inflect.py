@@ -1899,11 +1899,12 @@ class engine:
         mo = search(r'(?P<denominator>.+)( (%s) .+)' % '|'.join(['per', 'a']), lowerword)
         if mo:
             index = len(mo.group('denominator'))
-            return '{}{}'.format(self._plnoun(lowerword[:index]),
-                                 lowerword[index:])
+            return '{}{}'.format(self._plnoun(word[:index]),
+                                 word[index:])
 
-        # Handle units given in degrees
-        if len(lowersplit) >= 2 and lowersplit[0] in ['degree']:
+        # handle units given in degrees (only accept if there is no more than one word following)
+        # degree Celsius => degrees Celsius but degree fahrenheit hour => degree fahrenheit hours
+        if len(lowersplit) >= 2 and lowersplit[-2] in ['degree']:
             return ' '.join(
                 [self._plnoun(lowersplit[0])] + lowersplit[1:]
             )
