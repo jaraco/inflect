@@ -34,7 +34,7 @@ def test_unit_handling_degree():
 def test_unit_handling_fractional():
     test_cases = {
         'pound per square inch': 'pounds per square inch',
-        'pound-force per square inch': 'pound-forces per square inch',
+        'pound-force per square inch': 'pounds-force per square inch',
         'metre per second': 'metres per second',
         'kilometre per hour': 'kilometres per hour',
         'cubic metre per second': 'cubic metres per second',
