@@ -37,9 +37,21 @@ def test_unit_handling_fractional():
         'pound-force per square inch': 'pound-forces per square inch',
         'metre per second': 'metres per second',
         'kilometre per hour': 'kilometres per hour',
-        'foot per square second': 'feet per square second',
         'cubic metre per second': 'cubic metres per second',
-        'dollar a year': 'dollars a year'
+        'dollar a year': 'dollars a year',
+        # Correct pluralization of denominator
+        'foot per square second': 'feet per square second',
+        'mother-in-law per lifetime': 'mothers-in-law per lifetime'
+    }
+    for singular, plural in test_cases.items():
+        eq_(p.plural(singular), plural)
+
+
+def test_unit_handling_combined():
+    test_cases = {
+        # Heat transfer coefficient unit
+        'watt per square meter degree celsius': 'watts per square meter degree celsius',
+        'degree celsius per hour': 'degrees celsius per hour'
     }
     for singular, plural in test_cases.items():
         eq_(p.plural(singular), plural)
