@@ -1894,6 +1894,18 @@ class engine:
                         lowersplit[:numword - 1] +
                         [self._plnoun(lowersplit[numword - 1], 2)] + lowersplit[numword:])
 
+        # Handle units given in degrees
+        if len(lowersplit) >= 2 and lowersplit[0] in ['degree']:
+            return ' '.join(
+                [self._plnoun(lowersplit[0])] + lowersplit[1:]
+            )
+        # only pluralize denominators in units
+        mo = search(r'(?P<denominator>.+)( (%s) .+)' % '|'.join(['per', 'a']), lowerword)
+        if mo:
+            index = len(mo.group('denominator'))
+            return '{}{}'.format(self._plnoun(lowerword[:index]),
+                                 lowerword[index:])
+
         lowersplit = lowerword.split('-')
         if len(lowersplit) >= 3:
             for numword in range(1, len(lowersplit) - 1):
