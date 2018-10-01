@@ -3,7 +3,7 @@ import io
 
 import six
 
-from nose.tools import eq_, assert_not_equal
+from nose.tools import eq_, assert_not_equal, raises
 
 import inflect
 
@@ -234,9 +234,19 @@ def test_inflect_on_builtin_constants():
 
 def test_inflect_keyword_args():
     p = inflect.engine()
-    eq_(p.inflect("number_to_words(1234, andword='')"), "one thousand, two hundred thirty-four")
-    eq_(p.inflect("number_to_words(1234, andword='plus')"), "one thousand, two hundred plus thirty-four")
-    eq_(p.inflect("number_to_words('555_1202', group=1, zero='oh')"), "five, five, five, one, two, oh, two")
+    eq_(p.inflect("number_to_words(1234, andword='')"),
+        "one thousand, two hundred thirty-four")
+    eq_(p.inflect("number_to_words(1234, andword='plus')"),
+        "one thousand, two hundred plus thirty-four")
+    eq_(p.inflect("number_to_words('555_1202', group=1, zero='oh')"),
+        "five, five, five, one, two, oh, two")
+
+
+@raises(NameError)
+def test_NameError_in_strings():
+    p = inflect.engine()
+    eq_(p.inflect("plural('two')"), "twoes")
+    p.inflect("plural(two)")
 
 
 def get_data():
