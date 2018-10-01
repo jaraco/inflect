@@ -1,3 +1,19 @@
+ver 2.0.0
+
+* #37: fix inconsistencies with the inflect method
+  
+  We now build and parse AST to extract function arguments instead of relying
+  on regular expressions. This also adds support for keyword arguments and
+  built-in constants when calling functions in the string.
+  Unfortunately, this is not backwards compatible in some cases:
+  * Strings should now be wrapped in single or double quotes
+    p.inflect("singular_noun(to them)") should now be p.inflect("singular_noun('to them')")
+  * Empty second argument to a function will now be parsed as None instead of ''.
+    p.inflect("num(%d,) eggs" % 2) now prints "2 eggs" instead of " eggs"
+    Since None, True and False are now supported, they can be passed explicitly:
+    p.inflect("num(%d, False) eggs" % 2) will print " eggs"
+    p.inflect("num(%d, True) eggs" % 2) will print "2 eggs"
+
 ver 1.0.1
 
 * #31: fix extraneous close parentheses.
