@@ -62,6 +62,7 @@ Exceptions:
 '''
 
 import ast
+import sys
 from re import compile, match, search, subn, IGNORECASE, VERBOSE
 from re import error as reerror
 from re import sub as resub
@@ -1179,6 +1180,14 @@ no_classical = {k: False for k in list(def_classical.keys())}
 #            raise BadRcFileError
 
 
+# Maps strings to built-in constant types
+string_to_constant = {
+    "True": True,
+    "False": False,
+    "None": None
+}
+
+
 class engine:
 
     def __init__(self):
@@ -1381,14 +1390,25 @@ class engine:
         '''
         if isinstance(obj, ast.Num):
             return obj.n
-        elif isinstance(obj, ast.Name):
-            return obj.id
         elif isinstance(obj, ast.Str):
             return obj.s
         elif isinstance(obj, ast.List):
             return [self._get_value_from_ast(e) for e in obj.elts]
         elif isinstance(obj, ast.Tuple):
             return tuple([self._get_value_from_ast(e) for e in obj.elts])
+
+        # None, True and False are NameConstants in Py3.4 and above.
+        elif sys.version_info >= (3, 4) and isinstance(obj, ast.NameConstant):
+            return obj.value
+
+        # For python versions below 3.4
+        elif isinstance(obj, ast.Name) and (obj.id in ["True", "False", "None"]):
+            return string_to_constant[obj.id]
+
+        # Probably passed a variable name.
+        # Or passed a single word without wrapping it in quotes as an argument
+        # ex: p.inflect("I plural(see)") instead of p.inflect("I plural('see')")
+        raise NameError("name '%s' is not defined" % obj.id)
 
     def _string_to_substitute(self, mo, methods_dict):
         '''
@@ -1404,8 +1424,10 @@ class engine:
 
         # Parse the matched text
         a_tree = ast.parse(matched_text)
+
         # get the arguments from ast objects
         args_list = [self._get_value_from_ast(a) for a in a_tree.body[0].value.args]
+
         # Call the corresponding function
         return methods_dict[f_name](*args_list)
 
