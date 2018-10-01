@@ -1425,11 +1425,12 @@ class engine:
         # Parse the matched text
         a_tree = ast.parse(matched_text)
 
-        # get the arguments from ast objects
+        # get the args and kwargs from ast objects
         args_list = [self._get_value_from_ast(a) for a in a_tree.body[0].value.args]
+        kwargs_list = {kw.arg: self._get_value_from_ast(kw.value) for kw in a_tree.body[0].value.keywords}
 
         # Call the corresponding function
-        return methods_dict[f_name](*args_list)
+        return methods_dict[f_name](*args_list, **kwargs_list)
 
 # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
