@@ -231,6 +231,7 @@ def test_inflect_on_builtin_constants():
     eq_(p.inflect("plural('None')"), "Nones")
     eq_(p.inflect("num(%d, %r) plural('True')" % (10, None)), "10 Trues")
 
+
 def test_inflect_keyword_args():
     p = inflect.engine()
     eq_(p.inflect("number_to_words(1234, andword='')"), "one thousand, two hundred thirty-four")
