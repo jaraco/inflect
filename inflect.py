@@ -845,6 +845,7 @@ plverb_special_s = enclose('|'.join(
 pl_sb_postfix_adj = {
     'general': [r'(?!major|lieutenant|brigadier|adjutant|.*star)\S+'],
     'martial': ['court'],
+    'force': ['pound']
 }
 
 for k in list(pl_sb_postfix_adj.keys()):
@@ -1897,6 +1898,20 @@ class engine:
                     return ' '.join(
                         lowersplit[:numword - 1] +
                         [self._plnoun(lowersplit[numword - 1], 2)] + lowersplit[numword:])
+
+        # only pluralize denominators in units
+        mo = search(r'(?P<denominator>.+)( (%s) .+)' % '|'.join(['per', 'a']), lowerword)
+        if mo:
+            index = len(mo.group('denominator'))
+            return '{}{}'.format(self._plnoun(word[:index]),
+                                 word[index:])
+
+        # handle units given in degrees (only accept if there is no more than one word following)
+        # degree Celsius => degrees Celsius but degree fahrenheit hour => degree fahrenheit hours
+        if len(lowersplit) >= 2 and lowersplit[-2] in ['degree']:
+            return ' '.join(
+                [self._plnoun(lowersplit[0])] + lowersplit[1:]
+            )
 
         lowersplit = lowerword.split('-')
         if len(lowersplit) >= 3:
