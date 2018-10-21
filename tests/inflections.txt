@@ -715,6 +715,7 @@
       TODO:singular_noun multiple return        syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
               tableau  ->  tableaus|tableaux
+                 taco  ->  tacos
               Tacoman  ->  Tacomans
               talouse  ->  talouses
                tattoo  ->  tattoos
