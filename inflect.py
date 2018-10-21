@@ -1751,7 +1751,6 @@ class engine:
         )
 
     def _pl_check_plurals_adj(self, word1, word2):
-        # VERSION: tuple in endswith requires python 2.5
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s", "'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s", "'")) else ''
         # TODO: BUG? report upstream. I don't think you should chop off the s'
