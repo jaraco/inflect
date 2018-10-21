@@ -1716,9 +1716,8 @@ class engine:
         return False
 
     def _pl_reg_plurals(self, pair, stems, end1, end2):
-        if re.search(r"({})({}\|\1{}|{}\|\1{})".format(stems, end1, end2, end2, end1), pair):
-            return True
-        return False
+        pattern = r"({})({}\|\1{}|{}\|\1{})".format(stems, end1, end2, end2, end1)
+        return bool(re.search(pattern, pair))
 
     def _pl_check_plurals_N(self, word1, word2):
         pair = "{}|{}".format(word1, word2)
