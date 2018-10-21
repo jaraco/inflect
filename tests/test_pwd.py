@@ -214,6 +214,8 @@ class test(unittest.TestCase):
             ('COW', 'cows', 'COWS'),
             ('Cow', 'cows', 'Cows'),
             ('cow', 'cows|kine', 'cows'),
+            ('Entry', 'entries', 'Entries'),
+            ('can of Coke', 'cans of coke', 'cans of Coke')
         ):
             self.assertEqual(p.postprocess(orig, infl), txt)
 
