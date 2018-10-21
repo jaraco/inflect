@@ -1974,6 +1974,8 @@ class engine:
             return word[:-5] + 'teeth'
         if lowerword[-4:] == 'foot':
             return word[:-4] + 'feet'
+        if lowerword[-4:] == 'taco':
+            return word[:-5] + 'tacos'
 
         if lowerword == 'die':
             return 'dice'
