@@ -1168,19 +1168,6 @@ all_classical = {k: True for k in list(def_classical.keys())}
 no_classical = {k: False for k in list(def_classical.keys())}
 
 
-# TODO: .inflectrc file does not work
-# can't just execute methods from another file like this
-
-# for rcfile in (pathjoin(dirname(__file__), '.inflectrc'),
-#               expanduser(pathjoin(('~'), '.inflectrc'))):
-#    if isfile(rcfile):
-#        try:
-#            execfile(rcfile)
-#        except:
-#            print3("\nBad .inflectrc file (%s):\n" % rcfile)
-#            raise BadRcFileError
-
-
 # Maps strings to built-in constant types
 string_to_constant = {
     "True": True,
