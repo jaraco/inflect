@@ -1295,14 +1295,6 @@ class engine:
         check for errors in a regex replace pattern
         '''
         return
-        # can't find a pattern that doesn't pass the following test:
-        # if pattern is None:
-        #    return
-        # try:
-        #    re.sub('', pattern, '')
-        # except re.error:
-        #    print3("\nBad user-defined plural pattern:\n\t%s\n" % pattern)
-        #    raise BadUserDefinedPatternError
 
     def ud_match(self, word, wordlist):
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
@@ -1498,41 +1490,6 @@ class engine:
             return mo.group(1), mo.group(2), mo.group(3)
         except AttributeError:  # empty string
             return '', '', ''
-
-#    def pl(self, *args, **kwds):
-#        print 'pl() deprecated, use plural()'
-#        raise DeprecationWarning
-#        return self.plural(*args, **kwds)
-#
-#    def plnoun(self, *args, **kwds):
-#        print 'plnoun() deprecated, use plural_noun()'
-#        raise DeprecationWarning
-#        return self.plural_noun(*args, **kwds)
-#
-#    def plverb(self, *args, **kwds):
-#        print 'plverb() deprecated, use plural_verb()'
-#        raise DeprecationWarning
-#        return self.plural_verb(*args, **kwds)
-#
-#    def pladj(self, *args, **kwds):
-#        print 'pladj() deprecated, use plural_adj()'
-#        raise DeprecationWarning
-#        return self.plural_adj(*args, **kwds)
-#
-#    def sinoun(self, *args, **kwds):
-#        print 'sinoun() deprecated, use singular_noun()'
-#        raise DeprecationWarning
-#        return self.singular_noun(*args, **kwds)
-#
-#    def prespart(self, *args, **kwds):
-#        print 'prespart() deprecated, use present_participle()'
-#        raise DeprecationWarning
-#        return self.present_participle(*args, **kwds)
-#
-#    def numwords(self, *args, **kwds):
-#        print 'numwords() deprecated, use number_to_words()'
-#        raise DeprecationWarning
-#        return self.number_to_words(*args, **kwds)
 
     def plural(self, text, count=None):
         '''
@@ -1999,22 +1956,6 @@ class engine:
         if lowerword[-2:] == 'es' and word[0] == word[0].upper():
             return word + 'es'
 
-# Wouldn't special words
-# ending with 's' always have been caught, regardless of them starting
-# with a capital letter (i.e. being names)
-# It makes sense below to do this for words ending in 'y' so that
-# Sally -> Sallys. But not sure it makes sense here. Where is the case
-# of a word ending in s that is caught here and would otherwise have been
-# caught below?
-#
-# removing it as I can't find a case that executes it
-# TODO: check this again
-#
-#        if (self.classical_dict['names']):
-#            mo = re.search(r"([A-Z].*s)$", word)
-#            if mo:
-#                return "%ses" % mo.group(1)
-
         if lowerword[-1] == 'z':
             for k, v in pl_sb_z_zes_bysize.items():
                 if lowerword[-k:] in v:
@@ -2030,8 +1971,6 @@ class engine:
 
         if lowerword[-2:] in ('ch', 'sh', 'zz', 'ss') or lowerword[-1] == 'x':
             return word + 'es'
-
-# ##                  (r"(.*)(us)$", "%s%ses"),  TODO: why is this commented?
 
         # HANDLE ...f -> ...ves
 
@@ -2129,11 +2068,6 @@ class engine:
         if lowerword[-4:] in ('ches', 'shes', 'zzes', 'sses') or \
                 lowerword[-3:] == 'xes':
             return word[:-2]
-
-# #        mo = re.search(r"^(.*)([cs]h|[x]|zz|ss)es$",
-# #                    word, re.IGNORECASE)
-# #        if mo:
-# #            return "%s%s" % (mo.group(1), mo.group(2))
 
         if lowerword[-3:] == 'ies' and len(word) > 3:
             return lowerword[:-3] + 'y'
@@ -2268,13 +2202,6 @@ class engine:
         mo = re.search(r"^(?:%s)$" % pl_sb_postfix_adj_stems, word, re.IGNORECASE)
         if mo and mo.group(2) != '':
             return "{}{}".format(self._sinoun(mo.group(1), 1, gender=gender), mo.group(2))
-
-        # how to reverse this one?
-        # mo = re.search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, re.IGNORECASE)
-        # if mo and mo.group(2) != '' and mo.group(3) != '':
-        #     return "%s%s%s" % (self._sinoun(mo.group(1), 1),
-        #                        mo.group(2),
-        #                        self._sinoun(mo.group(3), 1))
 
         lowersplit = lowerword.split(' ')
         if len(lowersplit) >= 3:
@@ -2458,22 +2385,6 @@ class engine:
         if lowerword[-4:] == 'eses' and word[0] == word[0].upper():
             return word[:-2]
 
-# Wouldn't special words
-# ending with 's' always have been caught, regardless of them starting
-# with a capital letter (i.e. being names)
-# It makes sense below to do this for words ending in 'y' so that
-# Sally -> Sallys. But not sure it makes sense here. Where is the case
-# of a word ending in s that is caught here and would otherwise have been
-# caught below?
-#
-# removing it as I can't find a case that executes it
-# TODO: check this again
-#
-#        if (self.classical_dict['names']):
-#            mo = re.search(r"([A-Z].*ses)$", word)
-#            if mo:
-#                return "%s" % mo.group(1)
-
         if lowerword in si_sb_z_zes:
             return word[:-2]
 
@@ -2495,7 +2406,6 @@ class engine:
 
         if lowerword[-3:] == 'xes':
             return word[:-2]
-#                  (r"(.*)(us)es$", "%s%s"),  TODO: why is this commented?
 
         # HANDLE ...f -> ...ves
 
@@ -2870,12 +2780,6 @@ class engine:
         elif group == 2:
             num = re.sub(r"(\d)(\d)", self.group2sub, num)
             num = re.sub(r"(\d)", self.group1bsub, num, 1)
-            # group1bsub same as
-            # group1sub except it doesn't use the default word for one.
-            # Is this required? i.e. is the default word not to beused when
-            # grouping in pairs?
-            #
-            # No. This is a bug. Fixed. TODO: report upstream.
         elif group == 3:
             num = re.sub(r"(\d)(\d)(\d)", self.group3sub, num)
             num = re.sub(r"(\d)(\d)", self.group2sub, num, 1)
