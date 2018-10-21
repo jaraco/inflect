@@ -1,7 +1,11 @@
+ver 2.0.1
+
+* #57: Fix pluralization of taco.
+
 ver 2.0.0
 
 * #37: fix inconsistencies with the inflect method
-  
+
   We now build and parse AST to extract function arguments instead of relying
   on regular expressions. This also adds support for keyword arguments and
   built-in constants when calling functions in the string.
