@@ -2703,8 +2703,6 @@ class engine:
         if units == 1:
             return " %s, " % self.number_args['one']
         elif units:
-            # TODO: bug one and zero are padded with a space but other numbers
-            # aren't. check this in perl
             return "%s, " % unit[units]
         else:
             return " %s, " % self.number_args['zero']
@@ -2712,8 +2710,6 @@ class engine:
     def group1bsub(self, mo):
         units = int(mo.group(1))
         if units:
-            # TODO: bug one and zero are padded with a space but other numbers
-            # aren't. check this in perl
             return "%s, " % unit[units]
         else:
             return " %s, " % self.number_args['zero']
@@ -2735,8 +2731,6 @@ class engine:
             hunword = " %s" % self.number_args['one']
         elif hundreds:
             hunword = "%s" % unit[hundreds]
-            # TODO: bug one and zero are padded with a space but other numbers
-            # aren't. check this in perl
         else:
             hunword = " %s" % self.number_args['zero']
         if tens:
