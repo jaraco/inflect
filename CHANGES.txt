@@ -14,6 +14,13 @@ ver 2.0.0
     p.inflect("num(%d, False) eggs" % 2) will print " eggs"
     p.inflect("num(%d, True) eggs" % 2) will print "2 eggs"
 
+ver 1.0.2
+
+* #53: Improved unicode handling.
+* #5 and #40 via #55: Fix capitalization issues in processes where
+  more than one word is involved.
+* #56: Handle correctly units containing 'degree' and 'per'.
+
 ver 1.0.1
 
 * #31: fix extraneous close parentheses.
