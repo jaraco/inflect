@@ -66,7 +66,7 @@ from __future__ import unicode_literals
 import ast
 import sys
 import re
-from re import compile, match, search, subn, IGNORECASE, VERBOSE
+from re import match, search, subn, IGNORECASE, VERBOSE
 
 
 class UnknownClassicalModeError(Exception):
@@ -1467,7 +1467,7 @@ class engine:
         }
 
         # Regular expression to find Python's function call syntax
-        functions_re = compile(r'((\w+)\([^)]*\)*)', IGNORECASE)
+        functions_re = re.compile(r'((\w+)\([^)]*\)*)', IGNORECASE)
         output = functions_re.sub(
             lambda mo: self._string_to_substitute(mo, methods_dict), text
         )
