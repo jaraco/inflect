@@ -1741,9 +1741,9 @@ class engine:
         pair = "{}|{}".format(word1, word2)
 
         return (
-            pair in list(pl_sb_irregular_s.values()) or
-            pair in list(pl_sb_irregular.values()) or
-            pair in list(pl_sb_irregular_caps.values()) or
+            pair in pl_sb_irregular_s.values() or
+            pair in pl_sb_irregular.values() or
+            pair in pl_sb_irregular_caps.values() or
             any(
                 self._pl_reg_plurals(pair, stems, end1, end2)
                 for stems, end1, end2 in stem_endings
