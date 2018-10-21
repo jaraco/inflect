@@ -21,7 +21,7 @@
     The original Perl module Lingua::EN::Inflect by Damian Conway is
     available from http://search.cpan.org/~dconway/
 
-    This module can be downloaded at http://pypi.python.org/pypi/inflect
+    This module can be downloaded at http://pypi.org/project/inflect
 
 methods:
           classical inflect
