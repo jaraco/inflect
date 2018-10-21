@@ -61,9 +61,12 @@ Exceptions:
 
 '''
 
+from __future__ import unicode_literals
+
 import ast
 import sys
-from re import compile, match, search, subn, IGNORECASE, VERBOSE
+from re import match, search, subn, IGNORECASE, VERBOSE
+from re import split as splitre
 from re import error as reerror
 from re import sub as resub
 
