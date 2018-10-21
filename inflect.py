@@ -1753,26 +1753,11 @@ class engine:
     def _pl_check_plurals_adj(self, word1, word2):
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s", "'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s", "'")) else ''
-        # TODO: BUG? report upstream. I don't think you should chop off the s'
-        # word1b = word1[:-2] if word1.endswith("s'") else ''
-        # word2b = word2[:-2] if word2.endswith("s'") else ''
 
         if word1a:
             if word2a and (self._pl_check_plurals_N(word1a, word2a) or
                            self._pl_check_plurals_N(word2a, word1a)):
                 return True
-        #    if word2b and ( self._pl_check_plurals_N(word1a, word2b)
-        #                    or self._pl_check_plurals_N(word2b, word1a) ):
-        #        return True
-
-        # if word1b:
-        #    if word2a and ( self._pl_check_plurals_N(word1b, word2a)
-        #                    or self._pl_check_plurals_N(word2a, word1b) ):
-        #        return True
-        #    if word2b and ( self._pl_check_plurals_N(word1b, word2b)
-        #                    or self._pl_check_plurals_N(word2b, word1b) ):
-        #        return True
-
         return False
 
     def get_count(self, count=None):
