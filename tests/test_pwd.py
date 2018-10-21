@@ -107,7 +107,7 @@ class test(unittest.TestCase):
         p = inflect.engine()
         for txt, ans in (
             ("num(1)", "1"),
-            ("num(1,0)", "1"),
+            ("num(1,0)", ""),
             ("num(1,1)", "1"),
             ("num(1)   ", "1   "),
             ("   num(1)   ", "   1   "),
@@ -116,18 +116,17 @@ class test(unittest.TestCase):
             self.assertEqual(p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans))
 
         for txt, ans in (
-            ("plural(rock)", "rocks"),
-            ("plural(rock)  plural(child)", "rocks  children"),
-            ("num(2) plural(rock)  plural(child)", "2 rocks  children"),
+            ("plural('rock')", "rocks"),
+            ("plural('rock')  plural('child')", "rocks  children"),
+            ("num(2) plural('rock')  plural('child')", "2 rocks  children"),
 
-            ("plural(rock) plural_noun(rock) plural_verb(rocks) plural_adj(big) a(ant)",
+            ("plural('rock') plural_noun('rock') plural_verb('rocks') plural_adj('big') a('ant')",
              "rocks rocks rock big an ant"),
 
-            ("an(rock) no(cat) ordinal(3) number_to_words(1234) present_participle(runs)",
+            ("an('rock') no('cat') ordinal(3) number_to_words(1234) present_participle('runs')",
              "a rock no cats 3rd one thousand, two hundred and thirty-four running"),
 
-            # TODO: extra space when space before number. Is this desirable?
-            ("a(cat,0) a(cat,1) a(cat,2) a(cat, 2)", "0 cat a cat 2 cat  2 cat"),
+            ("a('cat',0) a('cat',1) a('cat',2) a('cat', 2)", "0 cat a cat 2 cat 2 cat"),
         ):
             self.assertEqual(p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans))
 
@@ -308,7 +307,7 @@ class test(unittest.TestCase):
             ('goose', 'geese'),
         ):
             self.assertEqual(p.singular_noun(plur), sing)
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         self.assertEqual(p.singular_noun('cats', count=2), 'cats')
 
@@ -342,7 +341,7 @@ class test(unittest.TestCase):
                                 plur,
                                 p.singular_noun(plur),
                                 sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('masculine')
         for sing, plur in (
@@ -357,7 +356,7 @@ class test(unittest.TestCase):
                                 plur,
                                 p.singular_noun(plur),
                                 sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('gender-neutral')
         for sing, plur in (
@@ -372,7 +371,7 @@ class test(unittest.TestCase):
                                 plur,
                                 p.singular_noun(plur),
                                 sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         p.gender('neuter')
         for sing, plur in (
@@ -387,7 +386,7 @@ class test(unittest.TestCase):
                                 plur,
                                 p.singular_noun(plur),
                                 sing))
-            self.assertEqual(p.inflect('singular_noun(%s)' % plur), sing)
+            self.assertEqual(p.inflect('singular_noun(\'%s\')' % plur), sing)
 
         self.assertRaises(BadGenderError, p.gender, 'male')
 
@@ -1099,7 +1098,7 @@ class test(unittest.TestCase):
                              txt)
 
             self.assertEqual(p.inflect(
-                "There plural_verb(was,%d) no(error,%d)" % (errors, errors)),
+                "There plural_verb('was',%d) no('error',%d)" % (errors, errors)),
                              txt)
 
         for num1, num2, txt in (
@@ -1116,7 +1115,8 @@ class test(unittest.TestCase):
 
             self.assertEqual(
                 p.inflect(
-                    'num(%d,)plural(I) plural_verb(saw) num(%d) plural_noun(saw)' % (num1, num2)
+                    "num(%d, False)plural('I') plural_verb('saw') num(%d) plural_noun('saw')"
+                    % (num1, num2)
                 ), txt)
 
         self.assertEqual(p.a('a cat'), 'a cat')

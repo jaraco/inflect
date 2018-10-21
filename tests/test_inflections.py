@@ -3,7 +3,7 @@ import io
 
 import six
 
-from nose.tools import eq_, assert_not_equal
+from nose.tools import eq_, assert_not_equal, raises
 
 import inflect
 
@@ -209,13 +209,44 @@ def test_prespart():
 
 def test_inflect_on_tuples():
     p = inflect.engine()
-    eq_(p.inflect("plural(egg, ('a', 'b', 'c')"), "eggs")
-    eq_(p.inflect("plural_noun(egg, ('a', 'b', 'c'))"), "eggs")
-    eq_(p.inflect("plural_adj(a, ('a', 'b', 'c'))"), "some")
-    eq_(p.inflect("plural_verb(was, ('a', 'b', 'c'))"), "were")
-    eq_(p.inflect("singular_noun(eggs, ('a', 'b', 'c'))"), "eggs")
-    eq_(p.inflect("an(error, ('a', 'b', 'c'))"), " ('a', 'b', 'c') error")
-    eq_(p.inflect("number_to_words((10, 20))"), 'one thousand and twenty')
+    eq_(p.inflect("plural('egg', ('a', 'b', 'c'))"), "eggs")
+    eq_(p.inflect("plural('egg', ['a', 'b', 'c'])"), "eggs")
+    eq_(p.inflect("plural_noun('egg', ('a', 'b', 'c'))"), "eggs")
+    eq_(p.inflect("plural_adj('a', ('a', 'b', 'c'))"), "some")
+    eq_(p.inflect("plural_verb('was', ('a', 'b', 'c'))"), "were")
+    eq_(p.inflect("singular_noun('eggs', ('a', 'b', 'c'))"), "eggs")
+    eq_(p.inflect("an('error', ('a', 'b', 'c'))"), "('a', 'b', 'c') error")
+    eq_(p.inflect("This is not a function(name)"), "This is not a function(name)")
+
+
+def test_inflect_on_builtin_constants():
+    p = inflect.engine()
+    eq_(p.inflect("Plural of False is plural('False')"), "Plural of False is Falses")
+    eq_(p.inflect("num(%d, False) plural('False')" % 10), " Falses")
+
+    eq_(p.inflect("plural('True')"), "Trues")
+    eq_(p.inflect("num(%d, True) plural('False')" % 10), "10 Falses")
+    eq_(p.inflect("num(%d, %r) plural('False')" % (10, True)), "10 Falses")
+
+    eq_(p.inflect("plural('None')"), "Nones")
+    eq_(p.inflect("num(%d, %r) plural('True')" % (10, None)), "10 Trues")
+
+
+def test_inflect_keyword_args():
+    p = inflect.engine()
+    eq_(p.inflect("number_to_words(1234, andword='')"),
+        "one thousand, two hundred thirty-four")
+    eq_(p.inflect("number_to_words(1234, andword='plus')"),
+        "one thousand, two hundred plus thirty-four")
+    eq_(p.inflect("number_to_words('555_1202', group=1, zero='oh')"),
+        "five, five, five, one, two, oh, two")
+
+
+@raises(NameError)
+def test_NameError_in_strings():
+    p = inflect.engine()
+    eq_(p.inflect("plural('two')"), "twoes")
+    p.inflect("plural(two)")
 
 
 def get_data():

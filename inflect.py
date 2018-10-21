@@ -63,6 +63,8 @@ Exceptions:
 
 from __future__ import unicode_literals
 
+import ast
+import sys
 from re import match, search, subn, IGNORECASE, VERBOSE
 from re import split as splitre
 from re import error as reerror
@@ -1182,6 +1184,14 @@ no_classical = {k: False for k in list(def_classical.keys())}
 #            raise BadRcFileError
 
 
+# Maps strings to built-in constant types
+string_to_constant = {
+    "True": True,
+    "False": False,
+    "None": None
+}
+
+
 class engine:
 
     def __init__(self):
@@ -1378,84 +1388,54 @@ class engine:
         else:
             raise BadGenderError
 
-    def nummo(self, matchobject):
+    def _get_value_from_ast(self, obj):
         '''
-        num but take a matchobject
-        use groups 1 and 2 in matchobject
+        Return the value of the ast object.
         '''
-        return self.num(matchobject.group(1), matchobject.group(2))
+        if isinstance(obj, ast.Num):
+            return obj.n
+        elif isinstance(obj, ast.Str):
+            return obj.s
+        elif isinstance(obj, ast.List):
+            return [self._get_value_from_ast(e) for e in obj.elts]
+        elif isinstance(obj, ast.Tuple):
+            return tuple([self._get_value_from_ast(e) for e in obj.elts])
 
-    def plmo(self, matchobject):
-        '''
-        plural but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        return self.plural(matchobject.group(1), matchobject.group(3))
+        # None, True and False are NameConstants in Py3.4 and above.
+        elif sys.version_info.major >= 3 and isinstance(obj, ast.NameConstant):
+            return obj.value
 
-    def plnounmo(self, matchobject):
-        '''
-        plural_noun but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        return self.plural_noun(matchobject.group(1), matchobject.group(3))
+        # For python versions below 3.4
+        elif isinstance(obj, ast.Name) and (obj.id in ["True", "False", "None"]):
+            return string_to_constant[obj.id]
 
-    def plverbmo(self, matchobject):
-        '''
-        plural_verb but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        return self.plural_verb(matchobject.group(1), matchobject.group(3))
+        # Probably passed a variable name.
+        # Or passed a single word without wrapping it in quotes as an argument
+        # ex: p.inflect("I plural(see)") instead of p.inflect("I plural('see')")
+        raise NameError("name '%s' is not defined" % obj.id)
 
-    def pladjmo(self, matchobject):
+    def _string_to_substitute(self, mo, methods_dict):
         '''
-        plural_adj but take a matchobject
-        use groups 1 and 3 in matchobject
+        Return the string to be substituted for the match.
         '''
-        return self.plural_adj(matchobject.group(1), matchobject.group(3))
+        matched_text, f_name = mo.groups()
+        # matched_text is the complete match string. e.g. plural_noun(cat)
+        # f_name is the function name. e.g. plural_noun
 
-    def sinounmo(self, matchobject):
-        '''
-        singular_noun but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        return self.singular_noun(matchobject.group(1), matchobject.group(3))
+        # Return matched_text if function name is not in methods_dict
+        if f_name not in methods_dict:
+            return matched_text
 
-    def amo(self, matchobject):
-        '''
-        A but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        if matchobject.group(3) is None:
-            return self.a(matchobject.group(1))
-        return self.a(matchobject.group(1), matchobject.group(3))
+        # Parse the matched text
+        a_tree = ast.parse(matched_text)
 
-    def nomo(self, matchobject):
-        '''
-        NO but take a matchobject
-        use groups 1 and 3 in matchobject
-        '''
-        return self.no(matchobject.group(1), matchobject.group(3))
+        # get the args and kwargs from ast objects
+        args_list = [self._get_value_from_ast(a) for a in a_tree.body[0].value.args]
+        kwargs_list = {kw.arg: self._get_value_from_ast(kw.value)
+                       for kw in a_tree.body[0].value.keywords}
 
-    def ordinalmo(self, matchobject):
-        '''
-        ordinal but take a matchobject
-        use group 1
-        '''
-        return self.ordinal(matchobject.group(1))
-
-    def numwordsmo(self, matchobject):
-        '''
-        number_to_words but take a matchobject
-        use group 1
-        '''
-        return self.number_to_words(matchobject.group(1))
-
-    def prespartmo(self, matchobject):
-        '''
-        prespart but take a matchobject
-        use group 1
-        '''
-        return self.present_participle(matchobject.group(1))
+        # Call the corresponding function
+        return methods_dict[f_name](*args_list, **kwargs_list)
 
 # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
@@ -1471,58 +1451,30 @@ class engine:
 
         '''
         save_persistent_count = self.persistent_count
-        sections = splitre(r"(num\([^)]*\))", text)
-        inflection = []
 
-        for section in sections:
-            (section, count) = subn(r"num\(\s*?(?:([^),]*)(?:,([^)]*))?)?\)", self.nummo, section)
-            if not count:
-                total = -1
-                while total:
-                    (section, total) = subn(
-                        r"(?x)\bplural     \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.plmo, section)
-                    (section, count) = subn(
-                        r"(?x)\bplural_noun   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.plnounmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bplural_verb   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.plverbmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bplural_adj \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.pladjmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bsingular_noun   \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.sinounmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\ban?    \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.amo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bno    \( ([^),]*) (, ([^)]*\)*) )? \)  ",
-                        self.nomo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bordinal        \( ([^)]*\)*) \)            ",
-                        self.ordinalmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bnumber_to_words  \( ([^)]*\)*) \)            ",
-                        self.numwordsmo, section)
-                    total += count
-                    (section, count) = subn(
-                        r"(?x)\bpresent_participle \( ([^)]*\)*) \)            ",
-                        self.prespartmo, section)
-                    total += count
+        # Dictionary of allowed methods
+        methods_dict = {
+            'plural': self.plural,
+            'plural_adj': self.plural_adj,
+            'plural_noun': self.plural_noun,
+            'plural_verb': self.plural_verb,
+            'singular_noun': self.singular_noun,
+            'a': self.a,
+            'an': self.a,
+            'no': self.no,
+            'ordinal': self.ordinal,
+            'number_to_words': self.number_to_words,
+            'present_participle': self.present_participle,
+            'num': self.num
+        }
 
-            inflection.append(section)
-
+        # Regular expression to find Python's function call syntax
+        functions_re = compile(r'((\w+)\([^)]*\)*)', IGNORECASE)
+        output = functions_re.sub(
+            lambda mo: self._string_to_substitute(mo, methods_dict), text
+        )
         self.persistent_count = save_persistent_count
-        return "".join(inflection)
+        return output
 
 # ## PLURAL SUBROUTINES
 
