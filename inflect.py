@@ -65,9 +65,8 @@ from __future__ import unicode_literals
 
 import ast
 import sys
+import re
 from re import compile, match, search, subn, IGNORECASE, VERBOSE
-from re import error as reerror
-from re import sub as resub
 
 
 class UnknownClassicalModeError(Exception):
@@ -1288,7 +1287,7 @@ class engine:
             return
         try:
             match(pattern, '')
-        except reerror:
+        except re.error:
             print3("\nBad user-defined singular pattern:\n\t%s\n" % pattern)
             raise BadUserDefinedPatternError
 
@@ -1301,8 +1300,8 @@ class engine:
         # if pattern is None:
         #    return
         # try:
-        #    resub('', pattern, '')
-        # except reerror:
+        #    re.sub('', pattern, '')
+        # except re.error:
         #    print3("\nBad user-defined plural pattern:\n\t%s\n" % pattern)
         #    raise BadUserDefinedPatternError
 
@@ -1312,7 +1311,7 @@ class engine:
             if mo:
                 if wordlist[i + 1] is None:
                     return None
-                pl = resub(r'\$(\d+)', r'\\1', wordlist[i + 1])  # change $n to \n for expand
+                pl = re.sub(r'\$(\d+)', r'\\1', wordlist[i + 1])  # change $n to \n for expand
                 return mo.expand(pl)
         return None
 
@@ -2790,7 +2789,7 @@ class engine:
             mo = search(r"(%s)\Z" % ordinal_suff, num)
             try:
                 post = ordinal[mo.group(1)]
-                return resub(r"(%s)\Z" % ordinal_suff, post, num)
+                return re.sub(r"(%s)\Z" % ordinal_suff, post, num)
             except AttributeError:
                 return "%sth" % num
 
@@ -2887,10 +2886,10 @@ class engine:
         # pdb.set_trace()
 
         if group == 1:
-            num = resub(r"(\d)", self.group1sub, num)
+            num = re.sub(r"(\d)", self.group1sub, num)
         elif group == 2:
-            num = resub(r"(\d)(\d)", self.group2sub, num)
-            num = resub(r"(\d)", self.group1bsub, num, 1)
+            num = re.sub(r"(\d)(\d)", self.group2sub, num)
+            num = re.sub(r"(\d)", self.group1bsub, num, 1)
             # group1bsub same as
             # group1sub except it doesn't use the default word for one.
             # Is this required? i.e. is the default word not to beused when
@@ -2898,9 +2897,9 @@ class engine:
             #
             # No. This is a bug. Fixed. TODO: report upstream.
         elif group == 3:
-            num = resub(r"(\d)(\d)(\d)", self.group3sub, num)
-            num = resub(r"(\d)(\d)", self.group2sub, num, 1)
-            num = resub(r"(\d)", self.group1sub, num, 1)
+            num = re.sub(r"(\d)(\d)(\d)", self.group3sub, num)
+            num = re.sub(r"(\d)(\d)", self.group2sub, num, 1)
+            num = re.sub(r"(\d)", self.group1sub, num, 1)
         elif int(num) == 0:
             num = self.number_args['zero']
         elif int(num) == 1:
@@ -2911,29 +2910,29 @@ class engine:
             # surely there's a better way to do the next bit
             mo = search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
             while mo:
-                num = resub(r"(\d)(\d)(\d)(?=\D*\Z)", self.hundsub, num, 1)
+                num = re.sub(r"(\d)(\d)(\d)(?=\D*\Z)", self.hundsub, num, 1)
                 mo = search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
-            num = resub(r"(\d)(\d)(?=\D*\Z)", self.tensub, num, 1)
-            num = resub(r"(\d)(?=\D*\Z)", self.unitsub, num, 1)
+            num = re.sub(r"(\d)(\d)(?=\D*\Z)", self.tensub, num, 1)
+            num = re.sub(r"(\d)(?=\D*\Z)", self.unitsub, num, 1)
         return num
 
     def blankfn(self, mo):
         ''' do a global blank replace
-        TODO: surely this can be done with an option to resub
+        TODO: surely this can be done with an option to re.sub
               rather than this fn
         '''
         return ''
 
     def commafn(self, mo):
         ''' do a global ',' replace
-        TODO: surely this can be done with an option to resub
+        TODO: surely this can be done with an option to re.sub
               rather than this fn
         '''
         return ','
 
     def spacefn(self, mo):
         ''' do a global ' ' replace
-        TODO: surely this can be done with an option to resub
+        TODO: surely this can be done with an option to re.sub
               rather than this fn
         '''
         return ' '
@@ -3007,7 +3006,7 @@ class engine:
         for i in range(loopstart, len(chunks)):
             chunk = chunks[i]
             # remove all non numeric \D
-            chunk = resub(r"\D", self.blankfn, chunk)
+            chunk = re.sub(r"\D", self.blankfn, chunk)
             if chunk == "":
                 chunk = "0"
 
@@ -3018,12 +3017,12 @@ class engine:
 
             if chunk[-2:] == ', ':
                 chunk = chunk[:-2]
-            chunk = resub(r"\s+,", self.commafn, chunk)
+            chunk = re.sub(r"\s+,", self.commafn, chunk)
 
             if group == 0 and first:
-                chunk = resub(r", (\S+)\s+\Z", " %s \\1" % andword, chunk)
-            chunk = resub(r"\s+", self.spacefn, chunk)
-            # chunk = resub(r"(\A\s|\s\Z)", self.blankfn, chunk)
+                chunk = re.sub(r", (\S+)\s+\Z", " %s \\1" % andword, chunk)
+            chunk = re.sub(r"\s+", self.spacefn, chunk)
+            # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
                 first = ''
@@ -3037,8 +3036,11 @@ class engine:
             # TODO: can this be just one re as it is in perl?
             mo = search(r"(%s)\Z" % ordinal_suff, numchunks[-1])
             if mo:
-                numchunks[-1] = resub(r"(%s)\Z" % ordinal_suff, ordinal[mo.group(1)],
-                                      numchunks[-1])
+                numchunks[-1] = re.sub(
+                    r"(%s)\Z" % ordinal_suff,
+                    ordinal[mo.group(1)],
+                    numchunks[-1],
+                )
             else:
                 numchunks[-1] += 'th'
 
