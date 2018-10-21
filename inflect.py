@@ -99,7 +99,7 @@ class BadGenderError(Exception):
     pass
 
 
-__version__ = "1.0.2"
+__version__ = "2.0.0"
 
 
 STDOUT_ON = False
