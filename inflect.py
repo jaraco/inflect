@@ -1754,11 +1754,13 @@ class engine:
         word1a = word1[:word1.rfind("'")] if word1.endswith(("'s", "'")) else ''
         word2a = word2[:word2.rfind("'")] if word2.endswith(("'s", "'")) else ''
 
-        if word1a:
-            if word2a and (self._pl_check_plurals_N(word1a, word2a) or
-                           self._pl_check_plurals_N(word2a, word1a)):
-                return True
-        return False
+        return (
+            word1a and word2a and
+            (
+                self._pl_check_plurals_N(word1a, word2a) or
+                self._pl_check_plurals_N(word2a, word1a)
+            )
+        )
 
     def get_count(self, count=None):
         if count is None and self.persistent_count is not None:
