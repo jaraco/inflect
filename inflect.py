@@ -1720,15 +1720,7 @@ class engine:
         return bool(re.search(pattern, pair))
 
     def _pl_check_plurals_N(self, word1, word2):
-        pair = "{}|{}".format(word1, word2)
-        if pair in list(pl_sb_irregular_s.values()):
-            return True
-        if pair in list(pl_sb_irregular.values()):
-            return True
-        if pair in list(pl_sb_irregular_caps.values()):
-            return True
-
-        for (stems, end1, end2) in (
+        stem_endings = (
             (pl_sb_C_a_ata, "as", "ata"),
             (pl_sb_C_is_ides, "is", "ides"),
             (pl_sb_C_a_ae, "s", "e"),
@@ -1745,7 +1737,17 @@ class engine:
             ('.*ieu', "s", "x"),
             ('.*tri', "xes", "ces"),
             ('.{2,}[yia]n', "xes", "ges")
-        ):
+        )
+
+        pair = "{}|{}".format(word1, word2)
+        if pair in list(pl_sb_irregular_s.values()):
+            return True
+        if pair in list(pl_sb_irregular.values()):
+            return True
+        if pair in list(pl_sb_irregular_caps.values()):
+            return True
+
+        for (stems, end1, end2) in stem_endings:
             if self._pl_reg_plurals(pair, stems, end1, end2):
                 return True
         return False
