@@ -1738,19 +1738,17 @@ class engine:
             ('.*tri', "xes", "ces"),
             ('.{2,}[yia]n', "xes", "ges")
         )
-
         pair = "{}|{}".format(word1, word2)
-        if pair in list(pl_sb_irregular_s.values()):
-            return True
-        if pair in list(pl_sb_irregular.values()):
-            return True
-        if pair in list(pl_sb_irregular_caps.values()):
-            return True
 
-        for (stems, end1, end2) in stem_endings:
-            if self._pl_reg_plurals(pair, stems, end1, end2):
-                return True
-        return False
+        return (
+            pair in list(pl_sb_irregular_s.values()) or
+            pair in list(pl_sb_irregular.values()) or
+            pair in list(pl_sb_irregular_caps.values()) or
+            any(
+                self._pl_reg_plurals(pair, stems, end1, end2)
+                for stems, end1, end2 in stem_endings
+            )
+        )
 
     def _pl_check_plurals_adj(self, word1, word2):
         # VERSION: tuple in endswith requires python 2.5
