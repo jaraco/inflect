@@ -54,8 +54,9 @@ def test_unit_handling_combined():
         # Heat transfer coefficient unit
         "watt per square meter degree celsius": "watts per square meter degree celsius",
         "degree celsius per hour": "degrees celsius per hour",
-        "degree fahrenheit hour square foot per btuit inch":
-            "degree fahrenheit hour square feet per btuit inch",
+        "degree fahrenheit hour square foot per btuit inch": (
+            "degree fahrenheit hour square feet per btuit inch"
+        ),
         # 'degree Celsius per hour': 'degrees Celsius per hour',
         # 'degree Fahrenheit hour square foot per BtuIT inch':
         #   'degree Fahrenheit hour square feet per BtuIT inch'

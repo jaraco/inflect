@@ -1174,8 +1174,7 @@ class test(unittest.TestCase):
             self.assertEqual(
                 p.inflect(
                     "num(%d, False)plural('I') plural_verb('saw') "
-                    "num(%d) plural_noun('saw')"
-                    % (num1, num2)
+                    "num(%d) plural_noun('saw')" % (num1, num2)
                 ),
                 txt,
             )
