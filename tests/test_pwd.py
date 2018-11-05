@@ -138,11 +138,13 @@ class test(unittest.TestCase):
             ("plural('rock')  plural('child')", "rocks  children"),
             ("num(2) plural('rock')  plural('child')", "2 rocks  children"),
             (
-                "plural('rock') plural_noun('rock') plural_verb('rocks') plural_adj('big') a('ant')",
+                "plural('rock') plural_noun('rock') plural_verb('rocks') "
+                "plural_adj('big') a('ant')",
                 "rocks rocks rock big an ant",
             ),
             (
-                "an('rock') no('cat') ordinal(3) number_to_words(1234) present_participle('runs')",
+                "an('rock') no('cat') ordinal(3) number_to_words(1234) "
+                "present_participle('runs')",
                 "a rock no cats 3rd one thousand, two hundred and thirty-four running",
             ),
             ("a('cat',0) a('cat',1) a('cat',2) a('cat', 2)", "0 cat a cat 2 cat 2 cat"),
@@ -1171,7 +1173,8 @@ class test(unittest.TestCase):
 
             self.assertEqual(
                 p.inflect(
-                    "num(%d, False)plural('I') plural_verb('saw') num(%d) plural_noun('saw')"
+                    "num(%d, False)plural('I') plural_verb('saw') "
+                    "num(%d) plural_noun('saw')"
                     % (num1, num2)
                 ),
                 txt,

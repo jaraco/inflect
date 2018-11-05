@@ -147,7 +147,8 @@ def make_pl_si_lists(lst, plending, siendingsize, dojoinstem=True):
     """
     given a list of singular words: lst
     an ending to append to make the plural: plending
-    the number of characters to remove from the singular before appending plending: siendingsize
+    the number of characters to remove from the singular
+        before appending plending: siendingsize
     a flag whether to create a joinstem: dojoinstem
 
     return:
@@ -2057,7 +2058,8 @@ class engine:
 
         By default all classical modes are off except names.
 
-        unknown value in args or key in kwargs rasies exception: UnknownClasicalModeError
+        unknown value in args or key in kwargs rasies
+        exception: UnknownClasicalModeError
 
         """
         classical_mode = list(def_classical.keys())
@@ -2173,8 +2175,9 @@ class engine:
         e.g. inflect('The plural of cat is plural(cat)') returns
         'The plural of cat is cats'
 
-        can use plural, plural_noun, plural_verb, plural_adj, singular_noun, a, an, no, ordinal,
-        number_to_words and prespart
+        can use plural, plural_noun, plural_verb, plural_adj,
+        singular_noun, a, an, no, ordinal, number_to_words,
+        and prespart
 
         """
         save_persistent_count = self.persistent_count
@@ -2213,7 +2216,8 @@ class engine:
         for index, word in enumerate(orig.split(" ")):
             if word == "I":
                 # Is this the only word for exceptions like this
-                # Where the original is fully capitalized without 'meaning' capitalization?
+                # Where the original is fully capitalized
+                # without 'meaning' capitalization?
                 # Also this fails to handle a capitalizaion in context
                 continue
             if word.capitalize() == word:
@@ -2550,8 +2554,10 @@ class engine:
             index = len(mo.group("denominator"))
             return "{}{}".format(self._plnoun(word[:index]), word[index:])
 
-        # handle units given in degrees (only accept if there is no more than one word following)
-        # degree Celsius => degrees Celsius but degree fahrenheit hour => degree fahrenheit hours
+        # handle units given in degrees (only accept if
+        # there is no more than one word following)
+        # degree Celsius => degrees Celsius but degree
+        # fahrenheit hour => degree fahrenheit hours
         if len(lowersplit) >= 2 and lowersplit[-2] in ["degree"]:
             return " ".join([self._plnoun(lowersplit[0])] + lowersplit[1:])
 
