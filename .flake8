@@ -1,0 +1,12 @@
+[flake8]
+max-line-length=88
+ignore =
+	E203
+	W504
+	W503
+exclude =
+	.git
+	.tox
+	build
+	dist
+	.eggs

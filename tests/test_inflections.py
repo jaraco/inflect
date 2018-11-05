@@ -9,10 +9,12 @@ import inflect
 
 
 def is_eq(p, a, b):
-    return (p.compare(a, b) or
-            p.plnounequal(a, b) or
-            p.plverbequal(a, b) or
-            p.pladjequal(a, b))
+    return (
+        p.compare(a, b)
+        or p.plnounequal(a, b)
+        or p.plverbequal(a, b)
+        or p.pladjequal(a, b)
+    )
 
 
 def test_many():
@@ -21,39 +23,39 @@ def test_many():
     data = get_data()
 
     for line in data:
-        if 'TODO:' in line:
+        if "TODO:" in line:
             continue
         try:
-            singular, rest = line.split('->', 1)
+            singular, rest = line.split("->", 1)
         except ValueError:
             continue
         singular = singular.strip()
         rest = rest.strip()
         try:
-            plural, comment = rest.split('#', 1)
+            plural, comment = rest.split("#", 1)
         except ValueError:
             plural = rest.strip()
-            comment = ''
+            comment = ""
         try:
             mod_plural, class_plural = plural.split("|", 1)
             mod_plural = mod_plural.strip()
             class_plural = class_plural.strip()
         except ValueError:
             mod_plural = class_plural = plural.strip()
-        if 'verb' in comment.lower():
-            is_nv = '_V'
-        elif 'noun' in comment.lower():
-            is_nv = '_N'
+        if "verb" in comment.lower():
+            is_nv = "_V"
+        elif "noun" in comment.lower():
+            is_nv = "_N"
         else:
-            is_nv = ''
+            is_nv = ""
 
         p.classical(all=0, names=0)
         mod_PL_V = p.plural_verb(singular)
         mod_PL_N = p.plural_noun(singular)
         mod_PL = p.plural(singular)
-        if is_nv == '_V':
+        if is_nv == "_V":
             mod_PL_val = mod_PL_V
-        elif is_nv == '_N':
+        elif is_nv == "_N":
             mod_PL_val = mod_PL_N
         else:
             mod_PL_val = mod_PL
@@ -62,57 +64,67 @@ def test_many():
         class_PL_V = p.plural_verb(singular)
         class_PL_N = p.plural_noun(singular)
         class_PL = p.plural(singular)
-        if is_nv == '_V':
+        if is_nv == "_V":
             class_PL_val = class_PL_V
-        elif is_nv == '_N':
+        elif is_nv == "_N":
             class_PL_val = class_PL_N
         else:
             class_PL_val = class_PL
 
-        check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural)
+        check_all(
+            p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural
+        )
 
 
 def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural):
     eq_(mod_plural, mod_PL_val)
     eq_(class_plural, class_PL_val)
-    eq_(is_eq(p, singular, mod_plural) in ('s:p', 'p:s', 'eq'), True,
-        msg='is_eq({},{}) == {} != {}'.format(
-            singular,
-            mod_plural,
-            is_eq(p, singular, mod_plural),
-            's:p, p:s or eq'))
-    eq_(is_eq(p, mod_plural, singular) in ('p:s', 's:p', 'eq'), True,
-        msg='is_eq({},{}) == {} != {}'.format(
-            mod_plural,
-            singular,
-            is_eq(p, mod_plural, singular),
-            's:p, p:s or eq'))
-    eq_(is_eq(p, singular, class_plural) in ('s:p', 'p:s', 'eq'), True)
-    eq_(is_eq(p, class_plural, singular) in ('p:s', 's:p', 'eq'), True)
-    assert_not_equal(singular, '')
-    eq_(mod_PL_val, mod_PL_val if class_PL_val else '%s|%s' (mod_PL_val, class_PL_val))
+    eq_(
+        is_eq(p, singular, mod_plural) in ("s:p", "p:s", "eq"),
+        True,
+        msg="is_eq({},{}) == {} != {}".format(
+            singular, mod_plural, is_eq(p, singular, mod_plural), "s:p, p:s or eq"
+        ),
+    )
+    eq_(
+        is_eq(p, mod_plural, singular) in ("p:s", "s:p", "eq"),
+        True,
+        msg="is_eq({},{}) == {} != {}".format(
+            mod_plural, singular, is_eq(p, mod_plural, singular), "s:p, p:s or eq"
+        ),
+    )
+    eq_(is_eq(p, singular, class_plural) in ("s:p", "p:s", "eq"), True)
+    eq_(is_eq(p, class_plural, singular) in ("p:s", "s:p", "eq"), True)
+    assert_not_equal(singular, "")
+    eq_(mod_PL_val, mod_PL_val if class_PL_val else "%s|%s"(mod_PL_val, class_PL_val))
 
-    if is_nv != '_V':
-        eq_(p.singular_noun(mod_plural, 1), singular,
+    if is_nv != "_V":
+        eq_(
+            p.singular_noun(mod_plural, 1),
+            singular,
             msg="p.singular_noun({}) == {} != {}".format(
-                mod_plural, p.singular_noun(mod_plural, 1), singular))
+                mod_plural, p.singular_noun(mod_plural, 1), singular
+            ),
+        )
 
-        eq_(p.singular_noun(class_plural, 1), singular,
+        eq_(
+            p.singular_noun(class_plural, 1),
+            singular,
             msg="p.singular_noun({}) == {} != {}".format(
-                class_plural, p.singular_noun(class_plural, 1), singular))
+                class_plural, p.singular_noun(class_plural, 1), singular
+            ),
+        )
 
 
 def test_def():
     p = inflect.engine()
 
     p.defnoun("kin", "kine")
-    p.defnoun('(.*)x', '$1xen')
+    p.defnoun("(.*)x", "$1xen")
 
-    p.defverb('foobar',  'feebar',
-              'foobar',  'feebar',
-              'foobars', 'feebar')
+    p.defverb("foobar", "feebar", "foobar", "feebar", "foobars", "feebar")
 
-    p.defadj('red', 'red|gules')
+    p.defadj("red", "red|gules")
 
     eq_(p.no("kin", 0), "no kine", msg="kin -> kine (user defined)...")
     eq_(p.no("kin", 1), "1 kin")
@@ -165,36 +177,36 @@ def test_ordinal():
     eq_(p.ordinal(103), "103rd")
     eq_(p.ordinal(104), "104th")
 
-    eq_(p.ordinal('zero'), "zeroth", msg="zero -> zeroth...")
-    eq_(p.ordinal('one'), "first")
-    eq_(p.ordinal('two'), "second")
-    eq_(p.ordinal('three'), "third")
-    eq_(p.ordinal('four'), "fourth")
-    eq_(p.ordinal('five'), "fifth")
-    eq_(p.ordinal('six'), "sixth")
-    eq_(p.ordinal('seven'), "seventh")
-    eq_(p.ordinal('eight'), "eighth")
-    eq_(p.ordinal('nine'), "ninth")
-    eq_(p.ordinal('ten'), "tenth")
-    eq_(p.ordinal('eleven'), "eleventh")
-    eq_(p.ordinal('twelve'), "twelfth")
-    eq_(p.ordinal('thirteen'), "thirteenth")
-    eq_(p.ordinal('fourteen'), "fourteenth")
-    eq_(p.ordinal('fifteen'), "fifteenth")
-    eq_(p.ordinal('sixteen'), "sixteenth")
-    eq_(p.ordinal('seventeen'), "seventeenth")
-    eq_(p.ordinal('eighteen'), "eighteenth")
-    eq_(p.ordinal('nineteen'), "nineteenth")
-    eq_(p.ordinal('twenty'), "twentieth")
-    eq_(p.ordinal('twenty-one'), "twenty-first")
-    eq_(p.ordinal('twenty-two'), "twenty-second")
-    eq_(p.ordinal('twenty-three'), "twenty-third")
-    eq_(p.ordinal('twenty-four'), "twenty-fourth")
-    eq_(p.ordinal('one hundred'), "one hundredth")
-    eq_(p.ordinal('one hundred and one'), "one hundred and first")
-    eq_(p.ordinal('one hundred and two'), "one hundred and second")
-    eq_(p.ordinal('one hundred and three'), "one hundred and third")
-    eq_(p.ordinal('one hundred and four'), "one hundred and fourth")
+    eq_(p.ordinal("zero"), "zeroth", msg="zero -> zeroth...")
+    eq_(p.ordinal("one"), "first")
+    eq_(p.ordinal("two"), "second")
+    eq_(p.ordinal("three"), "third")
+    eq_(p.ordinal("four"), "fourth")
+    eq_(p.ordinal("five"), "fifth")
+    eq_(p.ordinal("six"), "sixth")
+    eq_(p.ordinal("seven"), "seventh")
+    eq_(p.ordinal("eight"), "eighth")
+    eq_(p.ordinal("nine"), "ninth")
+    eq_(p.ordinal("ten"), "tenth")
+    eq_(p.ordinal("eleven"), "eleventh")
+    eq_(p.ordinal("twelve"), "twelfth")
+    eq_(p.ordinal("thirteen"), "thirteenth")
+    eq_(p.ordinal("fourteen"), "fourteenth")
+    eq_(p.ordinal("fifteen"), "fifteenth")
+    eq_(p.ordinal("sixteen"), "sixteenth")
+    eq_(p.ordinal("seventeen"), "seventeenth")
+    eq_(p.ordinal("eighteen"), "eighteenth")
+    eq_(p.ordinal("nineteen"), "nineteenth")
+    eq_(p.ordinal("twenty"), "twentieth")
+    eq_(p.ordinal("twenty-one"), "twenty-first")
+    eq_(p.ordinal("twenty-two"), "twenty-second")
+    eq_(p.ordinal("twenty-three"), "twenty-third")
+    eq_(p.ordinal("twenty-four"), "twenty-fourth")
+    eq_(p.ordinal("one hundred"), "one hundredth")
+    eq_(p.ordinal("one hundred and one"), "one hundred and first")
+    eq_(p.ordinal("one hundred and two"), "one hundred and second")
+    eq_(p.ordinal("one hundred and three"), "one hundred and third")
+    eq_(p.ordinal("one hundred and four"), "one hundred and fourth")
 
 
 def test_prespart():
@@ -234,12 +246,18 @@ def test_inflect_on_builtin_constants():
 
 def test_inflect_keyword_args():
     p = inflect.engine()
-    eq_(p.inflect("number_to_words(1234, andword='')"),
-        "one thousand, two hundred thirty-four")
-    eq_(p.inflect("number_to_words(1234, andword='plus')"),
-        "one thousand, two hundred plus thirty-four")
-    eq_(p.inflect("number_to_words('555_1202', group=1, zero='oh')"),
-        "five, five, five, one, two, oh, two")
+    eq_(
+        p.inflect("number_to_words(1234, andword='')"),
+        "one thousand, two hundred thirty-four",
+    )
+    eq_(
+        p.inflect("number_to_words(1234, andword='plus')"),
+        "one thousand, two hundred plus thirty-four",
+    )
+    eq_(
+        p.inflect("number_to_words('555_1202', group=1, zero='oh')"),
+        "five, five, five, one, two, oh, two",
+    )
 
 
 @raises(NameError)
@@ -250,6 +268,6 @@ def test_NameError_in_strings():
 
 
 def get_data():
-    filename = os.path.join(os.path.dirname(__file__), 'inflections.txt')
+    filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
     with io.open(filename) as strm:
         return list(map(six.text_type.strip, strm))
