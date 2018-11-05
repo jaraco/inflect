@@ -481,7 +481,7 @@ def test_array():
     p = inflect.engine()
 
     for i in nw:
-        yield go, p, i
+        go(p, i)
 
 
 def go(p, i):

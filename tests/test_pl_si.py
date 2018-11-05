@@ -28,9 +28,9 @@ def test_pl_si():
 #        if word[-1] == 's':
 #            continue
         p.classical(all=False)
-        yield check_pl_si, p, word
+        check_pl_si(p, word)
         p.classical(all=True)
-        yield check_pl_si, p, word
+        check_pl_si(p, word)
 
 
 def check_pl_si(p, word):
