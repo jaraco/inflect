@@ -1,15 +1,18 @@
 language: python
-
-python:
- - 3.7-dev
- - 3.6
- - 3.5
- - 3.4
- - pypy3
- - 2.7
- - pypy
-
 sudo: false # Use container-based infrastructure
+
+matrix:
+  fast_finish: true
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+    - python: 3.6
+    - python: 3.5
+    - python: 3.4
+    - python: pypy3
+    - python: 2.7
+    - python: pypy
 
 install:
  - pip install coverage tox-travis
@@ -22,6 +25,3 @@ after_success:
 
 after_script:
  - coverage report
-
-matrix:
-  fast_finish: true
