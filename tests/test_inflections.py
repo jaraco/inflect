@@ -69,7 +69,7 @@ def test_many():
         else:
             class_PL_val = class_PL
 
-        yield check_all, p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural
+        check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural)
 
 
 def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural):
