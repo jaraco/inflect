@@ -1778,7 +1778,7 @@ plverb_ambiguous_non_pres = enclose(
 
 pl_v_oes_oe = ("canoes", "floes", "oboes", "roes", "throes", "woes")
 pl_v_oes_oe_endings_size4 = ("hoes", "toes")
-pl_v_oes_oe_endings_size5 = "shoes"
+pl_v_oes_oe_endings_size5 = "shoes",
 
 
 pl_count_zero = ("0", "no", "zero", "nil")
