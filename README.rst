@@ -6,6 +6,9 @@ inflect.py
     :target: https://travis-ci.org/jazzband/inflect
 .. image:: https://coveralls.io/repos/github/jazzband/inflect/badge.svg?branch=master
     :target: https://coveralls.io/github/jazzband/inflect?branch=master
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/ambv/black
+   :alt: Code style: Black
 .. image:: https://jazzband.co/static/img/badge.svg
    :target: https://jazzband.co/
    :alt: Jazzband
