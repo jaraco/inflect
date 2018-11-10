@@ -1,4 +1,4 @@
-ver 2.1
+ver 2.1.0
 
 * #29: Relicensed under the more permissive MIT License.
 
