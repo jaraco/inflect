@@ -1,3 +1,7 @@
+ver 2.1
+
+* #29: Relicensed under the more permissive MIT License.
+
 ver 2.0.1
 
 * #57: Fix pluralization of taco.
