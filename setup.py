@@ -1,24 +1,13 @@
-import os
-import io
-
 import inflect
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+import setuptools
 
 
-here = os.path.dirname(__file__)
-readme_path = os.path.join(here, "README.rst")
-readme = io.open(readme_path, encoding="utf-8").read()
-
-setup(
+setuptools.setup(
     name="inflect",
     version=inflect.__version__,
     description="Correctly generate plurals, singular nouns, ordinals, "
     "indefinite articles; convert numbers to words",
-    long_description=readme,
     author="Paul Dyson",
     author_email="pwdyson@yahoo.com",
     maintainer="Alex Gronholm",
