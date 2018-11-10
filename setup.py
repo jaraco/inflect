@@ -1,11 +1,9 @@
-import inflect
-
 import setuptools
 
 
 setuptools.setup(
     name="inflect",
-    version=inflect.__version__,
+    use_scm_version=True,
     description="Correctly generate plurals, singular nouns, ordinals, "
     "indefinite articles; convert numbers to words",
     author="Paul Dyson",
@@ -34,5 +32,6 @@ setuptools.setup(
         "Topic :: Text Processing :: Linguistic",
     ],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+    install_requires=["importlib_metadata"],
     setup_requires=["setuptools_scm"],
 )
