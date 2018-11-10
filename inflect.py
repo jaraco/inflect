@@ -84,7 +84,7 @@ class BadGenderError(Exception):
 
 
 try:
-    __version__ = __import__('importlib_metadata').version('inflect')
+    __version__ = __import__("importlib_metadata").version("inflect")
 except Exception:
     __version__ = "unknown"
 
