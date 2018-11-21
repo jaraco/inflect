@@ -2199,22 +2199,26 @@ class engine:
     # ## PLURAL SUBROUTINES
 
     def postprocess(self, orig, inflected):
-        if "|" in inflected:
-            inflected = inflected.split("|")[self.classical_dict["all"]]
-        result = inflected.split(" ")
-        # Try to fix word wise capitalization
-        for index, word in enumerate(orig.split(" ")):
-            if word == "I":
-                # Is this the only word for exceptions like this
-                # Where the original is fully capitalized
-                # without 'meaning' capitalization?
-                # Also this fails to handle a capitalizaion in context
-                continue
-            if word.capitalize() == word:
-                result[index] = result[index].capitalize()
-            if word == word.upper():
-                result[index] = result[index].upper()
-        return " ".join(result)
+        try:
+            if "|" in inflected:
+                inflected = inflected.split("|")[self.classical_dict["all"]]
+            result = inflected.split(" ")
+            # Try to fix word wise capitalization
+            for index, word in enumerate(orig.split(" ")):
+                if word == "I":
+                    # Is this the only word for exceptions like this
+                    # Where the original is fully capitalized
+                    # without 'meaning' capitalization?
+                    # Also this fails to handle a capitalizaion in context
+                    continue
+                if word.capitalize() == word:
+                    result[index] = result[index].capitalize()
+                if word == word.upper():
+                    result[index] = result[index].upper()
+            return " ".join(result)
+        # Might occur on weird inputs, e.g. "lens with a lens ()."
+        except IndexError:
+            return inflected
 
     def partition_word(self, text):
         mo = re.search(r"\A(\s*)(.+?)(\s*)\Z", text)
