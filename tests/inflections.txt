@@ -424,6 +424,7 @@
              Lebanese  ->  Lebanese
                 leman  ->  lemans
                 lemma  ->  lemmas|lemmata
+ lens with a lens ().  ->  lens with a lens ().           # Ignore weird strings.
                  lens  ->  lenses
               Leonese  ->  Leonese
       lick of the cat  ->  licks of the cat
