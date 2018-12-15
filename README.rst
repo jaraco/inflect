@@ -181,16 +181,16 @@ SYNOPSIS
  # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
  # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
 
-      print(p.inflect("The plural of {0} is plural({0})".format(word)))
-      print(p.inflect("The singular of {0} is singular_noun({0})".format(word)))
-      print(p.inflect("I saw {0} plural("cat",{0})".format(cat_count)))
-      print(p.inflect("plural(I,{0}) plural_verb(saw,{0}) plural(a,{1}) plural_noun(saw,{1})".format(N1, N2)))
-      print(p.inflect("num({0},)plural(I) plural_verb(saw) num({1},)plural(a) plural_noun(saw)".format(N1, N2)))
-      print(p.inflect("I saw num({0}) plural("cat")\nnum()".format(cat_count)))
-      print(p.inflect("There plural_verb(was,{0}) no(error,{0})".format(errors)))
-      print(p.inflect("There num({0},) plural_verb(was) no(error)".format(errors)))
-      print(p.inflect("Did you want a({0}) or an({1})".format(thing, idea)))
-      print(p.inflect("It was ordinal({0}) from the left".format(position)))
+      print(p.inflect("The plural of {0} is plural('{0}')".format(word)))
+      print(p.inflect("The singular of {0} is singular_noun('{0}')".format(word)))
+      print(p.inflect("I saw {0} plural('cat',{0})".format(cat_count)))
+      print(p.inflect("plural('I',{0}) plural_verb('saw',{0}) plural('a',{1}) plural_noun('saw',{1})".format(N1, N2)))
+      print(p.inflect("num({0}, False)plural('I') plural_verb('saw') num({1}, False)plural('a') plural_noun('saw')".format(N1, N2)))
+      print(p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count)))
+      print(p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors)))
+      print(p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors)))
+      print(p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea)))
+      print(p.inflect("It was ordinal('{0}') from the left".format(position)))
 
 
  # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
@@ -879,9 +879,9 @@ methods within a string and interpolates them appropriately.
 
 Using ``inflect`` the previous example could be rewritten::
 
-        print(p.inflect("num({0}) plural_noun(error) plural_verb(was) detected.".format(errors)))
+        print(p.inflect("num({0}) plural_noun('error') plural_verb('was') detected.".format(errors)))
         if severity > 1:
-            print(p.inflect("plural_adj(This) plural_noun(error) plural_verb(was) fatal."))
+            print(p.inflect("plural_adj('This') plural_noun('error') plural_verb('was') fatal."))
 
 Note that ``inflect`` also correctly handles calls to the ``num()`` method
 (whether interpolated or antecedent). The ``inflect()`` method has
@@ -1247,13 +1247,13 @@ singular form is always returned.
 Thus, the sequence::
 
       p.num(0)
-      print(p.inflect("There plural(was) no(choice)"))
+      print(p.inflect("There plural('was') no('choice')"))
 
 produces "There were no choices", whereas::
 
       p.classical(zero=True)
       p.num(0)
-      print(p.inflect("There plural(was) no(choice)"))
+      print(p.inflect("There plural('was') no('choice')"))
 
 it will print("There was no choice".)
 
