@@ -10,6 +10,7 @@ matrix:
   - python: pypy3
   - python: 2.7
   - python: pypy
+  - python: 3.8-dev
   - stage: deploy
     if: tag IS present
     python: *latest_py3
