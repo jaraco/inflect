@@ -1,16 +1,20 @@
-ver 3.0.0
+v3.0.0
+======
 
 * #75: Drop support for Python 3.4.
 
-ver 2.1.0
+v2.1.0
+======
 
 * #29: Relicensed under the more permissive MIT License.
 
-ver 2.0.1
+v2.0.1
+======
 
 * #57: Fix pluralization of taco.
 
-ver 2.0.0
+v2.0.0
+======
 
 * #37: fix inconsistencies with the inflect method
 
@@ -26,42 +30,50 @@ ver 2.0.0
     p.inflect("num(%d, False) eggs" % 2) will print " eggs"
     p.inflect("num(%d, True) eggs" % 2) will print "2 eggs"
 
-ver 1.0.2
+v1.0.2
+======
 
 * #53: Improved unicode handling.
 * #5 and #40 via #55: Fix capitalization issues in processes where
   more than one word is involved.
 * #56: Handle correctly units containing 'degree' and 'per'.
 
-ver 1.0.1
+v1.0.1
+======
 
 * #31: fix extraneous close parentheses.
 
-ver 1.0.0
+v1.0.0
+======
 
 * Dropped support for Python 3.3.
 
-ver 0.3.1
+v0.3.1
+======
 
 * Fixed badges in readme.
 
-ver 0.3.0
+v0.3.0
+======
 
 * Moved hosting to `jazzband <https://github.com/jazzband/inflect>`_.
 
-ver 0.2.5
+v0.2.5
+======
 
 * Fixed TypeError while parsing compounds (by yavarhusain)
 * Fixed encoding issue in setup.py on Python 3
 
 
-ver 0.2.4
+v0.2.4
+======
 
 * new maintainer (Alex Grönholm)
 * added Python 3 compatibility (by Thorben Krüger)
 
 
-ver 0.2.3
+v0.2.3
+======
 
 * fix a/an for dishonor, Honolulu, mpeg, onetime, Ugandan, Ukranian,
   Unabomber, unanimous, US
@@ -70,7 +82,8 @@ ver 0.2.3
 * prevent crash with singular_noun('ys')
 
 
-ver 0.2.2
+v0.2.2
+======
 
 * change numwords to number_to_words in strings
 * improve some docstrings
@@ -78,12 +91,14 @@ ver 0.2.2
 * remove unused exception class
 
 
-ver 0.2.1
+v0.2.1
+======
 
 * remove incorrect gnome_sudoku import
 
 
-ver 0.2.0
+v0.2.0
+======
 
 * add gender() to select the gender of singular pronouns
 
@@ -107,9 +122,8 @@ ver 0.2.0
 * fix bug in numwords where hundreds was giving the wrong number when group=3
 
 
-
-
-ver 0.1.8 (2010-07-10)
+v0.1.8
+======
 
 * add line to setup showing that this provides 'inflect' so that
 inflect_dj can require it
@@ -117,14 +131,14 @@ inflect_dj can require it
 * add the rest of the tests from the Perl version
 
 
-
-ver 0.1.7 (2010-07-09)
+v0.1.7
+======
 
 * replace most of the regular expressions in _plnoun and _sinoun. They run several times faster now.
 
 
-
-ver 0.1.6 (2010-07-03)
+v0.1.6
+======
 
 * add method sinoun() to generate the singular of a plural noun. Phew!
 
@@ -137,5 +151,3 @@ ver 0.1.6 (2010-07-03)
   a list of plurals. ;-)
 
 * fix die -> dice
-
-
