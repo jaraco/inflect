@@ -1,5 +1,5 @@
-Welcome to skeleton documentation!
-========================================
+Welcome to inflect documentation!
+=================================
 
 .. toctree::
    :maxdepth: 1
@@ -7,7 +7,7 @@ Welcome to skeleton documentation!
    history
 
 
-.. automodule:: skeleton
+.. automodule:: inflect
     :members:
     :undoc-members:
     :show-inheritance:
