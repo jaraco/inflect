@@ -119,7 +119,7 @@ SYNOPSIS
 
  # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
 
-    words = p.number_to_words(1234, getlist=True)    # ("one thousand","two hundred and thirty-four")
+    words = p.number_to_words(1234, wantlist=True)    # ("one thousand","two hundred and thirty-four")
 
 
  # OPTIONAL PARAMETERS CHANGE TRANSLATION:
