@@ -927,7 +927,7 @@ If ``classical()`` is called with no arguments, it unconditionally
 invokes classical mode. If it is called with a single argument, it
 turns all classical inflects on or off (depending on whether the argument is
 true or false). If called with two or more arguments, those arguments
-specify which aspects of classical behaviour are to be used.
+specify which aspects of classical behavior are to be used.
 
 Thus::
 
