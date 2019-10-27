@@ -1,3 +1,9 @@
+v3.0.1
+======
+
+* Project now builds on jaraco/skeleton for shared package
+  management.
+
 v3.0.0
 ======
 
