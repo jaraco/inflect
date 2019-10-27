@@ -7,7 +7,7 @@
    :target: https://travis-ci.org/jazzband/inflect
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/ambv/black
+   :target: https://github.com/psf/black
    :alt: Code style: Black
 
 .. .. image:: https://img.shields.io/appveyor/ci/jaraco/skeleton/master.svg
@@ -18,10 +18,6 @@
 
 .. image:: https://coveralls.io/repos/github/jazzband/inflect/badge.svg?branch=master
     :target: https://coveralls.io/github/jazzband/inflect?branch=master
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/ambv/black
-   :alt: Code style: Black
 
 .. image:: https://jazzband.co/static/img/badge.svg
    :target: https://jazzband.co/
