@@ -1,39 +1,30 @@
+dist: xenial
 language: python
 
-matrix:
+python:
+- 2.7
+- 3.6
+- pypy3.5-6.0
+- pypy2.7-6.0
+- &latest_py3 3.8
+
+jobs:
   fast_finish: true
   include:
-  - python: 3.7
-    dist: xenial
-  - python: &latest_py3 3.6
-  - python: 3.5
-  - python: pypy3
-  - python: 2.7
-  - python: pypy
   - stage: deploy
     if: tag IS present
     python: *latest_py3
-    install: skip
-    script: skip
-    deploy:
-      provider: pypi
-      on:
-        tags: true
-        all_branches: true
-      user: jaraco
-      password:
-        secure: o2G9Otwvixio7m4mWRdI8HUjoh2O7jfoUZSYBXvohb1uUJET1ZqHci1/bZSrxLNOhF6Y47sgYMmm/d+fwBKIiv8pXG33qCLTmDWFqtm+82Ok+0tdPxF00y8CcN55ND2vEijVRVnVszLd5naVaB5sjxpvgLRHUOmwYcEBbJC52qPMEEMVmyrjjD3fRMHDdtEOXVxCXNxm+dbl+GEYLTkL1m/nS/PIwwiooCLiSNd07dpt4/W2B1RmIjQ4PSIJu1MkLZoMljQIAWkIvuT+1RU5iURZPmZrJ4X3i9RPnYIpfFkmLn3Rsw/bQvfhLEgpRFY5XUt5DTcozuhLsUgT6HG0ka62E0VJ6a0+UV6MUWQsr987W3OKk6Q/LSdBJ/n9HdnbPOu+9vACNwfH2c62+sdYsdUK2BNWUzM6aJhbPX4osquawvxWdZKyhezA4HyWQzF8b532AVPSRmm7QQ34jxeQMiYq03eHD7LRWMR/BoAiDwJ36zyVl3C5kJzQURBaQMFj2dVhIRd6FQc1+Yiavdzb3RMRFTiH1fvWjVDKcZ7U5kTXUHrmwrjOacWKfXx3IkRf/lBxX8EaouxmD334yIxLPFsDw4zN9fy2I5jKPBfvKkrwrPJRq6GOTkMvZosO0Ja2E5I8/WqtXYgT1GohgpX3DGBa+6ufOxIM+ngmkHC0XL8=
-      distributions: dists
-      skip_cleanup: true
+    before_script: skip
+    script: tox -e release
+
+cache: pip
 
 install:
- - pip install coverage tox-travis
+- pip install tox tox-venv
 
+before_script:
+  # Disable IPv6. Ref travis-ci/travis-ci#8361
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      sudo sh -c 'echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6';
+    fi
 script: tox
-
-after_success:
- - pip install coveralls
- - coveralls
-
-after_script:
- - coverage report
