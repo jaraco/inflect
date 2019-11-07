@@ -1,3 +1,8 @@
+v3.0.2
+======
+
+* #88: Distribution no longer includes root ``tests`` package.
+
 v3.0.1
 ======
 
