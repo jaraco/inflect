@@ -33,11 +33,6 @@ NAME
 
 inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
 
-INSTALLATION
-============
-
-``pip install inflect``
-
 SYNOPSIS
 ========
 
