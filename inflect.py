@@ -54,10 +54,10 @@ import ast
 import sys
 import re
 
-if sys.version_info < (3, 8):
-    import importlib_metadata
-else:
+try:
     import importlib.metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
 
 
 class UnknownClassicalModeError(Exception):
@@ -88,7 +88,10 @@ class BadGenderError(Exception):
     pass
 
 
-__version__ = importlib_metadata.version("inflect")
+try:
+    __version__ = importlib_metadata.version("inflect")
+except Exception:
+    __version__ = "unknown"
 
 
 STDOUT_ON = False
