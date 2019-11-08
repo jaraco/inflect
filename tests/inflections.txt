@@ -244,7 +244,7 @@
                embryo  ->  embryos
              emporium  ->  emporiums|emporia
          encephalitis  ->  encephalitises|encephalitides
-             enconium  ->  enconiums|enconia
+             encomium  ->  encomiums|encomia
                 enema  ->  enemas|enemata
                enigma  ->  enigmas|enigmata
             epidermis  ->  epidermises

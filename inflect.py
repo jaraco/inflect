@@ -402,7 +402,7 @@ pl_sb_C_um_a_list = (
     "aquarium",
     "compendium",
     "emporium",
-    "enconium",
+    "encomium",
     "gymnasium",
     "honorarium",
     "interregnum",
