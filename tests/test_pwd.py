@@ -1217,8 +1217,6 @@ class test(unittest.TestCase):
             p.unknown_method
 
 
-# TODO: test .inflectrc file code
-
 if __name__ == "__main__":
     try:
         unittest.main()
