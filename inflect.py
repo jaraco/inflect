@@ -54,6 +54,11 @@ import ast
 import sys
 import re
 
+try:
+    import importlib.metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
+
 
 class UnknownClassicalModeError(Exception):
     pass
@@ -84,7 +89,7 @@ class BadGenderError(Exception):
 
 
 try:
-    __version__ = __import__("importlib_metadata").version("inflect")
+    __version__ = importlib_metadata.version("inflect")
 except Exception:
     __version__ = "unknown"
 
