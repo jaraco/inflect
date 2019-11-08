@@ -3,7 +3,7 @@ import io
 
 import six
 
-from nose.tools import eq_, assert_not_equal, raises
+import pytest
 
 import inflect
 
@@ -77,43 +77,20 @@ def test_many():
 
 
 def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_plural):
-    eq_(mod_plural, mod_PL_val)
-    eq_(class_plural, class_PL_val)
-    eq_(
-        is_eq(p, singular, mod_plural) in ("s:p", "p:s", "eq"),
-        True,
-        msg="is_eq({},{}) == {} != {}".format(
-            singular, mod_plural, is_eq(p, singular, mod_plural), "s:p, p:s or eq"
-        ),
-    )
-    eq_(
-        is_eq(p, mod_plural, singular) in ("p:s", "s:p", "eq"),
-        True,
-        msg="is_eq({},{}) == {} != {}".format(
-            mod_plural, singular, is_eq(p, mod_plural, singular), "s:p, p:s or eq"
-        ),
-    )
-    eq_(is_eq(p, singular, class_plural) in ("s:p", "p:s", "eq"), True)
-    eq_(is_eq(p, class_plural, singular) in ("p:s", "s:p", "eq"), True)
-    assert_not_equal(singular, "")
-    eq_(mod_PL_val, mod_PL_val if class_PL_val else "%s|%s"(mod_PL_val, class_PL_val))
+    assert mod_plural == mod_PL_val
+    assert class_plural == class_PL_val
+    assert is_eq(p, singular, mod_plural) in ("s:p", "p:s", "eq")
+    assert is_eq(p, mod_plural, singular) in ("p:s", "s:p", "eq")
+    assert is_eq(p, singular, class_plural) in ("s:p", "p:s", "eq")
+    assert is_eq(p, class_plural, singular) in ("p:s", "s:p", "eq")
+    assert singular != ""
+    expected = mod_PL_val if class_PL_val else "%s|%s" % (mod_PL_val, class_PL_val)
+    assert mod_PL_val == expected
 
     if is_nv != "_V":
-        eq_(
-            p.singular_noun(mod_plural, 1),
-            singular,
-            msg="p.singular_noun({}) == {} != {}".format(
-                mod_plural, p.singular_noun(mod_plural, 1), singular
-            ),
-        )
+        assert p.singular_noun(mod_plural, 1) == singular
 
-        eq_(
-            p.singular_noun(class_plural, 1),
-            singular,
-            msg="p.singular_noun({}) == {} != {}".format(
-                class_plural, p.singular_noun(class_plural, 1), singular
-            ),
-        )
+        assert p.singular_noun(class_plural, 1) == singular
 
 
 def test_def():
@@ -126,145 +103,149 @@ def test_def():
 
     p.defadj("red", "red|gules")
 
-    eq_(p.no("kin", 0), "no kine", msg="kin -> kine (user defined)...")
-    eq_(p.no("kin", 1), "1 kin")
-    eq_(p.no("kin", 2), "2 kine")
+    assert p.no("kin", 0) == "no kine"
+    assert p.no("kin", 1) == "1 kin"
+    assert p.no("kin", 2) == "2 kine"
 
-    eq_(p.no("regex", 0), "no regexen", msg="regex -> regexen (user defined)")
+    assert p.no("regex", 0) == "no regexen"
 
-    eq_(p.plural("foobar", 2), "feebar", msg="foobar -> feebar (user defined)...")
-    eq_(p.plural("foobars", 2), "feebar")
+    assert p.plural("foobar", 2) == "feebar"
+    assert p.plural("foobars", 2) == "feebar"
 
-    eq_(p.plural("red", 0), "red", msg="red -> red...")
-    eq_(p.plural("red", 1), "red")
-    eq_(p.plural("red", 2), "red")
+    assert p.plural("red", 0) == "red"
+    assert p.plural("red", 1) == "red"
+    assert p.plural("red", 2) == "red"
     p.classical(all=True)
-    eq_(p.plural("red", 0), "red", msg="red -> gules...")
-    eq_(p.plural("red", 1), "red")
-    eq_(p.plural("red", 2), "gules")
+    assert p.plural("red", 0) == "red"
+    assert p.plural("red", 1) == "red"
+    assert p.plural("red", 2) == "gules"
 
 
 def test_ordinal():
     p = inflect.engine()
-    eq_(p.ordinal(0), "0th", msg="0 -> 0th...")
-    eq_(p.ordinal(1), "1st")
-    eq_(p.ordinal(2), "2nd")
-    eq_(p.ordinal(3), "3rd")
-    eq_(p.ordinal(4), "4th")
-    eq_(p.ordinal(5), "5th")
-    eq_(p.ordinal(6), "6th")
-    eq_(p.ordinal(7), "7th")
-    eq_(p.ordinal(8), "8th")
-    eq_(p.ordinal(9), "9th")
-    eq_(p.ordinal(10), "10th")
-    eq_(p.ordinal(11), "11th")
-    eq_(p.ordinal(12), "12th")
-    eq_(p.ordinal(13), "13th")
-    eq_(p.ordinal(14), "14th")
-    eq_(p.ordinal(15), "15th")
-    eq_(p.ordinal(16), "16th")
-    eq_(p.ordinal(17), "17th")
-    eq_(p.ordinal(18), "18th")
-    eq_(p.ordinal(19), "19th")
-    eq_(p.ordinal(20), "20th")
-    eq_(p.ordinal(21), "21st")
-    eq_(p.ordinal(22), "22nd")
-    eq_(p.ordinal(23), "23rd")
-    eq_(p.ordinal(24), "24th")
-    eq_(p.ordinal(100), "100th")
-    eq_(p.ordinal(101), "101st")
-    eq_(p.ordinal(102), "102nd")
-    eq_(p.ordinal(103), "103rd")
-    eq_(p.ordinal(104), "104th")
+    assert p.ordinal(0) == "0th"
+    assert p.ordinal(1) == "1st"
+    assert p.ordinal(2) == "2nd"
+    assert p.ordinal(3) == "3rd"
+    assert p.ordinal(4) == "4th"
+    assert p.ordinal(5) == "5th"
+    assert p.ordinal(6) == "6th"
+    assert p.ordinal(7) == "7th"
+    assert p.ordinal(8) == "8th"
+    assert p.ordinal(9) == "9th"
+    assert p.ordinal(10) == "10th"
+    assert p.ordinal(11) == "11th"
+    assert p.ordinal(12) == "12th"
+    assert p.ordinal(13) == "13th"
+    assert p.ordinal(14) == "14th"
+    assert p.ordinal(15) == "15th"
+    assert p.ordinal(16) == "16th"
+    assert p.ordinal(17) == "17th"
+    assert p.ordinal(18) == "18th"
+    assert p.ordinal(19) == "19th"
+    assert p.ordinal(20) == "20th"
+    assert p.ordinal(21) == "21st"
+    assert p.ordinal(22) == "22nd"
+    assert p.ordinal(23) == "23rd"
+    assert p.ordinal(24) == "24th"
+    assert p.ordinal(100) == "100th"
+    assert p.ordinal(101) == "101st"
+    assert p.ordinal(102) == "102nd"
+    assert p.ordinal(103) == "103rd"
+    assert p.ordinal(104) == "104th"
 
-    eq_(p.ordinal("zero"), "zeroth", msg="zero -> zeroth...")
-    eq_(p.ordinal("one"), "first")
-    eq_(p.ordinal("two"), "second")
-    eq_(p.ordinal("three"), "third")
-    eq_(p.ordinal("four"), "fourth")
-    eq_(p.ordinal("five"), "fifth")
-    eq_(p.ordinal("six"), "sixth")
-    eq_(p.ordinal("seven"), "seventh")
-    eq_(p.ordinal("eight"), "eighth")
-    eq_(p.ordinal("nine"), "ninth")
-    eq_(p.ordinal("ten"), "tenth")
-    eq_(p.ordinal("eleven"), "eleventh")
-    eq_(p.ordinal("twelve"), "twelfth")
-    eq_(p.ordinal("thirteen"), "thirteenth")
-    eq_(p.ordinal("fourteen"), "fourteenth")
-    eq_(p.ordinal("fifteen"), "fifteenth")
-    eq_(p.ordinal("sixteen"), "sixteenth")
-    eq_(p.ordinal("seventeen"), "seventeenth")
-    eq_(p.ordinal("eighteen"), "eighteenth")
-    eq_(p.ordinal("nineteen"), "nineteenth")
-    eq_(p.ordinal("twenty"), "twentieth")
-    eq_(p.ordinal("twenty-one"), "twenty-first")
-    eq_(p.ordinal("twenty-two"), "twenty-second")
-    eq_(p.ordinal("twenty-three"), "twenty-third")
-    eq_(p.ordinal("twenty-four"), "twenty-fourth")
-    eq_(p.ordinal("one hundred"), "one hundredth")
-    eq_(p.ordinal("one hundred and one"), "one hundred and first")
-    eq_(p.ordinal("one hundred and two"), "one hundred and second")
-    eq_(p.ordinal("one hundred and three"), "one hundred and third")
-    eq_(p.ordinal("one hundred and four"), "one hundred and fourth")
+    assert p.ordinal("zero") == "zeroth"
+    assert p.ordinal("one") == "first"
+    assert p.ordinal("two") == "second"
+    assert p.ordinal("three") == "third"
+    assert p.ordinal("four") == "fourth"
+    assert p.ordinal("five") == "fifth"
+    assert p.ordinal("six") == "sixth"
+    assert p.ordinal("seven") == "seventh"
+    assert p.ordinal("eight") == "eighth"
+    assert p.ordinal("nine") == "ninth"
+    assert p.ordinal("ten") == "tenth"
+    assert p.ordinal("eleven") == "eleventh"
+    assert p.ordinal("twelve") == "twelfth"
+    assert p.ordinal("thirteen") == "thirteenth"
+    assert p.ordinal("fourteen") == "fourteenth"
+    assert p.ordinal("fifteen") == "fifteenth"
+    assert p.ordinal("sixteen") == "sixteenth"
+    assert p.ordinal("seventeen") == "seventeenth"
+    assert p.ordinal("eighteen") == "eighteenth"
+    assert p.ordinal("nineteen") == "nineteenth"
+    assert p.ordinal("twenty") == "twentieth"
+    assert p.ordinal("twenty-one") == "twenty-first"
+    assert p.ordinal("twenty-two") == "twenty-second"
+    assert p.ordinal("twenty-three") == "twenty-third"
+    assert p.ordinal("twenty-four") == "twenty-fourth"
+    assert p.ordinal("one hundred") == "one hundredth"
+    assert p.ordinal("one hundred and one") == "one hundred and first"
+    assert p.ordinal("one hundred and two") == "one hundred and second"
+    assert p.ordinal("one hundred and three") == "one hundred and third"
+    assert p.ordinal("one hundred and four") == "one hundred and fourth"
 
 
 def test_prespart():
     p = inflect.engine()
-    eq_(p.present_participle("sees"), "seeing", msg="sees -> seeing...")
-    eq_(p.present_participle("eats"), "eating")
-    eq_(p.present_participle("bats"), "batting")
-    eq_(p.present_participle("hates"), "hating")
-    eq_(p.present_participle("spies"), "spying")
-    eq_(p.present_participle("skis"), "skiing")
+    assert p.present_participle("sees") == "seeing"
+    assert p.present_participle("eats") == "eating"
+    assert p.present_participle("bats") == "batting"
+    assert p.present_participle("hates") == "hating"
+    assert p.present_participle("spies") == "spying"
+    assert p.present_participle("skis") == "skiing"
 
 
 def test_inflect_on_tuples():
     p = inflect.engine()
-    eq_(p.inflect("plural('egg', ('a', 'b', 'c'))"), "eggs")
-    eq_(p.inflect("plural('egg', ['a', 'b', 'c'])"), "eggs")
-    eq_(p.inflect("plural_noun('egg', ('a', 'b', 'c'))"), "eggs")
-    eq_(p.inflect("plural_adj('a', ('a', 'b', 'c'))"), "some")
-    eq_(p.inflect("plural_verb('was', ('a', 'b', 'c'))"), "were")
-    eq_(p.inflect("singular_noun('eggs', ('a', 'b', 'c'))"), "eggs")
-    eq_(p.inflect("an('error', ('a', 'b', 'c'))"), "('a', 'b', 'c') error")
-    eq_(p.inflect("This is not a function(name)"), "This is not a function(name)")
+    assert p.inflect("plural('egg', ('a', 'b', 'c'))") == "eggs"
+    assert p.inflect("plural('egg', ['a', 'b', 'c'])") == "eggs"
+    assert p.inflect("plural_noun('egg', ('a', 'b', 'c'))") == "eggs"
+    assert p.inflect("plural_adj('a', ('a', 'b', 'c'))") == "some"
+    assert p.inflect("plural_verb('was', ('a', 'b', 'c'))") == "were"
+    assert p.inflect("singular_noun('eggs', ('a', 'b', 'c'))") == "eggs"
+    assert p.inflect("an('error', ('a', 'b', 'c'))") == "('a', 'b', 'c') error"
+    assert p.inflect("This is not a function(name)") == "This is not a function(name)"
 
 
 def test_inflect_on_builtin_constants():
     p = inflect.engine()
-    eq_(p.inflect("Plural of False is plural('False')"), "Plural of False is Falses")
-    eq_(p.inflect("num(%d, False) plural('False')" % 10), " Falses")
+    assert (
+        p.inflect("Plural of False is plural('False')") == "Plural of False is Falses"
+    )
+    assert p.inflect("num(%d, False) plural('False')" % 10) == " Falses"
 
-    eq_(p.inflect("plural('True')"), "Trues")
-    eq_(p.inflect("num(%d, True) plural('False')" % 10), "10 Falses")
-    eq_(p.inflect("num(%d, %r) plural('False')" % (10, True)), "10 Falses")
+    assert p.inflect("plural('True')") == "Trues"
+    assert p.inflect("num(%d, True) plural('False')" % 10) == "10 Falses"
+    assert p.inflect("num(%d, %r) plural('False')" % (10, True)) == "10 Falses"
 
-    eq_(p.inflect("plural('None')"), "Nones")
-    eq_(p.inflect("num(%d, %r) plural('True')" % (10, None)), "10 Trues")
+    assert p.inflect("plural('None')") == "Nones"
+    assert p.inflect("num(%d, %r) plural('True')" % (10, None)) == "10 Trues"
 
 
 def test_inflect_keyword_args():
     p = inflect.engine()
-    eq_(
-        p.inflect("number_to_words(1234, andword='')"),
-        "one thousand, two hundred thirty-four",
+    assert (
+        p.inflect("number_to_words(1234, andword='')")
+        == "one thousand, two hundred thirty-four"
     )
-    eq_(
-        p.inflect("number_to_words(1234, andword='plus')"),
-        "one thousand, two hundred plus thirty-four",
+
+    assert (
+        p.inflect("number_to_words(1234, andword='plus')")
+        == "one thousand, two hundred plus thirty-four"
     )
-    eq_(
-        p.inflect("number_to_words('555_1202', group=1, zero='oh')"),
-        "five, five, five, one, two, oh, two",
+
+    assert (
+        p.inflect("number_to_words('555_1202', group=1, zero='oh')")
+        == "five, five, five, one, two, oh, two"
     )
 
 
-@raises(NameError)
 def test_NameError_in_strings():
-    p = inflect.engine()
-    eq_(p.inflect("plural('two')"), "twoes")
-    p.inflect("plural(two)")
+    with pytest.raises(NameError):
+        p = inflect.engine()
+        assert p.inflect("plural('two')") == "twoes"
+        p.inflect("plural(two)")
 
 
 def get_data():

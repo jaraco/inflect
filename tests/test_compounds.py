@@ -1,24 +1,22 @@
-from nose.tools import eq_
-
 import inflect
 
 p = inflect.engine()
 
 
 def test_compound_1():
-    eq_(p.singular_noun("hello-out-there"), "hello-out-there")
+    assert p.singular_noun("hello-out-there") == "hello-out-there"
 
 
 def test_compound_2():
-    eq_(p.singular_noun("hello out there"), "hello out there")
+    assert p.singular_noun("hello out there") == "hello out there"
 
 
 def test_compound_3():
-    eq_(p.singular_noun("continue-to-operate"), "continue-to-operate")
+    assert p.singular_noun("continue-to-operate") == "continue-to-operate"
 
 
 def test_compound_4():
-    eq_(p.singular_noun("case of diapers"), "case of diapers")
+    assert p.singular_noun("case of diapers") == "case of diapers"
 
 
 def test_unit_handling_degree():
@@ -30,7 +28,7 @@ def test_unit_handling_degree():
         "degree fahrenheit second": "degree fahrenheit seconds",
     }
     for singular, plural in test_cases.items():
-        eq_(p.plural(singular), plural)
+        assert p.plural(singular) == plural
 
 
 def test_unit_handling_fractional():
@@ -46,7 +44,7 @@ def test_unit_handling_fractional():
         "pound-force per square inch": "pounds-force per square inch",
     }
     for singular, plural in test_cases.items():
-        eq_(p.plural(singular), plural)
+        assert p.plural(singular) == plural
 
 
 def test_unit_handling_combined():
@@ -62,4 +60,4 @@ def test_unit_handling_combined():
         #   'degree Fahrenheit hour square feet per BtuIT inch'
     }
     for singular, plural in test_cases.items():
-        eq_(p.plural(singular), plural)
+        assert p.plural(singular) == plural

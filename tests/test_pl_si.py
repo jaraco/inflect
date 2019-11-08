@@ -1,7 +1,5 @@
 # use nosetest to run these tests
 
-from nose.tools import eq_
-
 import inflect
 
 FNAME = "tests/words.txt"
@@ -41,17 +39,4 @@ def check_pl_si(p, word):
             )
         )
         f.close()
-        eq_(
-            p.singular_noun(p.plural_noun(word, 2), 1),
-            word,
-            msg="""word==%s
-plnoun(%s)==%s
-sinoun(%s)==%s"""
-            % (
-                word,
-                word,
-                p.plural_noun(word, 2),
-                p.plural_noun(word, 2),
-                p.singular_noun(p.plural_noun(word, 2), 1),
-            ),
-        )
+        assert p.singular_noun(p.plural_noun(word, 2), 1) == word
