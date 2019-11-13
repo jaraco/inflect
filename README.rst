@@ -370,7 +370,7 @@ example can be rewritten::
 In addition, if the count is zero (or some other term which implies
 zero, such as ``"zero"``, ``"nil"``, etc.) the count is replaced by the
 word "no". Hence, if ``N`` had the value zero, the previous example
-would print(the somewhat more elegant::)
+would print (the somewhat more elegant)::
 
     I saw no animals
 
