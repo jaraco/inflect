@@ -36,91 +36,91 @@ inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite ar
 SYNOPSIS
 ========
 
-::
+.. code-block:: python
 
- import inflect
- p = inflect.engine()
+    import inflect
+    p = inflect.engine()
 
- # METHODS:
+    # METHODS:
 
- # plural plural_noun plural_verb plural_adj singular_noun no num
- # compare compare_nouns compare_nouns compare_adjs
- # a an
- # present_participle
- # ordinal number_to_words
- # join
- # inflect classical gender
- # defnoun defverb defadj defa defan
-
-
- # UNCONDITIONALLY FORM THE PLURAL
-
-      print("The plural of ", word, " is ", p.plural(word))
+    # plural plural_noun plural_verb plural_adj singular_noun no num
+    # compare compare_nouns compare_nouns compare_adjs
+    # a an
+    # present_participle
+    # ordinal number_to_words
+    # join
+    # inflect classical gender
+    # defnoun defverb defadj defa defan
 
 
- # CONDITIONALLY FORM THE PLURAL
+    # UNCONDITIONALLY FORM THE PLURAL
 
-      print("I saw", cat_count, p.plural("cat",cat_count))
-
-
- # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
-
-      print(p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \)
-            p.plural_noun("saw",N2)
+    print("The plural of ", word, " is ", p.plural(word))
 
 
- # FORM THE SINGULAR OF PLURAL NOUNS
+    # CONDITIONALLY FORM THE PLURAL
 
-      print("The singular of ", word, " is ", p.singular_noun(word))
-
- # SELECT THE GENDER OF SINGULAR PRONOUNS
-
-      print(p.singular_noun('they')  # 'it')
-      p.gender('f')
-      print(p.singular_noun('they')  # 'she')
+    print("I saw", cat_count, p.plural("cat",cat_count))
 
 
- # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
+    # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
 
-      print("There ", p.plural_verb("was",errors), p.no(" error",errors))
-
-
- # USE DEFAULT COUNTS:
-
-      print(p.num(N1,""), p.plural("I"), p.plural_verb(" saw"), p.num(N2), p.plural_noun(" saw"))
-      print("There ", p.num(errors,''), p.plural_verb("was"), p.no(" error"))
+    print(p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \)
+          p.plural_noun("saw",N2)
 
 
- # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
+    # FORM THE SINGULAR OF PLURAL NOUNS
 
-      print("same\n"      if p.compare(word1, word2))
-      print("same noun\n" if p.compare_nouns(word1, word2))
-      print("same verb\n" if p.compare_verbs(word1, word2))
-      print("same adj.\n" if p.compare_adjs(word1, word2))
+    print("The singular of ", word, " is ", p.singular_noun(word))
 
+    # SELECT THE GENDER OF SINGULAR PRONOUNS
 
- # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
-
-      print("Did you want ", p.a(thing), " or ", p.an(idea))
+    print(p.singular_noun('they')  # 'it')
+    p.gender('f')
+    print(p.singular_noun('they')  # 'she')
 
 
- # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+    # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
 
-      print("It was", p.ordinal(position), " from the left\n")
+    print("There ", p.plural_verb("was",errors), p.no(" error",errors))
 
- # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
- # RETURNS A SINGLE STRING...
+
+    # USE DEFAULT COUNTS:
+
+    print(p.num(N1,""), p.plural("I"), p.plural_verb(" saw"), p.num(N2), p.plural_noun(" saw"))
+    print("There ", p.num(errors,''), p.plural_verb("was"), p.no(" error"))
+
+
+    # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
+
+    print("same\n"      if p.compare(word1, word2))
+    print("same noun\n" if p.compare_nouns(word1, word2))
+    print("same verb\n" if p.compare_verbs(word1, word2))
+    print("same adj.\n" if p.compare_adjs(word1, word2))
+
+
+    # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
+
+    print("Did you want ", p.a(thing), " or ", p.an(idea))
+
+
+    # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+
+    print("It was", p.ordinal(position), " from the left\n")
+
+    # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
+    # RETURNS A SINGLE STRING...
 
     words = p.number_to_words(1234)      # "one thousand, two hundred and thirty-four"
     words = p.number_to_words(p.ordinal(1234)) # "one thousand, two hundred and thirty-fourth"
 
 
- # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
+    # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
 
     words = p.number_to_words(1234, wantlist=True)    # ("one thousand","two hundred and thirty-four")
 
 
- # OPTIONAL PARAMETERS CHANGE TRANSLATION:
+    # OPTIONAL PARAMETERS CHANGE TRANSLATION:
 
     words = p.number_to_words(12345, group=1)
     # "one, two, three, four, five"
@@ -146,74 +146,73 @@ SYNOPSIS
     words = p.number_to_words(123.456, group=1, decimal='mark')
     # "one two three mark four five six"  #TODO: DOCBUG: perl gives commas here as do I
 
- # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
+    # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
 
     words = p.number_to_words(   9, threshold=10);    # "nine"
     words = p.number_to_words(  10, threshold=10);    # "ten"
     words = p.number_to_words(  11, threshold=10);    # "11"
     words = p.number_to_words(1000, threshold=10);    # "1,000"
 
- # JOIN WORDS INTO A LIST:
+    # JOIN WORDS INTO A LIST:
 
     mylist = join(("apple", "banana", "carrot"))
-        # "apple, banana, and carrot"
+    # "apple, banana, and carrot"
 
     mylist = join(("apple", "banana"))
-        # "apple and banana"
+    # "apple and banana"
 
     mylist = join(("apple", "banana", "carrot"), final_sep="")
-        # "apple, banana and carrot"
+    # "apple, banana and carrot"
 
 
- # REQUIRE "CLASSICAL" PLURALS (EG: "focus"->"foci", "cherub"->"cherubim")
+    # REQUIRE "CLASSICAL" PLURALS (EG: "focus"->"foci", "cherub"->"cherubim")
 
-      p.classical()               # USE ALL CLASSICAL PLURALS
+    p.classical()               # USE ALL CLASSICAL PLURALS
 
-      p.classical(all=True)       # USE ALL CLASSICAL PLURALS
-      p.classical(all=False)      # SWITCH OFF CLASSICAL MODE
+    p.classical(all=True)       # USE ALL CLASSICAL PLURALS
+    p.classical(all=False)      # SWITCH OFF CLASSICAL MODE
 
-      p.classical(zero=True)      #  "no error" INSTEAD OF "no errors"
-      p.classical(zero=False)     #  "no errors" INSTEAD OF "no error"
+    p.classical(zero=True)      #  "no error" INSTEAD OF "no errors"
+    p.classical(zero=False)     #  "no errors" INSTEAD OF "no error"
 
-      p.classical(herd=True)      #  "2 buffalo" INSTEAD OF "2 buffalos"
-      p.classical(herd=False)     #  "2 buffalos" INSTEAD OF "2 buffalo"
+    p.classical(herd=True)      #  "2 buffalo" INSTEAD OF "2 buffalos"
+    p.classical(herd=False)     #  "2 buffalos" INSTEAD OF "2 buffalo"
 
-      p.classical(persons=True)   # "2 chairpersons" INSTEAD OF "2 chairpeople"
-      p.classical(persons=False)  # "2 chairpeople" INSTEAD OF "2 chairpersons"
+    p.classical(persons=True)   # "2 chairpersons" INSTEAD OF "2 chairpeople"
+    p.classical(persons=False)  # "2 chairpeople" INSTEAD OF "2 chairpersons"
 
-      p.classical(ancient=True)   # "2 formulae" INSTEAD OF "2 formulas"
-      p.classical(ancient=False)  # "2 formulas" INSTEAD OF "2 formulae"
-
-
-
- # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
- # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
-
-      print(p.inflect("The plural of {0} is plural('{0}')".format(word)))
-      print(p.inflect("The singular of {0} is singular_noun('{0}')".format(word)))
-      print(p.inflect("I saw {0} plural('cat',{0})".format(cat_count)))
-      print(p.inflect("plural('I',{0}) plural_verb('saw',{0}) plural('a',{1}) plural_noun('saw',{1})".format(N1, N2)))
-      print(p.inflect("num({0}, False)plural('I') plural_verb('saw') num({1}, False)plural('a') plural_noun('saw')".format(N1, N2)))
-      print(p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count)))
-      print(p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors)))
-      print(p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors)))
-      print(p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea)))
-      print(p.inflect("It was ordinal('{0}') from the left".format(position)))
+    p.classical(ancient=True)   # "2 formulae" INSTEAD OF "2 formulas"
+    p.classical(ancient=False)  # "2 formulas" INSTEAD OF "2 formulae"
 
 
- # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
+    # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
+    # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
 
-      p.defnoun( "VAX", "VAXen" )  # SINGULAR => PLURAL
+    print(p.inflect("The plural of {0} is plural('{0}')".format(word)))
+    print(p.inflect("The singular of {0} is singular_noun('{0}')".format(word)))
+    print(p.inflect("I saw {0} plural('cat',{0})".format(cat_count)))
+    print(p.inflect("plural('I',{0}) plural_verb('saw',{0}) plural('a',{1}) plural_noun('saw',{1})".format(N1, N2)))
+    print(p.inflect("num({0}, False)plural('I') plural_verb('saw') num({1}, False)plural('a') plural_noun('saw')".format(N1, N2)))
+    print(p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count)))
+    print(p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors)))
+    print(p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors)))
+    print(p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea)))
+    print(p.inflect("It was ordinal('{0}') from the left".format(position)))
 
-      p.defverb( "will" , "shall",  # 1ST PERSON SINGULAR => PLURAL
-                "will" , "will",   # 2ND PERSON SINGULAR => PLURAL
-                "will" , "will")   # 3RD PERSON SINGULAR => PLURAL
 
-      p.defadj(  "hir"  , "their")  # SINGULAR => PLURAL
+    # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
 
-      p.defa("h")        # "AY HALWAYS SEZ 'HAITCH'!"
+    p.defnoun( "VAX", "VAXen" )  # SINGULAR => PLURAL
 
-      p.defan(   "horrendous.*" )    # "AN HORRENDOUS AFFECTATION"
+    p.defverb( "will" , "shall",  # 1ST PERSON SINGULAR => PLURAL
+              "will" , "will",   # 2ND PERSON SINGULAR => PLURAL
+              "will" , "will")   # 3RD PERSON SINGULAR => PLURAL
+
+    p.defadj(  "hir"  , "their")  # SINGULAR => PLURAL
+
+    p.defa("h")        # "AY HALWAYS SEZ 'HAITCH'!"
+
+    p.defan(   "horrendous.*" )    # "AN HORRENDOUS AFFECTATION"
 
 
 DESCRIPTION
@@ -355,7 +354,9 @@ Numbered plurals
 
 The ``plural...`` methods return only the inflected word, not the count that
 was used to inflect it. Thus, in order to produce "I saw 3 ducks", it
-is necessary to use::
+is necessary to use:
+
+.. code-block:: python
 
     print("I saw", N, p.plural_noun(animal,N))
 
@@ -363,7 +364,9 @@ Since the usual purpose of producing a plural is to make it agree with
 a preceding count, inflect.py provides a method
 (``no(word, count)``) which, given a word and a(n optional) count, returns the
 count followed by the correctly inflected word. Hence the previous
-example can be rewritten::
+example can be rewritten:
+
+.. code-block:: python
 
     print("I saw ", p.no(animal,N))
 
@@ -387,7 +390,9 @@ Reducing the number of counts required
 --------------------------------------
 
 In some contexts, the need to supply an explicit count to the various
-``plural...`` methods makes for tiresome repetition. For example::
+``plural...`` methods makes for tiresome repetition. For example:
+
+.. code-block:: python
 
     print(plural_adj("This",errors), plural_noun(" error",errors), \)
           plural_verb(" was",errors), " fatal."
@@ -397,14 +402,18 @@ inflect.py therefore provides a method
 value. If such a value is set, it is subsequently used whenever an
 optional second "number" argument is omitted. The default value thus set
 can subsequently be removed by calling ``num()`` with no arguments.
-Hence we could rewrite the previous example::
+Hence we could rewrite the previous example:
+
+.. code-block:: python
 
     p.num(errors)
     print(p.plural_adj("This"), p.plural_noun(" error"), p.plural_verb(" was"), "fatal.")
     p.num()
 
 Normally, ``num()`` returns its first argument, so that it may also
-be "inlined" in contexts like::
+be "inlined" in contexts like:
+
+.. code-block:: python
 
     print(p.num(errors), p.plural_noun(" error"), p.plural_verb(" was"), " detected.")
     if severity > 1:
@@ -414,7 +423,9 @@ However, in certain contexts (see `INTERPOLATING INFLECTIONS IN STRINGS`)
 it is preferable that ``num()`` return an empty string. Hence ``num()``
 provides an optional second argument. If that argument is supplied (that is, if
 it is defined) and evaluates to false, ``num`` returns an empty string
-instead of its first argument. For example::
+instead of its first argument. For example:
+
+.. code-block:: python
 
     print(p.num(errors,0), p.no("error"), p.plural_verb(" was"), " detected.")
     if severity > 1:
@@ -440,7 +451,9 @@ The comparison returns true if:
 - the strings are two different plural forms of the one word.
 
 
-Hence all of the following return true::
+Hence all of the following return true:
+
+.. code-block:: python
 
     p.compare("index","index")      # RETURNS "eq"
     p.compare("index","indexes")    # RETURNS "s:p"
@@ -461,7 +474,9 @@ Inequality is indicated by returning an empty string.
 It should be noted that two distinct singular words which happen to take
 the same plural form are *not* considered equal, nor are cases where
 one (singular) word's plural is the other (plural) word's singular.
-Hence all of the following return false::
+Hence all of the following return false:
+
+.. code-block:: python
 
     p.compare("base","basis")       # ALTHOUGH BOTH -> "bases"
     p.compare("syrinx","syringe")   # ALTHOUGH BOTH -> "syringes"
