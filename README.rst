@@ -65,8 +65,8 @@ SYNOPSIS
 
     # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
 
-    print(p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2), \)
-          p.plural_noun("saw",N2)
+    print(p.plural_noun("I",N1), p.plural_verb("saw",N1), p.plural_adj("my",N2),
+          p.plural_noun("saw",N2))
 
 
     # FORM THE SINGULAR OF PLURAL NOUNS
@@ -75,9 +75,9 @@ SYNOPSIS
 
     # SELECT THE GENDER OF SINGULAR PRONOUNS
 
-    print(p.singular_noun('they')  # 'it')
+    print(p.singular_noun('they'))  # 'it'
     p.gender('f')
-    print(p.singular_noun('they')  # 'she')
+    print(p.singular_noun('they'))  # 'she'
 
 
     # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
@@ -93,10 +93,10 @@ SYNOPSIS
 
     # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
 
-    print("same\n"      if p.compare(word1, word2))
-    print("same noun\n" if p.compare_nouns(word1, word2))
-    print("same verb\n" if p.compare_verbs(word1, word2))
-    print("same adj.\n" if p.compare_adjs(word1, word2))
+    if p.compare(word1, word2): print("same")
+    if p.compare_nouns(word1, word2): print("same noun")
+    if p.compare_verbs(word1, word2): print("same verb")
+    if p.compare_adjs(word1, word2): print("same adj.")
 
 
     # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
@@ -394,8 +394,8 @@ In some contexts, the need to supply an explicit count to the various
 
 .. code-block:: python
 
-    print(plural_adj("This",errors), plural_noun(" error",errors), \)
-          plural_verb(" was",errors), " fatal."
+    print(plural_adj("This",errors), plural_noun(" error",errors),
+          plural_verb(" was",errors), " fatal.")
 
 inflect.py therefore provides a method
 (``num(count=None, show=None)``) which may be used to set a persistent "default number"
