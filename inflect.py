@@ -48,10 +48,7 @@ Exceptions:
 
 """
 
-from __future__ import unicode_literals
-
 import ast
-import sys
 import re
 
 try:
@@ -2124,7 +2121,7 @@ class engine:
             return tuple([self._get_value_from_ast(e) for e in obj.elts])
 
         # None, True and False are NameConstants in Py3.4 and above.
-        elif sys.version_info.major >= 3 and isinstance(obj, ast.NameConstant):
+        elif isinstance(obj, ast.NameConstant):
             return obj.value
 
         # For python versions below 3.4
