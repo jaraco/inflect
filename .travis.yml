@@ -4,7 +4,6 @@ language: python
 python:
 - 3.6
 - pypy3
-- pypy
 - &latest_py3 3.8
 
 jobs:
