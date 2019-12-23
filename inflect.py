@@ -2501,8 +2501,11 @@ class engine:
             return word
 
         lowerword = word.lower()
+        wordsplit = word.split()
+        wordlast = wordsplit[-1]
+        lowerwordlast = wordlast.lower()
 
-        if lowerword in pl_sb_uninflected_complete:
+        if lowerwordlast in pl_sb_uninflected_complete:
             return word
 
         if word in pl_sb_uninflected_caps:
@@ -2512,7 +2515,7 @@ class engine:
             if lowerword[-k:] in v:
                 return word
 
-        if self.classical_dict["herd"] and lowerword in pl_sb_uninflected_herd:
+        if self.classical_dict["herd"] and lowerwordlast in pl_sb_uninflected_herd:
             return word
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
@@ -2588,10 +2591,6 @@ class engine:
             pass
 
         # HANDLE ISOLATED IRREGULAR PLURALS
-
-        wordsplit = word.split()
-        wordlast = wordsplit[-1]
-        lowerwordlast = wordlast.lower()
 
         if wordlast in list(pl_sb_irregular_caps.keys()):
             llen = len(wordlast)
@@ -2706,7 +2705,7 @@ class engine:
 
         # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
-        if lowerword in pl_sb_singular_s_complete:
+        if lowerwordlast in pl_sb_singular_s_complete:
             return word + "es"
 
         for k, v in pl_sb_singular_s_bysize.items():
@@ -2757,7 +2756,7 @@ class engine:
 
         # HANDLE ...o
 
-        if lowerword in pl_sb_U_o_os_complete:
+        if lowerwordlast in pl_sb_U_o_os_complete:
             return word + "s"
 
         for k, v in pl_sb_U_o_os_bysize.items():
@@ -2830,6 +2829,10 @@ class engine:
 
         # HANDLE STANDARD 3RD PERSON (CHOP THE ...(e)s OFF SINGLE WORDS)
 
+        wordsplit = word.split()
+        wordlast = wordsplit[-1]
+        lowerwordlast = wordlast.lower()
+
         if (
             lowerword[-4:] in ("ches", "shes", "zzes", "sses")
             or lowerword[-3:] == "xes"
@@ -2840,7 +2843,7 @@ class engine:
             return lowerword[:-3] + "y"
 
         if (
-            lowerword in pl_v_oes_oe
+            lowerwordlast in pl_v_oes_oe
             or lowerword[-4:] in pl_v_oes_oe_endings_size4
             or lowerword[-5:] in pl_v_oes_oe_endings_size5
         ):
@@ -2954,7 +2957,11 @@ class engine:
         if word in si_sb_ois_oi_case:
             return word[:-1]
 
-        if lowerword in pl_sb_uninflected_complete:
+        wordsplit = word.split()
+        wordlast = wordsplit[-1]
+        lowerwordlast = wordlast.lower()
+
+        if lowerwordlast in pl_sb_uninflected_complete:
             return word
 
         if word in pl_sb_uninflected_caps:
@@ -2964,10 +2971,10 @@ class engine:
             if lowerword[-k:] in v:
                 return word
 
-        if self.classical_dict["herd"] and lowerword in pl_sb_uninflected_herd:
+        if self.classical_dict["herd"] and lowerwordlast in pl_sb_uninflected_herd:
             return word
 
-        if lowerword in pl_sb_C_us_us:
+        if lowerwordlast in pl_sb_C_us_us:
             return word
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
@@ -3031,10 +3038,6 @@ class engine:
             pass
 
         # HANDLE ISOLATED IRREGULAR PLURALS
-
-        wordsplit = word.split()
-        wordlast = wordsplit[-1]
-        lowerwordlast = wordlast.lower()
 
         if wordlast in list(si_sb_irregular_caps.keys()):
             llen = len(wordlast)
@@ -3143,13 +3146,13 @@ class engine:
         if (
             lowerword[-6:] == "houses"
             or word in si_sb_uses_use_case
-            or lowerword in si_sb_uses_use
+            or lowerwordlast in si_sb_uses_use
         ):
             return word[:-1]
 
         # HANDLE PLURLS ENDING IN ies -> ie
 
-        if word in si_sb_ies_ie_case or lowerword in si_sb_ies_ie:
+        if word in si_sb_ies_ie_case or lowerwordlast in si_sb_ies_ie:
             return word[:-1]
 
         # HANDLE PLURLS ENDING IN oes -> oe
@@ -3157,16 +3160,16 @@ class engine:
         if (
             lowerword[-5:] == "shoes"
             or word in si_sb_oes_oe_case
-            or lowerword in si_sb_oes_oe
+            or lowerwordlast in si_sb_oes_oe
         ):
             return word[:-1]
 
         # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
-        if word in si_sb_sses_sse_case or lowerword in si_sb_sses_sse:
+        if word in si_sb_sses_sse_case or lowerwordlast in si_sb_sses_sse:
             return word[:-1]
 
-        if lowerword in si_sb_singular_s_complete:
+        if lowerwordlast in si_sb_singular_s_complete:
             return word[:-2]
 
         for k, v in si_sb_singular_s_bysize.items():
@@ -3176,22 +3179,22 @@ class engine:
         if lowerword[-4:] == "eses" and word[0] == word[0].upper():
             return word[:-2]
 
-        if lowerword in si_sb_z_zes:
+        if lowerwordlast in si_sb_z_zes:
             return word[:-2]
 
-        if lowerword in si_sb_zzes_zz:
+        if lowerwordlast in si_sb_zzes_zz:
             return word[:-2]
 
         if lowerword[-4:] == "zzes":
             return word[:-3]
 
-        if word in si_sb_ches_che_case or lowerword in si_sb_ches_che:
+        if word in si_sb_ches_che_case or lowerwordlast in si_sb_ches_che:
             return word[:-1]
 
         if lowerword[-4:] in ("ches", "shes"):
             return word[:-2]
 
-        if lowerword in si_sb_xes_xe:
+        if lowerwordlast in si_sb_xes_xe:
             return word[:-1]
 
         if lowerword[-3:] == "xes":
@@ -3199,7 +3202,7 @@ class engine:
 
         # HANDLE ...f -> ...ves
 
-        if word in si_sb_ves_ve_case or lowerword in si_sb_ves_ve:
+        if word in si_sb_ves_ve_case or lowerwordlast in si_sb_ves_ve:
             return word[:-1]
 
         if lowerword[-3:] == "ves":
@@ -3229,7 +3232,7 @@ class engine:
 
         if lowerword[-2:] == "os":
 
-            if lowerword in si_sb_U_o_os_complete:
+            if lowerwordlast in si_sb_U_o_os_complete:
                 return word[:-1]
 
             for k, v in si_sb_U_o_os_bysize.items():

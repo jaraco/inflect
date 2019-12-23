@@ -95,6 +95,7 @@
                  bias  ->  biases
                biceps  ->  biceps
                 bison  ->  bisons|bison
+          black olive  ->  black olives
                blouse  ->  blouses
             Bolognese  ->  Bolognese
                 bonus  ->  bonuses
@@ -172,6 +173,7 @@
                 chief  ->  chiefs
                 child  ->  children
               Chinese  ->  Chinese
+       oatmeal cookie  ->  oatmeal cookies
                chorus  ->  choruses
             chrysalis  ->  chrysalises|chrysalides
                church  ->  churches
