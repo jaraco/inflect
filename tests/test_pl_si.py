@@ -1,5 +1,3 @@
-# use nosetest to run these tests
-
 import inflect
 
 FNAME = "tests/words.txt"
