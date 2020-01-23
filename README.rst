@@ -1,7 +1,10 @@
 .. image:: https://img.shields.io/pypi/v/inflect.svg
-   :target: https://pypi.org/project/inflect
+   :target: `PyPI link`_
 
 .. image:: https://img.shields.io/pypi/pyversions/inflect.svg
+   :target: `PyPI link`_
+
+.. _PyPI link: https://pypi.org/project/inflect
 
 .. image:: https://img.shields.io/travis/jazzband/inflect/master.svg
    :target: https://travis-ci.org/jazzband/inflect
