@@ -2444,7 +2444,9 @@ class engine:
             (".*tri", "xes", "ces"),
             (".{2,}[yia]n", "xes", "ges"),
         )
-        pair = "{}|{}".format(word1, word2)
+
+        tokenized_words = [self.TokenizedWord(word1), self.TokenizedWord(word2)]
+        pair = "|".join([tokenized_word.last for tokenized_word in tokenized_words])
 
         return (
             pair in pl_sb_irregular_s.values()
