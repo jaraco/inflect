@@ -177,6 +177,7 @@ pl_sb_irregular_s = {
 
 pl_sb_irregular = {
     "child": "children",
+    "chili": "chilis|chilies",
     "brother": "brothers|brethren",
     "loaf": "loaves",
     "hoof": "hoofs|hooves",
