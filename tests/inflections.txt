@@ -171,6 +171,7 @@
            chickenpox  ->  chickenpox
                 chief  ->  chiefs
                 child  ->  children
+                chili  ->  chilis|chilies
               Chinese  ->  Chinese
                chorus  ->  choruses
             chrysalis  ->  chrysalises|chrysalides
@@ -428,6 +429,7 @@
               Leonese  ->  Leonese
       lick of the cat  ->  licks of the cat
    Lieutenant General  ->  Lieutenant Generals
+                  lie  ->  lies
                  life  ->  lives
                 Liman  ->  Limans
                 lingo  ->  lingos
@@ -708,6 +710,7 @@
                suffix  ->  suffixes
             Sundanese  ->  Sundanese
              superior  ->  superiors
+               supply  ->  supplies
   TODO:singular_noun    Surgeon-General  ->  Surgeons-General
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
