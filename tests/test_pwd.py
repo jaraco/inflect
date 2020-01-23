@@ -326,10 +326,12 @@ class test(unittest.TestCase):
             self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
 
         self.assertEqual(p.singular_noun("cats", count=2), "cats")
+        self.assertEqual(p.singular_noun("open valves", count=2), "open valves")
 
         self.assertEqual(p.singular_noun("zombies"), "zombie")
 
         self.assertEqual(p.singular_noun("shoes"), "shoe")
+        self.assertEqual(p.singular_noun("dancing shoes"), "dancing shoe")
 
         self.assertEqual(p.singular_noun("Matisses"), "Matisse")
         self.assertEqual(p.singular_noun("bouillabaisses"), "bouillabaisse")
@@ -438,6 +440,7 @@ class test(unittest.TestCase):
             (p.compare, "indices", "indexes", "p:p"),
             (p.compare, "indexes", "indices", "p:p"),
             (p.compare, "indices", "indices", "eq"),
+            (p.compare, "inverted indexes", "inverted indices", "p:p"),
             (p.compare, "opuses", "opera", "p:p"),
             (p.compare, "opera", "opuses", "p:p"),
             (p.compare, "brothers", "brethren", "p:p"),
