@@ -1,3 +1,8 @@
+v4.1.0
+======
+
+* #95: Certain operations now allow ignore arbitrary leading words.
+
 v4.0.0
 ======
 
