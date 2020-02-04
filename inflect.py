@@ -1915,15 +1915,15 @@ no_classical = {k: False for k in list(def_classical.keys())}
 string_to_constant = {"True": True, "False": False, "None": None}
 
 
-class engine:
-    class TokenizedWord(object):
-        def __init__(self, value):
-            self.word = value
-            self.lower = self.word.lower()
-            self.split = self.word.split()
-            self.first = self.split[0]
-            self.last = self.split[-1]
+class Words(str):
+    def __init__(self, orig):
+        self.lower = self.lower()
+        self.split = self.split()
+        self.first = self.split[0]
+        self.last = self.split[-1]
 
+
+class engine:
     def __init__(self):
 
         self.classical_dict = def_classical.copy()
@@ -2210,6 +2210,7 @@ class engine:
     # ## PLURAL SUBROUTINES
 
     def postprocess(self, orig, inflected):
+        inflected = str(inflected)
         if "|" in inflected:
             inflected = inflected.split("|")[self.classical_dict["all"]]
         result = inflected.split(" ")
@@ -2445,8 +2446,8 @@ class engine:
             (".{2,}[yia]n", "xes", "ges"),
         )
 
-        tokenized_words = [self.TokenizedWord(word1), self.TokenizedWord(word2)]
-        pair = "|".join([tokenized_word.last for tokenized_word in tokenized_words])
+        words = list(map(Words, (word1, word2)))
+        pair = "|".join(word.last for word in words)
 
         return (
             pair in pl_sb_irregular_s.values()
@@ -2511,21 +2512,18 @@ class engine:
         if word == "":
             return word
 
-        tokenized_word = self.TokenizedWord(word)
-        if tokenized_word.last.lower() in pl_sb_uninflected_complete:
+        word = Words(word)
+        if word.last.lower() in pl_sb_uninflected_complete:
             return word
 
         if word in pl_sb_uninflected_caps:
             return word
 
         for k, v in pl_sb_uninflected_bysize.items():
-            if tokenized_word.lower[-k:] in v:
+            if word.lower[-k:] in v:
                 return word
 
-        if (
-            self.classical_dict["herd"]
-            and tokenized_word.last.lower() in pl_sb_uninflected_herd
-        ):
+        if self.classical_dict["herd"] and word.last.lower() in pl_sb_uninflected_herd:
             return word
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
@@ -2534,26 +2532,25 @@ class engine:
         if mo and mo.group(2) != "":
             return "{}{}".format(self._plnoun(mo.group(1), 2), mo.group(2))
 
-        if " a " in tokenized_word.lower or "-a-" in tokenized_word.lower:
+        if " a " in word.lower or "-a-" in word.lower:
             mo = re.search(r"^(?:%s)$" % pl_sb_prep_dual_compound, word, re.IGNORECASE)
             if mo and mo.group(2) != "" and mo.group(3) != "":
                 return "{}{}{}".format(
                     self._plnoun(mo.group(1), 2), mo.group(2), self._plnoun(mo.group(3))
                 )
 
-        if len(tokenized_word.split) >= 3:
-            for numword in range(1, len(tokenized_word.split) - 1):
-                if tokenized_word.split[numword] in pl_prep_list_da:
+        if len(word.split) >= 3:
+            for numword in range(1, len(word.split) - 1):
+                if word.split[numword] in pl_prep_list_da:
                     return " ".join(
-                        tokenized_word.split[: numword - 1]
-                        + [self._plnoun(tokenized_word.split[numword - 1], 2)]
-                        + tokenized_word.split[numword:]
+                        word.split[: numword - 1]
+                        + [self._plnoun(word.split[numword - 1], 2)]
+                        + word.split[numword:]
                     )
 
         # only pluralize denominators in units
         mo = re.search(
-            r"(?P<denominator>.+)( (%s) .+)" % "|".join(["per", "a"]),
-            tokenized_word.lower,
+            r"(?P<denominator>.+)( (%s) .+)" % "|".join(["per", "a"]), word.lower
         )
         if mo:
             index = len(mo.group("denominator"))
@@ -2563,80 +2560,66 @@ class engine:
         # there is no more than one word following)
         # degree Celsius => degrees Celsius but degree
         # fahrenheit hour => degree fahrenheit hours
-        if len(tokenized_word.split) >= 2 and tokenized_word.split[-2] in ["degree"]:
-            return " ".join(
-                [self._plnoun(tokenized_word.split[0])] + tokenized_word.split[1:]
-            )
+        if len(word.split) >= 2 and word.split[-2] in ["degree"]:
+            return " ".join([self._plnoun(word.split[0])] + word.split[1:])
 
-        tokenized_word.split = tokenized_word.lower.split("-")
-        if len(tokenized_word.split) >= 3:
-            for numword in range(1, len(tokenized_word.split) - 1):
-                if tokenized_word.split[numword] in pl_prep_list_da:
+        word.split = word.lower.split("-")
+        if len(word.split) >= 3:
+            for numword in range(1, len(word.split) - 1):
+                if word.split[numword] in pl_prep_list_da:
                     return " ".join(
-                        tokenized_word.split[: numword - 1]
+                        word.split[: numword - 1]
                         + [
-                            self._plnoun(tokenized_word.split[numword - 1], 2)
+                            self._plnoun(word.split[numword - 1], 2)
                             + "-"
-                            + tokenized_word.split[numword]
+                            + word.split[numword]
                             + "-"
                         ]
-                    ) + " ".join(tokenized_word.split[(numword + 1) :])
+                    ) + " ".join(word.split[(numword + 1) :])
 
         # HANDLE PRONOUNS
 
         for k, v in pl_pron_acc_keys_bysize.items():
-            if tokenized_word.lower[-k:] in v:  # ends with accusivate pronoun
+            if word.lower[-k:] in v:  # ends with accusivate pronoun
                 for pk, pv in pl_prep_bysize.items():
-                    if tokenized_word.lower[:pk] in pv:  # starts with a prep
-                        if tokenized_word.lower.split() == [
-                            tokenized_word.lower[:pk],
-                            tokenized_word.lower[-k:],
-                        ]:
+                    if word.lower[:pk] in pv:  # starts with a prep
+                        if word.lower.split() == [word.lower[:pk], word.lower[-k:]]:
                             # only whitespace in between
-                            return (
-                                tokenized_word.lower[:-k]
-                                + pl_pron_acc[tokenized_word.lower[-k:]]
-                            )
+                            return word.lower[:-k] + pl_pron_acc[word.lower[-k:]]
 
         try:
-            return pl_pron_nom[word.lower()]
+            return pl_pron_nom[word.lower]
         except KeyError:
             pass
 
         try:
-            return pl_pron_acc[word.lower()]
+            return pl_pron_acc[word.lower]
         except KeyError:
             pass
 
         # HANDLE ISOLATED IRREGULAR PLURALS
 
-        if tokenized_word.last in list(pl_sb_irregular_caps.keys()):
-            llen = len(tokenized_word.last)
-            return "{}{}".format(
-                word[:-llen], pl_sb_irregular_caps[tokenized_word.last]
-            )
+        if word.last in list(pl_sb_irregular_caps.keys()):
+            llen = len(word.last)
+            return "{}{}".format(word[:-llen], pl_sb_irregular_caps[word.last])
 
-        if tokenized_word.last.lower() in list(pl_sb_irregular.keys()):
-            llen = len(tokenized_word.last.lower())
-            return "{}{}".format(
-                word[:-llen], pl_sb_irregular[tokenized_word.last.lower()]
-            )
+        if word.last.lower() in list(pl_sb_irregular.keys()):
+            llen = len(word.last.lower())
+            return "{}{}".format(word[:-llen], pl_sb_irregular[word.last.lower()])
 
-        if (" ".join(tokenized_word.split[-2:])).lower() in list(
-            pl_sb_irregular_compound.keys()
-        ):
+        if (" ".join(word.split[-2:])).lower() in list(pl_sb_irregular_compound.keys()):
             llen = len(
-                " ".join(tokenized_word.split[-2:])
+                " ".join(word.split[-2:])
             )  # TODO: what if 2 spaces between these words?
             return "{}{}".format(
                 word[:-llen],
-                pl_sb_irregular_compound[(" ".join(tokenized_word.split[-2:])).lower()],
+                pl_sb_irregular_compound[(" ".join(word.split[-2:])).lower()],
             )
 
-        if tokenized_word.lower[-3:] == "quy":
+        if word.lower[-3:] == "quy":
             return word[:-1] + "ies"
 
-        if tokenized_word.lower[-6:] == "person":
+        if word.lower[-6:] == "person":
             if self.classical_dict["persons"]:
                 return word + "s"
             else:
@@ -2644,37 +2627,37 @@ class engine:
 
         # HANDLE FAMILIES OF IRREGULAR PLURALS
 
-        if tokenized_word.lower[-3:] == "man":
+        if word.lower[-3:] == "man":
             for k, v in pl_sb_U_man_mans_bysize.items():
-                if tokenized_word.lower[-k:] in v:
+                if word.lower[-k:] in v:
                     return word + "s"
             for k, v in pl_sb_U_man_mans_caps_bysize.items():
                 if word[-k:] in v:
                     return word + "s"
             return word[:-3] + "men"
-        if tokenized_word.lower[-5:] == "mouse":
+        if word.lower[-5:] == "mouse":
             return word[:-5] + "mice"
-        if tokenized_word.lower[-5:] == "louse":
+        if word.lower[-5:] == "louse":
             return word[:-5] + "lice"
-        if tokenized_word.lower[-5:] == "goose":
+        if word.lower[-5:] == "goose":
             return word[:-5] + "geese"
-        if tokenized_word.lower[-5:] == "tooth":
+        if word.lower[-5:] == "tooth":
             return word[:-5] + "teeth"
-        if tokenized_word.lower[-4:] == "foot":
+        if word.lower[-4:] == "foot":
             return word[:-4] + "feet"
-        if tokenized_word.lower[-4:] == "taco":
+        if word.lower[-4:] == "taco":
             return word[:-5] + "tacos"
 
-        if tokenized_word.lower == "die":
+        if word.lower == "die":
             return "dice"
 
         # HANDLE UNASSIMILATED IMPORTS
 
-        if tokenized_word.lower[-4:] == "ceps":
+        if word.lower[-4:] == "ceps":
             return word
-        if tokenized_word.lower[-4:] == "zoon":
+        if word.lower[-4:] == "zoon":
             return word[:-2] + "a"
-        if tokenized_word.lower[-3:] in ("cis", "sis", "xis"):
+        if word.lower[-3:] in ("cis", "sis", "xis"):
             return word[:-2] + "es"
 
         for lastlet, d, numend, post in (
@@ -2686,19 +2669,19 @@ class engine:
             ("n", pl_sb_U_on_a_bysize, -2, "a"),
             ("a", pl_sb_U_a_ae_bysize, None, "e"),
         ):
-            if tokenized_word.lower[-1] == lastlet:  # this test to add speed
+            if word.lower[-1] == lastlet:  # this test to add speed
                 for k, v in d.items():
-                    if tokenized_word.lower[-k:] in v:
+                    if word.lower[-k:] in v:
                         return word[:numend] + post
 
         # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
         if self.classical_dict["ancient"]:
-            if tokenized_word.lower[-4:] == "trix":
+            if word.lower[-4:] == "trix":
                 return word[:-1] + "ces"
-            if tokenized_word.lower[-3:] in ("eau", "ieu"):
+            if word.lower[-3:] in ("eau", "ieu"):
                 return word + "x"
-            if tokenized_word.lower[-3:] in ("ynx", "inx", "anx") and len(word) > 4:
+            if word.lower[-3:] in ("ynx", "inx", "anx") and len(word) > 4:
                 return word[:-1] + "ges"
 
             for lastlet, d, numend, post in (
@@ -2714,9 +2697,9 @@ class engine:
                 ("o", pl_sb_C_o_i_bysize, -1, "i"),
                 ("n", pl_sb_C_on_a_bysize, -2, "a"),
             ):
-                if tokenized_word.lower[-1] == lastlet:  # this test to add speed
+                if word.lower[-1] == lastlet:  # this test to add speed
                     for k, v in d.items():
-                        if tokenized_word.lower[-k:] in v:
+                        if word.lower[-k:] in v:
                             return word[:numend] + post
 
             for d, numend, post in (
@@ -2724,76 +2707,73 @@ class engine:
                 (pl_sb_C_im_bysize, None, "im"),
             ):
                 for k, v in d.items():
-                    if tokenized_word.lower[-k:] in v:
+                    if word.lower[-k:] in v:
                         return word[:numend] + post
 
         # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
-        if tokenized_word.last.lower() in pl_sb_singular_s_complete:
+        if word.last.lower() in pl_sb_singular_s_complete:
             return word + "es"
 
         for k, v in pl_sb_singular_s_bysize.items():
-            if tokenized_word.lower[-k:] in v:
+            if word.lower[-k:] in v:
                 return word + "es"
 
-        if tokenized_word.lower[-2:] == "es" and word[0] == word[0].upper():
+        if word.lower[-2:] == "es" and word[0] == word[0].upper():
             return word + "es"
 
-        if tokenized_word.lower[-1] == "z":
+        if word.lower[-1] == "z":
             for k, v in pl_sb_z_zes_bysize.items():
-                if tokenized_word.lower[-k:] in v:
+                if word.lower[-k:] in v:
                     return word + "es"
 
-            if tokenized_word.lower[-2:-1] != "z":
+            if word.lower[-2:-1] != "z":
                 return word + "zes"
 
-        if tokenized_word.lower[-2:] == "ze":
+        if word.lower[-2:] == "ze":
             for k, v in pl_sb_ze_zes_bysize.items():
-                if tokenized_word.lower[-k:] in v:
+                if word.lower[-k:] in v:
                     return word + "s"
 
-        if (
-            tokenized_word.lower[-2:] in ("ch", "sh", "zz", "ss")
-            or tokenized_word.lower[-1] == "x"
-        ):
+        if word.lower[-2:] in ("ch", "sh", "zz", "ss") or word.lower[-1] == "x":
             return word + "es"
 
         # HANDLE ...f -> ...ves
 
-        if tokenized_word.lower[-3:] in ("elf", "alf", "olf"):
+        if word.lower[-3:] in ("elf", "alf", "olf"):
             return word[:-1] + "ves"
-        if tokenized_word.lower[-3:] == "eaf" and tokenized_word.lower[-4:-3] != "d":
+        if word.lower[-3:] == "eaf" and word.lower[-4:-3] != "d":
             return word[:-1] + "ves"
-        if tokenized_word.lower[-4:] in ("nife", "life", "wife"):
+        if word.lower[-4:] in ("nife", "life", "wife"):
             return word[:-2] + "ves"
-        if tokenized_word.lower[-3:] == "arf":
+        if word.lower[-3:] == "arf":
             return word[:-1] + "ves"
 
         # HANDLE ...y
 
-        if tokenized_word.lower[-1] == "y":
-            if tokenized_word.lower[-2:-1] in "aeiou" or len(word) == 1:
+        if word.lower[-1] == "y":
+            if word.lower[-2:-1] in "aeiou" or len(word) == 1:
                 return word + "s"
 
             if self.classical_dict["names"]:
-                if tokenized_word.lower[-1] == "y" and word[0] == word[0].upper():
+                if word.lower[-1] == "y" and word[0] == word[0].upper():
                     return word + "s"
 
             return word[:-1] + "ies"
 
         # HANDLE ...o
 
-        if tokenized_word.last.lower() in pl_sb_U_o_os_complete:
+        if word.last.lower() in pl_sb_U_o_os_complete:
             return word + "s"
 
         for k, v in pl_sb_U_o_os_bysize.items():
-            if tokenized_word.lower[-k:] in v:
+            if word.lower[-k:] in v:
                 return word + "s"
 
-        if tokenized_word.lower[-2:] in ("ao", "eo", "io", "oo", "uo"):
+        if word.lower[-2:] in ("ao", "eo", "io", "oo", "uo"):
             return word + "s"
 
-        if tokenized_word.lower[-1] == "o":
+        if word.lower[-1] == "o":
             return word + "es"
 
         # OTHERWISE JUST ADD ...s
@@ -2817,32 +2797,30 @@ class engine:
         # HANDLE IRREGULAR PRESENT TENSE (SIMPLE AND COMPOUND)
 
         try:
-            tokenized_word = self.TokenizedWord(word)
+            word = Words(word)
         except IndexError:
             return False  # word is ''
 
-        if tokenized_word.first in list(plverb_irregular_pres.keys()):
+        if word.first in list(plverb_irregular_pres.keys()):
             return "{}{}".format(
-                plverb_irregular_pres[tokenized_word.first],
-                word[len(tokenized_word.first) :],
+                plverb_irregular_pres[word.first], word[len(word.first) :]
             )
 
         # HANDLE IRREGULAR FUTURE, PRETERITE AND PERFECT TENSES
 
-        if tokenized_word.first in plverb_irregular_non_pres:
+        if word.first in plverb_irregular_non_pres:
             return word
 
         # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
-        if tokenized_word.first.endswith("n't") and tokenized_word.first[:-3] in list(
+        if word.first.endswith("n't") and word.first[:-3] in list(
             plverb_irregular_pres.keys()
         ):
             return "{}n't{}".format(
-                plverb_irregular_pres[tokenized_word.first[:-3]],
-                word[len(tokenized_word.first) :],
+                plverb_irregular_pres[word.first[:-3]], word[len(word.first) :]
             )
 
-        if tokenized_word.first.endswith("n't"):
+        if word.first.endswith("n't"):
             return word
 
         # HANDLE SPECIAL CASES
@@ -2852,31 +2830,31 @@ class engine:
             return False
         if re.search(r"\s", word):
             return False
-        if tokenized_word.lower == "quizzes":
+        if word.lower == "quizzes":
             return "quiz"
 
         # HANDLE STANDARD 3RD PERSON (CHOP THE ...(e)s OFF SINGLE WORDS)
 
-        tokenized_word = self.TokenizedWord(word)
+        word = Words(word)
 
         if (
-            tokenized_word.lower[-4:] in ("ches", "shes", "zzes", "sses")
-            or tokenized_word.lower[-3:] == "xes"
+            word.lower[-4:] in ("ches", "shes", "zzes", "sses")
+            or word.lower[-3:] == "xes"
         ):
             return word[:-2]
 
-        if tokenized_word.lower[-3:] == "ies" and len(word) > 3:
-            return tokenized_word.lower[:-3] + "y"
+        if word.lower[-3:] == "ies" and len(word) > 3:
+            return word.lower[:-3] + "y"
 
         if (
-            tokenized_word.last.lower() in pl_v_oes_oe
-            or tokenized_word.lower[-4:] in pl_v_oes_oe_endings_size4
-            or tokenized_word.lower[-5:] in pl_v_oes_oe_endings_size5
+            word.last.lower() in pl_v_oes_oe
+            or word.lower[-4:] in pl_v_oes_oe_endings_size4
+            or word.lower[-5:] in pl_v_oes_oe_endings_size5
         ):
             return word[:-1]
 
-        if tokenized_word.lower.endswith("oes") and len(word) > 3:
-            return tokenized_word.lower[:-2]
+        if word.lower.endswith("oes") and len(word) > 3:
+            return word.lower[:-2]
 
         mo = re.search(r"^(.*[^s])s$", word, re.IGNORECASE)
         if mo:
@@ -2981,25 +2959,22 @@ class engine:
         if word in si_sb_ois_oi_case:
             return word[:-1]
 
-        tokenized_word = self.TokenizedWord(word)
+        word = Words(word)
 
-        if tokenized_word.last.lower() in pl_sb_uninflected_complete:
+        if word.last.lower() in pl_sb_uninflected_complete:
             return word
 
         if word in pl_sb_uninflected_caps:
             return word
 
         for k, v in pl_sb_uninflected_bysize.items():
-            if tokenized_word.lower[-k:] in v:
+            if word.lower[-k:] in v:
                 return word
 
-        if (
-            self.classical_dict["herd"]
-            and tokenized_word.last.lower() in pl_sb_uninflected_herd
-        ):
+        if self.classical_dict["herd"] and word.last.lower() in pl_sb_uninflected_herd:
             return word
 
-        if tokenized_word.last.lower() in pl_sb_C_us_us:
+        if word.last.lower() in pl_sb_C_us_us:
             return word
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
@@ -3010,128 +2985,115 @@ class engine:
                 self._sinoun(mo.group(1), 1, gender=gender), mo.group(2)
             )
 
-        tokenized_word.split = tokenized_word.lower.split(" ")
-        if len(tokenized_word.split) >= 3:
-            for numword in range(1, len(tokenized_word.split) - 1):
-                if tokenized_word.split[numword] in pl_prep_list_da:
+        word.split = word.lower.split(" ")
+        if len(word.split) >= 3:
+            for numword in range(1, len(word.split) - 1):
+                if word.split[numword] in pl_prep_list_da:
                     return " ".join(
-                        tokenized_word.split[: numword - 1]
+                        word.split[: numword - 1]
                         + [
-                            self._sinoun(
-                                tokenized_word.split[numword - 1], 1, gender=gender
-                            )
-                            or tokenized_word.split[numword - 1]
+                            self._sinoun(word.split[numword - 1], 1, gender=gender)
+                            or word.split[numword - 1]
                         ]
-                        + tokenized_word.split[numword:]
+                        + word.split[numword:]
                     )
 
-        tokenized_word.split = tokenized_word.lower.split("-")
-        if len(tokenized_word.split) >= 3:
-            for numword in range(1, len(tokenized_word.split) - 1):
-                if tokenized_word.split[numword] in pl_prep_list_da:
+        word.split = word.lower.split("-")
+        if len(word.split) >= 3:
+            for numword in range(1, len(word.split) - 1):
+                if word.split[numword] in pl_prep_list_da:
                     return " ".join(
-                        tokenized_word.split[: numword - 1]
+                        word.split[: numword - 1]
                         + [
                             (
-                                self._sinoun(
-                                    tokenized_word.split[numword - 1], 1, gender=gender
-                                )
-                                or tokenized_word.split[numword - 1]
+                                self._sinoun(word.split[numword - 1], 1, gender=gender)
+                                or word.split[numword - 1]
                             )
                             + "-"
-                            + tokenized_word.split[numword]
+                            + word.split[numword]
                             + "-"
                         ]
-                    ) + " ".join(tokenized_word.split[(numword + 1) :])
+                    ) + " ".join(word.split[(numword + 1) :])
 
         # HANDLE PRONOUNS
 
         for k, v in si_pron_acc_keys_bysize.items():
-            if tokenized_word.lower[-k:] in v:  # ends with accusivate pronoun
+            if word.lower[-k:] in v:  # ends with accusivate pronoun
                 for pk, pv in pl_prep_bysize.items():
-                    if tokenized_word.lower[:pk] in pv:  # starts with a prep
-                        if tokenized_word.lower.split() == [
-                            tokenized_word.lower[:pk],
-                            tokenized_word.lower[-k:],
-                        ]:
+                    if word.lower[:pk] in pv:  # starts with a prep
+                        if word.lower.split() == [word.lower[:pk], word.lower[-k:]]:
                             # only whitespace in between
-                            return tokenized_word.lower[:-k] + get_si_pron(
-                                "acc", tokenized_word.lower[-k:], gender
+                            return word.lower[:-k] + get_si_pron(
+                                "acc", word.lower[-k:], gender
                             )
 
         try:
-            return get_si_pron("nom", word.lower(), gender)
+            return get_si_pron("nom", word.lower, gender)
         except KeyError:
             pass
 
         try:
-            return get_si_pron("acc", word.lower(), gender)
+            return get_si_pron("acc", word.lower, gender)
         except KeyError:
             pass
 
         # HANDLE ISOLATED IRREGULAR PLURALS
 
-        if tokenized_word.last in list(si_sb_irregular_caps.keys()):
-            llen = len(tokenized_word.last)
-            return "{}{}".format(
-                word[:-llen], si_sb_irregular_caps[tokenized_word.last]
-            )
+        if word.last in list(si_sb_irregular_caps.keys()):
+            llen = len(word.last)
+            return "{}{}".format(word[:-llen], si_sb_irregular_caps[word.last])
 
-        if tokenized_word.last.lower() in list(si_sb_irregular.keys()):
-            llen = len(tokenized_word.last.lower())
-            return "{}{}".format(
-                word[:-llen], si_sb_irregular[tokenized_word.last.lower()]
-            )
+        if word.last.lower() in list(si_sb_irregular.keys()):
+            llen = len(word.last.lower())
+            return "{}{}".format(word[:-llen], si_sb_irregular[word.last.lower()])
 
-        if (" ".join(tokenized_word.split[-2:])).lower() in list(
-            si_sb_irregular_compound.keys()
-        ):
+        if (" ".join(word.split[-2:])).lower() in list(si_sb_irregular_compound.keys()):
             llen = len(
-                " ".join(tokenized_word.split[-2:])
+                " ".join(word.split[-2:])
             )  # TODO: what if 2 spaces between these words?
             return "{}{}".format(
                 word[:-llen],
-                si_sb_irregular_compound[(" ".join(tokenized_word.split[-2:])).lower()],
+                si_sb_irregular_compound[(" ".join(word.split[-2:])).lower()],
             )
 
-        if tokenized_word.lower[-5:] == "quies":
+        if word.lower[-5:] == "quies":
             return word[:-3] + "y"
 
-        if tokenized_word.lower[-7:] == "persons":
+        if word.lower[-7:] == "persons":
             return word[:-1]
-        if tokenized_word.lower[-6:] == "people":
+        if word.lower[-6:] == "people":
             return word[:-4] + "rson"
 
         # HANDLE FAMILIES OF IRREGULAR PLURALS
 
-        if tokenized_word.lower[-4:] == "mans":
+        if word.lower[-4:] == "mans":
             for k, v in si_sb_U_man_mans_bysize.items():
-                if tokenized_word.lower[-k:] in v:
+                if word.lower[-k:] in v:
                     return word[:-1]
             for k, v in si_sb_U_man_mans_caps_bysize.items():
                 if word[-k:] in v:
                     return word[:-1]
-        if tokenized_word.lower[-3:] == "men":
+        if word.lower[-3:] == "men":
             return word[:-3] + "man"
-        if tokenized_word.lower[-4:] == "mice":
+        if word.lower[-4:] == "mice":
             return word[:-4] + "mouse"
-        if tokenized_word.lower[-4:] == "lice":
+        if word.lower[-4:] == "lice":
             return word[:-4] + "louse"
-        if tokenized_word.lower[-5:] == "geese":
+        if word.lower[-5:] == "geese":
             return word[:-5] + "goose"
-        if tokenized_word.lower[-5:] == "teeth":
+        if word.lower[-5:] == "teeth":
             return word[:-5] + "tooth"
-        if tokenized_word.lower[-4:] == "feet":
+        if word.lower[-4:] == "feet":
             return word[:-4] + "foot"
 
-        if tokenized_word.lower == "dice":
+        if word.lower == "dice":
             return "die"
 
         # HANDLE UNASSIMILATED IMPORTS
 
-        if tokenized_word.lower[-4:] == "ceps":
+        if word.lower[-4:] == "ceps":
             return word
-        if tokenized_word.lower[-3:] == "zoa":
+        if word.lower[-3:] == "zoa":
             return word[:-1] + "on"
 
         for lastlet, d, numend, post in (
@@ -3143,23 +3105,20 @@ class engine:
             ("a", si_sb_U_on_a_bysize, -1, "on"),
             ("e", si_sb_U_a_ae_bysize, -1, ""),
         ):
-            if tokenized_word.lower[-1] == lastlet:  # this test to add speed
+            if word.lower[-1] == lastlet:  # this test to add speed
                 for k, v in d.items():
-                    if tokenized_word.lower[-k:] in v:
+                    if word.lower[-k:] in v:
                         return word[:numend] + post
 
         # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
         if self.classical_dict["ancient"]:
 
-            if tokenized_word.lower[-6:] == "trices":
+            if word.lower[-6:] == "trices":
                 return word[:-3] + "x"
-            if tokenized_word.lower[-4:] in ("eaux", "ieux"):
+            if word.lower[-4:] in ("eaux", "ieux"):
                 return word[:-1]
-            if (
-                tokenized_word.lower[-5:] in ("ynges", "inges", "anges")
-                and len(word) > 6
-            ):
+            if word.lower[-5:] in ("ynges", "inges", "anges") and len(word) > 6:
                 return word[:-3] + "x"
 
             for lastlet, d, numend, post in (
@@ -3177,113 +3136,113 @@ class engine:
                 ("m", si_sb_C_im_bysize, -2, ""),
                 ("i", si_sb_C_i_bysize, -1, ""),
             ):
-                if tokenized_word.lower[-1] == lastlet:  # this test to add speed
+                if word.lower[-1] == lastlet:  # this test to add speed
                     for k, v in d.items():
-                        if tokenized_word.lower[-k:] in v:
+                        if word.lower[-k:] in v:
                             return word[:numend] + post
 
         # HANDLE PLURLS ENDING IN uses -> use
 
         if (
-            tokenized_word.lower[-6:] == "houses"
+            word.lower[-6:] == "houses"
             or word in si_sb_uses_use_case
-            or tokenized_word.last.lower() in si_sb_uses_use
+            or word.last.lower() in si_sb_uses_use
         ):
             return word[:-1]
 
         # HANDLE PLURLS ENDING IN ies -> ie
 
-        if word in si_sb_ies_ie_case or tokenized_word.last.lower() in si_sb_ies_ie:
+        if word in si_sb_ies_ie_case or word.last.lower() in si_sb_ies_ie:
             return word[:-1]
 
         # HANDLE PLURLS ENDING IN oes -> oe
 
         if (
-            tokenized_word.lower[-5:] == "shoes"
+            word.lower[-5:] == "shoes"
             or word in si_sb_oes_oe_case
-            or tokenized_word.last.lower() in si_sb_oes_oe
+            or word.last.lower() in si_sb_oes_oe
         ):
             return word[:-1]
 
         # HANDLE SINGULAR NOUNS ENDING IN ...s OR OTHER SILIBANTS
 
-        if word in si_sb_sses_sse_case or tokenized_word.last.lower() in si_sb_sses_sse:
+        if word in si_sb_sses_sse_case or word.last.lower() in si_sb_sses_sse:
             return word[:-1]
 
-        if tokenized_word.last.lower() in si_sb_singular_s_complete:
+        if word.last.lower() in si_sb_singular_s_complete:
             return word[:-2]
 
         for k, v in si_sb_singular_s_bysize.items():
-            if tokenized_word.lower[-k:] in v:
+            if word.lower[-k:] in v:
                 return word[:-2]
 
-        if tokenized_word.lower[-4:] == "eses" and word[0] == word[0].upper():
+        if word.lower[-4:] == "eses" and word[0] == word[0].upper():
             return word[:-2]
 
-        if tokenized_word.last.lower() in si_sb_z_zes:
+        if word.last.lower() in si_sb_z_zes:
             return word[:-2]
 
-        if tokenized_word.last.lower() in si_sb_zzes_zz:
+        if word.last.lower() in si_sb_zzes_zz:
             return word[:-2]
 
-        if tokenized_word.lower[-4:] == "zzes":
+        if word.lower[-4:] == "zzes":
             return word[:-3]
 
-        if word in si_sb_ches_che_case or tokenized_word.last.lower() in si_sb_ches_che:
+        if word in si_sb_ches_che_case or word.last.lower() in si_sb_ches_che:
             return word[:-1]
 
-        if tokenized_word.lower[-4:] in ("ches", "shes"):
+        if word.lower[-4:] in ("ches", "shes"):
             return word[:-2]
 
-        if tokenized_word.last.lower() in si_sb_xes_xe:
+        if word.last.lower() in si_sb_xes_xe:
             return word[:-1]
 
-        if tokenized_word.lower[-3:] == "xes":
+        if word.lower[-3:] == "xes":
             return word[:-2]
 
         # HANDLE ...f -> ...ves
 
-        if word in si_sb_ves_ve_case or tokenized_word.last.lower() in si_sb_ves_ve:
+        if word in si_sb_ves_ve_case or word.last.lower() in si_sb_ves_ve:
             return word[:-1]
 
-        if tokenized_word.lower[-3:] == "ves":
-            if tokenized_word.lower[-5:-3] in ("el", "al", "ol"):
+        if word.lower[-3:] == "ves":
+            if word.lower[-5:-3] in ("el", "al", "ol"):
                 return word[:-3] + "f"
-            if tokenized_word.lower[-5:-3] == "ea" and word[-6:-5] != "d":
+            if word.lower[-5:-3] == "ea" and word[-6:-5] != "d":
                 return word[:-3] + "f"
-            if tokenized_word.lower[-5:-3] in ("ni", "li", "wi"):
+            if word.lower[-5:-3] in ("ni", "li", "wi"):
                 return word[:-3] + "fe"
-            if tokenized_word.lower[-5:-3] == "ar":
+            if word.lower[-5:-3] == "ar":
                 return word[:-3] + "f"
 
         # HANDLE ...y
 
-        if tokenized_word.lower[-2:] == "ys":
-            if len(tokenized_word.lower) > 2 and tokenized_word.lower[-3] in "aeiou":
+        if word.lower[-2:] == "ys":
+            if len(word.lower) > 2 and word.lower[-3] in "aeiou":
                 return word[:-1]
 
             if self.classical_dict["names"]:
-                if tokenized_word.lower[-2:] == "ys" and word[0] == word[0].upper():
+                if word.lower[-2:] == "ys" and word[0] == word[0].upper():
                     return word[:-1]
 
-        if tokenized_word.lower[-3:] == "ies":
+        if word.lower[-3:] == "ies":
             return word[:-3] + "y"
 
         # HANDLE ...o
 
-        if tokenized_word.lower[-2:] == "os":
+        if word.lower[-2:] == "os":
 
-            if tokenized_word.last.lower() in si_sb_U_o_os_complete:
+            if word.last.lower() in si_sb_U_o_os_complete:
                 return word[:-1]
 
             for k, v in si_sb_U_o_os_bysize.items():
-                if tokenized_word.lower[-k:] in v:
+                if word.lower[-k:] in v:
                     return word[:-1]
 
-            if tokenized_word.lower[-3:] in ("aos", "eos", "ios", "oos", "uos"):
+            if word.lower[-3:] in ("aos", "eos", "ios", "oos", "uos"):
                 return word[:-1]
 
-        if tokenized_word.lower[-3:] == "oes":
+        if word.lower[-3:] == "oes":
             return word[:-2]
 
         # UNASSIMILATED IMPORTS FINAL RULE
@@ -3293,7 +3252,7 @@ class engine:
 
         # OTHERWISE JUST REMOVE ...s
 
-        if tokenized_word.lower[-1] == "s":
+        if word.lower[-1] == "s":
             return word[:-1]
 
         # COULD NOT FIND SINGULAR
