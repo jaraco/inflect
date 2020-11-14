@@ -3591,21 +3591,21 @@ class engine:
         return num
 
     def blankfn(self, mo):
-        """ do a global blank replace
+        """do a global blank replace
         TODO: surely this can be done with an option to re.sub
               rather than this fn
         """
         return ""
 
     def commafn(self, mo):
-        """ do a global ',' replace
+        """do a global ',' replace
         TODO: surely this can be done with an option to re.sub
               rather than this fn
         """
         return ","
 
     def spacefn(self, mo):
-        """ do a global ' ' replace
+        """do a global ' ' replace
         TODO: surely this can be done with an option to re.sub
               rather than this fn
         """
