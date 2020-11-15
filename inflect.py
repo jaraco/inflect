@@ -2374,6 +2374,21 @@ class engine:
 
         Whitespace at the start and end is preserved.
 
+        >>> p = engine()
+        >>> p.singular_noun('horses')
+        'horse'
+        >>> p.singular_noun('knights')
+        'knight'
+
+        Returns False when a singular noun is passed.
+
+        >>> p.singular_noun('horse')
+        False
+        >>> p.singular_noun('knight')
+        False
+        >>> p.singular_noun('soldier')
+        False
+
         """
         pre, word, post = self.partition_word(text)
         if not word:
