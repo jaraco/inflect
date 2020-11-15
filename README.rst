@@ -541,6 +541,9 @@ Shout out to these libraries that provide related functionality:
   parses identifiers like variable names into sets of words suitable for re-assembling
   in another form.
 
+* `word2number <https://pypi.org/project/word2number/>`_ converts words to
+  a number.
+
 
 For Enterprise
 ==============
