@@ -2380,9 +2380,7 @@ class engine:
             return text
         sing = self._sinoun(word, count=count, gender=gender)
         if sing is not False:
-            plural = self.postprocess(
-                word, self._sinoun(word, count=count, gender=gender)
-            )
+            plural = self.postprocess(word, sing)
             return "{}{}{}".format(pre, plural, post)
         return False
 
