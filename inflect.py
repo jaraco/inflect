@@ -3401,9 +3401,8 @@ class engine:
         post = mo.group(3)
 
         if str(count).lower() in pl_count_zero:
-            return "{}no {}{}".format(pre, self.plural(word, 0), post)
-        else:
-            return "{}{} {}{}".format(pre, count, self.plural(word, count), post)
+            count = 'no'
+        return "{}{} {}{}".format(pre, count, self.plural(word, count), post)
 
     # PARTICIPLES
 
