@@ -1,3 +1,8 @@
+v5.0.1
+======
+
+* Identical release validating release process.
+
 v5.0.0
 ======
 
