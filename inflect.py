@@ -50,11 +50,13 @@ Exceptions:
 
 import ast
 import re
+from typing import Dict, Union
+
 
 try:
-    import importlib.metadata as importlib_metadata
+    import importlib.metadata as importlib_metadata  # type: ignore
 except ImportError:
-    import importlib_metadata
+    import importlib_metadata  # type: ignore
 
 
 class UnknownClassicalModeError(Exception):
@@ -1456,16 +1458,16 @@ plverb_special_s = enclose(
     )
 )
 
-pl_sb_postfix_adj = {
+_pl_sb_postfix_adj_defn = {
     "general": [r"(?!major|lieutenant|brigadier|adjutant|.*star)\S+"],
     "martial": ["court"],
     "force": ["pound"],
 }
 
-for k in list(pl_sb_postfix_adj.keys()):
-    pl_sb_postfix_adj[k] = enclose(
-        enclose("|".join(pl_sb_postfix_adj[k])) + "(?=(?:-|\\s+)%s)" % k
-    )
+pl_sb_postfix_adj: Dict[str, str] = {}
+
+for key, val in _pl_sb_postfix_adj_defn.items():
+    pl_sb_postfix_adj[key] = enclose(enclose("|".join(val)) + "(?=(?:-|\\s+)%s)" % key)
 
 pl_sb_postfix_adj_stems = "(" + "|".join(list(pl_sb_postfix_adj.values())) + ")(.*)"
 
@@ -1590,7 +1592,7 @@ pl_pron_nom = {
     "theirs": "theirs",
 }
 
-si_pron = {}
+si_pron: Dict[str, Dict[str, Union[str, Dict[str, str]]]] = {}
 si_pron["nom"] = {v: k for (k, v) in pl_pron_nom.items()}
 si_pron["nom"]["we"] = "I"
 
@@ -1649,10 +1651,10 @@ for thecase, plur, gend, sing in (
     ("acc", "themselves", "masculine or feminine", "himself or herself"),
 ):
     try:
-        si_pron[thecase][plur][gend] = sing
+        si_pron[thecase][plur][gend] = sing  # type: ignore
     except TypeError:
         si_pron[thecase][plur] = {}
-        si_pron[thecase][plur][gend] = sing
+        si_pron[thecase][plur][gend] = sing  # type: ignore
 
 
 si_pron_acc_keys = enclose("|".join(list(si_pron["acc"].keys())))
