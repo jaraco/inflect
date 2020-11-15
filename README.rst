@@ -20,14 +20,8 @@
 .. image:: https://coveralls.io/repos/github/jazzband/inflect/badge.svg?branch=master
     :target: https://coveralls.io/github/jazzband/inflect?branch=master
 
-.. image:: https://jazzband.co/static/img/badge.svg
-   :target: https://jazzband.co/
-   :alt: Jazzband
-
 .. image:: https://tidelift.com/badges/package/pypi/inflect
    :target: https://tidelift.com/subscription/pkg/pypi-inflect?utm_source=pypi-inflect&utm_medium=readme
-
-This is a `Jazzband <https://jazzband.co>`_ project. By contributing you agree to abide by the `Contributor Code of Conduct <https://jazzband.co/about/conduct>`_ and follow the `guidelines <https://jazzband.co/about/guidelines>`_.
 
 NAME
 ====
