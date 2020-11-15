@@ -53,12 +53,6 @@ import re
 from typing import Dict, Union
 
 
-try:
-    from importlib import metadata  # type: ignore
-except ImportError:
-    import importlib_metadata as metadata  # type: ignore
-
-
 class UnknownClassicalModeError(Exception):
     pass
 
@@ -85,12 +79,6 @@ class BadRcFileError(Exception):
 
 class BadGenderError(Exception):
     pass
-
-
-try:
-    __version__ = metadata.version("inflect")  # type: ignore
-except Exception:
-    __version__ = "unknown"
 
 
 STDOUT_ON = False

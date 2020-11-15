@@ -1,3 +1,14 @@
+v5.0.0
+======
+
+* Module no longer exposes a ``__version__`` attribute. Instead
+  to query the version installed, use
+  `importlib.metadata <https://docs.python.org/3/library/importlib.metadata.html>`_
+  or `its backport <https://pypi.org/project/importlib_metadata>`_
+  to query::
+
+    importlib.metadata.version('inflect')
+
 v4.1.1
 ======
 
