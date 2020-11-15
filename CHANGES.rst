@@ -1,3 +1,12 @@
+v5.0.2
+======
+
+* #102: Inflect withdraws from `Jazzband <https://jazzband.co>`_
+  in order to continue to participate in sustained maintenance
+  and enterprise support through `Tidelift <https://tidelift.com>`_.
+  The project continues to honor the guidelines and principles
+  behind Jazzband and welcomes contributors openly.
+
 v5.0.1
 ======
 

@@ -6,8 +6,8 @@
 
 .. _PyPI link: https://pypi.org/project/inflect
 
-.. image:: https://github.com/jazzband/inflect/workflows/Automated%20Tests/badge.svg
-   :target: https://github.com/jazzband/inflect/actions?query=workflow%3A%22Automated+Tests%22
+.. image:: https://github.com/jaraco/inflect/workflows/Automated%20Tests/badge.svg
+   :target: https://github.com/jaraco/inflect/actions?query=workflow%3A%22Automated+Tests%22
    :alt: Automated Tests
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
@@ -17,8 +17,8 @@
 .. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
 ..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://coveralls.io/repos/github/jazzband/inflect/badge.svg?branch=master
-    :target: https://coveralls.io/github/jazzband/inflect?branch=master
+.. image:: https://coveralls.io/repos/github/jaraco/inflect/badge.svg?branch=master
+    :target: https://coveralls.io/github/jaraco/inflect?branch=master
 
 .. image:: https://tidelift.com/badges/package/pypi/inflect
    :target: https://tidelift.com/subscription/pkg/pypi-inflect?utm_source=pypi-inflect&utm_medium=readme
