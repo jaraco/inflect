@@ -54,9 +54,9 @@ from typing import Dict, Union
 
 
 try:
-    import importlib.metadata as importlib_metadata  # type: ignore
+    from importlib import metadata  # type: ignore
 except ImportError:
-    import importlib_metadata  # type: ignore
+    import importlib_metadata as metadata  # type: ignore
 
 
 class UnknownClassicalModeError(Exception):
@@ -88,7 +88,7 @@ class BadGenderError(Exception):
 
 
 try:
-    __version__ = importlib_metadata.version("inflect")
+    __version__ = metadata.version("inflect")  # type: ignore
 except Exception:
     __version__ = "unknown"
 
