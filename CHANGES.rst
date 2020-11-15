@@ -1,3 +1,8 @@
+v4.1.1
+======
+
+* Refreshed package metadata.
+
 v4.1.0
 ======
 
@@ -6,7 +11,7 @@ v4.1.0
 v4.0.0
 ======
 
-Require Python 3.6 or later.
+* Require Python 3.6 or later.
 
 v3.0.2
 ======
