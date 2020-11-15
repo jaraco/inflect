@@ -532,6 +532,15 @@ case-insensitive (that is, ``plural("time","Times")`` returns false. To obtain
 both number and case insensitivity, use the ``lower()`` method on both strings
 (that is, ``plural("time".lower(), "Times".lower())`` returns true).
 
+Related Functionality
+=====================
+
+Shout out to these libraries that provide related functionality:
+
+* `WordSet <https://jaracotext.readthedocs.io/en/latest/#jaraco.text.WordSet>`_
+  parses identifiers like variable names into sets of words suitable for re-assembling
+  in another form.
+
 
 For Enterprise
 ==============
