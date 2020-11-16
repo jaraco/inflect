@@ -981,6 +981,10 @@ pl_sb_uninflected_caps = [
 
 
 pl_sb_uninflected_endings = [
+    # UNCOUNTABLE NOUNS
+    "butter",
+    "cash",
+    "information",
     # SOME FISH AND HERD ANIMALS
     "fish",
     "deer",
