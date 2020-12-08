@@ -985,6 +985,7 @@ pl_sb_uninflected_endings = [
     "butter",
     "cash",
     "information",
+    "lore",
     # SOME FISH AND HERD ANIMALS
     "fish",
     "deer",
