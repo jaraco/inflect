@@ -2116,10 +2116,6 @@ class engine:
         elif isinstance(obj, ast.NameConstant):
             return obj.value
 
-        # For python versions below 3.4
-        elif isinstance(obj, ast.Name) and (obj.id in ["True", "False", "None"]):
-            return string_to_constant[obj.id]
-
         # Probably passed a variable name.
         # Or passed a single word without wrapping it in quotes as an argument
         # ex: p.inflect("I plural(see)") instead of p.inflect("I plural('see')")
