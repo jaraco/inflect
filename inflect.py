@@ -213,16 +213,14 @@ pl_sb_irregular_caps = {
 pl_sb_irregular_compound = {"prima donna": "prima donnas|prime donne"}
 
 si_sb_irregular = {v: k for (k, v) in pl_sb_irregular.items()}
-keys = list(si_sb_irregular.keys())
-for k in keys:
+for k in list(si_sb_irregular):
     if "|" in k:
         k1, k2 = k.split("|")
         si_sb_irregular[k1] = si_sb_irregular[k2] = si_sb_irregular[k]
         del si_sb_irregular[k]
 si_sb_irregular_caps = {v: k for (k, v) in pl_sb_irregular_caps.items()}
 si_sb_irregular_compound = {v: k for (k, v) in pl_sb_irregular_compound.items()}
-keys = list(si_sb_irregular_compound.keys())
-for k in keys:
+for k in list(si_sb_irregular_compound):
     if "|" in k:
         k1, k2 = k.split("|")
         si_sb_irregular_compound[k1] = si_sb_irregular_compound[
@@ -1441,7 +1439,7 @@ plverb_special_s = enclose(
     "|".join(
         [pl_sb_singular_s]
         + pl_sb_uninflected_s
-        + list(pl_sb_irregular_s.keys())
+        + list(pl_sb_irregular_s)
         + ["(.*[csx])is", "(.*)ceps", "[A-Z].*s"]
     )
 )
@@ -1452,7 +1450,10 @@ _pl_sb_postfix_adj_defn = {
     "force": ["pound"],
 }
 
-pl_sb_postfix_adj: Dict[str, str] = {}
+pl_sb_postfix_adj: Dict[str, str] = {
+    key: enclose(enclose("|".join(val)) + f"(?=(?:-|\\s+){key})")
+    for key, val in _pl_sb_postfix_adj_defn.items()
+}
 
 pl_sb_postfix_adj_stems = f"({'|'.join(pl_sb_postfix_adj.values())})(.*)"
 
@@ -1596,8 +1597,8 @@ pl_pron_acc = {
     "themself": "themselves",
 }
 
-pl_pron_acc_keys = enclose("|".join(list(pl_pron_acc.keys())))
-pl_pron_acc_keys_bysize = bysize(list(pl_pron_acc.keys()))
+pl_pron_acc_keys = enclose("|".join(pl_pron_acc))
+pl_pron_acc_keys_bysize = bysize(pl_pron_acc)
 
 si_pron["acc"] = {v: k for (k, v) in pl_pron_acc.items()}
 
@@ -1640,8 +1641,8 @@ for thecase, plur, gend, sing in (
         si_pron[thecase][plur][gend] = sing  # type: ignore
 
 
-si_pron_acc_keys = enclose("|".join(list(si_pron["acc"].keys())))
-si_pron_acc_keys_bysize = bysize(list(si_pron["acc"].keys()))
+si_pron_acc_keys = enclose("|".join(si_pron["acc"]))
+si_pron_acc_keys_bysize = bysize(si_pron["acc"])
 
 
 def get_si_pron(thecase, word, gender):
@@ -1728,7 +1729,7 @@ plverb_ambiguous_pres = {
     "views": "view",
 }
 
-plverb_ambiguous_pres_keys = enclose("|".join(list(plverb_ambiguous_pres.keys())))
+plverb_ambiguous_pres_keys = enclose("|".join(plverb_ambiguous_pres))
 
 
 plverb_irregular_non_pres = (
@@ -1766,7 +1767,7 @@ pl_count_one = ("1", "a", "an", "one", "each", "every", "this", "that")
 
 pl_adj_special = {"a": "some", "an": "some", "this": "these", "that": "those"}
 
-pl_adj_special_keys = enclose("|".join(list(pl_adj_special.keys())))
+pl_adj_special_keys = enclose("|".join(pl_adj_special))
 
 pl_adj_poss = {
     "my": "our",
@@ -1777,7 +1778,7 @@ pl_adj_poss = {
     "their": "their",
 }
 
-pl_adj_poss_keys = enclose("|".join(list(pl_adj_poss.keys())))
+pl_adj_poss_keys = enclose("|".join(pl_adj_poss))
 
 
 # 2. INDEFINITE ARTICLES
@@ -1840,7 +1841,7 @@ ordinal = dict(
     twelve="twelfth",
 )
 
-ordinal_suff = "|".join(list(ordinal.keys()))
+ordinal_suff = "|".join(ordinal)
 
 
 # NUMBERS
@@ -1892,8 +1893,8 @@ def_classical = dict(
     all=False, zero=False, herd=False, names=True, persons=False, ancient=False
 )
 
-all_classical = {k: True for k in list(def_classical.keys())}
-no_classical = {k: False for k in list(def_classical.keys())}
+all_classical = {k: True for k in def_classical}
+no_classical = {k: False for k in def_classical}
 
 
 # Maps strings to built-in constant types
@@ -2046,7 +2047,6 @@ class engine:
         exception: UnknownClasicalModeError
 
         """
-        classical_mode = list(def_classical.keys())
         if not kwargs:
             self.classical_dict = all_classical.copy()
             return
@@ -2056,8 +2056,8 @@ class engine:
             else:
                 self.classical_dict = no_classical.copy()
 
-        for k, v in list(kwargs.items()):
-            if k in classical_mode:
+        for k, v in kwargs.items():
+            if k in def_classical:
                 self.classical_dict[k] = v
             else:
                 raise UnknownClassicalModeError
@@ -2438,7 +2438,7 @@ class engine:
             (".{2,}[yia]n", "xes", "ges"),
         )
 
-        words = list(map(Words, (word1, word2)))
+        words = map(Words, (word1, word2))
         pair = "|".join(word.last for word in words)
 
         return (
@@ -2593,15 +2593,15 @@ class engine:
 
         # HANDLE ISOLATED IRREGULAR PLURALS
 
-        if word.last in list(pl_sb_irregular_caps.keys()):
+        if word.last in pl_sb_irregular_caps:
             llen = len(word.last)
             return f"{word[:-llen]}{pl_sb_irregular_caps[word.last]}"
 
-        if word.last.lower() in list(pl_sb_irregular.keys()):
+        if word.last.lower() in pl_sb_irregular:
             llen = len(word.last.lower())
             return f"{word[:-llen]}{pl_sb_irregular[word.last.lower()]}"
 
-        if (" ".join(word.split[-2:])).lower() in list(pl_sb_irregular_compound.keys()):
+        if (" ".join(word.split[-2:])).lower() in pl_sb_irregular_compound:
             llen = len(
                 " ".join(word.split[-2:])
             )  # TODO: what if 2 spaces between these words?
@@ -2795,10 +2795,8 @@ class engine:
         except IndexError:
             return False  # word is ''
 
-        if word.first in list(plverb_irregular_pres.keys()):
-            return "{}{}".format(
-                plverb_irregular_pres[word.first], word[len(word.first) :]
-            )
+        if word.first in plverb_irregular_pres:
+            return f"{plverb_irregular_pres[word.first]}{word[len(word.first) :]}"
 
         # HANDLE IRREGULAR FUTURE, PRETERITE AND PERFECT TENSES
 
@@ -2807,11 +2805,10 @@ class engine:
 
         # HANDLE PRESENT NEGATIONS (SIMPLE AND COMPOUND)
 
-        if word.first.endswith("n't") and word.first[:-3] in list(
-            plverb_irregular_pres.keys()
-        ):
-            return "{}n't{}".format(
-                plverb_irregular_pres[word.first[:-3]], word[len(word.first) :]
+        if word.first.endswith("n't") and word.first[:-3] in plverb_irregular_pres:
+            return (
+                f"{plverb_irregular_pres[word.first[:-3]]}n't"
+                f"{word[len(word.first) :]}"
             )
 
         if word.first.endswith("n't"):
@@ -3029,15 +3026,15 @@ class engine:
 
         # HANDLE ISOLATED IRREGULAR PLURALS
 
-        if word.last in list(si_sb_irregular_caps.keys()):
+        if word.last in si_sb_irregular_caps:
             llen = len(word.last)
             return "{}{}".format(word[:-llen], si_sb_irregular_caps[word.last])
 
-        if word.last.lower() in list(si_sb_irregular.keys()):
+        if word.last.lower() in si_sb_irregular:
             llen = len(word.last.lower())
             return "{}{}".format(word[:-llen], si_sb_irregular[word.last.lower()])
 
-        if (" ".join(word.split[-2:])).lower() in list(si_sb_irregular_compound.keys()):
+        if (" ".join(word.split[-2:])).lower() in si_sb_irregular_compound:
             llen = len(
                 " ".join(word.split[-2:])
             )  # TODO: what if 2 spaces between these words?
