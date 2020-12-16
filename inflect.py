@@ -1919,6 +1919,7 @@ class engine:
         self.si_sb_user_defined = []
         self.A_a_user_defined = []
         self.thegender = "neuter"
+        self._number_args = None
 
     deprecated_methods = dict(
         pl="plural",
@@ -2121,7 +2122,9 @@ class engine:
         # ex: p.inflect("I plural(see)") instead of p.inflect("I plural('see')")
         raise NameError(f"name '{obj.id}' is not defined")
 
-    def _string_to_substitute(self, mo: Match, methods_dict: Dict[str, Callable]) -> str:
+    def _string_to_substitute(
+        self, mo: Match, methods_dict: Dict[str, Callable]
+    ) -> str:
         """
         Return the string to be substituted for the match.
         """
@@ -3506,7 +3509,7 @@ class engine:
 
     def hundfn(self, hundreds: int, tens: int, units: int, mindex: int) -> str:
         if hundreds:
-            andword = f" {self.number_args['andword']} " if tens or units else ""
+            andword = f" {self._number_args['andword']} " if tens or units else ""
             # use unit not unitfn as simpler
             return (
                 f"{unit[hundreds]} hundred{andword}"
@@ -3519,18 +3522,18 @@ class engine:
     def group1sub(self, mo: Match) -> str:
         units = int(mo.group(1))
         if units == 1:
-            return f" {self.number_args['one']}, "
+            return f" {self._number_args['one']}, "
         elif units:
             return f"{unit[units]}, "
         else:
-            return f" {self.number_args['zero']}, "
+            return f" {self._number_args['zero']}, "
 
     def group1bsub(self, mo: Match) -> str:
         units = int(mo.group(1))
         if units:
             return f"{unit[units]}, "
         else:
-            return f" {self.number_args['zero']}, "
+            return f" {self._number_args['zero']}, "
 
     def group2sub(self, mo: Match) -> str:
         tens = int(mo.group(1))
@@ -3538,25 +3541,25 @@ class engine:
         if tens:
             return f"{self.tenfn(tens, units)}, "
         if units:
-            return f" {self.number_args['zero']} {unit[units]}, "
-        return f" {self.number_args['zero']} {self.number_args['zero']}, "
+            return f" {self._number_args['zero']} {unit[units]}, "
+        return f" {self._number_args['zero']} {self._number_args['zero']}, "
 
     def group3sub(self, mo: Match) -> str:
         hundreds = int(mo.group(1))
         tens = int(mo.group(2))
         units = int(mo.group(3))
         if hundreds == 1:
-            hunword = f" {self.number_args['one']}"
+            hunword = f" {self._number_args['one']}"
         elif hundreds:
             hunword = str(unit[hundreds])
         else:
-            hunword = f" {self.number_args['zero']}"
+            hunword = f" {self._number_args['zero']}"
         if tens:
             tenword = self.tenfn(tens, units)
         elif units:
-            tenword = f" {self.number_args['zero']} {unit[units]}"
+            tenword = f" {self._number_args['zero']} {unit[units]}"
         else:
-            tenword = f" {self.number_args['zero']} {self.number_args['zero']}"
+            tenword = f" {self._number_args['zero']} {self._number_args['zero']}"
         return f"{hunword} {tenword}, "
 
     def hundsub(self, mo: Match) -> str:
@@ -3586,9 +3589,9 @@ class engine:
             num = re.sub(r"(\d)(\d)", self.group2sub, num, 1)
             num = re.sub(r"(\d)", self.group1sub, num, 1)
         elif int(num) == 0:
-            num = self.number_args["zero"]
+            num = self._number_args["zero"]
         elif int(num) == 1:
-            num = self.number_args["one"]
+            num = self._number_args["one"]
         else:
             num = num.lstrip().lstrip("0")
             self.mill_count = 0
@@ -3627,7 +3630,7 @@ class engine:
 
         parameters not remembered from last call. Departure from Perl version.
         """
-        self.number_args = dict(andword=andword, zero=zero, one=one)
+        self._number_args = {"andword": andword, "zero": zero, "one": one}
         num = str(num)
 
         # Handle "stylistic" conversions (up to a given threshold)...
