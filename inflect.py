@@ -1451,18 +1451,17 @@ plverb_special_s = enclose(
     )
 )
 
-_pl_sb_postfix_adj_defn = {
-    "general": [r"(?!major|lieutenant|brigadier|adjutant|.*star)\S+"],
-    "martial": ["court"],
-    "force": ["pound"],
-}
+_pl_sb_postfix_adj_defn = (
+    ("general", enclose(r"(?!major|lieutenant|brigadier|adjutant|.*star)\S+")),
+    ("martial", enclose("court")),
+    ("force", enclose("pound")),
+)
 
-pl_sb_postfix_adj: Dict[str, str] = {
-    key: enclose(enclose("|".join(val)) + f"(?=(?:-|\\s+){key})")
-    for key, val in _pl_sb_postfix_adj_defn.items()
-}
+pl_sb_postfix_adj: Iterable[str] = (
+    enclose(val + f"(?=(?:-|\\s+){key})") for key, val in _pl_sb_postfix_adj_defn
+)
 
-pl_sb_postfix_adj_stems = f"({'|'.join(pl_sb_postfix_adj.values())})(.*)"
+pl_sb_postfix_adj_stems = f"({'|'.join(pl_sb_postfix_adj)})(.*)"
 
 
 # PLURAL WORDS ENDING IS es GO TO SINGULAR is
@@ -1583,8 +1582,9 @@ pl_pron_nom = {
     "theirs": "theirs",
 }
 
-si_pron: Dict[str, Dict[str, Union[str, Dict[str, str]]]] = {}
-si_pron["nom"] = {v: k for (k, v) in pl_pron_nom.items()}
+si_pron: Dict[str, Dict[str, Union[str, Dict[str, str]]]] = {
+    "nom": {v: k for (k, v) in pl_pron_nom.items()}
+}
 si_pron["nom"]["we"] = "I"
 
 
