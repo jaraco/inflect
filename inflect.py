@@ -2567,7 +2567,7 @@ class engine:
         # there is no more than one word following)
         # degree Celsius => degrees Celsius but degree
         # fahrenheit hour => degree fahrenheit hours
-        if len(split) >= 2 and split[-2] in ["degree"]:
+        if len(split) >= 2 and split[-2] == "degree":
             return " ".join([self._plnoun(first)] + split[1:])
 
         lowered_split = lowered.split("-")
