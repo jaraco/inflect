@@ -3601,27 +3601,6 @@ class engine:
             num = re.sub(r"(\d)(?=\D*\Z)", self.unitsub, num, 1)
         return num
 
-    def blankfn(self, mo):
-        """do a global blank replace
-        TODO: surely this can be done with an option to re.sub
-              rather than this fn
-        """
-        return ""
-
-    def commafn(self, mo):
-        """do a global ',' replace
-        TODO: surely this can be done with an option to re.sub
-              rather than this fn
-        """
-        return ","
-
-    def spacefn(self, mo):
-        """do a global ' ' replace
-        TODO: surely this can be done with an option to re.sub
-              rather than this fn
-        """
-        return " "
-
     def number_to_words(
         self,
         num: Union[int, str],
@@ -3699,7 +3678,7 @@ class engine:
         for i in range(loopstart, len(chunks)):
             chunk = chunks[i]
             # remove all non numeric \D
-            chunk = re.sub(r"\D", self.blankfn, chunk)
+            chunk = re.sub(r"\D", "", chunk)
             if chunk == "":
                 chunk = "0"
 
@@ -3710,11 +3689,11 @@ class engine:
 
             if chunk[-2:] == ", ":
                 chunk = chunk[:-2]
-            chunk = re.sub(r"\s+,", self.commafn, chunk)
+            chunk = re.sub(r"\s+,", ",", chunk)
 
             if group == 0 and first:
                 chunk = re.sub(r", (\S+)\s+\Z", f" {andword} \\1", chunk)
-            chunk = re.sub(r"\s+", self.spacefn, chunk)
+            chunk = re.sub(r"\s+", " ", chunk)
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
