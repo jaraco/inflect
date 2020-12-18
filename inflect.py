@@ -1735,7 +1735,9 @@ plverb_ambiguous_pres = {
     "views": "view",
 }
 
-plverb_ambiguous_pres_keys = enclose("|".join(plverb_ambiguous_pres))
+plverb_ambiguous_pres_keys = re.compile(
+    fr"^({enclose('|'.join(plverb_ambiguous_pres))})((\s.*)?)$", re.IGNORECASE
+)
 
 
 plverb_irregular_non_pres = (
@@ -1755,8 +1757,8 @@ plverb_irregular_non_pres = (
     "should",
 )
 
-plverb_ambiguous_non_pres = enclose(
-    "|".join(("thought", "saw", "bent", "will", "might", "cut"))
+plverb_ambiguous_non_pres = re.compile(
+    r"^((?:thought|saw|bent|will|might|cut))((\s.*)?)$", re.IGNORECASE
 )
 
 # "..oes" -> "..oe" (the rest are "..oes" -> "o")
@@ -1773,7 +1775,9 @@ pl_count_one = ("1", "a", "an", "one", "each", "every", "this", "that")
 
 pl_adj_special = {"a": "some", "an": "some", "this": "these", "that": "those"}
 
-pl_adj_special_keys = enclose("|".join(pl_adj_special))
+pl_adj_special_keys = re.compile(
+    fr"^({enclose('|'.join(pl_adj_special))})$", re.IGNORECASE
+)
 
 pl_adj_poss = {
     "my": "our",
@@ -1784,7 +1788,7 @@ pl_adj_poss = {
     "their": "their",
 }
 
-pl_adj_poss_keys = enclose("|".join(pl_adj_poss))
+pl_adj_poss_keys = re.compile(fr"^({enclose('|'.join(pl_adj_poss))})$", re.IGNORECASE)
 
 
 # 2. INDEFINITE ARTICLES
@@ -1793,29 +1797,32 @@ pl_adj_poss_keys = enclose("|".join(pl_adj_poss))
 # CONSONANT FOLLOWED BY ANOTHER CONSONANT, AND WHICH ARE NOT LIKELY
 # TO BE REAL WORDS (OH, ALL RIGHT THEN, IT'S JUST MAGIC!)
 
-A_abbrev = r"""
+A_abbrev = re.compile(
+    r"""
 (?! FJO | [HLMNS]Y.  | RY[EO] | SQU
   | ( F[LR]? | [HL] | MN? | N | RH? | S[CHKLMNPTVW]? | X(YL)?) [AEIOU])
 [FHLMNRSX][A-Z]
-"""
+""",
+    re.VERBOSE,
+)
 
 # THIS PATTERN CODES THE BEGINNINGS OF ALL ENGLISH WORDS BEGINING WITH A
 # 'y' FOLLOWED BY A CONSONANT. ANY OTHER Y-CONSONANT PREFIX THEREFORE
 # IMPLIES AN ABBREVIATION.
 
-A_y_cons = "y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)"
+A_y_cons = re.compile(r"^(y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt))", re.IGNORECASE)
 
 # EXCEPTIONS TO EXCEPTIONS
 
-A_explicit_a = enclose("|".join(("unabomber", "unanimous", "US")))
+A_explicit_a = re.compile(r"^((?:unabomber|unanimous|US))", re.IGNORECASE)
 
-A_explicit_an = enclose(
-    "|".join(("euler", "hour(?!i)", "heir", "honest", "hono[ur]", "mpeg"))
+A_explicit_an = re.compile(
+    r"^((?:euler|hour(?!i)|heir|honest|hono[ur]|mpeg))", re.IGNORECASE
 )
 
-A_ordinal_an = enclose("|".join(("[aefhilmnorsx]-?th",)))
+A_ordinal_an = re.compile(r"^([aefhilmnorsx]-?th)", re.IGNORECASE)
 
-A_ordinal_a = enclose("|".join(("[bcdgjkpqtuvwyz]-?th",)))
+A_ordinal_a = re.compile(r"^([bcdgjkpqtuvwyz]-?th)", re.IGNORECASE)
 
 
 # NUMERICAL INFLECTIONS
@@ -1847,7 +1854,7 @@ ordinal = dict(
     twelve="twelfth",
 )
 
-ordinal_suff = "|".join(ordinal)
+ordinal_suff = re.compile(fr"({'|'.join(ordinal)})\Z")
 
 
 # NUMBERS
@@ -1905,6 +1912,70 @@ no_classical = {k: False for k in def_classical}
 
 # Maps strings to built-in constant types
 string_to_constant = {"True": True, "False": False, "None": None}
+
+
+# Pre-compiled regular expression objects
+DOLLAR_DIGITS = re.compile(r"\$(\d+)")
+FUNCTION_CALL = re.compile(r"((\w+)\([^)]*\)*)", re.IGNORECASE)
+PARTITION_WORD = re.compile(r"\A(\s*)(.+?)(\s*)\Z")
+PL_SB_POSTFIX_ADJ_STEMS_RE = re.compile(
+    fr"^(?:{pl_sb_postfix_adj_stems})$", re.IGNORECASE
+)
+PL_SB_PREP_DUAL_COMPOUND_RE = re.compile(
+    fr"^(?:{pl_sb_prep_dual_compound})$", re.IGNORECASE
+)
+DENOMINATOR = re.compile(r"(?P<denominator>.+)( (per|a) .+)")
+PLVERB_SPECIAL_S_RE = re.compile(fr"^({plverb_special_s})$")
+WHITESPACE = re.compile(r"\s")
+ENDS_WITH_S = re.compile(r"^(.*[^s])s$", re.IGNORECASE)
+ENDS_WITH_APOSTROPHE_S = re.compile(r"^(.*)'s?$")
+INDEFINITE_ARTICLE_TEST = re.compile(r"\A(\s*)(?:an?\s+)?(.+?)(\s*)\Z", re.IGNORECASE)
+SPECIAL_AN = re.compile(r"^[aefhilmnorsx]$", re.IGNORECASE)
+SPECIAL_A = re.compile(r"^[bcdgjkpqtuvwyz]$", re.IGNORECASE)
+SPECIAL_ABBREV_AN = re.compile(r"^[aefhilmnorsx][.-]", re.IGNORECASE)
+SPECIAL_ABBREV_A = re.compile(r"^[a-z][.-]", re.IGNORECASE)
+CONSONANTS = re.compile(r"^[^aeiouy]", re.IGNORECASE)
+ARTICLE_SPECIAL_EU = re.compile(r"^e[uw]", re.IGNORECASE)
+ARTICLE_SPECIAL_ONCE = re.compile(r"^onc?e\b", re.IGNORECASE)
+ARTICLE_SPECIAL_ONETIME = re.compile(r"^onetime\b", re.IGNORECASE)
+ARTICLE_SPECIAL_UNIT = re.compile(r"^uni([^nmd]|mo)", re.IGNORECASE)
+ARTICLE_SPECIAL_UBA = re.compile(r"^u[bcfghjkqrst][aeiou]", re.IGNORECASE)
+ARTICLE_SPECIAL_UKR = re.compile(r"^ukr", re.IGNORECASE)
+SPECIAL_CAPITALS = re.compile(r"^U[NK][AIEO]?")
+VOWELS = re.compile(r"^[aeiou]", re.IGNORECASE)
+
+DIGIT_GROUP = re.compile(r"(\d)")
+TWO_DIGITS = re.compile(r"(\d)(\d)")
+THREE_DIGITS = re.compile(r"(\d)(\d)(\d)")
+THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
+TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
+ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
+
+FOUR_DIGIT_COMMA = re.compile(r"(\d)(\d{3}(?:,|\Z))")
+NON_DIGIT = re.compile(r"\D")
+WHITESPACES_COMMA = re.compile(r"\s+,")
+COMMA_WORD = re.compile(r", (\S+)\s+\Z")
+WHITESPACES = re.compile(r"\s+")
+
+
+PRESENT_PARTICIPLE_REPLACEMENTS = (
+    (re.compile(r"ie$"), r"y"),
+    (
+        re.compile(r"ue$"),
+        r"u",
+    ),  # TODO: isn't ue$ -> u encompassed in the following rule?
+    (re.compile(r"([auy])e$"), r"\g<1>"),
+    (re.compile(r"ski$"), r"ski"),
+    (re.compile(r"[^b]i$"), r""),
+    (re.compile(r"^(are|were)$"), r"be"),
+    (re.compile(r"^(had)$"), r"hav"),
+    (re.compile(r"^(hoe)$"), r"\g<1>"),
+    (re.compile(r"([^e])e$"), r"\g<1>"),
+    (re.compile(r"er$"), r"er"),
+    (re.compile(r"([^aeiou][aeiouy]([bdgmnprst]))$"), r"\g<1>\g<2>"),
+)
+
+DIGIT = re.compile(r"\d")
 
 
 class engine:
@@ -2021,8 +2092,8 @@ class engine:
             if mo:
                 if wordlist[i + 1] is None:
                     return None
-                pl = re.sub(
-                    r"\$(\d+)", r"\\1", wordlist[i + 1]
+                pl = DOLLAR_DIGITS.sub(
+                    r"\\1", wordlist[i + 1]
                 )  # change $n to \n for expand
                 return mo.expand(pl)
         return None
@@ -2185,8 +2256,7 @@ class engine:
         }
 
         # Regular expression to find Python's function call syntax
-        functions_re = re.compile(r"((\w+)\([^)]*\)*)", re.IGNORECASE)
-        output = functions_re.sub(
+        output = FUNCTION_CALL.sub(
             lambda mo: self._string_to_substitute(mo, methods_dict), text
         )
         self.persistent_count = save_persistent_count
@@ -2214,7 +2284,7 @@ class engine:
         return " ".join(result)
 
     def partition_word(self, text: str) -> Tuple[str, str, str]:
-        mo = re.search(r"\A(\s*)(.+?)(\s*)\Z", text)
+        mo = PARTITION_WORD.search(text)
         if mo:
             return mo.group(1), mo.group(2), mo.group(3)
         else:
@@ -2535,12 +2605,12 @@ class engine:
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
-        mo = re.search(fr"^(?:{pl_sb_postfix_adj_stems})$", word, re.IGNORECASE)
+        mo = PL_SB_POSTFIX_ADJ_STEMS_RE.search(word)
         if mo and mo.group(2) != "":
             return f"{self._plnoun(mo.group(1), 2)}{mo.group(2)}"
 
         if " a " in lowered or "-a-" in lowered:
-            mo = re.search(fr"^(?:{pl_sb_prep_dual_compound})$", word, re.IGNORECASE)
+            mo = PL_SB_PREP_DUAL_COMPOUND_RE.search(word)
             if mo and mo.group(2) != "" and mo.group(3) != "":
                 return (
                     f"{self._plnoun(mo.group(1), 2)}"
@@ -2558,7 +2628,7 @@ class engine:
                     )
 
         # only pluralize denominators in units
-        mo = re.search(r"(?P<denominator>.+)( (per|a) .+)", lowered)
+        mo = DENOMINATOR.search(lowered)
         if mo:
             index = len(mo.group("denominator"))
             return f"{self._plnoun(word[:index])}{word[index:]}"
@@ -2828,10 +2898,10 @@ class engine:
 
         # HANDLE SPECIAL CASES
 
-        mo = re.search(fr"^({plverb_special_s})$", word)
+        mo = PLVERB_SPECIAL_S_RE.search(word)
         if mo:
             return False
-        if re.search(r"\s", word):
+        if WHITESPACE.search(word):
             return False
         lowered = word.lower()
         if lowered == "quizzes":
@@ -2855,7 +2925,7 @@ class engine:
         if lowered.endswith("oes") and len(word) > 3:
             return lowered[:-2]
 
-        mo = re.search(r"^(.*[^s])s$", word, re.IGNORECASE)
+        mo = ENDS_WITH_S.search(word)
         if mo:
             return mo.group(1)
 
@@ -2873,17 +2943,13 @@ class engine:
 
         # HANDLE AMBIGUOUS PRESENT TENSES  (SIMPLE AND COMPOUND)
 
-        mo = re.search(
-            fr"^({plverb_ambiguous_pres_keys})((\s.*)?)$", word, re.IGNORECASE
-        )
+        mo = plverb_ambiguous_pres_keys.search(word)
         if mo:
             return f"{plverb_ambiguous_pres[mo.group(1).lower()]}{mo.group(2)}"
 
         # HANDLE AMBIGUOUS PRETERITE AND PERFECT TENSES
 
-        mo = re.search(
-            fr"^({plverb_ambiguous_non_pres})((\s.*)?)$", word, re.IGNORECASE
-        )
+        mo = plverb_ambiguous_non_pres.search(word)
         if mo:
             return word
 
@@ -2907,17 +2973,17 @@ class engine:
 
         # HANDLE KNOWN CASES
 
-        mo = re.search(fr"^({pl_adj_special_keys})$", word, re.IGNORECASE)
+        mo = pl_adj_special_keys.search(word)
         if mo:
             return pl_adj_special[mo.group(1).lower()]
 
         # HANDLE POSSESSIVES
 
-        mo = re.search(fr"^({pl_adj_poss_keys})$", word, re.IGNORECASE)
+        mo = pl_adj_poss_keys.search(word)
         if mo:
             return pl_adj_poss[mo.group(1).lower()]
 
-        mo = re.search(r"^(.*)'s?$", word)
+        mo = ENDS_WITH_APOSTROPHE_S.search(word)
         if mo:
             pl = self.plural_noun(mo.group(1))
             trailing_s = "" if pl[-1] == "s" else "s"
@@ -2986,7 +3052,7 @@ class engine:
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
-        mo = re.search(fr"^(?:{pl_sb_postfix_adj_stems})$", word, re.IGNORECASE)
+        mo = PL_SB_POSTFIX_ADJ_STEMS_RE.search(word)
         if mo and mo.group(2) != "":
             return f"{self._sinoun(mo.group(1), 1, gender=gender)}{mo.group(2)}"
 
@@ -3281,7 +3347,7 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
-        mo = re.search(r"\A(\s*)(?:an?\s+)?(.+?)(\s*)\Z", text, re.IGNORECASE)
+        mo = INDEFINITE_ARTICLE_TEST.search(text)
         if mo:
             word = mo.group(2)
             if not word:
@@ -3306,73 +3372,39 @@ class engine:
         if value is not None:
             return f"{value} {word}"
 
-        # HANDLE ORDINAL FORMS
-
-        for a in ((fr"^({A_ordinal_a})", "a"), (fr"^({A_ordinal_an})", "an")):
-            mo = re.search(a[0], word, re.IGNORECASE)
-            if mo:
-                return f"{a[1]} {word}"
-
-        # HANDLE SPECIAL CASES
-
-        for a in (
-            (fr"^({A_explicit_an})", "an"),
-            (r"^[aefhilmnorsx]$", "an"),
-            (r"^[bcdgjkpqtuvwyz]$", "a"),
+        for regexen, article in (
+            # HANDLE ORDINAL FORMS
+            (A_ordinal_a, "a"),
+            (A_ordinal_an, "an"),
+            # HANDLE SPECIAL CASES
+            (A_explicit_an, "an"),
+            (SPECIAL_AN, "an"),
+            (SPECIAL_A, "a"),
+            # HANDLE ABBREVIATIONS
+            (A_abbrev, "an"),
+            (SPECIAL_ABBREV_AN, "an"),
+            (SPECIAL_ABBREV_A, "a"),
+            # HANDLE CONSONANTS
+            (CONSONANTS, "a"),
+            # HANDLE SPECIAL VOWEL-FORMS
+            (ARTICLE_SPECIAL_EU, "a"),
+            (ARTICLE_SPECIAL_ONCE, "a"),
+            (ARTICLE_SPECIAL_ONETIME, "a"),
+            (ARTICLE_SPECIAL_UNIT, "a"),
+            (ARTICLE_SPECIAL_UBA, "a"),
+            (ARTICLE_SPECIAL_UKR, "a"),
+            (A_explicit_a, "a"),
+            # HANDLE SPECIAL CAPITALS
+            (SPECIAL_CAPITALS, "a"),
+            # HANDLE VOWELS
+            (VOWELS, "an"),
+            # HANDLE y...
+            # (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
+            (A_y_cons, "an"),
         ):
-            mo = re.search(a[0], word, re.IGNORECASE)
-            if mo:
-                return f"{a[1]} {word}"
-
-        # HANDLE ABBREVIATIONS
-
-        for regexen, article, re_flag in (
-            (fr"({A_abbrev})", "an", re.VERBOSE),
-            (r"^[aefhilmnorsx][.-]", "an", re.IGNORECASE),
-            (r"^[a-z][.-]", "a", re.IGNORECASE),
-        ):
-            mo = re.search(regexen, word, re_flag)
+            mo = regexen.search(word)
             if mo:
                 return f"{article} {word}"
-
-        # HANDLE CONSONANTS
-
-        mo = re.search(r"^[^aeiouy]", word, re.IGNORECASE)
-        if mo:
-            return f"a {word}"
-
-        # HANDLE SPECIAL VOWEL-FORMS
-
-        for a in (
-            (r"^e[uw]", "a"),
-            (r"^onc?e\b", "a"),
-            (r"^onetime\b", "a"),
-            (r"^uni([^nmd]|mo)", "a"),
-            (r"^u[bcfghjkqrst][aeiou]", "a"),
-            (r"^ukr", "a"),
-            (fr"^({A_explicit_a})", "a"),
-        ):
-            mo = re.search(a[0], word, re.IGNORECASE)
-            if mo:
-                return f"{a[1]} {word}"
-
-        # HANDLE SPECIAL CAPITALS
-
-        mo = re.search(r"^U[NK][AIEO]?", word)
-        if mo:
-            return f"a {word}"
-
-        # HANDLE VOWELS
-
-        mo = re.search(r"^[aeiou]", word, re.IGNORECASE)
-        if mo:
-            return f"an {word}"
-
-        # HANDLE y... (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
-
-        mo = re.search(fr"^({A_y_cons})", word, re.IGNORECASE)
-        if mo:
-            return f"an {word}"
 
         # OTHERWISE, GUESS "a"
         return f"a {word}"
@@ -3400,7 +3432,7 @@ class engine:
 
         if count is None:
             count = 0
-        mo = re.search(r"\A(\s*)(.+?)(\s*)\Z", text)
+        mo = PARTITION_WORD.search(text)
         if mo:
             pre = mo.group(1)
             word = mo.group(2)
@@ -3424,21 +3456,10 @@ class engine:
 
         """
         plv = self.plural_verb(word, 2)
+        ans = plv
 
-        for pat, repl in (
-            (r"ie$", r"y"),
-            (r"ue$", r"u"),  # TODO: isn't ue$ -> u encompassed in the following rule?
-            (r"([auy])e$", r"\g<1>"),
-            (r"ski$", r"ski"),
-            (r"[^b]i$", r""),
-            (r"^(are|were)$", r"be"),
-            (r"^(had)$", r"hav"),
-            (r"^(hoe)$", r"\g<1>"),
-            (r"([^e])e$", r"\g<1>"),
-            (r"er$", r"er"),
-            (r"([^aeiou][aeiouy]([bdgmnprst]))$", r"\g<1>\g<2>"),
-        ):
-            (ans, num) = re.subn(pat, repl, plv)
+        for regexen, repl in PRESENT_PARTICIPLE_REPLACEMENTS:
+            ans, num = regexen.subn(repl, plv)
             if num:
                 return f"{ans}ing"
         return f"{ans}ing"
@@ -3455,7 +3476,7 @@ class engine:
         ordinal('one') returns 'first'
 
         """
-        if re.match(r"\d", str(num)):
+        if DIGIT.match(str(num)):
             if isinstance(num, (int, float)):
                 n = int(num)
             else:
@@ -3478,10 +3499,10 @@ class engine:
             # Mad props to Damian Conway (?) whose ordinal()
             # algorithm is type-bendy enough to foil MyPy
             str_num: str = num  # type:	ignore[assignment]
-            mo = re.search(fr"({ordinal_suff})\Z", str_num)
+            mo = ordinal_suff.search(str_num)
             if mo:
                 post = ordinal[mo.group(1)]
-                rval = re.sub(fr"({ordinal_suff})\Z", post, str_num)
+                rval = ordinal_suff.sub(post, str_num)
             else:
                 rval = f"{str_num}th"
             return rval
@@ -3580,14 +3601,14 @@ class engine:
         # pdb.set_trace()
 
         if group == 1:
-            num = re.sub(r"(\d)", self.group1sub, num)
+            num = DIGIT_GROUP.sub(self.group1sub, num)
         elif group == 2:
-            num = re.sub(r"(\d)(\d)", self.group2sub, num)
-            num = re.sub(r"(\d)", self.group1bsub, num, 1)
+            num = TWO_DIGITS.sub(self.group2sub, num)
+            num = DIGIT_GROUP.sub(self.group1bsub, num, 1)
         elif group == 3:
-            num = re.sub(r"(\d)(\d)(\d)", self.group3sub, num)
-            num = re.sub(r"(\d)(\d)", self.group2sub, num, 1)
-            num = re.sub(r"(\d)", self.group1sub, num, 1)
+            num = THREE_DIGITS.sub(self.group3sub, num)
+            num = TWO_DIGITS.sub(self.group2sub, num, 1)
+            num = DIGIT_GROUP.sub(self.group1sub, num, 1)
         elif int(num) == 0:
             num = self._number_args["zero"]
         elif int(num) == 1:
@@ -3596,12 +3617,12 @@ class engine:
             num = num.lstrip().lstrip("0")
             self.mill_count = 0
             # surely there's a better way to do the next bit
-            mo = re.search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
+            mo = THREE_DIGITS_WORD.search(num)
             while mo:
-                num = re.sub(r"(\d)(\d)(\d)(?=\D*\Z)", self.hundsub, num, 1)
-                mo = re.search(r"(\d)(\d)(\d)(?=\D*\Z)", num)
-            num = re.sub(r"(\d)(\d)(?=\D*\Z)", self.tensub, num, 1)
-            num = re.sub(r"(\d)(?=\D*\Z)", self.unitsub, num, 1)
+                num = THREE_DIGITS_WORD.sub(self.hundsub, num, 1)
+                mo = THREE_DIGITS_WORD.search(num)
+            num = TWO_DIGITS_WORD.sub(self.tensub, num, 1)
+            num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
     def number_to_words(
@@ -3637,7 +3658,7 @@ class engine:
         if threshold is not None and float(num) > threshold:
             spnum = num.split(".", 1)
             while comma:
-                (spnum[0], n) = re.subn(r"(\d)(\d{3}(?:,|\Z))", r"\1,\2", spnum[0])
+                (spnum[0], n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", spnum[0])
                 if n == 0:
                     break
             try:
@@ -3681,7 +3702,7 @@ class engine:
         for i in range(loopstart, len(chunks)):
             chunk = chunks[i]
             # remove all non numeric \D
-            chunk = re.sub(r"\D", "", chunk)
+            chunk = NON_DIGIT.sub("", chunk)
             if chunk == "":
                 chunk = "0"
 
@@ -3692,11 +3713,11 @@ class engine:
 
             if chunk[-2:] == ", ":
                 chunk = chunk[:-2]
-            chunk = re.sub(r"\s+,", ",", chunk)
+            chunk = WHITESPACES_COMMA.sub(",", chunk)
 
             if group == 0 and first:
-                chunk = re.sub(r", (\S+)\s+\Z", f" {andword} \\1", chunk)
-            chunk = re.sub(r"\s+", " ", chunk)
+                chunk = COMMA_WORD.sub(f" {andword} \\1", chunk)
+            chunk = WHITESPACES.sub(" ", chunk)
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
@@ -3709,11 +3730,9 @@ class engine:
 
         if myord and numchunks:
             # TODO: can this be just one re as it is in perl?
-            mo = re.search(fr"({ordinal_suff})\Z", numchunks[-1])
+            mo = ordinal_suff.search(numchunks[-1])
             if mo:
-                numchunks[-1] = re.sub(
-                    fr"({ordinal_suff})\Z", ordinal[mo.group(1)], numchunks[-1]
-                )
+                numchunks[-1] = ordinal_suff.sub(ordinal[mo.group(1)], numchunks[-1])
             else:
                 numchunks[-1] += "th"
 
