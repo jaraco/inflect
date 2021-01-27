@@ -170,6 +170,7 @@ pl_sb_irregular = {
     "chili": "chilis|chilies",
     "brother": "brothers|brethren",
     "loaf": "loaves",
+    "lore": "lores|lore",
     "hoof": "hoofs|hooves",
     "beef": "beefs|beeves",
     "thief": "thiefs|thieves",
@@ -985,7 +986,6 @@ pl_sb_uninflected_endings = [
     "butter",
     "cash",
     "information",
-    "lore",
     # SOME FISH AND HERD ANIMALS
     "fish",
     "deer",
