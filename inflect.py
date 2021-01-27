@@ -169,6 +169,7 @@ pl_sb_irregular = {
     "child": "children",
     "chili": "chilis|chilies",
     "brother": "brothers|brethren",
+    "infinity": "infinities|infinity",
     "loaf": "loaves",
     "lore": "lores|lore",
     "hoof": "hoofs|hooves",

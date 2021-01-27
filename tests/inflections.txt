@@ -389,6 +389,7 @@
                 index  ->  indexes|indices
           Indochinese  ->  Indochinese
               inferno  ->  infernos
+             infinity  ->  infinities|infinity
           information  ->  information
               innings  ->  innings
    TODO:singular_noun Inspector General  ->  Inspectors General
