@@ -441,6 +441,7 @@
                  loaf  ->  loaves
                 locus  ->  loci
             Londonese  ->  Londonese
+                 lore  ->  lore
            Lorrainese  ->  Lorrainese
              lothario  ->  lotharios
                 louse  ->  lice
