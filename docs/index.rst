@@ -1,5 +1,5 @@
-Welcome to inflect documentation!
-=================================
+Welcome to |project| documentation!
+===================================
 
 .. toctree::
    :maxdepth: 1
