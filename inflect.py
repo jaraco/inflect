@@ -2469,7 +2469,7 @@ class engine:
             return f"{pre}{plural}{post}"
         return False
 
-    def _plequal(self, word1: str, word2: str, pl) -> Union[str, bool]:
+    def _plequal(self, word1: str, word2: str, pl) -> Union[str, bool]:  # noqa: C901
         classval = self.classical_dict.copy()
         self.classical_dict = all_classical.copy()
         if word1 == word2:
@@ -2565,7 +2565,9 @@ class engine:
         return count
 
     # @profile
-    def _plnoun(self, word: str, count: Optional[Union[str, int]] = None) -> str:
+    def _plnoun(  # noqa: C901
+        self, word: str, count: Optional[Union[str, int]] = None
+    ) -> str:
         count = self.get_count(count)
 
         # DEFAULT TO PLURAL
@@ -2858,7 +2860,7 @@ class engine:
 
         return f"{word}s"
 
-    def _pl_special_verb(
+    def _pl_special_verb(  # noqa: C901
         self, word: str, count: Optional[Union[str, int]] = None
     ) -> Union[str, bool]:
         if self.classical_dict["zero"] and str(count).lower() in pl_count_zero:
@@ -2994,7 +2996,7 @@ class engine:
         return False
 
     # @profile
-    def _sinoun(
+    def _sinoun(  # noqa: C901
         self,
         word: str,
         count: Optional[Union[str, int]] = None,
@@ -3360,7 +3362,7 @@ class engine:
 
     an = a
 
-    def _indef_article(self, word: str, count: int) -> str:
+    def _indef_article(self, word: str, count: int) -> str:  # noqa: C901
         mycount = self.get_count(count)
 
         if mycount != 1:
@@ -3466,7 +3468,7 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    def ordinal(self, num: Union[int, str]) -> str:
+    def ordinal(self, num: Union[int, str]) -> str:  # noqa: C901
         """
         Return the ordinal of num.
 
@@ -3625,7 +3627,7 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
-    def number_to_words(
+    def number_to_words(  # noqa: C901
         self,
         num: Union[int, str],
         wantlist: bool = False,
