@@ -1,3 +1,8 @@
+v5.1.0
+======
+
+* #113: Add support for uncountable nouns.
+
 v5.0.3
 ======
 

@@ -122,6 +122,7 @@
               Burmese  ->  Burmese
              bursitis  ->  bursitises|bursitides
                   bus  ->  buses
+               butter  ->  butter
                  buzz  ->  buzzes
                buzzes  ->  buzz                           # VERB FORM
                 by it  ->  by them                        # ACCUSATIVE
@@ -152,6 +153,7 @@
             Carlylese  ->  Carlylese
                carmen  ->  carmina
                  carp  ->  carp
+                 cash  ->  cash
             Cassinese  ->  Cassinese
                   cat  ->  cats
               catfish  ->  catfish
@@ -387,6 +389,8 @@
                 index  ->  indexes|indices
           Indochinese  ->  Indochinese
               inferno  ->  infernos
+             infinity  ->  infinities|infinity
+          information  ->  information
               innings  ->  innings
    TODO:singular_noun Inspector General  ->  Inspectors General
           interregnum  ->  interregnums|interregna
@@ -438,6 +442,7 @@
                  loaf  ->  loaves
                 locus  ->  loci
             Londonese  ->  Londonese
+                 lore  ->  lores|lore
            Lorrainese  ->  Lorrainese
              lothario  ->  lotharios
                 louse  ->  lice
