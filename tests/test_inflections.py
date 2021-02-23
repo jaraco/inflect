@@ -15,7 +15,7 @@ def is_eq(p, a, b):
     )
 
 
-def test_many():
+def test_many():  # noqa: C901
     p = inflect.engine()
 
     data = get_data()

@@ -2405,7 +2405,7 @@ class engine:
             return "{}{}{}".format(pre, plural, post)
         return False
 
-    def _plequal(self, word1, word2, pl):
+    def _plequal(self, word1, word2, pl):  # noqa: C901
         classval = self.classical_dict.copy()
         self.classical_dict = all_classical.copy()
         if word1 == word2:
@@ -2502,7 +2502,7 @@ class engine:
         return count
 
     # @profile
-    def _plnoun(self, word, count=None):
+    def _plnoun(self, word, count=None):  # noqa: C901
         count = self.get_count(count)
 
         # DEFAULT TO PLURAL
@@ -2789,7 +2789,7 @@ class engine:
 
         return "%ss" % word
 
-    def _pl_special_verb(self, word, count=None):
+    def _pl_special_verb(self, word, count=None):  # noqa: C901
         if self.classical_dict["zero"] and str(count).lower() in pl_count_zero:
             return False
         count = self.get_count(count)
@@ -2936,7 +2936,7 @@ class engine:
         return False
 
     # @profile
-    def _sinoun(self, word, count=None, gender=None):
+    def _sinoun(self, word, count=None, gender=None):  # noqa: C901
         count = self.get_count(count)
 
         # DEFAULT TO PLURAL
@@ -3295,7 +3295,7 @@ class engine:
 
     an = a
 
-    def _indef_article(self, word, count):
+    def _indef_article(self, word, count):  # noqa: C901
         mycount = self.get_count(count)
 
         if mycount != 1:
@@ -3441,7 +3441,7 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    def ordinal(self, num):
+    def ordinal(self, num):  # noqa: C901
         """
         Return the ordinal of num.
 
@@ -3619,7 +3619,7 @@ class engine:
         """
         return " "
 
-    def number_to_words(
+    def number_to_words(  # noqa: C901
         self,
         num,
         wantlist=False,
