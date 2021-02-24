@@ -18,3 +18,4 @@ def test_an():
     assert p.an("Unabomber") == "a Unabomber"
     assert p.an("unanimous decision") == "a unanimous decision"
     assert p.an("US farmer") == "a US farmer"
+    assert p.an("wild PIKACHU appeared") == "a wild PIKACHU appeared"

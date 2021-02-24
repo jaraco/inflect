@@ -897,7 +897,7 @@ class test(unittest.TestCase):
     def test_hundfn(self):
         p = inflect.engine()
         hundfn = p.hundfn
-        p.number_args = dict(andword="and")
+        p._number_args = dict(andword="and")
         self.assertEqual(hundfn(4, 3, 1, 2), "four hundred and thirty-one  million, ")
         self.assertEqual(hundfn(4, 0, 0, 2), "four hundred  million, ")
         self.assertEqual(hundfn(4, 0, 5, 2), "four hundred and five  million, ")
@@ -908,7 +908,7 @@ class test(unittest.TestCase):
         p = inflect.engine()
         enword = p.enword
         self.assertEqual(enword("5", 1), "five, ")
-        p.number_args = dict(zero="zero", one="one", andword="and")
+        p._number_args = dict(zero="zero", one="one", andword="and")
         self.assertEqual(enword("0", 1), " zero, ")
         self.assertEqual(enword("1", 1), " one, ")
         self.assertEqual(enword("347", 1), "three, four, seven, ")
@@ -917,12 +917,12 @@ class test(unittest.TestCase):
         self.assertEqual(enword("347", 2), "thirty-four , seven, ")
         self.assertEqual(enword("34768", 2), "thirty-four , seventy-six , eight, ")
         self.assertEqual(enword("1", 2), "one, ")
-        p.number_args["one"] = "single"
+        p._number_args["one"] = "single"
         self.TODO(
             enword("1", 2), "single, ", "one, "
         )  # TODO: doesn't use default word for 'one' here
 
-        p.number_args["one"] = "one"
+        p._number_args["one"] = "one"
 
         self.assertEqual(enword("134", 3), " one thirty-four , ")
 
