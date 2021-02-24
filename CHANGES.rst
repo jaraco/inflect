@@ -1,3 +1,8 @@
+v5.2.0
+======
+
+* #121: Modernized the codebase. Added a lot of type annotations.
+
 v5.1.0
 ======
 
