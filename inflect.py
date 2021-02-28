@@ -2285,11 +2285,11 @@ class engine:
 
     def postprocess(self, orig: str, inflected) -> str:
         inflected = str(inflected)
-        if "|" in inflected:
-            inflected = inflected.split("|")[self.classical_dict["all"]]
         result = inflected.split(" ")
         # Try to fix word wise capitalization
-        for index, word in enumerate(orig.split(" ")):
+        for index, word in enumerate(result):
+            if "|" in word:
+                result[index] = word.split("|")[self.classical_dict["all"]]
             if word == "I":
                 # Is this the only word for exceptions like this
                 # Where the original is fully capitalized
