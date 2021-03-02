@@ -1,6 +1,6 @@
 import inflect
 
-FNAME = "words.txt"
+FNAME = "tests/words.txt"
 # FNAME = 'tests/list-of-nouns.txt'
 # FNAME = '/usr/share/dict/british-english'
 # FNAME = 'tricky.txt'
