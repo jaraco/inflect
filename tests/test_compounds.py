@@ -70,7 +70,7 @@ def test_unit_open_compound_nouns():
         "MASTER genie": "MASTER genies",
         "Blood brother": "Blood brothers",
         "prima donna": "prima donnas",
-        "prima DONNA": "prima DONNAS"
+        "prima DONNA": "prima DONNAS",
     }
     for singular, plural in test_cases.items():
         assert p.plural(singular) == plural
@@ -83,7 +83,7 @@ def test_unit_open_compound_nouns_classical():
         "MASTER genie": "MASTER genii",
         "Blood brother": "Blood brethren",
         "prima donna": "prime donne",
-        "prima DONNA": "prime DONNE"
+        "prima DONNA": "prime DONNE",
     }
     for singular, plural in test_cases.items():
         assert p.plural(singular) == plural
