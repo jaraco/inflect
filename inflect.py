@@ -2286,8 +2286,19 @@ class engine:
     def postprocess(self, orig: str, inflected) -> str:
         inflected = str(inflected)
         if "|" in inflected:
-            inflected = inflected.split("|")[self.classical_dict["all"]]
-        result = inflected.split(" ")
+            word_options = inflected.split("|")
+            # When two parts of a noun need to be pluralized
+            if len(word_options[0].split(" ")) == len(word_options[1].split(" ")):
+                result = inflected.split("|")[self.classical_dict["all"]].split(" ")
+            # When only the last part of the noun needs to be pluralized
+            else:
+                result = inflected.split(" ")
+                for index, word in enumerate(result):
+                    if "|" in word:
+                        result[index] = word.split("|")[self.classical_dict["all"]]
+        else:
+            result = inflected.split(" ")
+
         # Try to fix word wise capitalization
         for index, word in enumerate(orig.split(" ")):
             if word == "I":

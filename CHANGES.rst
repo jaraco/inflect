@@ -1,3 +1,8 @@
+v5.3.0
+======
+
+* #108: Add support for pluralizing open compound nouns.
+
 v5.2.0
 ======
 

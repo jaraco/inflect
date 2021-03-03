@@ -61,3 +61,30 @@ def test_unit_handling_combined():
     }
     for singular, plural in test_cases.items():
         assert p.plural(singular) == plural
+
+
+def test_unit_open_compound_nouns():
+    test_cases = {
+        "high school": "high schools",
+        "master genie": "master genies",
+        "MASTER genie": "MASTER genies",
+        "Blood brother": "Blood brothers",
+        "prima donna": "prima donnas",
+        "prima DONNA": "prima DONNAS",
+    }
+    for singular, plural in test_cases.items():
+        assert p.plural(singular) == plural
+
+
+def test_unit_open_compound_nouns_classical():
+    p.classical(all=True)
+    test_cases = {
+        "master genie": "master genii",
+        "MASTER genie": "MASTER genii",
+        "Blood brother": "Blood brethren",
+        "prima donna": "prime donne",
+        "prima DONNA": "prime DONNE",
+    }
+    for singular, plural in test_cases.items():
+        assert p.plural(singular) == plural
+    p.classical(all=False)
