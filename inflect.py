@@ -2669,19 +2669,19 @@ class engine:
         if len(word.split) >= 2 and word.split[-2] == "degree":
             return " ".join([self._plnoun(word.first)] + word.split[1:])
 
-        lowered_split = word.lower.split("-")
-        if len(lowered_split) >= 3:
-            for numword in range(1, len(lowered_split) - 1):
-                if lowered_split[numword] in pl_prep_list_da:
+        lowered_dash_split = word.lower.split("-")
+        if len(lowered_dash_split) >= 3:
+            for numword in range(1, len(lowered_dash_split) - 1):
+                if lowered_dash_split[numword] in pl_prep_list_da:
                     return " ".join(
-                        lowered_split[: numword - 1]
+                        lowered_dash_split[: numword - 1]
                         + [
-                            self._plnoun(lowered_split[numword - 1], 2)
+                            self._plnoun(lowered_dash_split[numword - 1], 2)
                             + "-"
-                            + lowered_split[numword]
+                            + lowered_dash_split[numword]
                             + "-"
                         ]
-                    ) + " ".join(lowered_split[(numword + 1) :])
+                    ) + " ".join(lowered_dash_split[(numword + 1) :])
 
         # HANDLE PRONOUNS
 
@@ -2714,6 +2714,7 @@ class engine:
             llen = len(lowered_last)
             return f"{word[:-llen]}{pl_sb_irregular[lowered_last]}"
 
+        lowered_split = word.lower.split()
         if (" ".join(lowered_split[-2:])).lower() in pl_sb_irregular_compound:
             llen = len(
                 " ".join(lowered_split[-2:])
