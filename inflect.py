@@ -1293,7 +1293,7 @@ si_sb_ies_ie = (
     "curies",
     "cutesies",
     "dogies",
-    "eyrie",
+    "eyries",
     "floozies",
     "footsies",
     "freebies",
