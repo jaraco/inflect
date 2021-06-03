@@ -991,6 +991,7 @@ pl_sb_uninflected_endings = [
     # UNCOUNTABLE NOUNS
     "butter",
     "cash",
+    "furniture",
     "information",
     # SOME FISH AND HERD ANIMALS
     "fish",
