@@ -1,3 +1,8 @@
+v5.4.0
+======
+
+* #133: Add a ``py.typed`` file so mypy recognizes type annotations.
+
 v5.3.0
 ======
 
