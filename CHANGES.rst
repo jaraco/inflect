@@ -93,13 +93,13 @@ v2.0.0
   on regular expressions. This also adds support for keyword arguments and
   built-in constants when calling functions in the string.
   Unfortunately, this is not backwards compatible in some cases:
-  * Strings should now be wrapped in single or double quotes
-    p.inflect("singular_noun(to them)") should now be p.inflect("singular_noun('to them')")
-  * Empty second argument to a function will now be parsed as None instead of ''.
-    p.inflect("num(%d,) eggs" % 2) now prints "2 eggs" instead of " eggs"
-    Since None, True and False are now supported, they can be passed explicitly:
-    p.inflect("num(%d, False) eggs" % 2) will print " eggs"
-    p.inflect("num(%d, True) eggs" % 2) will print "2 eggs"
+* Strings should now be wrapped in single or double quotes
+  p.inflect("singular_noun(to them)") should now be p.inflect("singular_noun('to them')")
+* Empty second argument to a function will now be parsed as None instead of ''.
+  p.inflect("num(%d,) eggs" % 2) now prints "2 eggs" instead of " eggs"
+  Since None, True and False are now supported, they can be passed explicitly:
+  p.inflect("num(%d, False) eggs" % 2) will print " eggs"
+  p.inflect("num(%d, True) eggs" % 2) will print "2 eggs"
 
 v1.0.2
 ======
@@ -127,7 +127,7 @@ v0.3.1
 v0.3.0
 ======
 
-* Moved hosting to `jazzband <https://github.com/jazzband/inflect>`_.
+* Moved hosting to the `jazzband project on GitHub <https://github.com/jazzband/inflect>`_.
 
 v0.2.5
 ======
@@ -172,24 +172,32 @@ v0.2.0
 ======
 
 * add gender() to select the gender of singular pronouns
-
 * replace short named methods with longer methods. shorted method now print a message and rasie DecrecationWarning
+
   pl -> plural
+
   plnoun -> plural_noun
+
   plverb -> plural_verb
+
   pladj -> plural_adjective
+
   sinoun -> singular_noun
+
   prespart -> present_participle
+
   numwords -> number_to_words
+
   plequal -> compare
+
   plnounequal -> compare_nouns
+
   plverbequal -> compare_verbs
+
   pladjequal -> compare_adjs
+
   wordlist -> join
-
-
 * change classical() to only accept keyword args: only one way to do it
-
 * fix bug in numwords where hundreds was giving the wrong number when group=3
 
 
@@ -197,8 +205,7 @@ v0.1.8
 ======
 
 * add line to setup showing that this provides 'inflect' so that
-inflect_dj can require it
-
+  inflect_dj can require it
 * add the rest of the tests from the Perl version
 
 
@@ -212,13 +219,9 @@ v0.1.6
 ======
 
 * add method sinoun() to generate the singular of a plural noun. Phew!
-
 * add changes from new Perl version: 1.892
-
 * start adding tests from Perl version
-
 * add test to check sinoun(plnoun(word)) == word
   Can now use word lists to check these methods without needing to have
   a list of plurals. ;-)
-
 * fix die -> dice
