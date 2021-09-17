@@ -146,7 +146,7 @@ v0.2.4
 v0.2.3
 ======
 
-* fix a/an for dishonor, Honolulu, mpeg, onetime, Ugandan, Ukranian,
+* fix a/an for dishonor, Honolulu, mpeg, onetime, Ugandan, Ukrainian,
   Unabomber, unanimous, US
 * merge in 'subspecies' fix by UltraNurd
 * add arboretum to classical plurals
@@ -173,7 +173,7 @@ v0.2.0
 
 * add gender() to select the gender of singular pronouns
 
-* replace short named methods with longer methods. shorted method now print a message and rasie DecrecationWarning
+* replace short named methods with longer methods. shorted method now print a message and raise DecrecationWarning
   pl -> plural
   plnoun -> plural_noun
   plverb -> plural_verb
