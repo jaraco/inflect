@@ -50,7 +50,7 @@ Exceptions:
 
 import ast
 import re
-from typing import Dict, Union, Optional, Iterable, List, Match, Tuple, Callable
+from typing import Dict, Union, Optional, Iterable, List, Match, Tuple, Callable, Sequence
 
 
 class UnknownClassicalModeError(Exception):
@@ -3802,7 +3802,7 @@ class engine:
 
     def join(
         self,
-        words: Optional[List[str]],
+        words: Optional[Sequence[str]],
         sep: Optional[str] = None,
         sep_spaced: bool = True,
         final_sep: Optional[str] = None,
