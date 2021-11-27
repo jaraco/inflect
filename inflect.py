@@ -2071,7 +2071,7 @@ class engine:
 
     def defa(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'a' for words matching pattern.
+        Define the indefinite article as 'a' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2080,7 +2080,7 @@ class engine:
 
     def defan(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'an' for words matching pattern.
+        Define the indefinite article as 'an' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2132,7 +2132,7 @@ class engine:
 
         By default all classical modes are off except names.
 
-        unknown value in args or key in kwargs rasies
+        unknown value in args or key in kwargs raises
         exception: UnknownClasicalModeError
 
         """
@@ -2686,7 +2686,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in pl_pron_acc_keys_bysize.items():
-            if word.lower[-k:] in v:  # ends with accusivate pronoun
+            if word.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if word.lower[:pk] in pv:  # starts with a prep
                         if word.lower.split() == [word.lower[:pk], word.lower[-k:]]:
@@ -3122,7 +3122,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in si_pron_acc_keys_bysize.items():
-            if words.lower[-k:] in v:  # ends with accusivate pronoun
+            if words.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if words.lower[:pk] in pv:  # starts with a prep
                         if words.lower.split() == [words.lower[:pk], words.lower[-k:]]:
@@ -3773,7 +3773,7 @@ class engine:
         if finalpoint:
             numchunks.append(decimal)
 
-        # wantlist: Perl list context. can explictly specify in Python
+        # wantlist: Perl list context. can explicitly specify in Python
         if wantlist:
             if sign:
                 numchunks = [sign] + numchunks
