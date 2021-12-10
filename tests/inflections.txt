@@ -2,6 +2,7 @@
       TODO:sing              a  ->  some                           # INDEFINITE ARTICLE
       TODO:  A.C.R.O.N.Y.M.  ->  A.C.R.O.N.Y.M.s
              abscissa  ->  abscissas|abscissae
+           accomplice  ->  accomplices
              Achinese  ->  Achinese
             acropolis  ->  acropolises
                 adieu  ->  adieus|adieux
@@ -679,6 +680,7 @@
                 sinus  ->  sinuses|sinus
                  size  ->  sizes
                 sizes  ->  size                           #VERB FORM
+                slice  ->  slices
              smallpox  ->  smallpox
                 Smith  ->  Smiths
    TODO:siverb         snowshoes  ->  snowshoe

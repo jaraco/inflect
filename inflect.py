@@ -846,6 +846,19 @@ pl_sb_U_man_mans_caps_list = """
     pl_sb_U_man_mans_caps_bysize,
 ) = make_pl_si_lists(pl_sb_U_man_mans_caps_list, "s", None, dojoinstem=False)
 
+# UNCONDITIONAL "..louse" -> "..lice"
+pl_sb_U_louse_lice_list = (
+    "booklouse",
+    "grapelouse",
+    "louse",
+    "woodlouse"
+)
+
+(
+    si_sb_U_louse_lice_list,
+    si_sb_U_louse_lice_bysize,
+    pl_sb_U_louse_lice_bysize,
+) = make_pl_si_lists(pl_sb_U_louse_lice_list, "lice", 5, dojoinstem=False)
 
 pl_sb_uninflected_s_complete = [
     # PAIRS OR GROUPS SUBSUMED TO A SINGULAR...
@@ -2745,7 +2758,10 @@ class engine:
         if word.lower[-5:] == "mouse":
             return f"{word[:-5]}mice"
         if word.lower[-5:] == "louse":
-            return f"{word[:-5]}lice"
+            for k, v in pl_sb_U_louse_lice_bysize.items():
+                if word.lower[-k:] in v:
+                    return f"{word[:-5]}lice"
+            return f"{word}s"
         if word.lower[-5:] == "goose":
             return f"{word[:-5]}geese"
         if word.lower[-5:] == "tooth":
@@ -3182,7 +3198,10 @@ class engine:
         if words.lower[-4:] == "mice":
             return word[:-4] + "mouse"
         if words.lower[-4:] == "lice":
-            return word[:-4] + "louse"
+            print(word.lower)
+            for k, v in si_sb_U_louse_lice_bysize.items():
+                if len(word) == k and words.lower[-k:] in v:
+                    return word[:-4] + "louse"
         if words.lower[-5:] == "geese":
             return word[:-5] + "goose"
         if words.lower[-5:] == "teeth":
