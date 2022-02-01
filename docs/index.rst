@@ -6,6 +6,7 @@ Welcome to |project| documentation!
 
    history
 
+.. tidelift-referral-banner::
 
 .. automodule:: inflect
     :members:
@@ -19,4 +20,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
