@@ -627,7 +627,7 @@ class test(unittest.TestCase):
                 p._sinoun(plur), sing, msg='p._sinoun("{}") != "{}"'.format(plur, sing)
             )
 
-        # words where forming singular is ambiguious or not attempted
+        # words where forming singular is ambiguous or not attempted
         for sing, plur in (
             ("son of a gun", "sons of guns"),
             ("son-of-a-gun", "sons-of-guns"),
@@ -687,7 +687,7 @@ class test(unittest.TestCase):
 
         # p.classical(0)
         # p.classical('names')
-        # clasical now back to the default mode
+        # classical now back to the default mode
 
     def test_classical_pl(self):
         p = inflect.engine()
@@ -1121,15 +1121,15 @@ class test(unittest.TestCase):
         )
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj="&"), "apple, banana, & carrot"
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj="&", conj_spaced=False),
             "apple, banana,&carrot",
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False),
             "apple, banana, &carrot",
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
 
     def test_print(self):
         inflect.STDOUT_ON = True
