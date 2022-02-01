@@ -14,7 +14,7 @@ def test_an():
     assert p.an("mpeg") == "an mpeg"
     assert p.an("onetime holiday") == "a onetime holiday"
     assert p.an("Ugandan person") == "a Ugandan person"
-    assert p.an("Ukranian person") == "a Ukranian person"
+    assert p.an("Ukrainian person") == "a Ukrainian person"
     assert p.an("Unabomber") == "a Unabomber"
     assert p.an("unanimous decision") == "a unanimous decision"
     assert p.an("US farmer") == "a US farmer"
