@@ -50,7 +50,7 @@ Exceptions:
 
 import ast
 import re
-from typing import Dict, Union, Optional, Iterable, List, Match, Tuple, Callable
+from typing import Dict, Union, Optional, Iterable, List, Match, Tuple, Callable, Sequence
 
 
 class UnknownClassicalModeError(Exception):
@@ -204,7 +204,6 @@ pl_sb_irregular = {
     "jerry": "jerries",
     "mary": "maries",
     "talouse": "talouses",
-    "blouse": "blouses",
     "rom": "roma",
     "carmen": "carmina",
 }
@@ -846,6 +845,19 @@ pl_sb_U_man_mans_caps_list = """
     pl_sb_U_man_mans_caps_bysize,
 ) = make_pl_si_lists(pl_sb_U_man_mans_caps_list, "s", None, dojoinstem=False)
 
+# UNCONDITIONAL "..louse" -> "..lice"
+pl_sb_U_louse_lice_list = (
+    "booklouse",
+    "grapelouse",
+    "louse",
+    "woodlouse"
+)
+
+(
+    si_sb_U_louse_lice_list,
+    si_sb_U_louse_lice_bysize,
+    pl_sb_U_louse_lice_bysize,
+) = make_pl_si_lists(pl_sb_U_louse_lice_list, "lice", 5, dojoinstem=False)
 
 pl_sb_uninflected_s_complete = [
     # PAIRS OR GROUPS SUBSUMED TO A SINGULAR...
@@ -1413,6 +1425,7 @@ si_sb_ches_che = (
     "quiches",
     "stomachaches",
     "toothaches",
+    "tranches",
 )
 
 si_sb_xes_xe = ("annexes", "axes", "deluxes", "pickaxes")
@@ -1848,6 +1861,7 @@ nth = {
     12: "th",
     13: "th",
 }
+nth_suff = set(nth.values())
 
 ordinal = dict(
     ty="tieth",
@@ -2071,7 +2085,7 @@ class engine:
 
     def defa(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'a' for words matching pattern.
+        Define the indefinite article as 'a' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2080,7 +2094,7 @@ class engine:
 
     def defan(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'an' for words matching pattern.
+        Define the indefinite article as 'an' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2132,7 +2146,7 @@ class engine:
 
         By default all classical modes are off except names.
 
-        unknown value in args or key in kwargs rasies
+        unknown value in args or key in kwargs raises
         exception: UnknownClasicalModeError
 
         """
@@ -2686,7 +2700,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in pl_pron_acc_keys_bysize.items():
-            if word.lower[-k:] in v:  # ends with accusivate pronoun
+            if word.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if word.lower[:pk] in pv:  # starts with a prep
                         if word.lower.split() == [word.lower[:pk], word.lower[-k:]]:
@@ -2745,7 +2759,10 @@ class engine:
         if word.lower[-5:] == "mouse":
             return f"{word[:-5]}mice"
         if word.lower[-5:] == "louse":
-            return f"{word[:-5]}lice"
+            v = pl_sb_U_louse_lice_bysize.get(len(word))
+            if v and word.lower in v:
+                return f"{word[:-5]}lice"
+            return f"{word}s"
         if word.lower[-5:] == "goose":
             return f"{word[:-5]}geese"
         if word.lower[-5:] == "tooth":
@@ -3122,7 +3139,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in si_pron_acc_keys_bysize.items():
-            if words.lower[-k:] in v:  # ends with accusivate pronoun
+            if words.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if words.lower[:pk] in pv:  # starts with a prep
                         if words.lower.split() == [words.lower[:pk], words.lower[-k:]]:
@@ -3182,7 +3199,9 @@ class engine:
         if words.lower[-4:] == "mice":
             return word[:-4] + "mouse"
         if words.lower[-4:] == "lice":
-            return word[:-4] + "louse"
+            v = si_sb_U_louse_lice_bysize.get(len(word))
+            if v and words.lower in v:
+                return word[:-4] + "louse"
         if words.lower[-5:] == "geese":
             return word[:-5] + "goose"
         if words.lower[-5:] == "teeth":
@@ -3706,7 +3725,10 @@ class engine:
         else:
             sign = ""
 
-        myord = num[-2:] in ("st", "nd", "rd", "th")
+        if num in nth_suff:
+            num = zero
+
+        myord = num[-2:] in nth_suff
         if myord:
             num = num[:-2]
         finalpoint = False
@@ -3773,7 +3795,7 @@ class engine:
         if finalpoint:
             numchunks.append(decimal)
 
-        # wantlist: Perl list context. can explictly specify in Python
+        # wantlist: Perl list context. can explicitly specify in Python
         if wantlist:
             if sign:
                 numchunks = [sign] + numchunks
@@ -3802,7 +3824,7 @@ class engine:
 
     def join(
         self,
-        words: Optional[List[str]],
+        words: Optional[Sequence[str]],
         sep: Optional[str] = None,
         sep_spaced: bool = True,
         final_sep: Optional[str] = None,
