@@ -779,6 +779,7 @@
             trapezium  ->  trapeziums|trapezia
                trauma  ->  traumas|traumata
               travois  ->  travois
+              tranche  ->  tranches
               trellis  ->  trellises
      TODO:siverb           tries  ->  try
                trilby  ->  trilbys

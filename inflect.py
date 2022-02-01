@@ -1413,6 +1413,7 @@ si_sb_ches_che = (
     "quiches",
     "stomachaches",
     "toothaches",
+    "tranches",
 )
 
 si_sb_xes_xe = ("annexes", "axes", "deluxes", "pickaxes")
