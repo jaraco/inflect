@@ -2073,7 +2073,7 @@ class engine:
 
     def defa(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'a' for words matching pattern.
+        Define the indefinite article as 'a' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2082,7 +2082,7 @@ class engine:
 
     def defan(self, pattern: str) -> int:
         """
-        Define the indefinate article as 'an' for words matching pattern.
+        Define the indefinite article as 'an' for words matching pattern.
 
         """
         self.checkpat(pattern)
@@ -2134,7 +2134,7 @@ class engine:
 
         By default all classical modes are off except names.
 
-        unknown value in args or key in kwargs rasies
+        unknown value in args or key in kwargs raises
         exception: UnknownClasicalModeError
 
         """
@@ -3778,7 +3778,7 @@ class engine:
         if finalpoint:
             numchunks.append(decimal)
 
-        # wantlist: Perl list context. can explictly specify in Python
+        # wantlist: Perl list context. can explicitly specify in Python
         if wantlist:
             if sign:
                 numchunks = [sign] + numchunks
