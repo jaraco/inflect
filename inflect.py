@@ -1848,6 +1848,7 @@ nth = {
     12: "th",
     13: "th",
 }
+nth_suff = set(nth.values())
 
 ordinal = dict(
     ty="tieth",
@@ -3706,7 +3707,10 @@ class engine:
         else:
             sign = ""
 
-        myord = num[-2:] in ("st", "nd", "rd", "th")
+        if num in nth_suff:
+            num = zero
+
+        myord = num[-2:] in nth_suff
         if myord:
             num = num[:-2]
         finalpoint = False
