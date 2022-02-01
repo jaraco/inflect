@@ -1121,15 +1121,15 @@ class test(unittest.TestCase):
         )
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj="&"), "apple, banana, & carrot"
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj="&", conj_spaced=False),
             "apple, banana,&carrot",
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
         self.assertEqual(
             wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False),
             "apple, banana, &carrot",
-        )  # TODO: want space here. Done, report updtream
+        )  # TODO: want space here. Done, report upstream
 
     def test_print(self):
         inflect.STDOUT_ON = True

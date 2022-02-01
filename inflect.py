@@ -2700,7 +2700,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in pl_pron_acc_keys_bysize.items():
-            if word.lower[-k:] in v:  # ends with accusivate pronoun
+            if word.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if word.lower[:pk] in pv:  # starts with a prep
                         if word.lower.split() == [word.lower[:pk], word.lower[-k:]]:
@@ -3139,7 +3139,7 @@ class engine:
         # HANDLE PRONOUNS
 
         for k, v in si_pron_acc_keys_bysize.items():
-            if words.lower[-k:] in v:  # ends with accusivate pronoun
+            if words.lower[-k:] in v:  # ends with accusative pronoun
                 for pk, pv in pl_prep_bysize.items():
                     if words.lower[:pk] in pv:  # starts with a prep
                         if words.lower.split() == [words.lower[:pk], words.lower[-k:]]:
