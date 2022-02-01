@@ -391,3 +391,9 @@ def go(p, i):
 
     # eq_ !eval { p.number_to_words(42, and=>); 1; };
     # eq_ $@ =~ 'odd number of';
+
+
+def test_issue_131():
+    p = inflect.engine()
+    for nth_word in inflect.nth_suff:
+        assert p.number_to_words(nth_word) == "zero"

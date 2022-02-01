@@ -1413,6 +1413,7 @@ si_sb_ches_che = (
     "quiches",
     "stomachaches",
     "toothaches",
+    "tranches",
 )
 
 si_sb_xes_xe = ("annexes", "axes", "deluxes", "pickaxes")
@@ -1848,6 +1849,7 @@ nth = {
     12: "th",
     13: "th",
 }
+nth_suff = set(nth.values())
 
 ordinal = dict(
     ty="tieth",
@@ -3706,7 +3708,10 @@ class engine:
         else:
             sign = ""
 
-        myord = num[-2:] in ("st", "nd", "rd", "th")
+        if num in nth_suff:
+            num = zero
+
+        myord = num[-2:] in nth_suff
         if myord:
             num = num[:-2]
         finalpoint = False
