@@ -1,41 +1,42 @@
 """
-    inflect.py: correctly generate plurals, ordinals, indefinite articles;
-                convert numbers to words
-    Copyright (C) 2010 Paul Dyson
+correctly generate plurals, ordinals, indefinite articles;
+convert numbers to words
 
-    Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
+Copyright (C) 2010 Paul Dyson
 
-    The original Perl module Lingua::EN::Inflect by Damian Conway is
-    available from http://search.cpan.org/~dconway/
+Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
 
-    This module can be downloaded at http://pypi.org/project/inflect
+The original Perl module Lingua::EN::Inflect by Damian Conway is
+available from http://search.cpan.org/~dconway/
+
+This module can be downloaded at http://pypi.org/project/inflect
 
 methods:
-          classical inflect
-          plural plural_noun plural_verb plural_adj singular_noun no num a an
-          compare compare_nouns compare_verbs compare_adjs
-          present_participle
-          ordinal
-          number_to_words
-          join
-          defnoun defverb defadj defa defan
+      classical inflect
+      plural plural_noun plural_verb plural_adj singular_noun no num a an
+      compare compare_nouns compare_verbs compare_adjs
+      present_participle
+      ordinal
+      number_to_words
+      join
+      defnoun defverb defadj defa defan
 
-    INFLECTIONS:    classical inflect
-          plural plural_noun plural_verb plural_adj singular_noun compare
-          no num a an present_participle
+INFLECTIONS:    classical inflect
+      plural plural_noun plural_verb plural_adj singular_noun compare
+      no num a an present_participle
 
-    PLURALS:   classical inflect
-          plural plural_noun plural_verb plural_adj singular_noun no num
-          compare compare_nouns compare_verbs compare_adjs
+PLURALS:   classical inflect
+      plural plural_noun plural_verb plural_adj singular_noun no num
+      compare compare_nouns compare_verbs compare_adjs
 
-    COMPARISONS:    classical
-          compare compare_nouns compare_verbs compare_adjs
+COMPARISONS:    classical
+      compare compare_nouns compare_verbs compare_adjs
 
-    ARTICLES:   classical inflect num a an
+ARTICLES:   classical inflect num a an
 
-    NUMERICAL:      ordinal number_to_words
+NUMERICAL:      ordinal number_to_words
 
-    USER_DEFINED:   defnoun defverb defadj defa defan
+USER_DEFINED:   defnoun defverb defadj defa defan
 
 Exceptions:
  UnknownClassicalModeError
@@ -145,14 +146,18 @@ def make_pl_si_lists(
 ):
     """
     given a list of singular words: lst
+
     an ending to append to make the plural: plending
+
     the number of characters to remove from the singular
-        before appending plending: siendingsize
+    before appending plending: siendingsize
+
     a flag whether to create a joinstem: dojoinstem
 
     return:
     a list of pluralised words: si_list (called si because this is what you need to
-                                         look for to make the singular)
+    look for to make the singular)
+
     the pluralised words as a dict of sets sorted by word length: si_bysize
     the singular words as a dict of sets sorted by word length: pl_bysize
     if dojoinstem is True: a regular expression that matches any of the stems: stem
@@ -3473,7 +3478,7 @@ class engine:
 
         If count is one of:
             1, a, an, one, each, every, this, that
-        return count followed by text.
+            return count followed by text.
 
         Otherwise return count follow by the plural of text.
 
@@ -3697,8 +3702,11 @@ class engine:
 
         group = 1, 2 or 3 to group numbers before turning into words
         comma: define comma
-        andword: word for 'and'. Can be set to ''.
+
+        andword:
+            word for 'and'. Can be set to ''.
             e.g. "one hundred and one" vs "one hundred one"
+
         zero: word for '0'
         one: word for '1'
         decimal: word for decimal point
