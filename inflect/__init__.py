@@ -50,7 +50,17 @@ Exceptions:
 
 import ast
 import re
-from typing import Dict, Union, Optional, Iterable, List, Match, Tuple, Callable, Sequence
+from typing import (
+    Dict,
+    Union,
+    Optional,
+    Iterable,
+    List,
+    Match,
+    Tuple,
+    Callable,
+    Sequence,
+)
 
 
 class UnknownClassicalModeError(Exception):
@@ -846,12 +856,7 @@ pl_sb_U_man_mans_caps_list = """
 ) = make_pl_si_lists(pl_sb_U_man_mans_caps_list, "s", None, dojoinstem=False)
 
 # UNCONDITIONAL "..louse" -> "..lice"
-pl_sb_U_louse_lice_list = (
-    "booklouse",
-    "grapelouse",
-    "louse",
-    "woodlouse"
-)
+pl_sb_U_louse_lice_list = ("booklouse", "grapelouse", "louse", "woodlouse")
 
 (
     si_sb_U_louse_lice_list,
