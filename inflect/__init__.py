@@ -2351,6 +2351,7 @@ class engine:
 
         If count supplied, then return text if count is one of:
             1, a, an, one, each, every, this, that
+
         otherwise return the plural.
 
         Whitespace at the start and end is preserved.
@@ -2373,6 +2374,7 @@ class engine:
 
         If count supplied, then return text if count is one of:
             1, a, an, one, each, every, this, that
+
         otherwise return the plural.
 
         Whitespace at the start and end is preserved.
@@ -2390,6 +2392,7 @@ class engine:
 
         If count supplied, then return text if count is one of:
             1, a, an, one, each, every, this, that
+
         otherwise return the plural.
 
         Whitespace at the start and end is preserved.
@@ -2410,6 +2413,7 @@ class engine:
 
         If count supplied, then return text if count is one of:
             1, a, an, one, each, every, this, that
+
         otherwise return the plural.
 
         Whitespace at the start and end is preserved.
@@ -2495,6 +2499,7 @@ class engine:
 
         If count supplied, then return the singular if count is one of:
             1, a, an, one, each, every, this, that or if count is None
+
         otherwise return text unchanged.
 
         Whitespace at the start and end is preserved.
