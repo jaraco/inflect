@@ -95,7 +95,7 @@ class BadGenderError(Exception):
 STDOUT_ON = False
 
 
-def print3(txt: str):
+def print3(txt: str) -> None:
     if STDOUT_ON:
         print(txt)
 
@@ -1682,7 +1682,7 @@ si_pron_acc_keys = enclose("|".join(si_pron["acc"]))
 si_pron_acc_keys_bysize = bysize(si_pron["acc"])
 
 
-def get_si_pron(thecase, word, gender):
+def get_si_pron(thecase, word, gender) -> Union[str, Dict[str, str]]:
     try:
         sing = si_pron[thecase][word]
     except KeyError:
@@ -2112,7 +2112,7 @@ class engine:
         self.A_a_user_defined.extend((pattern, "an"))
         return 1
 
-    def checkpat(self, pattern: Optional[str]):
+    def checkpat(self, pattern: Optional[str]) -> None:
         """
         check for errors in a regex pattern
         """
@@ -2124,7 +2124,7 @@ class engine:
             print3(f"\nBad user-defined singular pattern:\n\t{pattern}\n")
             raise BadUserDefinedPatternError
 
-    def checkpatplural(self, pattern: str):
+    def checkpatplural(self, pattern: str) -> None:
         """
         check for errors in a regex replace pattern
         """
@@ -2142,7 +2142,7 @@ class engine:
                 return mo.expand(pl)
         return None
 
-    def classical(self, **kwargs):
+    def classical(self, **kwargs) -> None:
         """
         turn classical mode on and off for various categories
 
@@ -2198,7 +2198,7 @@ class engine:
             self.persistent_count = None
         return ""
 
-    def gender(self, gender: str):
+    def gender(self, gender: str) -> None:
         """
         set the gender for the singular of plural pronouns
 
@@ -3581,7 +3581,7 @@ class engine:
     def unitfn(self, units: int, mindex: int = 0) -> str:
         return f"{unit[units]}{self.millfn(mindex)}"
 
-    def tenfn(self, tens, units, mindex=0):
+    def tenfn(self, tens, units, mindex=0) -> str:
         if tens != 1:
             tens_part = ten[tens]
             if tens and units:
