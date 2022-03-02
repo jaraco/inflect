@@ -2015,7 +2015,7 @@ class Words(str):
     first: str
     last: str
 
-    def __init__(self, orig):
+    def __init__(self, orig) -> None:
         self.lower = self.lower()
         self.split = self.split()
         self.first = self.split[0]
@@ -2023,7 +2023,7 @@ class Words(str):
 
 
 class engine:
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.classical_dict = def_classical.copy()
         self.persistent_count = None
