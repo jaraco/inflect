@@ -1,3 +1,8 @@
+v5.5.0
+======
+
+* #147: Enhanced type annotations.
+
 v5.4.0
 ======
 
