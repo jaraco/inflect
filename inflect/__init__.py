@@ -3890,3 +3890,82 @@ class engine:
             sep += " "
 
         return f"{sep.join(words[0:-1])}{final_sep}{words[-1]}"
+    
+    
+    #this function takes a string and returns an array with indexes of every first and last digit in the sentence.
+    #example : test_array = find_num_index("In 2019, mark saved $15 thousand, for a total savings of 54 thousand over eight years." )
+    #print(test_array)
+    #output : [3, 6, 21, 22, 57, 58]
+    # 3 and 6 are the indexes of 2 and 9 of "2019"
+    # 21 and 22 are the indexes of 1 and 5 of "15"
+    #and it keeps going
+    
+    def find_num_index(entry_string):
+        result0 = []
+
+        #fill result0 array with all the indexes of digit characters in a sentence
+
+        for i in range(len(entry_string)):
+            if (entry_string[i].isdigit() == True):
+                result0.append(i)
+
+        result1 = []
+
+        try:
+            result1.append(result0[0])
+        except IndexError:
+            result0 = 'null'
+        if(result0 != 'null'):
+
+        # append only indexes of first and last characters of numbers to result1 array 
+
+            for k in range(len(result0) - 1):
+                if ((result0[k+1] - result0[k]) > 2):
+                    result1.append(result0[k])
+                    result1.append(result0[k+1])
+            try:
+                result1.append(result0[len(result0) - 1])
+            except IndexError:
+                result1 = 'null'
+
+
+        # return array of even length that contains first and last index of every number in a sentence
+        return result1
+    
+    
+
+    # extract_replace function takes a sentence with numbers to return a sentence with all its numbers to words.
+    #this function uses both number_to_words function and find_num_index function
+    #example : test_sentence = extract_replace("In 2019, mark saved $15 thousand, for a total savings of 54 thousand over eight years." )
+    #print(test_sentence)
+    #output : In two thousand and nineteen, mark saved $fifteen thousand, for a total savings of fifty-four thousand over eight years.
+    
+    def extract_replace(entry_string):
+
+        result = (entry_string + '.')[:-1]
+        p = inflect.engine()
+        i = 0 
+
+        #initialize array with three random numbers to enter the loop, then find if there are numbers or not.
+        array = [3 , 2 , 3]
+
+
+        #take every number from the entry string, locate and store the number in digits in a sentence (using find_num_index), apply number_to_words
+        #to that number specifically then replace it back in the sentence.
+
+
+        while(len(array) > 2):
+
+            #update array with first and last indexes of every number in digits in a sentence
+            
+            array = find_num_index(result)
+            number = result[array[i] : array[i+1] + 1]
+            k = p.number_to_words(number)
+            position = array[i]
+            number_of_characters = array[i+1] - array[i] + 1
+            
+            #update sentence with the new word to numbers until there are no numbers in digits left
+            
+            result = result[:position] + k + result[position + number_of_characters:]
+
+        return result
