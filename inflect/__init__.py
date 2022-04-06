@@ -1689,7 +1689,7 @@ def get_si_pron(thecase, word, gender) -> str:
     except KeyError:
         raise  # not a pronoun
     try:
-        return cast(str, sing[gender])  # has several types due to gender
+        return sing[gender]  # has several types due to gender
     except TypeError:
         return cast(str, sing)  # answer independent of gender
 
