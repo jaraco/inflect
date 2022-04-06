@@ -2028,11 +2028,11 @@ class engine:
         self.classical_dict = def_classical.copy()
         self.persistent_count = None
         self.mill_count = 0
-        self.pl_sb_user_defined = []
-        self.pl_v_user_defined = []
-        self.pl_adj_user_defined = []
-        self.si_sb_user_defined = []
-        self.A_a_user_defined = []
+        self.pl_sb_user_defined: List[str] = []
+        self.pl_v_user_defined: List[str] = []
+        self.pl_adj_user_defined: List[str] = []
+        self.si_sb_user_defined: List[str] = []
+        self.A_a_user_defined: List[str] = []
         self.thegender = "neuter"
         self._number_args = None
 
