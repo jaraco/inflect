@@ -2035,7 +2035,15 @@ class engine:
         self.si_sb_user_defined: List[str] = []
         self.A_a_user_defined: List[str] = []
         self.thegender = "neuter"
-        self._number_args = None
+        self.__number_args: Optional[Dict[str, str]] = None
+
+    @property
+    def _number_args(self):
+        return cast(Dict[str, str], self.__number_args)
+
+    @_number_args.setter
+    def _number_args(self, val):
+        self.__number_args = val
 
     deprecated_methods = dict(
         pl="plural",
