@@ -1,3 +1,8 @@
+v5.5.1
+======
+
+* #150: Rewrite to satisfy type checkers.
+
 v5.5.0
 ======
 
