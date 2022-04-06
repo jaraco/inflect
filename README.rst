@@ -14,14 +14,11 @@
    :target: https://github.com/psf/black
    :alt: Code style: Black
 
-.. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
-..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/inflect/badge/?version=latest
+   :target: https://inflect.readthedocs.io/en/latest/?badge=latest
 
 .. image:: https://img.shields.io/badge/skeleton-2022-informational
    :target: https://blog.jaraco.com/skeleton
-
-.. image:: https://coveralls.io/repos/github/jaraco/inflect/badge.svg?branch=master
-    :target: https://coveralls.io/github/jaraco/inflect?branch=master
 
 .. image:: https://tidelift.com/badges/package/pypi/inflect
    :target: https://tidelift.com/subscription/pkg/pypi-inflect?utm_source=pypi-inflect&utm_medium=readme
