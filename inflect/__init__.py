@@ -61,6 +61,7 @@ from typing import (
     Tuple,
     Callable,
     Sequence,
+    cast,
 )
 
 
@@ -1682,15 +1683,15 @@ si_pron_acc_keys = enclose("|".join(si_pron["acc"]))
 si_pron_acc_keys_bysize = bysize(si_pron["acc"])
 
 
-def get_si_pron(thecase, word, gender) -> Union[str, Dict[str, str]]:
+def get_si_pron(thecase, word, gender) -> str:
     try:
         sing = si_pron[thecase][word]
     except KeyError:
         raise  # not a pronoun
     try:
-        return sing[gender]  # has several types due to gender
+        return cast(str, sing[gender])  # has several types due to gender
     except TypeError:
-        return sing  # answer independent of gender
+        return cast(str, sing)  # answer independent of gender
 
 
 # These dictionaries group verbs by first, second and third person
