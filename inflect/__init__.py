@@ -2026,7 +2026,7 @@ class engine:
     def __init__(self) -> None:
 
         self.classical_dict = def_classical.copy()
-        self.persistent_count = None
+        self.persistent_count: Optional[int] = None
         self.mill_count = 0
         self.pl_sb_user_defined: List[str] = []
         self.pl_v_user_defined: List[str] = []
