@@ -51,6 +51,8 @@ Exceptions:
 
 import ast
 import re
+import functools
+import contextlib
 from typing import (
     Dict,
     Union,
@@ -2708,19 +2710,12 @@ class engine:
         if len(word.split_) >= 2 and word.split_[-2] == "degree":
             return " ".join([self._plnoun(word.first)] + word.split_[1:])
 
-        lowered_split = word.lowered.split("-")
-        if len(lowered_split) >= 3:
-            for numword in range(1, len(lowered_split) - 1):
-                if lowered_split[numword] in pl_prep_list_da:
-                    return " ".join(
-                        lowered_split[: numword - 1]
-                        + [
-                            self._plnoun(lowered_split[numword - 1], 2)
-                            + "-"
-                            + lowered_split[numword]
-                            + "-"
-                        ]
-                    ) + " ".join(lowered_split[(numword + 1) :])
+        with contextlib.suppress(ValueError):
+            return self._handle_prepositional_phrase(
+                word.lowered,
+                functools.partial(self._plnoun, count=2),
+                '-',
+            )
 
         # HANDLE PRONOUNS
 
@@ -2756,13 +2751,14 @@ class engine:
             llen = len(lowered_last)
             return f"{word[:-llen]}{pl_sb_irregular[lowered_last]}"
 
-        if (" ".join(lowered_split[-2:])).lower() in pl_sb_irregular_compound:
+        dash_split = word.lowered.split('-')
+        if (" ".join(dash_split[-2:])).lower() in pl_sb_irregular_compound:
             llen = len(
-                " ".join(lowered_split[-2:])
+                " ".join(dash_split[-2:])
             )  # TODO: what if 2 spaces between these words?
             return (
                 f"{word[:-llen]}"
-                f"{pl_sb_irregular_compound[(' '.join(lowered_split[-2:])).lower()]}"
+                f"{pl_sb_irregular_compound[(' '.join(dash_split[-2:])).lower()]}"
             )
 
         if word.lowered[-3:] == "quy":
@@ -2931,6 +2927,42 @@ class engine:
         # OTHERWISE JUST ADD ...s
 
         return f"{word}s"
+
+    @classmethod
+    def _handle_prepositional_phrase(cls, phrase, transform, sep):
+        """
+        Given a word or phrase possibly separated by sep, parse out
+        the prepositional phrase and apply the transform to the word
+        preceding the prepositional phrase.
+
+        Raise ValueError if the pivot is not found or if at least two
+        separators are not found.
+
+        >>> engine._handle_prepositional_phrase("man-of-war", str.upper, '-')
+        'MAN-of-war'
+        >>> engine._handle_prepositional_phrase("man of war", str.upper, ' ')
+        'MAN of war'
+        """
+        parts = phrase.split(sep)
+        if len(parts) < 3:
+            raise ValueError("Cannot handle words with fewer than two separators")
+
+        pivot = cls._find_pivot(parts, pl_prep_list_da)
+
+        transformed = transform(parts[pivot - 1]) or parts[pivot - 1]
+        return " ".join(
+            parts[: pivot - 1] + [sep.join([transformed, parts[pivot], ''])]
+        ) + " ".join(parts[(pivot + 1) :])
+
+    @staticmethod
+    def _find_pivot(words, candidates):
+        pivots = (
+            index for index in range(1, len(words) - 1) if words[index] in candidates
+        )
+        try:
+            return next(pivots)
+        except StopIteration:
+            raise ValueError("No pivot found")
 
     def _pl_special_verb(  # noqa: C901
         self, word: str, count: Optional[Union[str, int]] = None
@@ -3136,33 +3168,19 @@ class engine:
         if mo and mo.group(2) != "":
             return f"{self._sinoun(mo.group(1), 1, gender=gender)}{mo.group(2)}"
 
-        space_split = words.lowered.split(" ")
-        if len(space_split) >= 3:
-            for numword in range(1, len(space_split) - 1):
-                if space_split[numword] in pl_prep_list_da:
-                    sinoun = self._sinoun(space_split[numword - 1], 1, gender=gender)
-                    if not sinoun:
-                        sinoun = space_split[numword - 1]
-                    # typing.Literal in 3.8 will likely help us
-                    # avoid these, but for now, special case
-                    sinoun_box: List[str] = [sinoun]  # type: ignore[list-item]
+        with contextlib.suppress(ValueError):
+            return self._handle_prepositional_phrase(
+                words.lowered,
+                functools.partial(self._sinoun, count=1, gender=gender),
+                ' ',
+            )
 
-                    return " ".join(
-                        space_split[: numword - 1] + sinoun_box + space_split[numword:]
-                    )
-
-        dash_split = words.lowered.split("-")
-        if len(dash_split) >= 3:
-            for numword in range(1, len(dash_split) - 1):
-                if dash_split[numword] in pl_prep_list_da:
-                    sinoun = self._sinoun(dash_split[numword - 1], 1, gender=gender)
-                    if not sinoun:
-                        sinoun = dash_split[numword - 1]
-                    sinoun_box = [f"{sinoun}-{dash_split[numword]}-"]
-
-                    return " ".join(dash_split[: numword - 1] + sinoun_box) + " ".join(
-                        dash_split[(numword + 1) :]
-                    )
+        with contextlib.suppress(ValueError):
+            return self._handle_prepositional_phrase(
+                words.lowered,
+                functools.partial(self._sinoun, count=1, gender=gender),
+                '-',
+            )
 
         # HANDLE PRONOUNS
 
@@ -3199,6 +3217,7 @@ class engine:
             llen = len(words.last.lower())
             return "{}{}".format(word[:-llen], si_sb_irregular[words.last.lower()])
 
+        dash_split = words.lowered.split("-")
         if (" ".join(dash_split[-2:])).lower() in si_sb_irregular_compound:
             llen = len(
                 " ".join(dash_split[-2:])
