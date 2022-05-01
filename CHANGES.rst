@@ -1,3 +1,9 @@
+v5.6.0
+======
+
+* #153: Internal refactor to simplify and unify
+  ``_plnoun`` and ``_sinoun``.
+
 v5.5.2
 ======
 
