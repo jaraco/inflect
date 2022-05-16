@@ -701,6 +701,7 @@ pl_sb_U_o_os_endings = [
     "pueblo",
     "quarto",
     "Quito",
+    "repo",
     "rhino",
     "risotto",
     "rococo",
