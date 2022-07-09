@@ -170,13 +170,13 @@ SYNOPSIS
 
     # JOIN WORDS INTO A LIST:
 
-    mylist = join(("apple", "banana", "carrot"))
+    mylist = p.join(("apple", "banana", "carrot"))
     # "apple, banana, and carrot"
 
-    mylist = join(("apple", "banana"))
+    mylist = p.join(("apple", "banana"))
     # "apple and banana"
 
-    mylist = join(("apple", "banana", "carrot"), final_sep="")
+    mylist = p.join(("apple", "banana", "carrot"), final_sep="")
     # "apple, banana and carrot"
 
 
