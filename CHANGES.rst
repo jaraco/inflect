@@ -1,3 +1,8 @@
+v5.6.1
+======
+
+* Packaging refresh and docs update.
+
 v5.6.0
 ======
 
