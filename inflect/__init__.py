@@ -332,7 +332,13 @@ pl_sb_C_a_ata_list = (
 
 # UNCONDITIONAL "..a" -> "..ae"
 
-pl_sb_U_a_ae_list = ("alumna", "alga", "vertebra", "persona")
+pl_sb_U_a_ae_list = (
+    "alumna", 
+    "alga", 
+    "vertebra", 
+    "persona",
+    "vita",
+)
 (
     si_sb_U_a_ae_list,
     si_sb_U_a_ae_bysize,
@@ -933,6 +939,7 @@ pl_sb_uninflected_herd = (
     "eland",
     "bison",
     "buffalo",
+    "cattle",
     "elk",
     "rhinoceros",
     "zucchini",
@@ -3160,7 +3167,7 @@ class engine:
             return word
 
         if words.last.lower() in pl_sb_C_us_us:
-            return word
+            return word if self.classical_dict["ancient"] else False
 
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
