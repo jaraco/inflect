@@ -625,6 +625,7 @@
                 rebus  ->  rebuses
    TODO:siverb            rehoes  ->  rehoe
              reindeer  ->  reindeer
+             repo      ->  repos
    TODO:siverb           reshoes  ->  reshoe
                 rhino  ->  rhinos
            rhinoceros  ->  rhinoceroses|rhinoceros
