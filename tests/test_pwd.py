@@ -341,7 +341,7 @@ class test(unittest.TestCase):
 
         self.assertEqual(p.singular_noun("Clives"), "Clive")
         self.assertEqual(p.singular_noun("weaves"), "weave")
-        
+
         self.assertEqual(p.singular_noun("status"), False)
         self.assertEqual(p.singular_noun("hiatus"), False)
 
