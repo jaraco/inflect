@@ -318,7 +318,6 @@ class test(unittest.TestCase):
         for sing, plur in (
             ("cat", "cats"),
             ("die", "dice"),
-            ("hiatus", "hiatus"),
             ("goose", "geese"),
         ):
             self.assertEqual(p.singular_noun(plur), sing)
@@ -344,6 +343,7 @@ class test(unittest.TestCase):
         self.assertEqual(p.singular_noun("weaves"), "weave")
         
         self.assertEqual(p.singular_noun("status"), False)
+        self.assertEqual(p.singular_noun("hiatus"), False)
 
     def test_gender(self):
         p = inflect.engine()
