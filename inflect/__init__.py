@@ -333,9 +333,9 @@ pl_sb_C_a_ata_list = (
 # UNCONDITIONAL "..a" -> "..ae"
 
 pl_sb_U_a_ae_list = (
-    "alumna", 
-    "alga", 
-    "vertebra", 
+    "alumna",
+    "alga",
+    "vertebra",
     "persona",
     "vita",
 )
