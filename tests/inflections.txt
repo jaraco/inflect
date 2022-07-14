@@ -158,6 +158,7 @@
             Cassinese  ->  Cassinese
                   cat  ->  cats
               catfish  ->  catfish
+			   cattle  ->  cattles|cattle
                cayman  ->  caymans
              Celanese  ->  Celanese
               ceriman  ->  cerimans
@@ -809,6 +810,7 @@
            Vietnamese  ->  Vietnamese
              virtuoso  ->  virtuosos|virtuosi
                 virus  ->  viruses
+				 vita  ->  vitae
                 vixen  ->  vixens
                vortex  ->  vortexes|vortices
                walrus  ->  walruses
