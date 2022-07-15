@@ -1,3 +1,8 @@
+v5.6.2
+======
+
+* #15: Fixes to plural edge case handling.
+
 v5.6.1
 ======
 
