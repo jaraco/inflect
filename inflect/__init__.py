@@ -3507,9 +3507,9 @@ class engine:
 
     an = a
 
-    def _indef_article(
+    def _indef_article(  # noqa: C901
         self, word: str, count: Union[int, str, Any]
-    ) -> str:  # noqa: C901
+    ) -> str:
         mycount = self.get_count(count)
 
         if mycount != 1:
