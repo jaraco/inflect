@@ -1,3 +1,11 @@
+v5.7.0
+======
+
+* #157: ``compare`` methods now validate their inputs
+  and will raise a more meaningful exception if an
+  empty string or None is passed. This expectation is now
+  documented.
+
 v5.6.2
 ======
 
