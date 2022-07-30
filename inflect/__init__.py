@@ -2455,6 +2455,18 @@ class engine:
         p:p - word1 and word2 are two different plural forms of the one word
         False - otherwise
 
+        >>> compare = engine().compare
+        >>> compare("egg", "eggs")
+        's:p'
+        >>> compare('egg', 'egg')
+        'eq'
+
+        Words should not be empty.
+
+        >>> compare('egg', '')  # #157: # doctest: +SKIP
+        Traceback (most recent call last):
+        ...
+        ValueError: empty words not allowed
         """
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
