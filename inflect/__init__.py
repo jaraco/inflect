@@ -2482,7 +2482,8 @@ class engine:
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
 
-    def compare_nouns(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_nouns(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as nouns
@@ -2497,7 +2498,8 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_noun)
 
-    def compare_verbs(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_verbs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as verbs
@@ -2512,7 +2514,8 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_verb)
 
-    def compare_adjs(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_adjs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as adjectives
