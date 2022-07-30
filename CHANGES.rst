@@ -1,10 +1,20 @@
-v5.7.0
+v6.0.0
 ======
 
 * #157: ``compare`` methods now validate their inputs
   and will raise a more meaningful exception if an
   empty string or None is passed. This expectation is now
   documented.
+
+* Many public methods now perform validation on arguments.
+  An empty string is no longer allowed for words or text.
+  Callers are expected to pass non-empty text or trap
+  the validation errors that are raised. The exceptions
+  raised are ``pydantic.error_wrappers.ValidationError``,
+  which are currently a subclass of ``ValueError``, but since
+  that
+  `may change <https://pydantic-docs.helpmanual.io/usage/validation_decorator/#validation-exception>`_,
+  tests check for a generic ``Exception``.
 
 v5.6.2
 ======

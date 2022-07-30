@@ -64,7 +64,9 @@ from typing import (
     Callable,
     Sequence,
     cast,
+    Any,
 )
+from numbers import Number
 
 
 from pydantic import Field, validate_arguments
@@ -2038,6 +2040,7 @@ class Words(str):
 
 
 Word = Annotated[str, Field(min_length=1)]
+Falsish = Any  # ideally, falsish would only validate on bool(value) is False
 
 
 class engine:
@@ -2156,14 +2159,15 @@ class engine:
         """
         return
 
-    def ud_match(self, word: str, wordlist: List[str]) -> Optional[str]:
+    @validate_arguments
+    def ud_match(self, word: Word, wordlist: Sequence[Optional[Word]]) -> Optional[str]:
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
             mo = re.search(fr"^{wordlist[i]}$", word, re.IGNORECASE)
             if mo:
                 if wordlist[i + 1] is None:
                     return None
                 pl = DOLLAR_DIGITS.sub(
-                    r"\\1", wordlist[i + 1]
+                    r"\\1", cast(Word, wordlist[i + 1])
                 )  # change $n to \n for expand
                 return mo.expand(pl)
         return None
@@ -2295,7 +2299,8 @@ class engine:
 
     # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
-    def inflect(self, text: str) -> str:
+    @validate_arguments
+    def inflect(self, text: Word) -> str:
         """
         Perform inflections in a string.
 
@@ -2371,7 +2376,8 @@ class engine:
         else:
             return "", "", ""
 
-    def plural(self, text: str, count: Optional[Union[str, int]] = None) -> str:
+    @validate_arguments
+    def plural(self, text: Word, count: Optional[Union[str, int, Any]] = None) -> str:
         """
         Return the plural of text.
 
@@ -2394,7 +2400,10 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    def plural_noun(self, text: str, count: Optional[Union[str, int]] = None) -> str:
+    @validate_arguments
+    def plural_noun(
+        self, text: Word, count: Optional[Union[str, int, Any]] = None
+    ) -> str:
         """
         Return the plural of text, where text is a noun.
 
@@ -2412,7 +2421,10 @@ class engine:
         plural = self.postprocess(word, self._plnoun(word, count))
         return f"{pre}{plural}{post}"
 
-    def plural_verb(self, text: str, count: Optional[Union[str, int]] = None) -> str:
+    @validate_arguments
+    def plural_verb(
+        self, text: Word, count: Optional[Union[str, int, Any]] = None
+    ) -> str:
         """
         Return the plural of text, where text is a verb.
 
@@ -2433,7 +2445,10 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    def plural_adj(self, text: str, count: str = None) -> str:
+    @validate_arguments
+    def plural_adj(
+        self, text: Word, count: Optional[Union[str, int, Any]] = None
+    ) -> str:
         """
         Return the plural of text, where text is an adjective.
 
@@ -2530,10 +2545,11 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_adj)
 
+    @validate_arguments
     def singular_noun(
         self,
-        text: str,
-        count: Optional[Union[int, str]] = None,
+        text: Word,
+        count: Optional[Union[int, str, Any]] = None,
         gender: Optional[str] = None,
     ) -> Union[str, bool]:
         """
@@ -3465,7 +3481,8 @@ class engine:
 
     # ADJECTIVES
 
-    def a(self, text: str, count: int = 1) -> str:
+    @validate_arguments
+    def a(self, text: Word, count: Optional[Union[int, str, Any]] = 1) -> str:
         """
         Return the appropriate indefinite article followed by text.
 
@@ -3490,7 +3507,9 @@ class engine:
 
     an = a
 
-    def _indef_article(self, word: str, count: int) -> str:  # noqa: C901
+    def _indef_article(  # noqa: C901
+        self, word: str, count: Union[int, str, Any]
+    ) -> str:
         mycount = self.get_count(count)
 
         if mycount != 1:
@@ -3541,7 +3560,8 @@ class engine:
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
-    def no(self, text: str, count: Optional[Union[int, str]] = None) -> str:
+    @validate_arguments
+    def no(self, text: Word, count: Optional[Union[int, str]] = None) -> str:
         """
         If count is 0, no, zero or nil, return 'no' followed by the plural
         of text.
@@ -3578,7 +3598,8 @@ class engine:
 
     # PARTICIPLES
 
-    def present_participle(self, word: str) -> str:
+    @validate_arguments
+    def present_participle(self, word: Word) -> str:
         """
         Return the present participle for word.
 
@@ -3596,7 +3617,8 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    def ordinal(self, num: Union[int, str]) -> str:  # noqa: C901
+    @validate_arguments
+    def ordinal(self, num: Union[int, Word]) -> str:  # noqa: C901
         """
         Return the ordinal of num.
 
@@ -3755,16 +3777,17 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))  # noqa: C901
     def number_to_words(  # noqa: C901
         self,
-        num: Union[int, str],
+        num: Union[Number, Word],
         wantlist: bool = False,
         group: int = 0,
-        comma: str = ",",
+        comma: Union[Falsish, str] = ",",
         andword: str = "and",
         zero: str = "zero",
         one: str = "one",
-        decimal: str = "point",
+        decimal: Union[Falsish, str] = "point",
         threshold: Optional[int] = None,
     ) -> Union[str, List[str]]:
         """
@@ -3906,9 +3929,10 @@ class engine:
 
     # Join words with commas and a trailing 'and' (when appropriate)...
 
+    @validate_arguments
     def join(
         self,
-        words: Optional[Sequence[str]],
+        words: Optional[Sequence[Word]],
         sep: Optional[str] = None,
         sep_spaced: bool = True,
         final_sep: Optional[str] = None,

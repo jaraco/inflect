@@ -2,6 +2,8 @@
 
 import unittest
 
+import pytest
+
 from inflect import (
     BadChunkingOptionError,
     NumOutOfRangeError,
@@ -253,7 +255,6 @@ class test(unittest.TestCase):
     def test_pl(self):
         p = inflect.engine()
         for fn, sing, plur in (
-            (p.plural, "", ""),
             (p.plural, "cow", "cows"),
             (p.plural, "thought", "thoughts"),
             (p.plural, "mouse", "mice"),
@@ -265,15 +266,12 @@ class test(unittest.TestCase):
             (p.plural, "carmen", "carmina"),
             (p.plural, "quartz", "quartzes"),
             (p.plural, "care", "cares"),
-            (p.plural_noun, "", ""),
             (p.plural_noun, "cow", "cows"),
             (p.plural_noun, "thought", "thoughts"),
             (p.plural_noun, "snooze", "snoozes"),
-            (p.plural_verb, "", ""),
             (p.plural_verb, "runs", "run"),
             (p.plural_verb, "thought", "thought"),
             (p.plural_verb, "eyes", "eye"),
-            (p.plural_adj, "", ""),
             (p.plural_adj, "a", "some"),
             (p.plural_adj, "this", "these"),
             (p.plural_adj, "that", "those"),
@@ -312,6 +310,12 @@ class test(unittest.TestCase):
 
         self.assertEqual(p.plural("die"), "dice")
         self.assertEqual(p.plural_noun("die"), "dice")
+
+        with pytest.raises(Exception):
+            p.plural("")
+            p.plural_noun("")
+            p.plural_verb("")
+            p.plural_adj("")
 
     def test_sinoun(self):
         p = inflect.engine()
@@ -567,7 +571,6 @@ class test(unittest.TestCase):
     def test__plnoun(self):
         p = inflect.engine()
         for sing, plur in (
-            ("", ""),
             ("tuna", "tuna"),
             ("TUNA", "TUNA"),
             ("swordfish", "swordfish"),
@@ -698,7 +701,8 @@ class test(unittest.TestCase):
 
     def test__pl_special_verb(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_special_verb(""), False)
+        with pytest.raises(Exception):
+            self.assertEqual(p._pl_special_verb(""), False)
         self.assertEqual(p._pl_special_verb("am"), "are")
         self.assertEqual(p._pl_special_verb("am", 0), "are")
         self.assertEqual(p._pl_special_verb("runs", 0), "run")
@@ -800,7 +804,8 @@ class test(unittest.TestCase):
         self.assertEqual(p.a("cat", 2), "2 cat")
 
         self.assertEqual(p.a, p.an)
-        self.assertEqual(p.a(""), "")
+        with pytest.raises(Exception):
+            p.a("")
 
     def test_no(self):
         p = inflect.engine()
