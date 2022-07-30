@@ -67,6 +67,10 @@ from typing import (
 )
 
 
+from pydantic import Field, validate_arguments
+from pydantic.typing import Annotated
+
+
 class UnknownClassicalModeError(Exception):
     pass
 
@@ -2033,6 +2037,9 @@ class Words(str):
         self.last = self.split_[-1]
 
 
+Word = Annotated[str, Field(min_length=1)]
+
+
 class engine:
     def __init__(self) -> None:
 
@@ -2444,7 +2451,8 @@ class engine:
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
         return f"{pre}{plural}{post}"
 
-    def compare(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
 
@@ -2463,7 +2471,7 @@ class engine:
 
         Words should not be empty.
 
-        >>> compare('egg', '')  # #157: # doctest: +SKIP
+        >>> compare('egg', '')
         Traceback (most recent call last):
         ...
         pydantic.error_wrappers.ValidationError: 1 validation error for Compare
