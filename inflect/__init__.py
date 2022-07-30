@@ -67,6 +67,10 @@ from typing import (
 )
 
 
+from pydantic import Field, validate_arguments
+from pydantic.typing import Annotated
+
+
 class UnknownClassicalModeError(Exception):
     pass
 
@@ -2033,6 +2037,9 @@ class Words(str):
         self.last = self.split_[-1]
 
 
+Word = Annotated[str, Field(min_length=1)]
+
+
 class engine:
     def __init__(self) -> None:
 
@@ -2444,7 +2451,8 @@ class engine:
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
         return f"{pre}{plural}{post}"
 
-    def compare(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
 
@@ -2455,12 +2463,27 @@ class engine:
         p:p - word1 and word2 are two different plural forms of the one word
         False - otherwise
 
+        >>> compare = engine().compare
+        >>> compare("egg", "eggs")
+        's:p'
+        >>> compare('egg', 'egg')
+        'eq'
+
+        Words should not be empty.
+
+        >>> compare('egg', '')
+        Traceback (most recent call last):
+        ...
+        pydantic.error_wrappers.ValidationError: 1 validation error for Compare
+        word2
+          ensure this value has at least 1 characters...
         """
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
 
-    def compare_nouns(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_nouns(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as nouns
@@ -2475,7 +2498,8 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_noun)
 
-    def compare_verbs(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_verbs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as verbs
@@ -2490,7 +2514,8 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_verb)
 
-    def compare_adjs(self, word1: str, word2: str) -> Union[str, bool]:
+    @validate_arguments
+    def compare_adjs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
         word1 and word2 are to be treated as adjectives
