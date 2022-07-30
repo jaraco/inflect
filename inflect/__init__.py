@@ -2456,11 +2456,9 @@ class engine:
         False - otherwise
 
         """
-        return (
-            self._plequal(word1, word2, self.plural_noun)
-            or self._plequal(word1, word2, self.plural_verb)
-            or self._plequal(word1, word2, self.plural_adj)
-        )
+        norms = self.plural_noun, self.plural_verb, self.plural_adj
+        results = (self._plequal(word1, word2, norm) for norm in norms)
+        return next(filter(None, results), False)
 
     def compare_nouns(self, word1: str, word2: str) -> Union[str, bool]:
         """
