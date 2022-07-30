@@ -2466,7 +2466,9 @@ class engine:
         >>> compare('egg', '')  # #157: # doctest: +SKIP
         Traceback (most recent call last):
         ...
-        ValueError: empty words not allowed
+        pydantic.error_wrappers.ValidationError: 1 validation error for Compare
+        word2
+          ensure this value has at least 1 characters...
         """
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
