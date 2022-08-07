@@ -3420,6 +3420,9 @@ class engine:
         if words.lowered[-3:] == "xes":
             return word[:-2]
 
+        if words.lowered[-2:] == "ss":
+            return False
+
         # HANDLE ...f -> ...ves
 
         if word in si_sb_ves_ve_case or words.last.lower() in si_sb_ves_ve:
