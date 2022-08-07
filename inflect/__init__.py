@@ -3472,6 +3472,8 @@ class engine:
 
         if word in si_sb_es_is:
             return word[:-2] + "is"
+        elif word[:-2] + "es" in si_sb_es_is:
+            return False
 
         # OTHERWISE JUST REMOVE ...s
 
