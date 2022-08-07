@@ -2973,6 +2973,9 @@ class engine:
 
         # OTHERWISE JUST ADD ...s
 
+        if word[-1] == "s":
+            return word
+
         return f"{word}s"
 
     @classmethod
