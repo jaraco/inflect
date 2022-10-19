@@ -72,6 +72,7 @@ from typing import (
 from numbers import Number
 
 
+from more_itertools import always_iterable
 from pydantic import Field, validate_arguments
 from pydantic.typing import Annotated
 
@@ -129,9 +130,7 @@ def joinstem(cutpoint: Optional[int] = 0, words: Optional[Iterable[str]] = None)
     '(?:ephemer|ir|.*it)'
 
     """
-    if words is None:
-        words = ""
-    return enclose("|".join(w[:cutpoint] for w in words))
+    return enclose("|".join(w[:cutpoint] for w in always_iterable(words)))
 
 
 def bysize(words: Iterable[str]) -> Dict[int, set]:
