@@ -118,14 +118,15 @@ def enclose(s: str) -> str:
 
 def joinstem(cutpoint: Optional[int] = 0, words: Optional[Iterable[str]] = None) -> str:
     """
-    join stem of each word in words into a string for regex
-    each word is truncated at cutpoint
-    cutpoint is usually negative indicating the number of letters to remove
-    from the end of each word
+    Join stem of each word in words into a string for regex.
 
-    e.g.
-    joinstem(-2, ["ephemeris", "iris", ".*itis"]) returns
-    (?:ephemer|ir|.*it)
+    Each word is truncated at cutpoint.
+
+    Cutpoint is usually negative indicating the number of letters to remove
+    from the end of each word.
+
+    >>> joinstem(-2, ["ephemeris", "iris", ".*itis"])
+    '(?:ephemer|ir|.*it)'
 
     """
     if words is None:
