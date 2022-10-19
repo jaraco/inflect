@@ -1,42 +1,45 @@
 """
-correctly generate plurals, ordinals, indefinite articles;
-convert numbers to words
+inflect: english language inflection
+ - correctly generate plurals, ordinals, indefinite articles
+ - convert numbers to words
 
 Copyright (C) 2010 Paul Dyson
 
-Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
-
-The original Perl module Lingua::EN::Inflect by Damian Conway is
-available from http://search.cpan.org/~dconway/
-
-This module can be downloaded at http://pypi.org/project/inflect
+Based upon the Perl module
+`Lingua::EN::Inflect <https://metacpan.org/pod/Lingua::EN::Inflect>`_.
 
 methods:
-      classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun no num a an
-      compare compare_nouns compare_verbs compare_adjs
-      present_participle
-      ordinal
-      number_to_words
-      join
-      defnoun defverb defadj defa defan
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun no num a an
+    compare compare_nouns compare_verbs compare_adjs
+    present_participle
+    ordinal
+    number_to_words
+    join
+    defnoun defverb defadj defa defan
 
-INFLECTIONS:    classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun compare
-      no num a an present_participle
+INFLECTIONS:
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun compare
+    no num a an present_participle
 
-PLURALS:   classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun no num
-      compare compare_nouns compare_verbs compare_adjs
+PLURALS:
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun no num
+    compare compare_nouns compare_verbs compare_adjs
 
-COMPARISONS:    classical
-      compare compare_nouns compare_verbs compare_adjs
+COMPARISONS:
+    classical
+    compare compare_nouns compare_verbs compare_adjs
 
-ARTICLES:   classical inflect num a an
+ARTICLES:
+    classical inflect num a an
 
-NUMERICAL:      ordinal number_to_words
+NUMERICAL:
+    ordinal number_to_words
 
-USER_DEFINED:   defnoun defverb defadj defa defan
+USER_DEFINED:
+    defnoun defverb defadj defa defan
 
 Exceptions:
  UnknownClassicalModeError
