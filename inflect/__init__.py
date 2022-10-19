@@ -3553,13 +3553,15 @@ class engine:
         if value is not None:
             return f"{value} {word}"
 
-        for regexen, article in self._indef_article_cases:
-            mo = regexen.search(word)
-            if mo:
-                return f"{article} {word}"
+        matches = (
+            f'{article} {word}'
+            for regexen, article in self._indef_article_cases
+            if regexen.search(word)
+        )
 
         # OTHERWISE, GUESS "a"
-        return f"a {word}"
+        fallback = f'a {word}'
+        return next(matches, fallback)
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
