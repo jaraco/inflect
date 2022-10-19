@@ -3510,9 +3510,38 @@ class engine:
 
     an = a
 
-    def _indef_article(  # noqa: C901
-        self, word: str, count: Union[int, str, Any]
-    ) -> str:
+    _indef_article_cases = (
+        # HANDLE ORDINAL FORMS
+        (A_ordinal_a, "a"),
+        (A_ordinal_an, "an"),
+        # HANDLE SPECIAL CASES
+        (A_explicit_an, "an"),
+        (SPECIAL_AN, "an"),
+        (SPECIAL_A, "a"),
+        # HANDLE ABBREVIATIONS
+        (A_abbrev, "an"),
+        (SPECIAL_ABBREV_AN, "an"),
+        (SPECIAL_ABBREV_A, "a"),
+        # HANDLE CONSONANTS
+        (CONSONANTS, "a"),
+        # HANDLE SPECIAL VOWEL-FORMS
+        (ARTICLE_SPECIAL_EU, "a"),
+        (ARTICLE_SPECIAL_ONCE, "a"),
+        (ARTICLE_SPECIAL_ONETIME, "a"),
+        (ARTICLE_SPECIAL_UNIT, "a"),
+        (ARTICLE_SPECIAL_UBA, "a"),
+        (ARTICLE_SPECIAL_UKR, "a"),
+        (A_explicit_a, "a"),
+        # HANDLE SPECIAL CAPITALS
+        (SPECIAL_CAPITALS, "a"),
+        # HANDLE VOWELS
+        (VOWELS, "an"),
+        # HANDLE y...
+        # (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
+        (A_y_cons, "an"),
+    )
+
+    def _indef_article(self, word: str, count: Union[int, str, Any]) -> str:
         mycount = self.get_count(count)
 
         if mycount != 1:
@@ -3524,36 +3553,7 @@ class engine:
         if value is not None:
             return f"{value} {word}"
 
-        for regexen, article in (
-            # HANDLE ORDINAL FORMS
-            (A_ordinal_a, "a"),
-            (A_ordinal_an, "an"),
-            # HANDLE SPECIAL CASES
-            (A_explicit_an, "an"),
-            (SPECIAL_AN, "an"),
-            (SPECIAL_A, "a"),
-            # HANDLE ABBREVIATIONS
-            (A_abbrev, "an"),
-            (SPECIAL_ABBREV_AN, "an"),
-            (SPECIAL_ABBREV_A, "a"),
-            # HANDLE CONSONANTS
-            (CONSONANTS, "a"),
-            # HANDLE SPECIAL VOWEL-FORMS
-            (ARTICLE_SPECIAL_EU, "a"),
-            (ARTICLE_SPECIAL_ONCE, "a"),
-            (ARTICLE_SPECIAL_ONETIME, "a"),
-            (ARTICLE_SPECIAL_UNIT, "a"),
-            (ARTICLE_SPECIAL_UBA, "a"),
-            (ARTICLE_SPECIAL_UKR, "a"),
-            (A_explicit_a, "a"),
-            # HANDLE SPECIAL CAPITALS
-            (SPECIAL_CAPITALS, "a"),
-            # HANDLE VOWELS
-            (VOWELS, "an"),
-            # HANDLE y...
-            # (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
-            (A_y_cons, "an"),
-        ):
+        for regexen, article in self._indef_article_cases:
             mo = regexen.search(word)
             if mo:
                 return f"{article} {word}"
