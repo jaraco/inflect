@@ -1,3 +1,8 @@
+v6.0.1
+======
+
+* Minor tweaks and packaging refresh.
+
 v6.0.0
 ======
 
