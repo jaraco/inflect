@@ -55,6 +55,7 @@ Exceptions:
 import ast
 import re
 import functools
+import collections
 import contextlib
 from typing import (
     Dict,
@@ -148,12 +149,10 @@ def bysize(words: Iterable[str]) -> Dict[int, set]:
     >>> ret[5]
     {'horse'}
     """
-    ret: Dict[int, set] = {}
+    res: Dict[int, set] = collections.defaultdict(set)
     for w in words:
-        if len(w) not in ret:
-            ret[len(w)] = set()
-        ret[len(w)].add(w)
-    return ret
+        res[len(w)].add(w)
+    return res
 
 
 def make_pl_si_lists(
