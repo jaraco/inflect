@@ -139,12 +139,14 @@ def joinstem(cutpoint: Optional[int] = 0, words: Optional[Iterable[str]] = None)
 
 def bysize(words: Iterable[str]) -> Dict[int, set]:
     """
-    take a list of words and return a dict of sets sorted by word length
-    e.g.
-    ret[3]=set(['ant', 'cat', 'dog', 'pig'])
-    ret[4]=set(['frog', 'goat'])
-    ret[5]=set(['horse'])
-    ret[8]=set(['elephant'])
+    From a list of words, return a dict of sets sorted by word length.
+
+    >>> words = ['ant', 'cat', 'dog', 'pig', 'frog', 'goat', 'horse', 'elephant']
+    >>> ret = bysize(words)
+    >>> sorted(ret[3])
+    ['ant', 'cat', 'dog', 'pig']
+    >>> ret[5]
+    {'horse'}
     """
     ret: Dict[int, set] = {}
     for w in words:
