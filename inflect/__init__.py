@@ -128,6 +128,11 @@ def joinstem(cutpoint: Optional[int] = 0, words: Optional[Iterable[str]] = None)
     >>> joinstem(-2, ["ephemeris", "iris", ".*itis"])
     '(?:ephemer|ir|.*it)'
 
+    >>> joinstem(None, ["ephemeris"])
+    '(?:ephemeris)'
+
+    >>> joinstem(5, None)
+    '(?:)'
     """
     return enclose("|".join(w[:cutpoint] for w in words or []))
 
