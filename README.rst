@@ -76,7 +76,7 @@ SYNOPSIS
     # SELECT THE GENDER OF SINGULAR PRONOUNS
 
     print(p.singular_noun("they"))  # 'it'
-    p.gender("f")
+    p.gender("feminine")
     print(p.singular_noun("they"))  # 'she'
 
 
