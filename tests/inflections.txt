@@ -319,6 +319,7 @@
                   goy  ->  goys|goyim
              graffiti  ->  graffiti
     TODO:singular_noun 2 diff ret values         graffito  ->  graffiti
+                grass  ->  grasses
               grizzly  ->  grizzlies
                 guano  ->  guanos
             guardsman  ->  guardsmen
@@ -406,6 +407,7 @@
            jackanapes  ->  jackanapes
              Japanese  ->  Japanese
              Javanese  ->  Javanese
+                jeans  ->  jeans
                 Jerry  ->  Jerrys
                 jerry  ->  jerries
                  jinx  ->  jinxes
@@ -446,6 +448,7 @@
             Londonese  ->  Londonese
                  lore  ->  lores|lore
            Lorrainese  ->  Lorrainese
+                 loss  ->  losses
              lothario  ->  lotharios
                 louse  ->  lice
              Lucchese  ->  Lucchese
@@ -476,6 +479,7 @@
                mantis  ->  mantises
               marquis  ->  marquises
                  Mary  ->  Marys
+                 mass  ->  masses
               maximum  ->  maximums|maxima
               measles  ->  measles
                medico  ->  medicos
@@ -485,7 +489,9 @@
            memorandum  ->  memorandums|memoranda
              meniscus  ->  menisci
                merman  ->  mermen
+                 mess  ->  messes
             Messinese  ->  Messinese
+          metabolysis  ->  metabolyses
         metamorphosis  ->  metamorphoses
            metropolis  ->  metropolises
                  mews  ->  mews
@@ -505,6 +511,7 @@
                 money  ->  monies
              mongoose  ->  mongooses
                 moose  ->  moose
+                 moss  ->  mosses
         mother-in-law  ->  mothers-in-law
                 mouse  ->  mice
                 mumps  ->  mumps
@@ -563,6 +570,7 @@
               Panaman  ->  Panamans
              parabola  ->  parabolas|parabolae
               Parmese  ->  Parmese
+                 pass  ->  passes
                pathos  ->  pathoses
               pegasus  ->  pegasuses
             Pekingese  ->  Pekingese
@@ -585,6 +593,7 @@
                  pika  ->  pikas
    TODO:singular_noun ret mul value            pincer  ->  pincers
               pincers  ->  pincers
+                 piss  ->  pisses
             Pistoiese  ->  Pistoiese
               plateau  ->  plateaus|plateaux
                  play  ->  plays
@@ -612,6 +621,7 @@
             protozoan  ->  protozoans
             protozoon  ->  protozoa
                  puma  ->  pumas
+                 puss  ->  pusses
      TODO:siverb             put  ->  put
               quantum  ->  quantums|quanta
  TODO:singular_noun quartermaster general  ->  quartermasters general
@@ -641,6 +651,7 @@
               rostrum  ->  rostrums|rostra
                ruckus  ->  ruckuses
                salmon  ->  salmon
+               sandal  ->  sandals
             Sangirese  ->  Sangirese
    TODO: siverb              sank  ->  sank
            Sarawakese  ->  Sarawakese
@@ -708,6 +719,7 @@
                stereo  ->  stereos
                stigma  ->  stigmas|stigmata
              stimulus  ->  stimuli
+              stocking -> stockings
                 stoma  ->  stomas|stomata
               stomach  ->  stomachs
                storey  ->  storeys
@@ -780,6 +792,7 @@
                 tooth  ->  teeth
              Torinese  ->  Torinese
                 torus  ->  toruses|tori
+                 toss  ->  tosses
             trapezium  ->  trapeziums|trapezia
                trauma  ->  traumas|traumata
               travois  ->  travois
