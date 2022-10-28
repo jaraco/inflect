@@ -188,6 +188,7 @@
               classes  ->  class                          # VERB FORM
              clippers  ->  clippers
              clitoris  ->  clitorises|clitorides
+          co-analysis  ->  co-analyses
                   cod  ->  cod
                 codex  ->  codices
                coitus  ->  coitus

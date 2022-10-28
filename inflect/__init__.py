@@ -3486,6 +3486,13 @@ class engine:
         elif word[:-2] + "es" in si_sb_es_is:
             return False
 
+        # HANDLE COMPOUNDS WITH ...es WORDS, LIKE CO-ANALYSES
+
+        if dash_split[-1] in si_sb_es_is:
+            return word[:-2] + "is"
+        elif dash_split[-1][:-2] + "es" in si_sb_es_is:
+            return False
+
         # OTHERWISE JUST REMOVE ...s
 
         if words.lowered[-1] == "s":
