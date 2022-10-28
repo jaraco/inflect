@@ -1,3 +1,13 @@
+v6.0.2
+======
+
+* #169: Require pydantic 1.9.1 to avoid ``ValueError``.
+
+v6.0.1
+======
+
+* Minor tweaks and packaging refresh.
+
 v6.0.0
 ======
 
