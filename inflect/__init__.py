@@ -1,42 +1,45 @@
 """
-correctly generate plurals, ordinals, indefinite articles;
-convert numbers to words
+inflect: english language inflection
+ - correctly generate plurals, ordinals, indefinite articles
+ - convert numbers to words
 
 Copyright (C) 2010 Paul Dyson
 
-Based upon the Perl module Lingua::EN::Inflect by Damian Conway.
-
-The original Perl module Lingua::EN::Inflect by Damian Conway is
-available from http://search.cpan.org/~dconway/
-
-This module can be downloaded at http://pypi.org/project/inflect
+Based upon the Perl module
+`Lingua::EN::Inflect <https://metacpan.org/pod/Lingua::EN::Inflect>`_.
 
 methods:
-      classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun no num a an
-      compare compare_nouns compare_verbs compare_adjs
-      present_participle
-      ordinal
-      number_to_words
-      join
-      defnoun defverb defadj defa defan
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun no num a an
+    compare compare_nouns compare_verbs compare_adjs
+    present_participle
+    ordinal
+    number_to_words
+    join
+    defnoun defverb defadj defa defan
 
-INFLECTIONS:    classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun compare
-      no num a an present_participle
+INFLECTIONS:
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun compare
+    no num a an present_participle
 
-PLURALS:   classical inflect
-      plural plural_noun plural_verb plural_adj singular_noun no num
-      compare compare_nouns compare_verbs compare_adjs
+PLURALS:
+    classical inflect
+    plural plural_noun plural_verb plural_adj singular_noun no num
+    compare compare_nouns compare_verbs compare_adjs
 
-COMPARISONS:    classical
-      compare compare_nouns compare_verbs compare_adjs
+COMPARISONS:
+    classical
+    compare compare_nouns compare_verbs compare_adjs
 
-ARTICLES:   classical inflect num a an
+ARTICLES:
+    classical inflect num a an
 
-NUMERICAL:      ordinal number_to_words
+NUMERICAL:
+    ordinal number_to_words
 
-USER_DEFINED:   defnoun defverb defadj defa defan
+USER_DEFINED:
+    defnoun defverb defadj defa defan
 
 Exceptions:
  UnknownClassicalModeError
@@ -52,6 +55,7 @@ Exceptions:
 import ast
 import re
 import functools
+import collections
 import contextlib
 from typing import (
     Dict,
@@ -115,36 +119,40 @@ def enclose(s: str) -> str:
 
 def joinstem(cutpoint: Optional[int] = 0, words: Optional[Iterable[str]] = None) -> str:
     """
-    join stem of each word in words into a string for regex
-    each word is truncated at cutpoint
-    cutpoint is usually negative indicating the number of letters to remove
-    from the end of each word
+    Join stem of each word in words into a string for regex.
 
-    e.g.
-    joinstem(-2, ["ephemeris", "iris", ".*itis"]) returns
-    (?:ephemer|ir|.*it)
+    Each word is truncated at cutpoint.
 
+    Cutpoint is usually negative indicating the number of letters to remove
+    from the end of each word.
+
+    >>> joinstem(-2, ["ephemeris", "iris", ".*itis"])
+    '(?:ephemer|ir|.*it)'
+
+    >>> joinstem(None, ["ephemeris"])
+    '(?:ephemeris)'
+
+    >>> joinstem(5, None)
+    '(?:)'
     """
-    if words is None:
-        words = ""
-    return enclose("|".join(w[:cutpoint] for w in words))
+    return enclose("|".join(w[:cutpoint] for w in words or []))
 
 
 def bysize(words: Iterable[str]) -> Dict[int, set]:
     """
-    take a list of words and return a dict of sets sorted by word length
-    e.g.
-    ret[3]=set(['ant', 'cat', 'dog', 'pig'])
-    ret[4]=set(['frog', 'goat'])
-    ret[5]=set(['horse'])
-    ret[8]=set(['elephant'])
+    From a list of words, return a dict of sets sorted by word length.
+
+    >>> words = ['ant', 'cat', 'dog', 'pig', 'frog', 'goat', 'horse', 'elephant']
+    >>> ret = bysize(words)
+    >>> sorted(ret[3])
+    ['ant', 'cat', 'dog', 'pig']
+    >>> ret[5]
+    {'horse'}
     """
-    ret: Dict[int, set] = {}
+    res: Dict[int, set] = collections.defaultdict(set)
     for w in words:
-        if len(w) not in ret:
-            ret[len(w)] = set()
-        ret[len(w)].add(w)
-    return ret
+        res[len(w)].add(w)
+    return res
 
 
 def make_pl_si_lists(
@@ -3515,9 +3523,38 @@ class engine:
 
     an = a
 
-    def _indef_article(  # noqa: C901
-        self, word: str, count: Union[int, str, Any]
-    ) -> str:
+    _indef_article_cases = (
+        # HANDLE ORDINAL FORMS
+        (A_ordinal_a, "a"),
+        (A_ordinal_an, "an"),
+        # HANDLE SPECIAL CASES
+        (A_explicit_an, "an"),
+        (SPECIAL_AN, "an"),
+        (SPECIAL_A, "a"),
+        # HANDLE ABBREVIATIONS
+        (A_abbrev, "an"),
+        (SPECIAL_ABBREV_AN, "an"),
+        (SPECIAL_ABBREV_A, "a"),
+        # HANDLE CONSONANTS
+        (CONSONANTS, "a"),
+        # HANDLE SPECIAL VOWEL-FORMS
+        (ARTICLE_SPECIAL_EU, "a"),
+        (ARTICLE_SPECIAL_ONCE, "a"),
+        (ARTICLE_SPECIAL_ONETIME, "a"),
+        (ARTICLE_SPECIAL_UNIT, "a"),
+        (ARTICLE_SPECIAL_UBA, "a"),
+        (ARTICLE_SPECIAL_UKR, "a"),
+        (A_explicit_a, "a"),
+        # HANDLE SPECIAL CAPITALS
+        (SPECIAL_CAPITALS, "a"),
+        # HANDLE VOWELS
+        (VOWELS, "an"),
+        # HANDLE y...
+        # (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
+        (A_y_cons, "an"),
+    )
+
+    def _indef_article(self, word: str, count: Union[int, str, Any]) -> str:
         mycount = self.get_count(count)
 
         if mycount != 1:
@@ -3529,42 +3566,15 @@ class engine:
         if value is not None:
             return f"{value} {word}"
 
-        for regexen, article in (
-            # HANDLE ORDINAL FORMS
-            (A_ordinal_a, "a"),
-            (A_ordinal_an, "an"),
-            # HANDLE SPECIAL CASES
-            (A_explicit_an, "an"),
-            (SPECIAL_AN, "an"),
-            (SPECIAL_A, "a"),
-            # HANDLE ABBREVIATIONS
-            (A_abbrev, "an"),
-            (SPECIAL_ABBREV_AN, "an"),
-            (SPECIAL_ABBREV_A, "a"),
-            # HANDLE CONSONANTS
-            (CONSONANTS, "a"),
-            # HANDLE SPECIAL VOWEL-FORMS
-            (ARTICLE_SPECIAL_EU, "a"),
-            (ARTICLE_SPECIAL_ONCE, "a"),
-            (ARTICLE_SPECIAL_ONETIME, "a"),
-            (ARTICLE_SPECIAL_UNIT, "a"),
-            (ARTICLE_SPECIAL_UBA, "a"),
-            (ARTICLE_SPECIAL_UKR, "a"),
-            (A_explicit_a, "a"),
-            # HANDLE SPECIAL CAPITALS
-            (SPECIAL_CAPITALS, "a"),
-            # HANDLE VOWELS
-            (VOWELS, "an"),
-            # HANDLE y...
-            # (BEFORE CERTAIN CONSONANTS IMPLIES (UNNATURALIZED) "i.." SOUND)
-            (A_y_cons, "an"),
-        ):
-            mo = regexen.search(word)
-            if mo:
-                return f"{article} {word}"
+        matches = (
+            f'{article} {word}'
+            for regexen, article in self._indef_article_cases
+            if regexen.search(word)
+        )
 
         # OTHERWISE, GUESS "a"
-        return f"a {word}"
+        fallback = f'a {word}'
+        return next(matches, fallback)
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
