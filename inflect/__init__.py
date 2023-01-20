@@ -1854,7 +1854,7 @@ pl_adj_poss_keys = re.compile(fr"^({enclose('|'.join(pl_adj_poss))})$", re.IGNOR
 
 A_abbrev = re.compile(
     r"""
-(?! FJO | [HLMNS]Y.  | RY[EO] | SQU
+^(?! FJO | [HLMNS]Y.  | RY[EO] | SQU
   | ( F[LR]? | [HL] | MN? | N | RH? | S[CHKLMNPTVW]? | X(YL)?) [AEIOU])
 [FHLMNRSX][A-Z]
 """,

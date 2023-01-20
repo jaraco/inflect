@@ -21,7 +21,6 @@ def test_an():
     assert p.an("wild PIKACHU appeared") == "a wild PIKACHU appeared"
 
 
-@__import__('pytest').mark.xfail(reason="#136")
 def test_an_abbreviation():
     p = inflect.engine()
 
