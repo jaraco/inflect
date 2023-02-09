@@ -3822,15 +3822,12 @@ class engine:
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
-            spnum = num.split(".", 1)
+            int_part, _, dec_part = num.partition(".")
             while comma:
-                (spnum[0], n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", spnum[0])
+                (int_part, n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", int_part)
                 if n == 0:
                     break
-            try:
-                return f"{spnum[0]}.{spnum[1]}"
-            except IndexError:
-                return str(spnum[0])
+            return f"{int_part}.{dec_part}" if dec_part else f"{int_part}"
 
         if group < 0 or group > 3:
             raise BadChunkingOptionError
