@@ -2031,8 +2031,6 @@ PRESENT_PARTICIPLE_REPLACEMENTS = (
     (re.compile(r"([^aeiou][aeiouy]([bdgmnprst]))$"), r"\g<1>\g<2>"),
 )
 
-DIGIT = re.compile(r"\d")
-
 
 class Words(str):
     lowered: str
@@ -3628,7 +3626,7 @@ class engine:
     # NUMERICAL INFLECTIONS
 
     @validate_arguments
-    def ordinal(self, num: Union[int, Word]) -> str:  # noqa: C901
+    def ordinal(self, num: Union[int, Word]) -> str:
         """
         Return the ordinal of num.
 
@@ -3638,20 +3636,10 @@ class engine:
         ordinal('one') returns 'first'
 
         """
-        if DIGIT.match(str(num)):
-            if isinstance(num, (int, float)):
-                n = int(num)
-            else:
-                if "." in str(num):
-                    try:
-                        # numbers after decimal,
-                        # so only need last one for ordinal
-                        n = int(num[-1])
-
-                    except ValueError:  # ends with '.', so need to use whole string
-                        n = int(num[:-1])
-                else:
-                    n = int(num)
+        num = str(num)
+        if num.isdigit():
+            int_part, _, dec_part = num.partition(".")
+            n = int(dec_part[-1] if dec_part else int_part)
             try:
                 post = nth[n % 100]
             except KeyError:
