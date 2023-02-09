@@ -31,11 +31,13 @@ def test_pl_si():
 
 
 def check_pl_si(p, word):
-    if p.singular_noun(p.plural_noun(word, 2), 1) != word:
-        with open("badsi.txt", "a") as f:
-            f.write(
-                "{} {} {}\n".format(
-                    word, p.plural_noun(word, 2), p.singular_noun(p.plural_noun(word, 2), 1)
-                )
+    if p.singular_noun(p.plural_noun(word, 2), 1) == word:
+        return
+
+    with open("badsi.txt", "a") as f:
+        f.write(
+            "{} {} {}\n".format(
+                word, p.plural_noun(word, 2), p.singular_noun(p.plural_noun(word, 2), 1)
             )
-        assert p.singular_noun(p.plural_noun(word, 2), 1) == word
+        )
+    assert p.singular_noun(p.plural_noun(word, 2), 1) == word
