@@ -15,31 +15,24 @@ def is_eq(p, a, b):
     )
 
 
-def test_many():  # noqa: C901
+def test_many():
     p = inflect.engine()
 
     data = get_data()
 
     for line in data:
-        if "TODO:" in line:
+        if "TODO:" in line or "->" not in line:
             continue
-        try:
-            singular, rest = line.split("->", 1)
-        except ValueError:
-            continue
+        singular, _, rest = line.partition("->")
         singular = singular.strip()
+
         rest = rest.strip()
-        try:
-            plural, comment = rest.split("#", 1)
-        except ValueError:
-            plural = rest.strip()
-            comment = ""
-        try:
-            mod_plural, class_plural = plural.split("|", 1)
-            mod_plural = mod_plural.strip()
-            class_plural = class_plural.strip()
-        except ValueError:
-            mod_plural = class_plural = plural.strip()
+        plural, _, comment = rest.partition("#")
+
+        plural = plural.strip()
+        mod_plural, _, class_plural = plural.partition("|")
+        class_plural = class_plural or mod_plural
+
         if "verb" in comment.lower():
             is_nv = "_V"
         elif "noun" in comment.lower():
