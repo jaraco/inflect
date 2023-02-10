@@ -2007,11 +2007,12 @@ THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 
-FOUR_DIGIT_COMMA = re.compile(r"(\d)(\d{3}(?:,|\Z))")
 NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
 WHITESPACES = re.compile(r"\s+")
+
+COMMA_SEPARATED_INTEGER = "{:,.0f}"
 
 
 PRESENT_PARTICIPLE_REPLACEMENTS = (
@@ -3811,10 +3812,8 @@ class engine:
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
             int_part, _, dec_part = num.partition(".")
-            while comma:
-                (int_part, n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", int_part)
-                if n == 0:
-                    break
+            if comma:
+                int_part = COMMA_SEPARATED_INTEGER.format(float(int_part))
             return f"{int_part}.{dec_part}" if dec_part else f"{int_part}"
 
         if group < 0 or group > 3:
