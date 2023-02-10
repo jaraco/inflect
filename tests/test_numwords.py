@@ -2,7 +2,6 @@ import inflect
 
 
 def test_loop():
-
     p = inflect.engine()
 
     for thresh in range(21):

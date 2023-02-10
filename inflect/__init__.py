@@ -2053,7 +2053,6 @@ Falsish = Any  # ideally, falsish would only validate on bool(value) is False
 
 class engine:
     def __init__(self) -> None:
-
         self.classical_dict = def_classical.copy()
         self.persistent_count: Optional[int] = None
         self.mill_count = 0
@@ -3341,7 +3340,6 @@ class engine:
         # HANDLE INCOMPLETELY ASSIMILATED IMPORTS
 
         if self.classical_dict["ancient"]:
-
             if words.lowered[-6:] == "trices":
                 return word[:-3] + "x"
             if words.lowered[-4:] in ("eaux", "ieux"):
@@ -3459,7 +3457,6 @@ class engine:
         # HANDLE ...o
 
         if words.lowered[-2:] == "os":
-
             if words.last.lower() in si_sb_U_o_os_complete:
                 return word[:-1]
 
