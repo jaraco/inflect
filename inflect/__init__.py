@@ -3806,7 +3806,7 @@ class engine:
         parameters not remembered from last call. Departure from Perl version.
         """
         self._number_args = {"andword": andword, "zero": zero, "one": one}
-        num = str(num)
+        num = str(num).strip()
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
@@ -3819,13 +3819,8 @@ class engine:
 
         if group < 0 or group > 3:
             raise BadChunkingOptionError
-        nowhite = num.lstrip()
-        if nowhite[0] == "+":
-            sign = "plus"
-        elif nowhite[0] == "-":
-            sign = "minus"
-        else:
-            sign = ""
+
+        sign = "plus" if num.startswith("+") else "minus" if num.startswith("-") else ""
 
         if num in nth_suff:
             num = zero
