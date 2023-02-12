@@ -3838,11 +3838,11 @@ class engine:
         else:
             chunks = [num]
 
-        first: Union[int, str, bool] = 1
+        first: Optional[bool] = True
         loopstart = 0
 
         if chunks[0] == "":
-            first = 0
+            first = None
             if len(chunks) > 1:
                 loopstart = 1
 
@@ -3853,7 +3853,7 @@ class engine:
             if chunk == "":
                 chunk = "0"
 
-            if group == 0 and (first == 0 or first == ""):
+            if group == 0 and not first:
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)
@@ -3868,11 +3868,11 @@ class engine:
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
-                first = ""
+                first = False
             chunks[i] = chunk
 
         numchunks = []
-        if first != 0:
+        if first is not None:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
@@ -3908,7 +3908,7 @@ class engine:
             for nc in numchunks:
                 if nc == decimal:
                     num += f" {nc}"
-                    first = 0
+                    first = False
                 elif first:
                     num += f"{comma} {nc}"
                 else:
