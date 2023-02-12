@@ -3847,11 +3847,7 @@ class engine:
                 loopstart = 1
 
         for i in range(loopstart, len(chunks)):
-            chunk = chunks[i]
-            # remove all non numeric \D
-            chunk = NON_DIGIT.sub("", chunk)
-            if chunk == "":
-                chunk = "0"
+            chunk = "".join(filter(str.isdigit, chunks[i])) or "0"
 
             if group or first:
                 chunk = self.enword(chunk, group)
