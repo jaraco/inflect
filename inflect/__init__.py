@@ -3854,8 +3854,7 @@ class engine:
             else:
                 chunk = self.enword(chunk, 1)
 
-            if chunk[-2:] == ", ":
-                chunk = chunk[:-2]
+            chunk = chunk[:-2] if chunk.endswith(", ") else chunk
             chunk = WHITESPACES_COMMA.sub(",", chunk)
 
             if group == 0 and first:
