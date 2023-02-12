@@ -3817,17 +3817,20 @@ class engine:
         myord = num[-2:] in nth_suff
         if myord:
             num = num[:-2]
-        finalpoint = False
-        if decimal:
-            if group != 0:
-                chunks = num.split(".")
-            else:
-                chunks = num.split(".", 1)
-            if chunks[-1] == "":  # remove blank string if nothing after decimal
-                chunks = chunks[:-1]
-                finalpoint = True  # add 'point' to end of output
-        else:
-            chunks = [num]
+
+        chunks, point, finalpoint = [num], ".", False
+        while decimal and point:
+            int_part, point, dec_part = chunks.pop().partition(point)
+            if point and not int_part:  # empty integer before decimal point
+                chunks.append("")
+            if point and not dec_part:  # empty decimal part after decimal point
+                finalpoint = True
+            chunks.extend(item for item in (int_part, dec_part) if item)
+
+        # work-in-progress / compatibility: consolidate to precisely two elements
+        # (an integer part and a decimal part) when grouping is disabled
+        if len(chunks) > 2 and not group:
+            chunks = [chunks[0], "".join(chunks[1:])]
 
         first: Optional[bool] = True
         loopstart = 0
