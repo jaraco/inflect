@@ -3853,10 +3853,10 @@ class engine:
             if chunk == "":
                 chunk = "0"
 
-            if group == 0 and not first:
-                chunk = self.enword(chunk, 1)
-            else:
+            if group or first:
                 chunk = self.enword(chunk, group)
+            else:
+                chunk = self.enword(chunk, 1)
 
             if chunk[-2:] == ", ":
                 chunk = chunk[:-2]
