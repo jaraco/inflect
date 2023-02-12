@@ -33,9 +33,9 @@ def test_many():
         mod_plural, _, class_plural = plural.partition("|")
         class_plural = class_plural or mod_plural
 
-        if "verb" in comment.lower():
+        if "VERB" in comment:
             is_nv = "_V"
-        elif "noun" in comment.lower():
+        elif "NOUN" in comment:
             is_nv = "_N"
         else:
             is_nv = ""
