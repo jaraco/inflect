@@ -33,12 +33,7 @@ def test_many():
         mod_plural, _, class_plural = plural.partition("|")
         class_plural = class_plural or mod_plural
 
-        if "VERB" in comment:
-            is_nv = "_V"
-        elif "NOUN" in comment:
-            is_nv = "_N"
-        else:
-            is_nv = ""
+        is_nv = "_V" if "VERB" in comment else "_N" if "NOUN" in comment else ""
 
         p.classical(all=0, names=0)
         mod_PL_V = p.plural_verb(singular)
