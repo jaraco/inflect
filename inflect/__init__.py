@@ -3649,13 +3649,12 @@ class engine:
         else:
             # Mad props to Damian Conway (?) whose ordinal()
             # algorithm is type-bendy enough to foil MyPy
-            str_num: str = num  # type:	ignore[assignment]
-            mo = ordinal_suff.search(str_num)
+            mo = ordinal_suff.search(num)
             if mo:
                 post = ordinal[mo.group(1)]
-                rval = ordinal_suff.sub(post, str_num)
+                rval = ordinal_suff.sub(post, num)
             else:
-                rval = f"{str_num}th"
+                rval = f"{num}th"
             return rval
 
     def millfn(self, ind: int = 0) -> str:
