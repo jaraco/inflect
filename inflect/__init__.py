@@ -3826,11 +3826,8 @@ class engine:
             if point and not dec_part:  # empty decimal part after decimal point
                 finalpoint = True
             chunks.extend(item for item in (int_part, dec_part) if item)
-
-        # work-in-progress / compatibility: consolidate to precisely two elements
-        # (an integer part and a decimal part) when grouping is disabled
-        if len(chunks) > 2 and not group:
-            chunks = [chunks[0], "".join(chunks[1:])]
+            if not group:
+                break
 
         first: Optional[bool] = True
         loopstart = 0
