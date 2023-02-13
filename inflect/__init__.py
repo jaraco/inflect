@@ -2005,7 +2005,6 @@ THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 
-NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 WHITESPACES = re.compile(r"\s+")
 
