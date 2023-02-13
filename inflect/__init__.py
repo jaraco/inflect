@@ -3642,7 +3642,7 @@ class engine:
             post = nth.get(n % 100) or nth.get(n % 10)
             return f"{num}{post}"
         else:
-            suffix = next((suffix for suffix in ordinal if num.endswith(suffix)), None)
+            suffix = next(filter(num.endswith, ordinal), None)
             if suffix:
                 return num[:-len(suffix)] + ordinal[suffix]
             return f"{num}th"
@@ -3861,7 +3861,7 @@ class engine:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
-            suffix = next((suffix for suffix in ordinal if numchunks[-1].endswith(suffix)), None)
+            suffix = next(filter(numchunks[-1].endswith, ordinal), None)
             if suffix:
                 numchunks[-1] = numchunks[-1][:-len(suffix)] + ordinal[suffix]
             else:
