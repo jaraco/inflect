@@ -3822,21 +3822,15 @@ class engine:
         while decimal and point:
             int_part, point, dec_part = chunks.pop().partition(point)
             if point and not int_part:  # empty integer before decimal point
-                chunks.append("")
+                integer_prefix = None
+                chunks.append(zero)
             if point and not dec_part:  # empty decimal part after decimal point
                 empty_decimal = True
             chunks.extend(item for item in (int_part, dec_part) if item)
             if not group:
                 break
 
-        loopstart = 0
-
-        if chunks[0] == "":
-            integer_prefix = None
-            if len(chunks) > 1:
-                loopstart = 1
-
-        for i, chunk in enumerate(chunks[loopstart:], loopstart):
+        for i, chunk in enumerate(chunks):
             chunk = "".join(filter(str.isdigit, chunk)) or "0"
 
             if group or integer_prefix:
