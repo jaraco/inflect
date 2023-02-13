@@ -3818,13 +3818,13 @@ class engine:
         if myord:
             num = num[:-2]
 
-        chunks, point, finalpoint = [num], ".", False
+        chunks, point, empty_decimal = [num], ".", False
         while decimal and point:
             int_part, point, dec_part = chunks.pop().partition(point)
             if point and not int_part:  # empty integer before decimal point
                 chunks.append("")
             if point and not dec_part:  # empty decimal part after decimal point
-                finalpoint = True
+                empty_decimal = True
             chunks.extend(item for item in (int_part, dec_part) if item)
             if not group:
                 break
@@ -3872,7 +3872,7 @@ class engine:
             numchunks.append(decimal)
             numchunks.extend(chunk.split(f"{comma} "))
 
-        if finalpoint:
+        if empty_decimal:
             numchunks.append(decimal)
 
         # wantlist: Perl list context. can explicitly specify in Python
