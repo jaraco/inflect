@@ -3863,10 +3863,9 @@ class engine:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
-            # TODO: can this be just one re as it is in perl?
-            mo = ordinal_suff.search(numchunks[-1])
-            if mo:
-                numchunks[-1] = ordinal_suff.sub(ordinal[mo.group(1)], numchunks[-1])
+            suffix = next((suffix for suffix in ordinal if numchunks[-1].endswith(suffix)), None)
+            if suffix:
+                numchunks[-1] = numchunks[-1][:-len(suffix)] + ordinal[suffix]
             else:
                 numchunks[-1] += "th"
 
