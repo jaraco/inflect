@@ -1910,8 +1910,6 @@ ordinal = dict(
     twelve="twelfth",
 )
 
-ordinal_suff = re.compile(fr"({'|'.join(ordinal)})\Z")
-
 
 # NUMBERS
 
