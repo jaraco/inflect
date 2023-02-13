@@ -3644,15 +3644,10 @@ class engine:
             post = nth.get(n % 100) or nth.get(n % 10)
             return f"{num}{post}"
         else:
-            # Mad props to Damian Conway (?) whose ordinal()
-            # algorithm is type-bendy enough to foil MyPy
-            mo = ordinal_suff.search(num)
-            if mo:
-                post = ordinal[mo.group(1)]
-                rval = ordinal_suff.sub(post, num)
-            else:
-                rval = f"{num}th"
-            return rval
+            suffix = next((suffix for suffix in ordinal if num.endswith(suffix)), None)
+            if suffix:
+                return num[:-len(suffix)] + ordinal[suffix]
+            return f"{num}th"
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
