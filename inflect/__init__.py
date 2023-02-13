@@ -3818,7 +3818,7 @@ class engine:
         if myord:
             num = num[:-2]
 
-        chunks, point, empty_decimal = [num], ".", False
+        chunks, point, integer_prefix, empty_decimal = [num], ".", True, False
         while decimal and point:
             int_part, point, dec_part = chunks.pop().partition(point)
             if point and not int_part:  # empty integer before decimal point
@@ -3829,18 +3829,17 @@ class engine:
             if not group:
                 break
 
-        first: Optional[bool] = True
         loopstart = 0
 
         if chunks[0] == "":
-            first = None
+            integer_prefix = None
             if len(chunks) > 1:
                 loopstart = 1
 
         for i, chunk in enumerate(chunks[loopstart:], loopstart):
             chunk = "".join(filter(str.isdigit, chunk)) or "0"
 
-            if group or first:
+            if group or integer_prefix:
                 chunk = self.enword(chunk, group)
             else:
                 chunk = self.enword(chunk, 1)
@@ -3848,17 +3847,17 @@ class engine:
             chunk = chunk[:-2] if chunk.endswith(", ") else chunk
             chunk = WHITESPACES_COMMA.sub(",", chunk)
 
-            if group == 0 and first:
+            if group == 0 and integer_prefix:
                 chunk = COMMA_WORD.sub(f" {andword} \\1", chunk)
             chunk = WHITESPACES.sub(" ", chunk)
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
-            if first:
-                first = False
+            if integer_prefix:
+                integer_prefix = False
             chunks[i] = chunk
 
         numchunks = []
-        if first is not None:
+        if integer_prefix is not None:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
@@ -3887,14 +3886,14 @@ class engine:
             signout = f"{sign} " if sign else ""
             num = f"{signout}{numchunks.pop(0)}"
             if decimal is None:
-                first = True
+                integer_prefix = True
             else:
-                first = not num.endswith(decimal)
+                integer_prefix = not num.endswith(decimal)
             for nc in numchunks:
                 if nc == decimal:
                     num += f" {nc}"
-                    first = False
-                elif first:
+                    integer_prefix = False
+                elif integer_prefix:
                     num += f"{comma} {nc}"
                 else:
                     num += f" {nc}"
