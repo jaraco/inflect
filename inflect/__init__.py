@@ -2007,7 +2007,6 @@ ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 
 NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
-COMMA_WORD = re.compile(r", (\S+)\s+\Z")
 WHITESPACES = re.compile(r"\s+")
 
 COMMA_SEPARATED_INTEGER = "{:,.0f}"
@@ -3842,7 +3841,11 @@ class engine:
             chunk = WHITESPACES_COMMA.sub(",", chunk)
 
             if group == 0 and integer_prefix:
-                chunk = COMMA_WORD.sub(f" {andword} \\1", chunk)
+                words = [word.strip() for word in chunk.split(",")]
+                *forewords, final_word = words
+                if forewords and final_word in unit + teen + ten:
+                    chunk = ",".join(forewords) + f" {andword} " + final_word
+
             chunk = WHITESPACES.sub(" ", chunk)
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
