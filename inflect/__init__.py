@@ -3837,8 +3837,8 @@ class engine:
             if len(chunks) > 1:
                 loopstart = 1
 
-        for i in range(loopstart, len(chunks)):
-            chunk = "".join(filter(str.isdigit, chunks[i])) or "0"
+        for i, chunk in enumerate(chunks[loopstart:], loopstart):
+            chunk = "".join(filter(str.isdigit, chunk)) or "0"
 
             if group or first:
                 chunk = self.enword(chunk, group)
