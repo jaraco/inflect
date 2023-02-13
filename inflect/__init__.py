@@ -3641,10 +3641,7 @@ class engine:
         if num.isdigit():
             int_part, _, dec_part = num.partition(".")
             n = int(dec_part[-1] if dec_part else int_part)
-            try:
-                post = nth[n % 100]
-            except KeyError:
-                post = nth[n % 10]
+            post = nth.get(n % 100) or nth.get(n % 10)
             return f"{num}{post}"
         else:
             # Mad props to Damian Conway (?) whose ordinal()
