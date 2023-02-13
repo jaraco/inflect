@@ -3645,7 +3645,8 @@ class engine:
             suffix = next(filter(num.endswith, ordinal), None)
             if suffix:
                 return num[:-len(suffix)] + ordinal[suffix]
-            return f"{num}th"
+            else:
+                return f"{num}th"
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
