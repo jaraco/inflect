@@ -3658,10 +3658,7 @@ class engine:
     def tenfn(self, tens, units, mindex=0) -> str:
         if tens != 1:
             tens_part = ten[tens]
-            if tens and units:
-                hyphen = "-"
-            else:
-                hyphen = ""
+            hyphen = "-" if tens and units else ""
             unit_part = unit[units]
             mill_part = self.millfn(mindex)
             return f"{tens_part}{hyphen}{unit_part}{mill_part}"
