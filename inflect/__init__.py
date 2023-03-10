@@ -3634,7 +3634,7 @@ class engine:
 
         """
         num = str(num)
-        if num.isdigit():
+        if any(c.isdigit() for c in num):
             int_part, _, dec_part = num.partition(".")
             n = int(dec_part[-1] if dec_part else int_part)
             post = nth.get(n % 100) or nth.get(n % 10)
