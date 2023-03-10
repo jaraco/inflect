@@ -3633,17 +3633,19 @@ class engine:
         ordinal('one') returns 'first'
 
         """
-        if any(c.isdigit() for c in num):
-            int_part, _, dec_part = num.partition(".")
-            n = int(dec_part[-1] if dec_part else int_part)
-            post = nth.get(n % 100) or nth.get(n % 10)
-            return f"{num}{post}"
-        else:
+        try:
+            float(num)
+        except ValueError:
             suffix = next(filter(num.endswith, ordinal), None)
             if suffix:
                 return num[:-len(suffix)] + ordinal[suffix]
             else:
                 return f"{num}th"
+        else:
+            int_part, _, dec_part = num.partition(".")
+            n = int(dec_part[-1] if dec_part else int_part)
+            post = nth.get(n % 100) or nth.get(n % 10)
+            return f"{num}{post}"
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
