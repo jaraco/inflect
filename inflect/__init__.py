@@ -1899,7 +1899,7 @@ nth = {
 }
 nth_suff = set(nth.values())
 
-ordinal = dict(
+known_ordinals = dict(
     ty="tieth",
     one="first",
     two="second",
@@ -3636,9 +3636,9 @@ class engine:
         try:
             float(num)
         except ValueError:
-            suffix = next(filter(num.endswith, ordinal), None)
+            suffix = next(filter(num.endswith, known_ordinals), None)
             if suffix:
-                return num[:-len(suffix)] + ordinal[suffix]
+                return num[:-len(suffix)] + known_ordinals[suffix]
             else:
                 return f"{num}th"
         else:
@@ -3855,9 +3855,9 @@ class engine:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
-            suffix = next(filter(numchunks[-1].endswith, ordinal), None)
+            suffix = next(filter(numchunks[-1].endswith, known_ordinals), None)
             if suffix:
-                numchunks[-1] = numchunks[-1][:-len(suffix)] + ordinal[suffix]
+                numchunks[-1] = numchunks[-1][:-len(suffix)] + known_ordinals[suffix]
             else:
                 numchunks[-1] += "th"
 
