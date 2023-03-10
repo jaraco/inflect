@@ -3623,7 +3623,7 @@ class engine:
     # NUMERICAL INFLECTIONS
 
     @validate_arguments
-    def ordinal(self, num: Union[int, Word]) -> str:
+    def ordinal(self, num: str) -> str:
         """
         Return the ordinal of num.
 
@@ -3633,7 +3633,6 @@ class engine:
         ordinal('one') returns 'first'
 
         """
-        num = str(num)
         if any(c.isdigit() for c in num):
             int_part, _, dec_part = num.partition(".")
             n = int(dec_part[-1] if dec_part else int_part)
