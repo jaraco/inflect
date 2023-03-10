@@ -3628,7 +3628,7 @@ class engine:
     # NUMERICAL INFLECTIONS
 
     @validate_arguments
-    def ordinal(self, num: Union[int, Word]) -> str:  # noqa: C901
+    def ordinal(self, num: Word) -> str:
         """
         Return the ordinal of num.
 
