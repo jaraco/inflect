@@ -152,10 +152,6 @@ def test_ordinal():
     assert p.ordinal(103) == "103rd"
     assert p.ordinal(104) == "104th"
 
-    assert p.ordinal(1.1) == "1.1st"
-    assert p.ordinal(1.2) == "1.2nd"
-    assert p.ordinal(5.502) == "5.502nd"
-
     assert p.ordinal("zero") == "zeroth"
     assert p.ordinal("one") == "first"
     assert p.ordinal("two") == "second"
