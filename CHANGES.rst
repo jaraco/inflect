@@ -1,3 +1,9 @@
+v6.0.3
+======
+
+* #136: A/an support now more correctly honors leading
+  capitalized words and abbreviations.
+
 v6.0.2
 ======
 
