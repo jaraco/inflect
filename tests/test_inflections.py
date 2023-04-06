@@ -265,5 +265,5 @@ def test_NameError_in_strings():
 
 def get_data():
     filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
-    with io.open(filename) as strm:
+    with io.open(filename, encoding='utf-8') as strm:
         return list(map(str.strip, strm))
