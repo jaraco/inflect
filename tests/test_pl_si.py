@@ -5,14 +5,14 @@ import inflect
 FNAME = "tests/words.txt"
 
 
+def suitable_for_pl_si(word):
+    return word and not word.endswith("'s")
+
+
 def test_pl_si():
     p = inflect.engine()
     words = pathlib.Path(FNAME).read_text(encoding='utf-8').splitlines()
-    for word in words:
-        if word == "":
-            continue
-        if word[-2:] == "'s":
-            continue
+    for word in filter(suitable_for_pl_si, words):
         p.classical(all=False)
         check_pl_si(p, word)
         p.classical(all=True)
