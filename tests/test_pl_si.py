@@ -5,13 +5,9 @@ import inflect
 FNAME = "tests/words.txt"
 
 
-def getwords():
-    return pathlib.Path(FNAME).read_text(encoding='utf-8').splitlines()
-
-
 def test_pl_si():
     p = inflect.engine()
-    words = getwords()
+    words = pathlib.Path(FNAME).read_text(encoding='utf-8').splitlines()
     for word in words:
         if word == "":
             continue
