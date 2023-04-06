@@ -13,8 +13,6 @@ def test_pl_si():
             continue
         if word[-2:] == "'s":
             continue
-        #        if word[-1] == 's':
-        #            continue
         p.classical(all=False)
         check_pl_si(p, word)
         p.classical(all=True)
