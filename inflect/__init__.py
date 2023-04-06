@@ -3784,7 +3784,7 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
-    @validate_arguments(config=dict(arbitrary_types_allowed=True))  # noqa: C901
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def number_to_words(  # noqa: C901
         self,
         num: Union[Number, Word],
