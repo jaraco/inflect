@@ -184,8 +184,14 @@ def test_ordinal():
     assert p.ordinal("one hundred and four") == "one hundred and fourth"
 
 
-@pytest.mark.xfail(reason="Uncertainty about whether non-integers can be ordinal")
 def test_decimal_ordinals():
+    """
+    Capture expectation around ordinals for decimals.
+
+    This expectation is held loosely. Another expectation may be
+    considered if appropriate.
+    """
+
     p = inflect.engine()
     assert p.ordinal("1.23") == "1.23rd"
     assert p.ordinal("7.09") == "7.09th"
