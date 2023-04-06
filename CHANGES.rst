@@ -4,6 +4,8 @@ v6.0.3
 * #136: A/an support now more correctly honors leading
   capitalized words and abbreviations.
 
+* #178: Improve support for ordinals for floats.
+
 v6.0.2
 ======
 
