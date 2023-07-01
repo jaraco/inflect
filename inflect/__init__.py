@@ -2715,6 +2715,14 @@ class engine:
         word = Words(word)
 
         if word.last.lower() in pl_sb_uninflected_complete:
+            if len(word.split_) >= 3:
+                for numword in range(1, len(word.split_) - 1):
+                    if word.split_[numword] in pl_prep_list_da:
+                        return " ".join(
+                            word.split_[: numword - 1]
+                            + [self._plnoun(word.split_[numword - 1], 2)]
+                            + word.split_[numword:]
+                        )
             return word
 
         if word in pl_sb_uninflected_caps:
@@ -3201,6 +3209,14 @@ class engine:
         words = Words(word)
 
         if words.last.lower() in pl_sb_uninflected_complete:
+            if len(words.split_) >= 3:
+                for numword in range(1, len(words.split_) - 1):
+                    if words.split_[numword] in pl_prep_list_da:
+                        return " ".join(
+                            words.split_[: numword - 1]
+                            + [self._sinoun(words.split_[numword - 1], 1)]
+                            + words.split_[numword:]
+                        )
             return word
 
         if word in pl_sb_uninflected_caps:
