@@ -541,7 +541,7 @@
     TODO:siverb            oboes  ->  oboe
               occiput  ->  occiputs|occipita
                octavo  ->  octavos
-              octopus  ->  octopuses|octopodes
+              octopus  ->  octopuses|octopodes|octopi
                oedema  ->  oedemas|oedemata
             Oklahoman  ->  Oklahomans
               omnibus  ->  omnibuses
@@ -728,7 +728,7 @@
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
                 swine  ->  swines|swine
-      TODO:singular_noun multiple return        syringe  ->  syringes
+              syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
               tableau  ->  tableaus|tableaux
                  taco  ->  tacos
