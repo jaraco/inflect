@@ -1,3 +1,8 @@
+v6.0.5
+======
+
+* #187: Pin to Pydantic 1 to avoid breaking in Pydantic 2.
+
 v6.0.4
 ======
 
