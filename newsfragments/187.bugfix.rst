@@ -1,0 +1,1 @@
+Pin to Pydantic 1 due to breakage introduced in Pydantic 2.
