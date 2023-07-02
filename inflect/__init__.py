@@ -74,7 +74,7 @@ from numbers import Number
 
 
 from pydantic import Field, validate_arguments
-from pydantic.typing import Annotated
+from typing_extensions import Annotated
 
 
 class UnknownClassicalModeError(Exception):
