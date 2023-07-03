@@ -800,9 +800,13 @@ class test(unittest.TestCase):
         self.assertEqual(p.a("cat", 1), "a cat")
         self.assertEqual(p.a("cat", 2), "2 cat")
 
-        self.assertEqual(p.a, p.an)
         with pytest.raises(Exception):
             p.a("")
+
+    def test_a_and_an_same_method(self):
+        assert inflect.engine.a is inflect.engine.an
+        p = inflect.engine()
+        assert p.a == p.an
 
     def test_no(self):
         p = inflect.engine()
