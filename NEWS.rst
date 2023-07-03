@@ -1,3 +1,12 @@
+v6.1.1
+======
+
+Bugfixes
+--------
+
+- ``ordinal`` now handles float types correctly without first coercing them to strings. (#178)
+
+
 v6.1.0
 ======
 

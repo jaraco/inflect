@@ -1,1 +1,0 @@
-``ordinal`` now handles float types correctly without first coercing them to strings.
