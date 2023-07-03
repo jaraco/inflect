@@ -413,7 +413,7 @@ class Test:
             p.singular_noun("cats", gender="unknown gender")
 
     @pytest.mark.parametrize(
-        'fn_name sing plur res'.split(),
+        'fn_name,sing,plur,res',
         (
             ('compare', "index", "index", "eq"),
             ('compare', "index", "indexes", "s:p"),
