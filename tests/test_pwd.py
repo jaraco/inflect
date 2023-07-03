@@ -481,6 +481,8 @@ class test(unittest.TestCase):
         ):
             self.assertEqual(fn(sing, plur), res)
 
+    def test_plequal_todos(self):
+        p = inflect.engine()
         for fn, sing, plur, res, badres in (
             (
                 p.compare,
