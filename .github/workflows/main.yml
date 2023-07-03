@@ -56,6 +56,10 @@ jobs:
           platform: ubuntu-latest
         - python: pypy3.9
           platform: ubuntu-latest
+        - python: "3.x"
+          platform: ubuntu-latest
+          env:
+            TOX_ENV: pydantic1
     runs-on: ${{ matrix.platform }}
     continue-on-error: ${{ matrix.python == '3.12' }}
     steps:
