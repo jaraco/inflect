@@ -1,1 +1,0 @@
-Project now supports Pydantic 2 while retaining support for Pydantic 1.

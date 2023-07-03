@@ -1,3 +1,18 @@
+v6.2.0
+======
+
+Features
+--------
+
+- Project now supports Pydantic 2 while retaining support for Pydantic 1. (#187)
+
+
+Bugfixes
+--------
+
+- Added validation of user-defined words and amended the type declarations to match, allowing for null values but not empty strings. (#187)
+
+
 v6.1.1
 ======
 
