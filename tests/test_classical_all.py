@@ -9,94 +9,46 @@ class test(unittest.TestCase):
 
         # DEFAULT...
 
-        self.assertEqual(
-            p.plural_noun("error", 0), "errors", msg="classical 'zero' not active"
-        )
-        self.assertEqual(
-            p.plural_noun("wildebeest"),
-            "wildebeests",
-            msg="classical 'herd' not active",
-        )
-        self.assertEqual(
-            p.plural_noun("Sally"), "Sallys", msg="classical 'names' active"
-        )
-        self.assertEqual(
-            p.plural_noun("brother"), "brothers", msg="classical others not active"
-        )
-        self.assertEqual(
-            p.plural_noun("person"), "people", msg="classical 'persons' not active"
-        )
-        self.assertEqual(
-            p.plural_noun("formula"), "formulas", msg="classical 'ancient' not active"
-        )
+        assert p.plural_noun("error", 0) == "errors", "classical 'zero' not active"
+        assert (
+            p.plural_noun("wildebeest") == "wildebeests"
+        ), "classical 'herd' not active"
+        assert p.plural_noun("Sally") == "Sallys", "classical 'names' active"
+        assert p.plural_noun("brother") == "brothers", "classical others not active"
+        assert p.plural_noun("person") == "people", "classical 'persons' not active"
+        assert p.plural_noun("formula") == "formulas", "classical 'ancient' not active"
 
         # CLASSICAL PLURALS ACTIVATED...
 
         p.classical(all=True)
-        self.assertEqual(
-            p.plural_noun("error", 0), "error", msg="classical 'zero' active"
-        )
-        self.assertEqual(
-            p.plural_noun("wildebeest"), "wildebeest", msg="classical 'herd' active"
-        )
-        self.assertEqual(
-            p.plural_noun("Sally"), "Sallys", msg="classical 'names' active"
-        )
-        self.assertEqual(
-            p.plural_noun("brother"), "brethren", msg="classical others active"
-        )
-        self.assertEqual(
-            p.plural_noun("person"), "persons", msg="classical 'persons' active"
-        )
-        self.assertEqual(
-            p.plural_noun("formula"), "formulae", msg="classical 'ancient' active"
-        )
+        assert p.plural_noun("error", 0) == "error", "classical 'zero' active"
+        assert p.plural_noun("wildebeest") == "wildebeest", "classical 'herd' active"
+        assert p.plural_noun("Sally") == "Sallys", "classical 'names' active"
+        assert p.plural_noun("brother") == "brethren", "classical others active"
+        assert p.plural_noun("person") == "persons", "classical 'persons' active"
+        assert p.plural_noun("formula") == "formulae", "classical 'ancient' active"
 
         # CLASSICAL PLURALS DEACTIVATED...
 
         p.classical(all=False)
-        self.assertEqual(
-            p.plural_noun("error", 0), "errors", msg="classical 'zero' not active"
-        )
-        self.assertEqual(
-            p.plural_noun("wildebeest"),
-            "wildebeests",
-            msg="classical 'herd' not active",
-        )
-        self.assertEqual(
-            p.plural_noun("Sally"), "Sallies", msg="classical 'names' not active"
-        )
-        self.assertEqual(
-            p.plural_noun("brother"), "brothers", msg="classical others not active"
-        )
-        self.assertEqual(
-            p.plural_noun("person"), "people", msg="classical 'persons' not active"
-        )
-        self.assertEqual(
-            p.plural_noun("formula"), "formulas", msg="classical 'ancient' not active"
-        )
+        assert p.plural_noun("error", 0) == "errors", "classical 'zero' not active"
+        assert (
+            p.plural_noun("wildebeest") == "wildebeests"
+        ), "classical 'herd' not active"
+        assert p.plural_noun("Sally") == "Sallies", "classical 'names' not active"
+        assert p.plural_noun("brother") == "brothers", "classical others not active"
+        assert p.plural_noun("person") == "people", "classical 'persons' not active"
+        assert p.plural_noun("formula") == "formulas", "classical 'ancient' not active"
 
         # CLASSICAL PLURALS REREREACTIVATED...
 
         p.classical()
-        self.assertEqual(
-            p.plural_noun("error", 0), "error", msg="classical 'zero' active"
-        )
-        self.assertEqual(
-            p.plural_noun("wildebeest"), "wildebeest", msg="classical 'herd' active"
-        )
-        self.assertEqual(
-            p.plural_noun("Sally"), "Sallys", msg="classical 'names' active"
-        )
-        self.assertEqual(
-            p.plural_noun("brother"), "brethren", msg="classical others active"
-        )
-        self.assertEqual(
-            p.plural_noun("person"), "persons", msg="classical 'persons' active"
-        )
-        self.assertEqual(
-            p.plural_noun("formula"), "formulae", msg="classical 'ancient' active"
-        )
+        assert p.plural_noun("error", 0) == "error", "classical 'zero' active"
+        assert p.plural_noun("wildebeest") == "wildebeest", "classical 'herd' active"
+        assert p.plural_noun("Sally") == "Sallys", "classical 'names' active"
+        assert p.plural_noun("brother") == "brethren", "classical others active"
+        assert p.plural_noun("person") == "persons", "classical 'persons' active"
+        assert p.plural_noun("formula") == "formulae", "classical 'ancient' active"
 
 
 if __name__ == "__main__":

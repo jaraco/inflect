@@ -31,93 +31,97 @@ class test(unittest.TestCase):
         if ans == answer_wanted:
             print("test unexpectedly passed!: {} == {}".format(ans, answer_wanted))
         if answer_gives_now is not missing:
-            self.assertEqual(ans, answer_gives_now)
+            assert ans == answer_gives_now
 
     def test_enclose(self):
         # def enclose
-        self.assertEqual(inflect.enclose("test"), "(?:test)")
+        assert inflect.enclose("test") == "(?:test)"
 
     def test_joinstem(self):
         # def joinstem
-        self.assertEqual(
-            inflect.joinstem(-2, ["ephemeris", "iris", ".*itis"]), "(?:ephemer|ir|.*it)"
+        assert (
+            inflect.joinstem(-2, ["ephemeris", "iris", ".*itis"])
+            == "(?:ephemer|ir|.*it)"
         )
 
     def test_classical(self):
         # classical dicts
-        self.assertEqual(
-            set(inflect.def_classical.keys()), set(inflect.all_classical.keys())
-        )
-        self.assertEqual(
-            set(inflect.def_classical.keys()), set(inflect.no_classical.keys())
-        )
+        assert set(inflect.def_classical.keys()) == set(inflect.all_classical.keys())
+        assert set(inflect.def_classical.keys()) == set(inflect.no_classical.keys())
 
         # def classical
         p = inflect.engine()
-        self.assertEqual(p.classical_dict, inflect.def_classical)
+        assert p.classical_dict == inflect.def_classical
 
         p.classical()
-        self.assertEqual(p.classical_dict, inflect.all_classical)
+        assert p.classical_dict == inflect.all_classical
 
-        self.assertRaises(TypeError, p.classical, 0)
-        self.assertRaises(TypeError, p.classical, 1)
-        self.assertRaises(TypeError, p.classical, "names")
-        self.assertRaises(TypeError, p.classical, "names", "zero")
-        self.assertRaises(TypeError, p.classical, "all")
+        with pytest.raises(TypeError):
+            p.classical(0)
+        with pytest.raises(TypeError):
+            p.classical(1)
+        with pytest.raises(TypeError):
+            p.classical("names")
+        with pytest.raises(TypeError):
+            p.classical("names", "zero")
+        with pytest.raises(TypeError):
+            p.classical("all")
 
         p.classical(all=False)
-        self.assertEqual(p.classical_dict, inflect.no_classical)
+        assert p.classical_dict == inflect.no_classical
 
         p.classical(names=True, zero=True)
         mydict = inflect.def_classical.copy()
         mydict.update(dict(names=1, zero=1))
-        self.assertEqual(p.classical_dict, mydict)
+        assert p.classical_dict == mydict
 
         p.classical(all=True)
-        self.assertEqual(p.classical_dict, inflect.all_classical)
+        assert p.classical_dict == inflect.all_classical
 
         p.classical(all=False)
         p.classical(names=True, zero=True)
         mydict = inflect.def_classical.copy()
         mydict.update(dict(names=True, zero=True))
-        self.assertEqual(p.classical_dict, mydict)
+        assert p.classical_dict == mydict
 
         p.classical(all=False)
         p.classical(names=True, zero=False)
         mydict = inflect.def_classical.copy()
         mydict.update(dict(names=True, zero=False))
-        self.assertEqual(p.classical_dict, mydict)
+        assert p.classical_dict == mydict
 
-        self.assertRaises(UnknownClassicalModeError, p.classical, bogus=True)
+        with pytest.raises(UnknownClassicalModeError):
+            p.classical(bogus=True)
 
     def test_num(self):
         # def num
         p = inflect.engine()
-        self.assertTrue(p.persistent_count is None)
+        assert p.persistent_count is None
 
         p.num()
-        self.assertTrue(p.persistent_count is None)
+        assert p.persistent_count is None
 
         ret = p.num(3)
-        self.assertEqual(p.persistent_count, 3)
-        self.assertEqual(ret, "3")
+        assert p.persistent_count == 3
+        assert ret == "3"
 
         p.num()
         ret = p.num("3")
-        self.assertEqual(p.persistent_count, 3)
-        self.assertEqual(ret, "3")
+        assert p.persistent_count == 3
+        assert ret == "3"
 
         p.num()
         ret = p.num(count=3, show=1)
-        self.assertEqual(p.persistent_count, 3)
-        self.assertEqual(ret, "3")
+        assert p.persistent_count == 3
+        assert ret == "3"
 
         p.num()
         ret = p.num(count=3, show=0)
-        self.assertEqual(p.persistent_count, 3)
-        self.assertEqual(ret, "")
+        assert p.persistent_count == 3
+        assert ret == ""
 
-        self.assertRaises(BadNumValueError, p.num, "text")
+        with pytest.raises(BadNumValueError):
+            p.num("text")
 
     def test_inflect(self):
         p = inflect.engine()
@@ -129,9 +133,7 @@ class test(unittest.TestCase):
             ("   num(1)   ", "   1   "),
             ("num(3) num(1)", "3 1"),
         ):
-            self.assertEqual(
-                p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans)
-            )
+            assert p.inflect(txt) == ans, 'p.inflect("{}") != "{}"'.format(txt, ans)
 
         for txt, ans in (
             ("plural('rock')", "rocks"),
@@ -149,73 +151,72 @@ class test(unittest.TestCase):
             ),
             ("a('cat',0) a('cat',1) a('cat',2) a('cat', 2)", "0 cat a cat 2 cat 2 cat"),
         ):
-            self.assertEqual(
-                p.inflect(txt), ans, msg='p.inflect("{}") != "{}"'.format(txt, ans)
-            )
+            assert p.inflect(txt) == ans, 'p.inflect("{}") != "{}"'.format(txt, ans)
 
     def test_user_input_fns(self):
         p = inflect.engine()
 
-        self.assertEqual(p.pl_sb_user_defined, [])
+        assert p.pl_sb_user_defined == []
         p.defnoun("VAX", "VAXen")
-        self.assertEqual(p.plural("VAX"), "VAXEN")
-        self.assertEqual(p.pl_sb_user_defined, ["VAX", "VAXen"])
+        assert p.plural("VAX") == "VAXEN"
+        assert p.pl_sb_user_defined == ["VAX", "VAXen"]
 
-        self.assertTrue(p.ud_match("word", p.pl_sb_user_defined) is None)
-        self.assertEqual(p.ud_match("VAX", p.pl_sb_user_defined), "VAXen")
-        self.assertTrue(p.ud_match("VVAX", p.pl_sb_user_defined) is None)
+        assert p.ud_match("word", p.pl_sb_user_defined) is None
+        assert p.ud_match("VAX", p.pl_sb_user_defined) == "VAXen"
+        assert p.ud_match("VVAX", p.pl_sb_user_defined) is None
 
         p.defnoun("cow", "cows|kine")
-        self.assertEqual(p.plural("cow"), "cows")
+        assert p.plural("cow") == "cows"
         p.classical()
-        self.assertEqual(p.plural("cow"), "kine")
+        assert p.plural("cow") == "kine"
 
-        self.assertEqual(p.ud_match("cow", p.pl_sb_user_defined), "cows|kine")
+        assert p.ud_match("cow", p.pl_sb_user_defined) == "cows|kine"
 
         p.defnoun("(.+i)o", r"$1i")
-        self.assertEqual(p.plural("studio"), "studii")
-        self.assertEqual(p.ud_match("studio", p.pl_sb_user_defined), "studii")
+        assert p.plural("studio") == "studii"
+        assert p.ud_match("studio", p.pl_sb_user_defined) == "studii"
 
         p.defnoun("aviatrix", "aviatrices")
-        self.assertEqual(p.plural("aviatrix"), "aviatrices")
-        self.assertEqual(p.ud_match("aviatrix", p.pl_sb_user_defined), "aviatrices")
+        assert p.plural("aviatrix") == "aviatrices"
+        assert p.ud_match("aviatrix", p.pl_sb_user_defined) == "aviatrices"
         p.defnoun("aviatrix", "aviatrixes")
-        self.assertEqual(p.plural("aviatrix"), "aviatrixes")
-        self.assertEqual(p.ud_match("aviatrix", p.pl_sb_user_defined), "aviatrixes")
+        assert p.plural("aviatrix") == "aviatrixes"
+        assert p.ud_match("aviatrix", p.pl_sb_user_defined) == "aviatrixes"
         p.defnoun("aviatrix", None)
-        self.assertEqual(p.plural("aviatrix"), "aviatrices")
-        self.assertEqual(p.ud_match("aviatrix", p.pl_sb_user_defined), None)
+        assert p.plural("aviatrix") == "aviatrices"
+        assert p.ud_match("aviatrix", p.pl_sb_user_defined) is None
 
         p.defnoun("(cat)", r"$1s")
-        self.assertEqual(p.plural("cat"), "cats")
+        assert p.plural("cat") == "cats"
 
         inflect.STDOUT_ON = False
-        self.assertRaises(inflect.BadUserDefinedPatternError, p.defnoun, "(??", None)
+        with pytest.raises(inflect.BadUserDefinedPatternError):
+            p.defnoun("(??", None)
         inflect.STDOUT_ON = True
 
         p.defnoun(None, "any")  # check None doesn't crash it
 
         # defverb
         p.defverb("will", "shall", "will", "will", "will", "will")
-        self.assertEqual(p.ud_match("will", p.pl_v_user_defined), "will")
-        self.assertEqual(p.plural("will"), "will")
+        assert p.ud_match("will", p.pl_v_user_defined) == "will"
+        assert p.plural("will") == "will"
         # TODO: will -> shall. Tests below fail
         self.TODO(p.compare("will", "shall"), "s:p")
         self.TODO(p.compare_verbs("will", "shall"), "s:p")
 
         # defadj
         p.defadj("hir", "their")
-        self.assertEqual(p.plural("hir"), "their")
-        self.assertEqual(p.ud_match("hir", p.pl_adj_user_defined), "their")
+        assert p.plural("hir") == "their"
+        assert p.ud_match("hir", p.pl_adj_user_defined) == "their"
 
         # defa defan
         p.defa("h")
-        self.assertEqual(p.a("h"), "a h")
-        self.assertEqual(p.ud_match("h", p.A_a_user_defined), "a")
+        assert p.a("h") == "a h"
+        assert p.ud_match("h", p.A_a_user_defined) == "a"
 
         p.defan("horrendous.*")
-        self.assertEqual(p.a("horrendously"), "an horrendously")
-        self.assertEqual(p.ud_match("horrendously", p.A_a_user_defined), "an")
+        assert p.a("horrendously") == "an horrendously"
+        assert p.ud_match("horrendously", p.A_a_user_defined) == "an"
 
     def test_postprocess(self):
         p = inflect.engine()
@@ -228,10 +229,10 @@ class test(unittest.TestCase):
             ("Entry", "entries", "Entries"),
             ("can of Coke", "cans of coke", "cans of Coke"),
         ):
-            self.assertEqual(p.postprocess(orig, infl), txt)
+            assert p.postprocess(orig, infl) == txt
 
         p.classical()
-        self.assertEqual(p.postprocess("cow", "cows|kine"), "kine")
+        assert p.postprocess("cow", "cows|kine") == "kine"
 
     def test_partition_word(self):
         p = inflect.engine()
@@ -248,7 +249,7 @@ class test(unittest.TestCase):
             # ('  '),(' ', ' ', '')),
             # ('   '),('  ', ' ', '')),
         ):
-            self.assertEqual(p.partition_word(txt), part)
+            assert p.partition_word(txt) == part
 
     def test_pl(self):
         p = inflect.engine()
@@ -277,12 +278,8 @@ class test(unittest.TestCase):
             (p.plural_adj, "cat's", "cats'"),
             (p.plural_adj, "child's", "children's"),
         ):
-            self.assertEqual(
-                fn(sing),
-                plur,
-                msg='{}("{}") == "{}" != "{}"'.format(
-                    fn.__name__, sing, fn(sing), plur
-                ),
+            assert fn(sing) == plur, '{}("{}") == "{}" != "{}"'.format(
+                fn.__name__, sing, fn(sing), plur
             )
 
         for sing, num, plur in (
@@ -297,17 +294,17 @@ class test(unittest.TestCase):
             ("runs", 1, "runs"),
             ("am", 0, "are"),
         ):
-            self.assertEqual(p.plural(sing, num), plur)
+            assert p.plural(sing, num) == plur
 
         p.classical(zero=True)
-        self.assertEqual(p.plural("cow", 0), "cow")
-        self.assertEqual(p.plural("cow", "zero"), "cow")
-        self.assertEqual(p.plural("runs", 0), "runs")
-        self.assertEqual(p.plural("am", 0), "am")
-        self.assertEqual(p.plural_verb("runs", 1), "runs")
+        assert p.plural("cow", 0) == "cow"
+        assert p.plural("cow", "zero") == "cow"
+        assert p.plural("runs", 0) == "runs"
+        assert p.plural("am", 0) == "am"
+        assert p.plural_verb("runs", 1) == "runs"
 
-        self.assertEqual(p.plural("die"), "dice")
-        self.assertEqual(p.plural_noun("die"), "dice")
+        assert p.plural("die") == "dice"
+        assert p.plural_noun("die") == "dice"
 
         with pytest.raises(Exception):
             p.plural("")
@@ -322,30 +319,30 @@ class test(unittest.TestCase):
             ("die", "dice"),
             ("goose", "geese"),
         ):
-            self.assertEqual(p.singular_noun(plur), sing)
-            self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
+            assert p.singular_noun(plur) == sing
+            assert p.inflect("singular_noun('%s')" % plur) == sing
 
-        self.assertEqual(p.singular_noun("cats", count=2), "cats")
-        self.assertEqual(p.singular_noun("open valves", count=2), "open valves")
+        assert p.singular_noun("cats", count=2) == "cats"
+        assert p.singular_noun("open valves", count=2) == "open valves"
 
-        self.assertEqual(p.singular_noun("zombies"), "zombie")
+        assert p.singular_noun("zombies") == "zombie"
 
-        self.assertEqual(p.singular_noun("shoes"), "shoe")
-        self.assertEqual(p.singular_noun("dancing shoes"), "dancing shoe")
+        assert p.singular_noun("shoes") == "shoe"
+        assert p.singular_noun("dancing shoes") == "dancing shoe"
 
-        self.assertEqual(p.singular_noun("Matisses"), "Matisse")
-        self.assertEqual(p.singular_noun("bouillabaisses"), "bouillabaisse")
+        assert p.singular_noun("Matisses") == "Matisse"
+        assert p.singular_noun("bouillabaisses") == "bouillabaisse"
 
-        self.assertEqual(p.singular_noun("quartzes"), "quartz")
+        assert p.singular_noun("quartzes") == "quartz"
 
-        self.assertEqual(p.singular_noun("Nietzsches"), "Nietzsche")
-        self.assertEqual(p.singular_noun("aches"), "ache")
+        assert p.singular_noun("Nietzsches") == "Nietzsche"
+        assert p.singular_noun("aches") == "ache"
 
-        self.assertEqual(p.singular_noun("Clives"), "Clive")
-        self.assertEqual(p.singular_noun("weaves"), "weave")
+        assert p.singular_noun("Clives") == "Clive"
+        assert p.singular_noun("weaves") == "weave"
 
-        self.assertEqual(p.singular_noun("status"), False)
-        self.assertEqual(p.singular_noun("hiatus"), False)
+        assert p.singular_noun("status") is False
+        assert p.singular_noun("hiatus") is False
 
     def test_gender(self):
         p = inflect.engine()
@@ -357,14 +354,10 @@ class test(unittest.TestCase):
             ("to her", "to them"),
             ("to herself", "to themselves"),
         ):
-            self.assertEqual(
-                p.singular_noun(plur),
-                sing,
-                "singular_noun({}) == {} != {}".format(
-                    plur, p.singular_noun(plur), sing
-                ),
-            )
-            self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
+            assert (
+                p.singular_noun(plur) == sing
+            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("masculine")
         for sing, plur in (
@@ -374,14 +367,10 @@ class test(unittest.TestCase):
             ("to him", "to them"),
             ("to himself", "to themselves"),
         ):
-            self.assertEqual(
-                p.singular_noun(plur),
-                sing,
-                "singular_noun({}) == {} != {}".format(
-                    plur, p.singular_noun(plur), sing
-                ),
-            )
-            self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
+            assert (
+                p.singular_noun(plur) == sing
+            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("gender-neutral")
         for sing, plur in (
@@ -391,14 +380,10 @@ class test(unittest.TestCase):
             ("to them", "to them"),
             ("to themself", "to themselves"),
         ):
-            self.assertEqual(
-                p.singular_noun(plur),
-                sing,
-                "singular_noun({}) == {} != {}".format(
-                    plur, p.singular_noun(plur), sing
-                ),
-            )
-            self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
+            assert (
+                p.singular_noun(plur) == sing
+            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("neuter")
         for sing, plur in (
@@ -408,16 +393,13 @@ class test(unittest.TestCase):
             ("to it", "to them"),
             ("to itself", "to themselves"),
         ):
-            self.assertEqual(
-                p.singular_noun(plur),
-                sing,
-                "singular_noun({}) == {} != {}".format(
-                    plur, p.singular_noun(plur), sing
-                ),
-            )
-            self.assertEqual(p.inflect("singular_noun('%s')" % plur), sing)
+            assert (
+                p.singular_noun(plur) == sing
+            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            assert p.inflect("singular_noun('%s')" % plur) == sing
 
-        self.assertRaises(BadGenderError, p.gender, "male")
+        with pytest.raises(BadGenderError):
+            p.gender("male")
 
         for sing, plur, gen in (
             ("it", "they", "neuter"),
@@ -427,9 +409,9 @@ class test(unittest.TestCase):
             ("she or he", "they", "feminine or masculine"),
             ("he or she", "they", "masculine or feminine"),
         ):
-            self.assertEqual(p.singular_noun(plur, gender=gen), sing)
+            assert p.singular_noun(plur, gender=gen) == sing
 
-        with self.assertRaises(BadGenderError):
+        with pytest.raises(BadGenderError):
             p.singular_noun("cats", gender="unknown gender")
 
     def test_plequal(self):
@@ -479,7 +461,7 @@ class test(unittest.TestCase):
             (p.compare_adjs, "my", "our", "s:p"),
             (p.compare_adjs, "our", "our", "eq"),
         ):
-            self.assertEqual(fn(sing, plur), res)
+            assert fn(sing, plur) == res
 
     def test_plequal_todos(self):
         p = inflect.engine()
@@ -507,7 +489,7 @@ class test(unittest.TestCase):
             self.TODO(fn(sing, plur), res, badres)
 
         # TODO: pass upstream. multiple adjective plurals not supported
-        self.assertEqual(p.compare("your", "our"), False)
+        assert p.compare("your", "our") is False
         p.defadj("my", "our|your")  # what's ours is yours
         self.TODO(p.compare("your", "our"), "p:p")
 
@@ -518,26 +500,26 @@ class test(unittest.TestCase):
             ("indexes|robots", "dummy|ind", "exes", "ices", False),
             ("beaus|beaux", ".*eau", "s", "x", True),
         ):
-            self.assertEqual(p._pl_reg_plurals(pair, stems, end1, end2), ans)
+            assert p._pl_reg_plurals(pair, stems, end1, end2) == ans
 
     def test__pl_check_plurals_N(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_check_plurals_N("index", "indices"), False)
-        self.assertEqual(p._pl_check_plurals_N("indexes", "indices"), True)
-        self.assertEqual(p._pl_check_plurals_N("indices", "indexes"), True)
-        self.assertEqual(p._pl_check_plurals_N("stigmata", "stigmas"), True)
-        self.assertEqual(p._pl_check_plurals_N("phalanxes", "phalanges"), True)
+        assert p._pl_check_plurals_N("index", "indices") is False
+        assert p._pl_check_plurals_N("indexes", "indices") is True
+        assert p._pl_check_plurals_N("indices", "indexes") is True
+        assert p._pl_check_plurals_N("stigmata", "stigmas") is True
+        assert p._pl_check_plurals_N("phalanxes", "phalanges") is True
 
     def test__pl_check_plurals_adj(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indices's"), True)
-        self.assertEqual(p._pl_check_plurals_adj("indices's", "indexes's"), True)
-        self.assertEqual(p._pl_check_plurals_adj("indexes'", "indices's"), True)
-        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indices'"), True)
-        self.assertEqual(p._pl_check_plurals_adj("indexes's", "indexes's"), False)
-        self.assertEqual(p._pl_check_plurals_adj("dogmas's", "dogmata's"), True)
-        self.assertEqual(p._pl_check_plurals_adj("dogmas'", "dogmata'"), True)
-        self.assertEqual(p._pl_check_plurals_adj("indexes'", "indices'"), True)
+        assert p._pl_check_plurals_adj("indexes's", "indices's") is True
+        assert p._pl_check_plurals_adj("indices's", "indexes's") is True
+        assert p._pl_check_plurals_adj("indexes'", "indices's") is True
+        assert p._pl_check_plurals_adj("indexes's", "indices'") is True
+        assert p._pl_check_plurals_adj("indexes's", "indexes's") is False
+        assert p._pl_check_plurals_adj("dogmas's", "dogmata's") is True
+        assert p._pl_check_plurals_adj("dogmas'", "dogmata'") is True
+        assert p._pl_check_plurals_adj("indexes'", "indices'") is True
 
     def test_count(self):
         p = inflect.engine()
@@ -562,11 +544,11 @@ class test(unittest.TestCase):
             ("that", 1),
             ("dummy", 2),
         ):
-            self.assertEqual(p.get_count(txt), num)
+            assert p.get_count(txt) == num
 
-        self.assertEqual(p.get_count(), "")
+        assert p.get_count() == ""
         p.num(3)
-        self.assertEqual(p.get_count(), 2)
+        assert p.get_count() == 2
 
     def test__plnoun(self):
         p = inflect.engine()
@@ -621,15 +603,11 @@ class test(unittest.TestCase):
             ("zoo", "zoos"),
             ("tomato", "tomatoes"),
         ):
-            self.assertEqual(
-                p._plnoun(sing),
-                plur,
-                msg='p._plnoun("{}") == {} != "{}"'.format(sing, p._plnoun(sing), plur),
+            assert p._plnoun(sing) == plur, 'p._plnoun("{}") == {} != "{}"'.format(
+                sing, p._plnoun(sing), plur
             )
 
-            self.assertEqual(
-                p._sinoun(plur), sing, msg='p._sinoun("{}") != "{}"'.format(plur, sing)
-            )
+            assert p._sinoun(plur) == sing, 'p._sinoun("{}") != "{}"'.format(plur, sing)
 
         # words where forming singular is ambiguous or not attempted
         for sing, plur in (
@@ -638,9 +616,7 @@ class test(unittest.TestCase):
             ("basis", "bases"),
             ("Jess", "Jesses"),
         ):
-            self.assertEqual(
-                p._plnoun(sing), plur, msg='p._plnoun("{}") != "{}"'.format(sing, plur)
-            )
+            assert p._plnoun(sing) == plur, 'p._plnoun("{}") != "{}"'.format(sing, plur)
 
         for sing, plur in (
             # TODO: does not keep case
@@ -651,21 +627,21 @@ class test(unittest.TestCase):
             self.TODO(p._plnoun(sing), plur)
 
         p.num(1)
-        self.assertEqual(p._plnoun("cat"), "cat")
+        assert p._plnoun("cat") == "cat"
         p.num(3)
 
         p.classical(herd=True)
-        self.assertEqual(p._plnoun("swine"), "swine")
+        assert p._plnoun("swine") == "swine"
         p.classical(herd=False)
-        self.assertEqual(p._plnoun("swine"), "swines")
+        assert p._plnoun("swine") == "swines"
         p.classical(persons=True)
-        self.assertEqual(p._plnoun("chairperson"), "chairpersons")
+        assert p._plnoun("chairperson") == "chairpersons"
         p.classical(persons=False)
-        self.assertEqual(p._plnoun("chairperson"), "chairpeople")
+        assert p._plnoun("chairperson") == "chairpeople"
         p.classical(ancient=True)
-        self.assertEqual(p._plnoun("formula"), "formulae")
+        assert p._plnoun("formula") == "formulae"
         p.classical(ancient=False)
-        self.assertEqual(p._plnoun("formula"), "formulas")
+        assert p._plnoun("formula") == "formulas"
 
         p.classical()
         for sing, plur in (
@@ -687,7 +663,7 @@ class test(unittest.TestCase):
             ("goy", "goyim"),
             ("afrit", "afriti"),
         ):
-            self.assertEqual(p._plnoun(sing), plur)
+            assert p._plnoun(sing) == plur
 
         # p.classical(0)
         # p.classical('names')
@@ -697,61 +673,61 @@ class test(unittest.TestCase):
         p = inflect.engine()
         p.classical()
         for sing, plur in (("brother", "brethren"), ("dogma", "dogmata")):
-            self.assertEqual(p.plural(sing), plur)
+            assert p.plural(sing) == plur
 
     def test__pl_special_verb(self):
         p = inflect.engine()
         with pytest.raises(Exception):
-            self.assertEqual(p._pl_special_verb(""), False)
-        self.assertEqual(p._pl_special_verb("am"), "are")
-        self.assertEqual(p._pl_special_verb("am", 0), "are")
-        self.assertEqual(p._pl_special_verb("runs", 0), "run")
+            assert p._pl_special_verb("") is False
+        assert p._pl_special_verb("am") == "are"
+        assert p._pl_special_verb("am", 0) == "are"
+        assert p._pl_special_verb("runs", 0) == "run"
         p.classical(zero=True)
-        self.assertEqual(p._pl_special_verb("am", 0), False)
-        self.assertEqual(p._pl_special_verb("am", 1), "am")
-        self.assertEqual(p._pl_special_verb("am", 2), "are")
-        self.assertEqual(p._pl_special_verb("runs", 0), False)
-        self.assertEqual(p._pl_special_verb("am going to"), "are going to")
-        self.assertEqual(p._pl_special_verb("did"), "did")
-        self.assertEqual(p._pl_special_verb("wasn't"), "weren't")
-        self.assertEqual(p._pl_special_verb("shouldn't"), "shouldn't")
-        self.assertEqual(p._pl_special_verb("bias"), False)
-        self.assertEqual(p._pl_special_verb("news"), False)
-        self.assertEqual(p._pl_special_verb("Jess"), False)
-        self.assertEqual(p._pl_special_verb(" "), False)
-        self.assertEqual(p._pl_special_verb("brushes"), "brush")
-        self.assertEqual(p._pl_special_verb("fixes"), "fix")
-        self.assertEqual(p._pl_special_verb("quizzes"), "quiz")
-        self.assertEqual(p._pl_special_verb("fizzes"), "fizz")
-        self.assertEqual(p._pl_special_verb("dresses"), "dress")
-        self.assertEqual(p._pl_special_verb("flies"), "fly")
-        self.assertEqual(p._pl_special_verb("canoes"), "canoe")
-        self.assertEqual(p._pl_special_verb("horseshoes"), "horseshoe")
-        self.assertEqual(p._pl_special_verb("does"), "do")
+        assert p._pl_special_verb("am", 0) is False
+        assert p._pl_special_verb("am", 1) == "am"
+        assert p._pl_special_verb("am", 2) == "are"
+        assert p._pl_special_verb("runs", 0) is False
+        assert p._pl_special_verb("am going to") == "are going to"
+        assert p._pl_special_verb("did") == "did"
+        assert p._pl_special_verb("wasn't") == "weren't"
+        assert p._pl_special_verb("shouldn't") == "shouldn't"
+        assert p._pl_special_verb("bias") is False
+        assert p._pl_special_verb("news") is False
+        assert p._pl_special_verb("Jess") is False
+        assert p._pl_special_verb(" ") is False
+        assert p._pl_special_verb("brushes") == "brush"
+        assert p._pl_special_verb("fixes") == "fix"
+        assert p._pl_special_verb("quizzes") == "quiz"
+        assert p._pl_special_verb("fizzes") == "fizz"
+        assert p._pl_special_verb("dresses") == "dress"
+        assert p._pl_special_verb("flies") == "fly"
+        assert p._pl_special_verb("canoes") == "canoe"
+        assert p._pl_special_verb("horseshoes") == "horseshoe"
+        assert p._pl_special_verb("does") == "do"
         # TODO: what's a real word to test this case?
-        self.assertEqual(p._pl_special_verb("zzzoes"), "zzzo")
-        self.assertEqual(p._pl_special_verb("runs"), "run")
+        assert p._pl_special_verb("zzzoes") == "zzzo"
+        assert p._pl_special_verb("runs") == "run"
 
     def test__pl_general_verb(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_general_verb("acts"), "act")
-        self.assertEqual(p._pl_general_verb("act"), "act")
-        self.assertEqual(p._pl_general_verb("saw"), "saw")
-        self.assertEqual(p._pl_general_verb("runs", 1), "runs")
+        assert p._pl_general_verb("acts") == "act"
+        assert p._pl_general_verb("act") == "act"
+        assert p._pl_general_verb("saw") == "saw"
+        assert p._pl_general_verb("runs", 1) == "runs"
 
     def test__pl_special_adjective(self):
         p = inflect.engine()
-        self.assertEqual(p._pl_special_adjective("a"), "some")
-        self.assertEqual(p._pl_special_adjective("my"), "our")
-        self.assertEqual(p._pl_special_adjective("John's"), "Johns'")
+        assert p._pl_special_adjective("a") == "some"
+        assert p._pl_special_adjective("my") == "our"
+        assert p._pl_special_adjective("John's") == "Johns'"
         # TODO: original can't handle this. should we handle it?
         self.TODO(p._pl_special_adjective("JOHN's"), "JOHNS'")
         # TODO: can't handle capitals
         self.TODO(p._pl_special_adjective("JOHN'S"), "JOHNS'")
         self.TODO(p._pl_special_adjective("TUNA'S"), "TUNA'S")
-        self.assertEqual(p._pl_special_adjective("tuna's"), "tuna's")
-        self.assertEqual(p._pl_special_adjective("TUNA's"), "TUNA's")
-        self.assertEqual(p._pl_special_adjective("bad"), False)
+        assert p._pl_special_adjective("tuna's") == "tuna's"
+        assert p._pl_special_adjective("TUNA's") == "TUNA's"
+        assert p._pl_special_adjective("bad") is False
 
     def test_a(self):
         p = inflect.engine()
@@ -798,10 +774,10 @@ class test(unittest.TestCase):
             ("an cat", "a cat"),
             ("a ant", "an ant"),
         ):
-            self.assertEqual(p.a(sing), plur)
+            assert p.a(sing) == plur
 
-        self.assertEqual(p.a("cat", 1), "a cat")
-        self.assertEqual(p.a("cat", 2), "2 cat")
+        assert p.a("cat", 1) == "a cat"
+        assert p.a("cat", 2) == "2 cat"
 
         with pytest.raises(Exception):
             p.a("")
@@ -813,14 +789,14 @@ class test(unittest.TestCase):
 
     def test_no(self):
         p = inflect.engine()
-        self.assertEqual(p.no("cat"), "no cats")
-        self.assertEqual(p.no("cat", count=3), "3 cats")
-        self.assertEqual(p.no("cat", count="three"), "three cats")
-        self.assertEqual(p.no("cat", count=1), "1 cat")
-        self.assertEqual(p.no("cat", count="one"), "one cat")
-        self.assertEqual(p.no("mouse"), "no mice")
+        assert p.no("cat") == "no cats"
+        assert p.no("cat", count=3) == "3 cats"
+        assert p.no("cat", count="three") == "three cats"
+        assert p.no("cat", count=1) == "1 cat"
+        assert p.no("cat", count="one") == "one cat"
+        assert p.no("mouse") == "no mice"
         p.num(3)
-        self.assertEqual(p.no("cat"), "3 cats")
+        assert p.no("cat") == "3 cats"
 
     def test_prespart(self):
         p = inflect.engine()
@@ -838,14 +814,14 @@ class test(unittest.TestCase):
             ("loves", "loving"),
             ("spies", "spying"),
         ):
-            self.assertEqual(p.present_participle(sing), plur)
+            assert p.present_participle(sing) == plur
 
-        self.assertEqual(p.present_participle("hoes"), "hoeing")
-        self.assertEqual(p.present_participle("alibis"), "alibiing")
-        self.assertEqual(p.present_participle("is"), "being")
-        self.assertEqual(p.present_participle("are"), "being")
-        self.assertEqual(p.present_participle("had"), "having")
-        self.assertEqual(p.present_participle("has"), "having")
+        assert p.present_participle("hoes") == "hoeing"
+        assert p.present_participle("alibis") == "alibiing"
+        assert p.present_participle("is") == "being"
+        assert p.present_participle("are") == "being"
+        assert p.present_participle("had") == "having"
+        assert p.present_participle("has") == "having"
 
     def test_ordinal(self):
         p = inflect.engine()
@@ -870,63 +846,64 @@ class test(unittest.TestCase):
             ("zero", "zeroth"),
             ("n", "nth"),  # bonus!
         ):
-            self.assertEqual(p.ordinal(num), numord)
+            assert p.ordinal(num) == numord
 
     def test_millfn(self):
         p = inflect.engine()
         millfn = p.millfn
-        self.assertEqual(millfn(1), " thousand")
-        self.assertEqual(millfn(2), " million")
-        self.assertEqual(millfn(3), " billion")
-        self.assertEqual(millfn(0), " ")
-        self.assertEqual(millfn(11), " decillion")
+        assert millfn(1) == " thousand"
+        assert millfn(2) == " million"
+        assert millfn(3) == " billion"
+        assert millfn(0) == " "
+        assert millfn(11) == " decillion"
         inflect.STDOUT_ON = False
-        self.assertRaises(NumOutOfRangeError, millfn, 12)
+        with pytest.raises(NumOutOfRangeError):
+            millfn(12)
         inflect.STDOUT_ON = True
 
     def test_unitfn(self):
         p = inflect.engine()
         unitfn = p.unitfn
-        self.assertEqual(unitfn(1, 2), "one million")
-        self.assertEqual(unitfn(1, 3), "one billion")
-        self.assertEqual(unitfn(5, 3), "five billion")
-        self.assertEqual(unitfn(5, 0), "five ")
-        self.assertEqual(unitfn(0, 0), " ")
+        assert unitfn(1, 2) == "one million"
+        assert unitfn(1, 3) == "one billion"
+        assert unitfn(5, 3) == "five billion"
+        assert unitfn(5, 0) == "five "
+        assert unitfn(0, 0) == " "
 
     def test_tenfn(self):
         p = inflect.engine()
         tenfn = p.tenfn
-        self.assertEqual(tenfn(3, 1, 2), "thirty-one million")
-        self.assertEqual(tenfn(3, 0, 2), "thirty million")
-        self.assertEqual(tenfn(0, 1, 2), "one million")
-        self.assertEqual(tenfn(1, 1, 2), "eleven million")
-        self.assertEqual(tenfn(1, 0, 2), "ten million")
-        self.assertEqual(tenfn(1, 0, 0), "ten ")
-        self.assertEqual(tenfn(0, 0, 0), " ")
+        assert tenfn(3, 1, 2) == "thirty-one million"
+        assert tenfn(3, 0, 2) == "thirty million"
+        assert tenfn(0, 1, 2) == "one million"
+        assert tenfn(1, 1, 2) == "eleven million"
+        assert tenfn(1, 0, 2) == "ten million"
+        assert tenfn(1, 0, 0) == "ten "
+        assert tenfn(0, 0, 0) == " "
 
     def test_hundfn(self):
         p = inflect.engine()
         hundfn = p.hundfn
         p._number_args = dict(andword="and")
-        self.assertEqual(hundfn(4, 3, 1, 2), "four hundred and thirty-one  million, ")
-        self.assertEqual(hundfn(4, 0, 0, 2), "four hundred  million, ")
-        self.assertEqual(hundfn(4, 0, 5, 2), "four hundred and five  million, ")
-        self.assertEqual(hundfn(0, 3, 1, 2), "thirty-one  million, ")
-        self.assertEqual(hundfn(0, 0, 7, 2), "seven  million, ")
+        assert hundfn(4, 3, 1, 2) == "four hundred and thirty-one  million, "
+        assert hundfn(4, 0, 0, 2) == "four hundred  million, "
+        assert hundfn(4, 0, 5, 2) == "four hundred and five  million, "
+        assert hundfn(0, 3, 1, 2) == "thirty-one  million, "
+        assert hundfn(0, 0, 7, 2) == "seven  million, "
 
     def test_enword(self):
         p = inflect.engine()
         enword = p.enword
-        self.assertEqual(enword("5", 1), "five, ")
+        assert enword("5", 1) == "five, "
         p._number_args = dict(zero="zero", one="one", andword="and")
-        self.assertEqual(enword("0", 1), " zero, ")
-        self.assertEqual(enword("1", 1), " one, ")
-        self.assertEqual(enword("347", 1), "three, four, seven, ")
+        assert enword("0", 1) == " zero, "
+        assert enword("1", 1) == " one, "
+        assert enword("347", 1) == "three, four, seven, "
 
-        self.assertEqual(enword("34", 2), "thirty-four , ")
-        self.assertEqual(enword("347", 2), "thirty-four , seven, ")
-        self.assertEqual(enword("34768", 2), "thirty-four , seventy-six , eight, ")
-        self.assertEqual(enword("1", 2), "one, ")
+        assert enword("34", 2) == "thirty-four , "
+        assert enword("347", 2) == "thirty-four , seven, "
+        assert enword("34768", 2) == "thirty-four , seventy-six , eight, "
+        assert enword("1", 2) == "one, "
         p._number_args["one"] = "single"
         self.TODO(
             enword("1", 2), "single, ", "one, "
@@ -934,28 +911,26 @@ class test(unittest.TestCase):
 
         p._number_args["one"] = "one"
 
-        self.assertEqual(enword("134", 3), " one thirty-four , ")
+        assert enword("134", 3) == " one thirty-four , "
 
-        self.assertEqual(enword("0", -1), "zero")
-        self.assertEqual(enword("1", -1), "one")
+        assert enword("0", -1) == "zero"
+        assert enword("1", -1) == "one"
 
-        self.assertEqual(enword("3", -1), "three , ")
-        self.assertEqual(enword("12", -1), "twelve , ")
-        self.assertEqual(enword("123", -1), "one hundred and twenty-three  , ")
-        self.assertEqual(
-            enword("1234", -1), "one thousand, two hundred and thirty-four  , "
+        assert enword("3", -1) == "three , "
+        assert enword("12", -1) == "twelve , "
+        assert enword("123", -1) == "one hundred and twenty-three  , "
+        assert enword("1234", -1) == "one thousand, two hundred and thirty-four  , "
+        assert (
+            enword("12345", -1) == "twelve thousand, three hundred and forty-five  , "
         )
-        self.assertEqual(
-            enword("12345", -1), "twelve thousand, three hundred and forty-five  , "
+        assert (
+            enword("123456", -1)
+            == "one hundred and twenty-three  thousand, four hundred and fifty-six  , "
         )
-        self.assertEqual(
-            enword("123456", -1),
-            "one hundred and twenty-three  thousand, four hundred and fifty-six  , ",
-        )
-        self.assertEqual(
-            enword("1234567", -1),
-            "one million, two hundred and thirty-four  thousand, "
-            "five hundred and sixty-seven  , ",
+        assert (
+            enword("1234567", -1)
+            == "one million, two hundred and thirty-four  thousand, "
+            "five hundred and sixty-seven  , "
         )
 
     def test_numwords(self):
@@ -976,13 +951,13 @@ class test(unittest.TestCase):
             ("10.", "ten point"),
             (".10", "point one zero"),
         ):
-            self.assertEqual(numwords(n), word)
+            assert numwords(n) == word
 
         for n, word, wrongword in (
             # TODO: should be one point two three
             ("1.23", "one point two three", "one point twenty-three"),
         ):
-            self.assertEqual(numwords(n), word)
+            assert numwords(n) == word
 
         for n, txt in (
             (3, "three bottles of beer on the wall"),
@@ -990,155 +965,147 @@ class test(unittest.TestCase):
             (1, "a solitary bottle of beer on the wall"),
             (0, "no more bottles of beer on the wall"),
         ):
-            self.assertEqual(
+            assert (
                 "{}{}".format(
                     numwords(n, one="a solitary", zero="no more"),
                     p.plural(" bottle of beer on the wall", n),
-                ),
-                txt,
+                )
+                == txt
             )
 
-        self.assertEqual(numwords(0, one="one", zero="zero"), "zero")
+        assert numwords(0, one="one", zero="zero") == "zero"
 
-        self.assertEqual(numwords("1234"), "one thousand, two hundred and thirty-four")
-        self.assertEqual(
-            numwords("1234", wantlist=True),
-            ["one thousand", "two hundred and thirty-four"],
+        assert numwords("1234") == "one thousand, two hundred and thirty-four"
+        assert numwords("1234", wantlist=True) == [
+            "one thousand",
+            "two hundred and thirty-four",
+        ]
+        assert numwords("1234567", wantlist=True) == [
+            "one million",
+            "two hundred and thirty-four thousand",
+            "five hundred and sixty-seven",
+        ]
+        assert numwords("+10", wantlist=True) == ["plus", "ten"]
+        assert numwords("1234", andword="") == "one thousand, two hundred thirty-four"
+        assert (
+            numwords("1234", andword="plus")
+            == "one thousand, two hundred plus thirty-four"
         )
-        self.assertEqual(
-            numwords("1234567", wantlist=True),
-            [
-                "one million",
-                "two hundred and thirty-four thousand",
-                "five hundred and sixty-seven",
-            ],
-        )
-        self.assertEqual(numwords("+10", wantlist=True), ["plus", "ten"])
-        self.assertEqual(
-            numwords("1234", andword=""), "one thousand, two hundred thirty-four"
-        )
-        self.assertEqual(
-            numwords("1234", andword="plus"),
-            "one thousand, two hundred plus thirty-four",
-        )
-        self.assertEqual(numwords(p.ordinal("21")), "twenty-first")
-        self.assertEqual(numwords("9", threshold=10), "nine")
-        self.assertEqual(numwords("10", threshold=10), "ten")
-        self.assertEqual(numwords("11", threshold=10), "11")
-        self.assertEqual(numwords("1000", threshold=10), "1,000")
-        self.assertEqual(numwords("123", threshold=10), "123")
-        self.assertEqual(numwords("1234", threshold=10), "1,234")
-        self.assertEqual(numwords("1234.5678", threshold=10), "1,234.5678")
-        self.assertEqual(numwords("1", decimal=None), "one")
-        self.assertEqual(
-            numwords("1234.5678", decimal=None),
-            "twelve million, three hundred and forty-five "
-            "thousand, six hundred and seventy-eight",
+        assert numwords(p.ordinal("21")) == "twenty-first"
+        assert numwords("9", threshold=10) == "nine"
+        assert numwords("10", threshold=10) == "ten"
+        assert numwords("11", threshold=10) == "11"
+        assert numwords("1000", threshold=10) == "1,000"
+        assert numwords("123", threshold=10) == "123"
+        assert numwords("1234", threshold=10) == "1,234"
+        assert numwords("1234.5678", threshold=10) == "1,234.5678"
+        assert numwords("1", decimal=None) == "one"
+        assert (
+            numwords("1234.5678", decimal=None)
+            == "twelve million, three hundred and forty-five "
+            "thousand, six hundred and seventy-eight"
         )
 
     def test_numwords_group(self):
         p = inflect.engine()
         numwords = p.number_to_words
-        self.assertEqual(numwords("12345", group=2), "twelve, thirty-four, five")
+        assert numwords("12345", group=2) == "twelve, thirty-four, five"
         # TODO: 'hundred and' missing
         self.TODO(
             numwords("12345", group=3),
             "one hundred and twenty-three",
             "one twenty-three, forty-five",
         )
-        self.assertEqual(
-            numwords("123456", group=3), "one twenty-three, four fifty-six"
+        assert numwords("123456", group=3) == "one twenty-three, four fifty-six"
+        assert numwords("12345", group=1) == "one, two, three, four, five"
+        assert (
+            numwords("1234th", group=0, andword="and")
+            == "one thousand, two hundred and thirty-fourth"
         )
-        self.assertEqual(numwords("12345", group=1), "one, two, three, four, five")
-        self.assertEqual(
-            numwords("1234th", group=0, andword="and"),
-            "one thousand, two hundred and thirty-fourth",
+        assert (
+            numwords(p.ordinal("1234"), group=0)
+            == "one thousand, two hundred and thirty-fourth"
         )
-        self.assertEqual(
-            numwords(p.ordinal("1234"), group=0),
-            "one thousand, two hundred and thirty-fourth",
-        )
-        self.assertEqual(numwords("120", group=2), "twelve, zero")
-        self.assertEqual(numwords("120", group=2, zero="oh", one="unity"), "twelve, oh")
+        assert numwords("120", group=2) == "twelve, zero"
+        assert numwords("120", group=2, zero="oh", one="unity") == "twelve, oh"
         # TODO: ignoring 'one' param with group=2
         self.TODO(
             numwords("101", group=2, zero="oh", one="unity"), "ten, unity", "ten, one"
         )
-        self.assertEqual(
-            numwords("555_1202", group=1, zero="oh"),
-            "five, five, five, one, two, oh, two",
+        assert (
+            numwords("555_1202", group=1, zero="oh")
+            == "five, five, five, one, two, oh, two"
         )
-        self.assertEqual(
-            numwords("555_1202", group=1, one="unity"),
-            "five, five, five, unity, two, zero, two",
+        assert (
+            numwords("555_1202", group=1, one="unity")
+            == "five, five, five, unity, two, zero, two"
         )
-        self.assertEqual(
-            numwords("123.456", group=1, decimal="mark", one="one"),
-            "one, two, three, mark, four, five, six",
+        assert (
+            numwords("123.456", group=1, decimal="mark", one="one")
+            == "one, two, three, mark, four, five, six"
         )
 
         inflect.STDOUT_ON = False
-        self.assertRaises(BadChunkingOptionError, numwords, "1234", group=4)
+        with pytest.raises(BadChunkingOptionError):
+            numwords("1234", group=4)
         inflect.STDOUT_ON = True
 
     def test_wordlist(self):
         p = inflect.engine()
         wordlist = p.join
-        self.assertEqual(wordlist([]), "")
-        self.assertEqual(wordlist(("apple",)), "apple")
-        self.assertEqual(wordlist(("apple", "banana")), "apple and banana")
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot")), "apple, banana, and carrot"
+        assert wordlist([]) == ""
+        assert wordlist(("apple",)) == "apple"
+        assert wordlist(("apple", "banana")) == "apple and banana"
+        assert wordlist(("apple", "banana", "carrot")) == "apple, banana, and carrot"
+        assert wordlist(("apple", "1,000", "carrot")) == "apple; 1,000; and carrot"
+        assert (
+            wordlist(("apple", "1,000", "carrot"), sep=",")
+            == "apple, 1,000, and carrot"
         )
-        self.assertEqual(
-            wordlist(("apple", "1,000", "carrot")), "apple; 1,000; and carrot"
+        assert (
+            wordlist(("apple", "banana", "carrot"), final_sep="")
+            == "apple, banana and carrot"
         )
-        self.assertEqual(
-            wordlist(("apple", "1,000", "carrot"), sep=","), "apple, 1,000, and carrot"
+        assert (
+            wordlist(("apple", "banana", "carrot"), final_sep=";")
+            == "apple, banana; and carrot"
         )
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), final_sep=""),
-            "apple, banana and carrot",
-        )
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), final_sep=";"),
-            "apple, banana; and carrot",
-        )
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj="or"),
-            "apple, banana, or carrot",
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj="or")
+            == "apple, banana, or carrot"
         )
 
-        self.assertEqual(
-            wordlist(("apple", "banana"), conj=" or "), "apple  or  banana"
-        )
-        self.assertEqual(
-            wordlist(("apple", "banana"), conj="&"), "apple & banana"
+        assert wordlist(("apple", "banana"), conj=" or ") == "apple  or  banana"
+        assert (
+            wordlist(("apple", "banana"), conj="&") == "apple & banana"
         )  # TODO: want spaces here. Done, report upstream
-        self.assertEqual(
-            wordlist(("apple", "banana"), conj="&", conj_spaced=False), "apple&banana"
+        assert (
+            wordlist(("apple", "banana"), conj="&", conj_spaced=False) == "apple&banana"
         )
-        self.assertEqual(
-            wordlist(("apple", "banana"), conj="& ", conj_spaced=False), "apple& banana"
+        assert (
+            wordlist(("apple", "banana"), conj="& ", conj_spaced=False)
+            == "apple& banana"
         )
 
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj=" or "),
-            "apple, banana,  or  carrot",
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj=" or ")
+            == "apple, banana,  or  carrot"
         )
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj="+"), "apple, banana, + carrot"
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj="+")
+            == "apple, banana, + carrot"
         )
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj="&"), "apple, banana, & carrot"
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj="&")
+            == "apple, banana, & carrot"
         )  # TODO: want space here. Done, report upstream
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj="&", conj_spaced=False),
-            "apple, banana,&carrot",
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj="&", conj_spaced=False)
+            == "apple, banana,&carrot"
         )  # TODO: want space here. Done, report upstream
-        self.assertEqual(
-            wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False),
-            "apple, banana, &carrot",
+        assert (
+            wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False)
+            == "apple, banana, &carrot"
         )  # TODO: want space here. Done, report upstream
 
     def test_print(self):
@@ -1148,56 +1115,56 @@ class test(unittest.TestCase):
 
     def test_doc_examples(self):
         p = inflect.engine()
-        self.assertEqual(p.plural_noun("I"), "we")
-        self.assertEqual(p.plural_verb("saw"), "saw")
-        self.assertEqual(p.plural_adj("my"), "our")
-        self.assertEqual(p.plural_noun("saw"), "saws")
-        self.assertEqual(p.plural("was"), "were")
-        self.assertEqual(p.plural("was", 1), "was")
-        self.assertEqual(p.plural_verb("was", 2), "were")
-        self.assertEqual(p.plural_verb("was"), "were")
-        self.assertEqual(p.plural_verb("was", 1), "was")
+        assert p.plural_noun("I") == "we"
+        assert p.plural_verb("saw") == "saw"
+        assert p.plural_adj("my") == "our"
+        assert p.plural_noun("saw") == "saws"
+        assert p.plural("was") == "were"
+        assert p.plural("was", 1) == "was"
+        assert p.plural_verb("was", 2) == "were"
+        assert p.plural_verb("was") == "were"
+        assert p.plural_verb("was", 1) == "was"
 
         for errors, txt in (
             (0, "There were no errors"),
             (1, "There was 1 error"),
             (2, "There were 2 errors"),
         ):
-            self.assertEqual(
+            assert (
                 "There {}{}".format(
                     p.plural_verb("was", errors), p.no(" error", errors)
-                ),
-                txt,
+                )
+                == txt
             )
 
-            self.assertEqual(
+            assert (
                 p.inflect(
                     "There plural_verb('was',%d) no('error',%d)" % (errors, errors)
-                ),
-                txt,
+                )
+                == txt
             )
 
         for num1, num2, txt in ((1, 2, "I saw 2 saws"), (2, 1, "we saw 1 saw")):
-            self.assertEqual(
+            assert (
                 "{}{}{} {}{}".format(
                     p.num(num1, ""),
                     p.plural("I"),
                     p.plural_verb(" saw"),
                     p.num(num2),
                     p.plural_noun(" saw"),
-                ),
-                txt,
+                )
+                == txt
             )
 
-            self.assertEqual(
+            assert (
                 p.inflect(
                     "num(%d, False)plural('I') plural_verb('saw') "
                     "num(%d) plural_noun('saw')" % (num1, num2)
-                ),
-                txt,
+                )
+                == txt
             )
 
-        self.assertEqual(p.a("a cat"), "a cat")
+        assert p.a("a cat") == "a cat"
 
         for word, txt in (
             ("cat", "a cat"),
@@ -1205,9 +1172,7 @@ class test(unittest.TestCase):
             ("ewe", "a ewe"),
             ("hour", "an hour"),
         ):
-            self.assertEqual(
-                p.a("{} {}".format(p.number_to_words(1, one="a"), word)), txt
-            )
+            assert p.a("{} {}".format(p.number_to_words(1, one="a"), word)) == txt
 
         p.num(2)
 
@@ -1227,11 +1192,12 @@ class test(unittest.TestCase):
             "pladjequal",
             "wordlist",
         ):
-            self.assertRaises(DeprecationWarning, getattr, p, meth)
+            with pytest.raises(DeprecationWarning):
+                getattr(p, meth)
 
     def test_unknown_method(self):
         p = inflect.engine()
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             p.unknown_method
 
 
