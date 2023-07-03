@@ -3602,31 +3602,28 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    @validate_arguments
-    def ordinal(self, num: Word) -> str:
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
+    def ordinal(self, num: Union[Number, Word]) -> str:
         """
         Return the ordinal of num.
 
-        num can be an integer or text
-
         e.g. ordinal(1) returns '1st'
         ordinal('one') returns 'first'
-
         """
         if DIGIT.match(str(num)):
-            if isinstance(num, (int, float)):
+            if isinstance(num, (float, int)) and int(num) == num:
                 n = int(num)
             else:
                 if "." in str(num):
                     try:
                         # numbers after decimal,
                         # so only need last one for ordinal
-                        n = int(num[-1])
+                        n = int(str(num)[-1])
 
                     except ValueError:  # ends with '.', so need to use whole string
-                        n = int(num[:-1])
+                        n = int(str(num)[:-1])
                 else:
-                    n = int(num)
+                    n = int(num)  # type: ignore
             try:
                 post = nth[n % 100]
             except KeyError:
