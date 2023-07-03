@@ -1,6 +1,7 @@
 import unittest
 
 import pytest
+import pydantic
 
 from inflect import (
     BadChunkingOptionError,
@@ -803,6 +804,10 @@ class test(unittest.TestCase):
         with pytest.raises(Exception):
             p.a("")
 
+    @pytest.mark.xfail(
+        pydantic.version.VERSION >= "2",
+        reason="pydantic/pydantic#6390",
+    )
     def test_a_and_an_same_method(self):
         assert inflect.engine.a is inflect.engine.an
         p = inflect.engine()
