@@ -1,7 +1,6 @@
 import unittest
 
 import pytest
-import pydantic
 
 from inflect import (
     BadChunkingOptionError,
@@ -11,6 +10,7 @@ from inflect import (
     UnknownClassicalModeError,
 )
 import inflect
+from inflect.compat.pydantic import same_method
 
 
 missing = object()
@@ -806,14 +806,10 @@ class test(unittest.TestCase):
         with pytest.raises(Exception):
             p.a("")
 
-    @pytest.mark.xfail(
-        pydantic.version.VERSION >= "2",
-        reason="pydantic/pydantic#6390",
-    )
     def test_a_and_an_same_method(self):
-        assert inflect.engine.a is inflect.engine.an
+        assert same_method(inflect.engine.a, inflect.engine.an)
         p = inflect.engine()
-        assert p.a == p.an
+        assert same_method(p.a, p.an)
 
     def test_no(self):
         p = inflect.engine()

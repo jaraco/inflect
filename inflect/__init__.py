@@ -78,6 +78,7 @@ from typing_extensions import Annotated
 
 
 from .compat.pydantic1 import validate_call
+from .compat.pydantic import same_method
 
 
 class UnknownClassicalModeError(Exception):
@@ -2604,12 +2605,12 @@ class engine:
             return "s:p"
         self.classical_dict = classval.copy()
 
-        if pl == self.plural or pl == self.plural_noun:
+        if same_method(pl, self.plural) or same_method(pl, self.plural_noun):
             if self._pl_check_plurals_N(word1, word2):
                 return "p:p"
             if self._pl_check_plurals_N(word2, word1):
                 return "p:p"
-        if pl == self.plural or pl == self.plural_adj:
+        if same_method(pl, self.plural) or same_method(pl, self.plural_adj):
             if self._pl_check_plurals_adj(word1, word2):
                 return "p:p"
         return False
