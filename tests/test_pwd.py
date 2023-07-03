@@ -413,57 +413,79 @@ class Test:
             p.singular_noun("cats", gender="unknown gender")
 
     @pytest.mark.parametrize(
-        'fn_name,sing,plur,res',
+        'sing,plur,res',
         (
-            ('compare', "index", "index", "eq"),
-            ('compare', "index", "indexes", "s:p"),
-            ('compare', "index", "indices", "s:p"),
-            ('compare', "indexes", "index", "p:s"),
-            ('compare', "indices", "index", "p:s"),
-            ('compare', "indices", "indexes", "p:p"),
-            ('compare', "indexes", "indices", "p:p"),
-            ('compare', "indices", "indices", "eq"),
-            ('compare', "inverted index", "inverted indices", "s:p"),
-            ('compare', "inverted indices", "inverted index", "p:s"),
-            ('compare', "inverted indexes", "inverted indices", "p:p"),
-            ('compare', "opuses", "opera", "p:p"),
-            ('compare', "opera", "opuses", "p:p"),
-            ('compare', "brothers", "brethren", "p:p"),
-            ('compare', "cats", "cats", "eq"),
-            ('compare', "base", "basis", False),
-            ('compare', "syrinx", "syringe", False),
-            ('compare', "she", "he", False),
-            ('compare', "opus", "operas", False),
-            ('compare', "taxi", "taxes", False),
-            ('compare', "time", "Times", False),
-            ('compare', "time".lower(), "Times".lower(), "s:p"),
-            ('compare', "courts martial", "court martial", "p:s"),
-            ('compare', "my", "my", "eq"),
-            ('compare', "my", "our", "s:p"),
-            ('compare', "our", "our", "eq"),
-            ('compare_nouns', "index", "index", "eq"),
-            ('compare_nouns', "index", "indexes", "s:p"),
-            ('compare_nouns', "index", "indices", "s:p"),
-            ('compare_nouns', "indexes", "index", "p:s"),
-            ('compare_nouns', "indices", "index", "p:s"),
-            ('compare_nouns', "indices", "indexes", "p:p"),
-            ('compare_nouns', "indexes", "indices", "p:p"),
-            ('compare_nouns', "indices", "indices", "eq"),
-            ('compare_nouns', "inverted index", "inverted indices", "s:p"),
-            ('compare_nouns', "inverted indices", "inverted index", "p:s"),
-            ('compare_nouns', "inverted indexes", "inverted indices", "p:p"),
-            ('compare_verbs', "runs", "runs", "eq"),
-            ('compare_verbs', "runs", "run", "s:p"),
-            ('compare_verbs', "run", "run", "eq"),
-            ('compare_adjs', "my", "my", "eq"),
-            ('compare_adjs', "my", "our", "s:p"),
-            ('compare_adjs', "our", "our", "eq"),
+            ("index", "index", "eq"),
+            ("index", "indexes", "s:p"),
+            ("index", "indices", "s:p"),
+            ("indexes", "index", "p:s"),
+            ("indices", "index", "p:s"),
+            ("indices", "indexes", "p:p"),
+            ("indexes", "indices", "p:p"),
+            ("indices", "indices", "eq"),
+            ("inverted index", "inverted indices", "s:p"),
+            ("inverted indices", "inverted index", "p:s"),
+            ("inverted indexes", "inverted indices", "p:p"),
+            ("opuses", "opera", "p:p"),
+            ("opera", "opuses", "p:p"),
+            ("brothers", "brethren", "p:p"),
+            ("cats", "cats", "eq"),
+            ("base", "basis", False),
+            ("syrinx", "syringe", False),
+            ("she", "he", False),
+            ("opus", "operas", False),
+            ("taxi", "taxes", False),
+            ("time", "Times", False),
+            ("time".lower(), "Times".lower(), "s:p"),
+            ("courts martial", "court martial", "p:s"),
+            ("my", "my", "eq"),
+            ("my", "our", "s:p"),
+            ("our", "our", "eq"),
         ),
     )
-    def test_plequal(self, fn_name, sing, plur, res):
-        p = inflect.engine()
-        fn = getattr(p, fn_name)
-        assert fn(sing, plur) == res
+    def test_compare_simple(self, sing, plur, res):
+        assert inflect.engine().compare(sing, plur) == res
+
+    @pytest.mark.parametrize(
+        'sing,plur,res',
+        (
+            ("index", "index", "eq"),
+            ("index", "indexes", "s:p"),
+            ("index", "indices", "s:p"),
+            ("indexes", "index", "p:s"),
+            ("indices", "index", "p:s"),
+            ("indices", "indexes", "p:p"),
+            ("indexes", "indices", "p:p"),
+            ("indices", "indices", "eq"),
+            ("inverted index", "inverted indices", "s:p"),
+            ("inverted indices", "inverted index", "p:s"),
+            ("inverted indexes", "inverted indices", "p:p"),
+        ),
+    )
+    def test_compare_nouns(self, sing, plur, res):
+        assert inflect.engine().compare_nouns(sing, plur) == res
+
+    @pytest.mark.parametrize(
+        'sing,plur,res',
+        (
+            ("runs", "runs", "eq"),
+            ("runs", "run", "s:p"),
+            ("run", "run", "eq"),
+        ),
+    )
+    def test_compare_verbs(self, sing, plur, res):
+        assert inflect.engine().compare_verbs(sing, plur) == res
+
+    @pytest.mark.parametrize(
+        'sing,plur,res',
+        (
+            ("my", "my", "eq"),
+            ("my", "our", "s:p"),
+            ("our", "our", "eq"),
+        ),
+    )
+    def test_compare_adjectives(self, sing, plur, res):
+        assert inflect.engine().compare_adjs(sing, plur) == res
 
     def test_plequal_todos(self):
         p = inflect.engine()
