@@ -2716,13 +2716,7 @@ class engine:
 
         if word.last.lower() in pl_sb_uninflected_complete:
             if len(word.split_) >= 3:
-                for numword in range(1, len(word.split_) - 1):
-                    if word.split_[numword] in pl_prep_list_da:
-                        return " ".join(
-                            word.split_[: numword - 1]
-                            + [self._plnoun(word.split_[numword - 1], 2)]
-                            + word.split_[numword:]
-                        )
+                return self._handle_long_compounds(word, count=2) or word
             return word
 
         if word in pl_sb_uninflected_caps:
@@ -2751,13 +2745,9 @@ class engine:
                 )
 
         if len(word.split_) >= 3:
-            for numword in range(1, len(word.split_) - 1):
-                if word.split_[numword] in pl_prep_list_da:
-                    return " ".join(
-                        word.split_[: numword - 1]
-                        + [self._plnoun(word.split_[numword - 1], 2)]
-                        + word.split_[numword:]
-                    )
+            handled_words = self._handle_long_compounds(word, count=2)
+            if handled_words is not None:
+                return handled_words
 
         # only pluralize denominators in units
         mo = DENOMINATOR.search(word.lowered)
@@ -3016,6 +3006,23 @@ class engine:
             parts[: pivot - 1] + [sep.join([transformed, parts[pivot], ''])]
         ) + " ".join(parts[(pivot + 1) :])
 
+    def _handle_long_compounds(self, word: Words, count: int):
+        """
+        Handles the plural and singular for compound `Words`s that
+        have three or more words, based on the given count.
+        """
+        if len(word.split_) < 3:
+            raise ValueError("Connot handle `Words`s shorter than 3 words")
+
+        function = self._sinoun if count == 1 else self._plnoun
+        for numword in range(1, len(word.split_) - 1):
+            if word.split_[numword] in pl_prep_list_da:
+                return " ".join(
+                    word.split_[: numword - 1]
+                    + [function(word.split_[numword - 1], count)]
+                    + word.split_[numword:]
+                )
+
     @staticmethod
     def _find_pivot(words, candidates):
         pivots = (
@@ -3210,13 +3217,7 @@ class engine:
 
         if words.last.lower() in pl_sb_uninflected_complete:
             if len(words.split_) >= 3:
-                for numword in range(1, len(words.split_) - 1):
-                    if words.split_[numword] in pl_prep_list_da:
-                        return " ".join(
-                            words.split_[: numword - 1]
-                            + [self._sinoun(words.split_[numword - 1], 1)]
-                            + words.split_[numword:]
-                        )
+                return self._handle_long_compounds(words, count=1) or word
             return word
 
         if word in pl_sb_uninflected_caps:
