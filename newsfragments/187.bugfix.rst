@@ -1,0 +1,1 @@
+Added validation of user-defined words and amended the type declarations to match, allowing for null values but not empty strings.

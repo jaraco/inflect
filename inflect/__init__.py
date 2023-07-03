@@ -2037,11 +2037,11 @@ class engine:
         self.classical_dict = def_classical.copy()
         self.persistent_count: Optional[int] = None
         self.mill_count = 0
-        self.pl_sb_user_defined: List[str] = []
-        self.pl_v_user_defined: List[str] = []
-        self.pl_adj_user_defined: List[str] = []
-        self.si_sb_user_defined: List[str] = []
-        self.A_a_user_defined: List[str] = []
+        self.pl_sb_user_defined: List[Optional[Word]] = []
+        self.pl_v_user_defined: List[Optional[Word]] = []
+        self.pl_adj_user_defined: List[Optional[Word]] = []
+        self.si_sb_user_defined: List[Optional[Word]] = []
+        self.A_a_user_defined: List[Optional[Word]] = []
         self.thegender = "neuter"
         self.__number_args: Optional[Dict[str, str]] = None
 
@@ -2074,7 +2074,8 @@ class engine:
             raise DeprecationWarning
         raise AttributeError
 
-    def defnoun(self, singular: str, plural: str) -> int:
+    @validate_call
+    def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the noun plural of singular to plural.
 
@@ -2085,7 +2086,16 @@ class engine:
         self.si_sb_user_defined.extend((plural, singular))
         return 1
 
-    def defverb(self, s1: str, p1: str, s2: str, p2: str, s3: str, p3: str) -> int:
+    @validate_call
+    def defverb(
+        self,
+        s1: Optional[Word],
+        p1: Optional[Word],
+        s2: Optional[Word],
+        p2: Optional[Word],
+        s3: Optional[Word],
+        p3: Optional[Word],
+    ) -> int:
         """
         Set the verb plurals for s1, s2 and s3 to p1, p2 and p3 respectively.
 
@@ -2101,7 +2111,8 @@ class engine:
         self.pl_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
-    def defadj(self, singular: str, plural: str) -> int:
+    @validate_call
+    def defadj(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the adjective plural of singular to plural.
 
@@ -2111,7 +2122,8 @@ class engine:
         self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
-    def defa(self, pattern: str) -> int:
+    @validate_call
+    def defa(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'a' for words matching pattern.
 
@@ -2120,7 +2132,8 @@ class engine:
         self.A_a_user_defined.extend((pattern, "a"))
         return 1
 
-    def defan(self, pattern: str) -> int:
+    @validate_call
+    def defan(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'an' for words matching pattern.
 
@@ -2129,7 +2142,7 @@ class engine:
         self.A_a_user_defined.extend((pattern, "an"))
         return 1
 
-    def checkpat(self, pattern: Optional[str]) -> None:
+    def checkpat(self, pattern: Optional[Word]) -> None:
         """
         check for errors in a regex pattern
         """
@@ -2141,7 +2154,7 @@ class engine:
             print3(f"\nBad user-defined singular pattern:\n\t{pattern}\n")
             raise BadUserDefinedPatternError
 
-    def checkpatplural(self, pattern: str) -> None:
+    def checkpatplural(self, pattern: Optional[Word]) -> None:
         """
         check for errors in a regex replace pattern
         """
