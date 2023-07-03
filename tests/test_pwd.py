@@ -14,13 +14,15 @@ from inflect import (
 import inflect
 
 
+missing = object()
+
+
 class test(unittest.TestCase):
     def TODO(
         self,
         ans,
         answer_wanted,
-        answer_gives_now="default_that_will_never_occur__can't_use_None"
-        "_as_that_is_a_possible_valid_value",
+        answer_gives_now=missing,
     ):
         """
         make this test for future testing
@@ -29,10 +31,7 @@ class test(unittest.TestCase):
         """
         if ans == answer_wanted:
             print("test unexpectedly passed!: {} == {}".format(ans, answer_wanted))
-        if answer_gives_now != (
-            "default_that_will_never_occur__can't_use_None"
-            "_as_that_is_a_possible_valid_value"
-        ):
+        if answer_gives_now is not missing:
             self.assertEqual(ans, answer_gives_now)
 
     def test_enclose(self):
