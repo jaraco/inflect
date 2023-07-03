@@ -219,7 +219,7 @@ pl_sb_irregular = {
     "ox": "oxen",
     "cow": "cows|kine",
     "graffito": "graffiti",
-    "octopus": "octopuses|octopodes|octopi",
+    "octopus": "octopuses|octopodes",
     "genie": "genies|genii",
     "ganglion": "ganglions|ganglia",
     "trilby": "trilbys",

@@ -541,7 +541,7 @@
     TODO:siverb            oboes  ->  oboe
               occiput  ->  occiputs|occipita
                octavo  ->  octavos
-              octopus  ->  octopuses|octopodes|octopi
+              octopus  ->  octopuses|octopodes
                oedema  ->  oedemas|oedemata
             Oklahoman  ->  Oklahomans
               omnibus  ->  omnibuses
