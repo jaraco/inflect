@@ -3607,8 +3607,11 @@ class engine:
         """
         Return the ordinal of num.
 
-        e.g. ordinal(1) returns '1st'
-        ordinal('one') returns 'first'
+        >>> ordinal = engine().ordinal
+        >>> ordinal(1)
+        '1st'
+        >>> ordinal('one')
+        'first'
         """
         if DIGIT.match(str(num)):
             if isinstance(num, (float, int)) and int(num) == num:
