@@ -122,7 +122,7 @@ def test_def():
 def test_ordinal():
     p = inflect.engine()
     assert p.ordinal(0) == "0th"
-    assert p.ordinal(1) == "1st"
+    assert p.ordinal(1) == p.ordinal("1") == "1st"
     assert p.ordinal(2) == "2nd"
     assert p.ordinal(3) == "3rd"
     assert p.ordinal(4) == "4th"
@@ -152,7 +152,7 @@ def test_ordinal():
     assert p.ordinal(103) == "103rd"
     assert p.ordinal(104) == "104th"
 
-    assert p.ordinal(1.1) == "1.1st"
+    assert p.ordinal(1.1) == p.ordinal("1.1") == "1.1st"
     assert p.ordinal(1.2) == "1.2nd"
     assert p.ordinal(5.502) == "5.502nd"
 
