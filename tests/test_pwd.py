@@ -27,7 +27,7 @@ class Test:
         so can easily rename these to assertEqual when code ready
         """
         if ans == answer_wanted:
-            print("test unexpectedly passed!: {} == {}".format(ans, answer_wanted))
+            print(f"test unexpectedly passed!: {ans} == {answer_wanted}")
         if answer_gives_now is not missing:
             assert ans == answer_gives_now
 
@@ -131,7 +131,7 @@ class Test:
             ("   num(1)   ", "   1   "),
             ("num(3) num(1)", "3 1"),
         ):
-            assert p.inflect(txt) == ans, 'p.inflect("{}") != "{}"'.format(txt, ans)
+            assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
 
         for txt, ans in (
             ("plural('rock')", "rocks"),
@@ -149,7 +149,7 @@ class Test:
             ),
             ("a('cat',0) a('cat',1) a('cat',2) a('cat', 2)", "0 cat a cat 2 cat 2 cat"),
         ):
-            assert p.inflect(txt) == ans, 'p.inflect("{}") != "{}"'.format(txt, ans)
+            assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
 
     def test_user_input_fns(self):
         p = inflect.engine()
@@ -354,7 +354,7 @@ class Test:
         ):
             assert (
                 p.singular_noun(plur) == sing
-            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            ), f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("masculine")
@@ -367,7 +367,7 @@ class Test:
         ):
             assert (
                 p.singular_noun(plur) == sing
-            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            ), f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("gender-neutral")
@@ -380,7 +380,7 @@ class Test:
         ):
             assert (
                 p.singular_noun(plur) == sing
-            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            ), f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             assert p.inflect("singular_noun('%s')" % plur) == sing
 
         p.gender("neuter")
@@ -393,7 +393,7 @@ class Test:
         ):
             assert (
                 p.singular_noun(plur) == sing
-            ), "singular_noun({}) == {} != {}".format(plur, p.singular_noun(plur), sing)
+            ), f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             assert p.inflect("singular_noun('%s')" % plur) == sing
 
         with pytest.raises(BadGenderError):
@@ -605,7 +605,7 @@ class Test:
                 sing, p._plnoun(sing), plur
             )
 
-            assert p._sinoun(plur) == sing, 'p._sinoun("{}") != "{}"'.format(plur, sing)
+            assert p._sinoun(plur) == sing, f'p._sinoun("{plur}") != "{sing}"'
 
         # words where forming singular is ambiguous or not attempted
         for sing, plur in (
@@ -614,7 +614,7 @@ class Test:
             ("basis", "bases"),
             ("Jess", "Jesses"),
         ):
-            assert p._plnoun(sing) == plur, 'p._plnoun("{}") != "{}"'.format(sing, plur)
+            assert p._plnoun(sing) == plur, f'p._plnoun("{sing}") != "{plur}"'
 
         for sing, plur in (
             # TODO: does not keep case

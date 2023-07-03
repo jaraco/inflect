@@ -1,5 +1,4 @@
 import os
-import io
 
 import pytest
 
@@ -82,7 +81,7 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
     assert is_eq(p, singular, class_plural) in ("s:p", "p:s", "eq")
     assert is_eq(p, class_plural, singular) in ("p:s", "s:p", "eq")
     assert singular != ""
-    expected = mod_PL_val if class_PL_val else "%s|%s" % (mod_PL_val, class_PL_val)
+    expected = mod_PL_val if class_PL_val else "{}|{}".format(mod_PL_val, class_PL_val)
     assert mod_PL_val == expected
 
     if is_nv != "_V":
@@ -265,5 +264,5 @@ def test_NameError_in_strings():
 
 def get_data():
     filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
-    with io.open(filename, encoding='utf-8') as strm:
+    with open(filename, encoding='utf-8') as strm:
         return list(map(str.strip, strm))

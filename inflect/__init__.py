@@ -3260,11 +3260,11 @@ class engine:
 
         if words.last in si_sb_irregular_caps:
             llen = len(words.last)
-            return "{}{}".format(word[:-llen], si_sb_irregular_caps[words.last])
+            return f"{word[:-llen]}{si_sb_irregular_caps[words.last]}"
 
         if words.last.lower() in si_sb_irregular:
             llen = len(words.last.lower())
-            return "{}{}".format(word[:-llen], si_sb_irregular[words.last.lower()])
+            return f"{word[:-llen]}{si_sb_irregular[words.last.lower()]}"
 
         dash_split = words.lowered.split("-")
         if (" ".join(dash_split[-2:])).lower() in si_sb_irregular_compound:
