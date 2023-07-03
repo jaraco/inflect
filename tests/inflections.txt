@@ -728,7 +728,7 @@
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
                 swine  ->  swines|swine
-              syringe  ->  syringes
+      TODO:singular_noun multiple return        syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
               tableau  ->  tableaus|tableaux
                  taco  ->  tacos
