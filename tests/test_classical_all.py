@@ -1,9 +1,7 @@
-import unittest
-
 import inflect
 
 
-class test(unittest.TestCase):
+class Test:
     def test_classical(self):
         p = inflect.engine()
 
@@ -49,10 +47,3 @@ class test(unittest.TestCase):
         assert p.plural_noun("brother") == "brethren", "classical others active"
         assert p.plural_noun("person") == "persons", "classical 'persons' active"
         assert p.plural_noun("formula") == "formulae", "classical 'ancient' active"
-
-
-if __name__ == "__main__":
-    try:
-        unittest.main()
-    except SystemExit:
-        pass

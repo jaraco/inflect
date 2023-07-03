@@ -1,8 +1,7 @@
-import unittest
 import inflect
 
 
-class TestUnicode(unittest.TestCase):
+class TestUnicode:
     """Unicode compatibility test cases"""
 
     def test_unicode_plural(self):

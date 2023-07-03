@@ -1,5 +1,3 @@
-import unittest
-
 import pytest
 
 from inflect import (
@@ -16,7 +14,7 @@ from inflect.compat.pydantic import same_method
 missing = object()
 
 
-class test(unittest.TestCase):
+class Test:
     def TODO(
         self,
         ans,
@@ -1199,10 +1197,3 @@ class test(unittest.TestCase):
         p = inflect.engine()
         with pytest.raises(AttributeError):
             p.unknown_method
-
-
-if __name__ == "__main__":
-    try:
-        unittest.main()
-    except SystemExit:
-        pass
