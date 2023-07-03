@@ -73,8 +73,11 @@ from typing import (
 from numbers import Number
 
 
-from pydantic import Field, validate_call
+from pydantic import Field
 from typing_extensions import Annotated
+
+
+from .compat.pydantic1 import validate_call
 
 
 class UnknownClassicalModeError(Exception):
