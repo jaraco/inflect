@@ -193,7 +193,7 @@ class test(unittest.TestCase):
         self.assertRaises(inflect.BadUserDefinedPatternError, p.defnoun, "(??", None)
         inflect.STDOUT_ON = True
 
-        p.defnoun(None, "")  # check None doesn't crash it
+        p.defnoun(None, "any")  # check None doesn't crash it
 
         # defverb
         p.defverb("will", "shall", "will", "will", "will", "will")
