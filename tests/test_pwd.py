@@ -15,22 +15,6 @@ missing = object()
 
 
 class Test:
-    def TODO(
-        self,
-        ans,
-        answer_wanted,
-        answer_gives_now=missing,
-    ):
-        """
-        make this test for future testing
-
-        so can easily rename these to assertEqual when code ready
-        """
-        if ans == answer_wanted:
-            print(f"test unexpectedly passed!: {ans} == {answer_wanted}")
-        if answer_gives_now is not missing:
-            assert ans == answer_gives_now
-
     def test_enclose(self):
         # def enclose
         assert inflect.enclose("test") == "(?:test)"
