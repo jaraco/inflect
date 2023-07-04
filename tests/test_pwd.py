@@ -444,6 +444,15 @@ class Test:
             ("my", "my", "eq"),
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
+            pytest.param(
+                "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
+            ),
+            pytest.param(
+                "dress's", "dress'", "s:s", marks=pytest.mark.xfail(reason='todo')
+            ),
+            pytest.param(
+                "Jess's", "Jess'", "s:s", marks=pytest.mark.xfail(reason='todo')
+            ),
         ),
     )
     def test_compare_simple(self, sing, plur, res):
@@ -485,40 +494,27 @@ class Test:
             ("my", "my", "eq"),
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
+            pytest.param(
+                "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
+            ),
+            pytest.param(
+                "dress's", "dress'", "s:s", marks=pytest.mark.xfail(reason='todo')
+            ),
+            pytest.param(
+                "Jess's", "Jess'", "s:s", marks=pytest.mark.xfail(reason='todo')
+            ),
         ),
     )
     def test_compare_adjectives(self, sing, plur, res):
         assert inflect.engine().compare_adjs(sing, plur) == res
 
-    def test_plequal_todos(self):
+    @pytest.mark.xfail()
+    def test_compare_your_our(self):
+        # multiple adjective plurals not (yet) supported
         p = inflect.engine()
-        for fn, sing, plur, res, badres in (
-            (
-                p.compare,
-                "dresses's",
-                "dresses'",
-                "p:p",
-                "p:s",
-            ),  # TODO: should return p:p
-            (
-                p.compare_adjs,
-                "dresses's",
-                "dresses'",
-                "p:p",
-                False,
-            ),  # TODO: should return p:p
-            # TODO: future: support different singulars one day.
-            (p.compare, "dress's", "dress'", "s:s", "p:s"),
-            (p.compare_adjs, "dress's", "dress'", "s:s", False),
-            (p.compare, "Jess's", "Jess'", "s:s", "p:s"),
-            (p.compare_adjs, "Jess's", "Jess'", "s:s", False),
-        ):
-            self.TODO(fn(sing, plur), res, badres)
-
-        # TODO: pass upstream. multiple adjective plurals not supported
         assert p.compare("your", "our") is False
         p.defadj("my", "our|your")  # what's ours is yours
-        self.TODO(p.compare("your", "our"), "p:p")
+        assert p.compare("your", "our") == "p:p"
 
     def test__pl_reg_plurals(self):
         p = inflect.engine()
@@ -645,14 +641,6 @@ class Test:
         ):
             assert p._plnoun(sing) == plur, f'p._plnoun("{sing}") != "{plur}"'
 
-        for sing, plur in (
-            # TODO: does not keep case
-            ("about ME", "about US"),
-            # TODO: does not keep case
-            ("YOU", "YOU"),
-        ):
-            self.TODO(p._plnoun(sing), plur)
-
         p.num(1)
         assert p._plnoun("cat") == "cat"
         p.num(3)
@@ -695,6 +683,24 @@ class Test:
         # p.classical(0)
         # p.classical('names')
         # classical now back to the default mode
+
+    @pytest.mark.parametrize(
+        'sing, plur',
+        (
+            pytest.param(
+                'about ME',
+                'about US',
+                marks=pytest.mark.xfail(reason='does not keep case'),
+            ),
+            pytest.param(
+                'YOU',
+                'YOU',
+                marks=pytest.mark.xfail(reason='does not keep case'),
+            ),
+        ),
+    )
+    def test_plnoun_retains_case(self, sing, plur):
+        assert inflect.engine()._plnoun(sing) == plur
 
     def test_classical_pl(self):
         p = inflect.engine()
@@ -742,19 +748,35 @@ class Test:
         assert p._pl_general_verb("saw") == "saw"
         assert p._pl_general_verb("runs", 1) == "runs"
 
-    def test__pl_special_adjective(self):
+    @pytest.mark.parametrize(
+        'adj,plur',
+        (
+            ("a", "some"),
+            ("my", "our"),
+            ("John's", "Johns'"),
+            ("tuna's", "tuna's"),
+            ("TUNA's", "TUNA's"),
+            ("bad", False),
+            pytest.param(
+                "JOHN's",
+                "JOHNS'",
+                marks=pytest.mark.xfail(reason='should this be handled?'),
+            ),
+            pytest.param(
+                "JOHN'S",
+                "JOHNS'",
+                marks=pytest.mark.xfail(reason="can't handle capitals"),
+            ),
+            pytest.param(
+                "TUNA'S",
+                "TUNA'S",
+                marks=pytest.mark.xfail(reason="can't handle capitals"),
+            ),
+        ),
+    )
+    def test__pl_special_adjective(self, adj, plur):
         p = inflect.engine()
-        assert p._pl_special_adjective("a") == "some"
-        assert p._pl_special_adjective("my") == "our"
-        assert p._pl_special_adjective("John's") == "Johns'"
-        # TODO: original can't handle this. should we handle it?
-        self.TODO(p._pl_special_adjective("JOHN's"), "JOHNS'")
-        # TODO: can't handle capitals
-        self.TODO(p._pl_special_adjective("JOHN'S"), "JOHNS'")
-        self.TODO(p._pl_special_adjective("TUNA'S"), "TUNA'S")
-        assert p._pl_special_adjective("tuna's") == "tuna's"
-        assert p._pl_special_adjective("TUNA's") == "TUNA's"
-        assert p._pl_special_adjective("bad") is False
+        assert p._pl_special_adjective(adj) == plur
 
     def test_a(self):
         p = inflect.engine()
@@ -929,12 +951,6 @@ class Test:
         assert enword("347", 2) == "thirty-four , seven, "
         assert enword("34768", 2) == "thirty-four , seventy-six , eight, "
         assert enword("1", 2) == "one, "
-        p._number_args["one"] = "single"
-        self.TODO(
-            enword("1", 2), "single, ", "one, "
-        )  # TODO: doesn't use default word for 'one' here
-
-        p._number_args["one"] = "one"
 
         assert enword("134", 3) == " one thirty-four , "
 
@@ -957,6 +973,12 @@ class Test:
             == "one million, two hundred and thirty-four  thousand, "
             "five hundred and sixty-seven  , "
         )
+
+    @pytest.mark.xfail(reason="doesn't use indicated word for 'one'")
+    def test_enword_number_args_override(self):
+        p = inflect.engine()
+        p._number_args["one"] = "single"
+        p.enword("1", 2) == "single, "
 
     def test_numwords(self):
         p = inflect.engine()
@@ -1031,47 +1053,61 @@ class Test:
             "thousand, six hundred and seventy-eight"
         )
 
-    def test_numwords_group(self):
+    def test_numwords_group_chunking_error(self):
         p = inflect.engine()
-        numwords = p.number_to_words
-        assert numwords("12345", group=2) == "twelve, thirty-four, five"
-        # TODO: 'hundred and' missing
-        self.TODO(
-            numwords("12345", group=3),
-            "one hundred and twenty-three",
-            "one twenty-three, forty-five",
-        )
-        assert numwords("123456", group=3) == "one twenty-three, four fifty-six"
-        assert numwords("12345", group=1) == "one, two, three, four, five"
-        assert (
-            numwords("1234th", group=0, andword="and")
-            == "one thousand, two hundred and thirty-fourth"
-        )
-        assert (
-            numwords(p.ordinal("1234"), group=0)
-            == "one thousand, two hundred and thirty-fourth"
-        )
-        assert numwords("120", group=2) == "twelve, zero"
-        assert numwords("120", group=2, zero="oh", one="unity") == "twelve, oh"
-        # TODO: ignoring 'one' param with group=2
-        self.TODO(
-            numwords("101", group=2, zero="oh", one="unity"), "ten, unity", "ten, one"
-        )
-        assert (
-            numwords("555_1202", group=1, zero="oh")
-            == "five, five, five, one, two, oh, two"
-        )
-        assert (
-            numwords("555_1202", group=1, one="unity")
-            == "five, five, five, unity, two, zero, two"
-        )
-        assert (
-            numwords("123.456", group=1, decimal="mark", one="one")
-            == "one, two, three, mark, four, five, six"
-        )
-
         with pytest.raises(BadChunkingOptionError):
-            numwords("1234", group=4)
+            p.number_to_words("1234", group=4)
+
+    @pytest.mark.parametrize(
+        'input,kwargs,expect',
+        (
+            ("12345", dict(group=2), "twelve, thirty-four, five"),
+            ("123456", dict(group=3), "one twenty-three, four fifty-six"),
+            ("12345", dict(group=1), "one, two, three, four, five"),
+            (
+                "1234th",
+                dict(group=0, andword="and"),
+                "one thousand, two hundred and thirty-fourth",
+            ),
+            (
+                "1234th",
+                dict(group=0),
+                "one thousand, two hundred and thirty-fourth",
+            ),
+            ("120", dict(group=2), "twelve, zero"),
+            ("120", dict(group=2, zero="oh", one="unity"), "twelve, oh"),
+            (
+                "555_1202",
+                dict(group=1, zero="oh"),
+                "five, five, five, one, two, oh, two",
+            ),
+            (
+                "555_1202",
+                dict(group=1, one="unity"),
+                "five, five, five, unity, two, zero, two",
+            ),
+            (
+                "123.456",
+                dict(group=1, decimal="mark", one="one"),
+                "one, two, three, mark, four, five, six",
+            ),
+            pytest.param(
+                '12345',
+                dict(group=3),
+                'one hundred and twenty-three',
+                marks=pytest.mark.xfail(reason="'hundred and' missing"),
+            ),
+            pytest.param(
+                '101',
+                dict(group=2, zero="oh", one="unity"),
+                "ten, unity",
+                marks=pytest.mark.xfail(reason="ignoring 'one' param with group=2"),
+            ),
+        ),
+    )
+    def test_numwords_group(self, input, kwargs, expect):
+        p = inflect.engine()
+        assert p.number_to_words(input, **kwargs) == expect
 
     def test_wordlist(self):
         p = inflect.engine()
