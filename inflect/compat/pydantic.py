@@ -1,4 +1,12 @@
 class ValidateCallWrapperWrapper:
+    def __new__(cls, wrapped):
+        # bypass wrapper if wrapped method has the fix
+        if wrapped.__class__.__name__ != 'ValidateCallWrapper':
+            return wrapped
+        if hasattr(wrapped, '_name'):
+            return wrapped
+        return super().__new__(cls)
+
     def __init__(self, wrapped):
         self.orig = wrapped
 
@@ -7,7 +15,7 @@ class ValidateCallWrapperWrapper:
 
     @property
     def raw_function(self):
-        return getattr(self.orig, 'raw_function') or self.orig
+        return getattr(self.orig, 'raw_function')
 
 
 def same_method(m1, m2) -> bool:
