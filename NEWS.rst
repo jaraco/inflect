@@ -1,3 +1,18 @@
+v7.0.0
+======
+
+Features
+--------
+
+- Refine type hint for ``singular_noun`` to indicate a literal return type for ``False``. (#186)
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed methods renamed in 0.2.0.
+
+
 v6.2.0
 ======
 

@@ -1,1 +1,0 @@
-Removed methods renamed in 0.2.0.
