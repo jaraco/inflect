@@ -836,9 +836,9 @@ class Test:
         p.num(3)
         assert p.no("cat") == "3 cats"
 
-    def test_prespart(self):
-        p = inflect.engine()
-        for sing, plur in (
+    @pytest.mark.parametrize(
+        'sing, plur',
+        (
             ("runs", "running"),
             ("dies", "dying"),
             ("glues", "gluing"),
@@ -851,15 +851,17 @@ class Test:
             ("eats", "eating"),
             ("loves", "loving"),
             ("spies", "spying"),
-        ):
-            assert p.present_participle(sing) == plur
-
-        assert p.present_participle("hoes") == "hoeing"
-        assert p.present_participle("alibis") == "alibiing"
-        assert p.present_participle("is") == "being"
-        assert p.present_participle("are") == "being"
-        assert p.present_participle("had") == "having"
-        assert p.present_participle("has") == "having"
+            ("hoes", "hoeing"),
+            ("alibis", "alibiing"),
+            ("is", "being"),
+            ("are", "being"),
+            ("had", "having"),
+            ("has", "having"),
+        ),
+    )
+    def test_prespart(self, sing, plur):
+        p = inflect.engine()
+        assert p.present_participle(sing) == plur
 
     def test_ordinal(self):
         p = inflect.engine()
