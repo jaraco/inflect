@@ -1094,9 +1094,7 @@ class Test:
         )
 
         assert wordlist(("apple", "banana"), conj=" or ") == "apple  or  banana"
-        assert (
-            wordlist(("apple", "banana"), conj="&") == "apple & banana"
-        )  # TODO: want spaces here. Done, report upstream
+        assert wordlist(("apple", "banana"), conj="&") == "apple & banana"
         assert (
             wordlist(("apple", "banana"), conj="&", conj_spaced=False) == "apple&banana"
         )
@@ -1116,15 +1114,15 @@ class Test:
         assert (
             wordlist(("apple", "banana", "carrot"), conj="&")
             == "apple, banana, & carrot"
-        )  # TODO: want space here. Done, report upstream
+        )
         assert (
             wordlist(("apple", "banana", "carrot"), conj="&", conj_spaced=False)
             == "apple, banana,&carrot"
-        )  # TODO: want space here. Done, report upstream
+        )
         assert (
             wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False)
             == "apple, banana, &carrot"
-        )  # TODO: want space here. Done, report upstream
+        )
 
     def test_doc_examples(self):
         p = inflect.engine()
