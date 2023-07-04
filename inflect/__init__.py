@@ -3010,6 +3010,11 @@ class engine:
         """
         Handles the plural and singular for compound `Words`s that
         have three or more words, based on the given count.
+
+        >>> engine()._handle_long_compounds(Words("pair of scissors"), 2)
+        'pairs of scissors'
+        >>> engine()._handle_long_compounds(Words("men beyond hills"), 1)
+        'man beyond hills'
         """
         if len(word.split_) < 3:
             raise ValueError("Connot handle `Words`s shorter than 3 words")
