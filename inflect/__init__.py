@@ -3,8 +3,6 @@ inflect: english language inflection
  - correctly generate plurals, ordinals, indefinite articles
  - convert numbers to words
 
-Copyright (C) 2010 Paul Dyson
-
 Based upon the Perl module
 `Lingua::EN::Inflect <https://metacpan.org/pod/Lingua::EN::Inflect>`_.
 
