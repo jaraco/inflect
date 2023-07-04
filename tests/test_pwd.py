@@ -192,14 +192,6 @@ class Test:
 
         p.defnoun(None, "any")  # check None doesn't crash it
 
-        # defverb
-        p.defverb("will", "shall", "will", "will", "will", "will")
-        assert p.ud_match("will", p.pl_v_user_defined) == "will"
-        assert p.plural("will") == "will"
-        # TODO: will -> shall. Tests below fail
-        self.TODO(p.compare("will", "shall"), "s:p")
-        self.TODO(p.compare_verbs("will", "shall"), "s:p")
-
         # defadj
         p.defadj("hir", "their")
         assert p.plural("hir") == "their"
@@ -213,6 +205,19 @@ class Test:
         p.defan("horrendous.*")
         assert p.a("horrendously") == "an horrendously"
         assert p.ud_match("horrendously", p.A_a_user_defined) == "an"
+
+    def test_user_input_defverb(self):
+        p = inflect.engine()
+        p.defverb("will", "shall", "will", "will", "will", "will")
+        assert p.ud_match("will", p.pl_v_user_defined) == "will"
+        assert p.plural("will") == "will"
+
+    @pytest.mark.xfail(reason="todo")
+    def test_user_input_defverb_compare(self):
+        p = inflect.engine()
+        p.defverb("will", "shall", "will", "will", "will", "will")
+        assert p.compare("will", "shall") == "s:p"
+        assert p.compare_verbs("will", "shall") == "s:p"
 
     def test_postprocess(self):
         p = inflect.engine()
