@@ -107,14 +107,6 @@ class BadGenderError(Exception):
     pass
 
 
-STDOUT_ON = False
-
-
-def print3(txt: str) -> None:
-    if STDOUT_ON:
-        print(txt)
-
-
 def enclose(s: str) -> str:
     return f"(?:{s})"
 
@@ -2069,9 +2061,10 @@ class engine:
 
     def __getattr__(self, meth):
         if meth in self.deprecated_methods:
-            print3(f"{meth}() deprecated, use {self.deprecated_methods[meth]}()")
-            raise DeprecationWarning
-        raise AttributeError
+            raise DeprecationWarning(
+                f"{meth}() deprecated, use {self.deprecated_methods[meth]}()"
+            )
+        raise AttributeError(meth)
 
     @validate_call
     def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
@@ -2150,8 +2143,7 @@ class engine:
         try:
             re.match(pattern, "")
         except re.error:
-            print3(f"\nBad user-defined singular pattern:\n\t{pattern}\n")
-            raise BadUserDefinedPatternError
+            raise BadUserDefinedPatternError(pattern)
 
     def checkpatplural(self, pattern: Optional[Word]) -> None:
         """
@@ -3661,7 +3653,6 @@ class engine:
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
-            print3("number out of range")
             raise NumOutOfRangeError
         return mill[ind]
 

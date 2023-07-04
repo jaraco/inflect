@@ -187,10 +187,8 @@ class Test:
         p.defnoun("(cat)", r"$1s")
         assert p.plural("cat") == "cats"
 
-        inflect.STDOUT_ON = False
         with pytest.raises(inflect.BadUserDefinedPatternError):
             p.defnoun("(??", None)
-        inflect.STDOUT_ON = True
 
         p.defnoun(None, "any")  # check None doesn't crash it
 
@@ -880,10 +878,8 @@ class Test:
         assert millfn(3) == " billion"
         assert millfn(0) == " "
         assert millfn(11) == " decillion"
-        inflect.STDOUT_ON = False
         with pytest.raises(NumOutOfRangeError):
             millfn(12)
-        inflect.STDOUT_ON = True
 
     def test_unitfn(self):
         p = inflect.engine()
@@ -1069,10 +1065,8 @@ class Test:
             == "one, two, three, mark, four, five, six"
         )
 
-        inflect.STDOUT_ON = False
         with pytest.raises(BadChunkingOptionError):
             numwords("1234", group=4)
-        inflect.STDOUT_ON = True
 
     def test_wordlist(self):
         p = inflect.engine()
@@ -1131,11 +1125,6 @@ class Test:
             wordlist(("apple", "banana", "carrot"), conj=" &", conj_spaced=False)
             == "apple, banana, &carrot"
         )  # TODO: want space here. Done, report upstream
-
-    def test_print(self):
-        inflect.STDOUT_ON = True
-        inflect.print3("")  # make sure it doesn't crash
-        inflect.STDOUT_ON = False
 
     def test_doc_examples(self):
         p = inflect.engine()
