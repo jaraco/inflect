@@ -1,0 +1,1 @@
+Refine type hint for ``singular_noun`` to indicate a literal return type for ``False``.

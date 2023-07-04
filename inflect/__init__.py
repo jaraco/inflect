@@ -68,6 +68,7 @@ from typing import (
     cast,
     Any,
 )
+from typing_extensions import Literal
 from numbers import Number
 
 
@@ -2521,7 +2522,7 @@ class engine:
         text: Word,
         count: Optional[Union[int, str, Any]] = None,
         gender: Optional[str] = None,
-    ) -> Union[str, bool]:
+    ) -> Union[str, Literal[False]]:
         """
         Return the singular of text, where text is a plural noun.
 
