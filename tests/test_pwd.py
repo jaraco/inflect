@@ -1222,25 +1222,6 @@ class Test:
 
         p.num(2)
 
-    def test_deprecation(self):
-        p = inflect.engine()
-        for meth in (
-            "pl",
-            "plnoun",
-            "plverb",
-            "pladj",
-            "sinoun",
-            "prespart",
-            "numwords",
-            "plequal",
-            "plnounequal",
-            "plverbequal",
-            "pladjequal",
-            "wordlist",
-        ):
-            with pytest.raises(DeprecationWarning):
-                getattr(p, meth)
-
     def test_unknown_method(self):
         p = inflect.engine()
         with pytest.raises(AttributeError):

@@ -2044,28 +2044,6 @@ class engine:
     def _number_args(self, val):
         self.__number_args = val
 
-    deprecated_methods = dict(
-        pl="plural",
-        plnoun="plural_noun",
-        plverb="plural_verb",
-        pladj="plural_adj",
-        sinoun="single_noun",
-        prespart="present_participle",
-        numwords="number_to_words",
-        plequal="compare",
-        plnounequal="compare_nouns",
-        plverbequal="compare_verbs",
-        pladjequal="compare_adjs",
-        wordlist="join",
-    )
-
-    def __getattr__(self, meth):
-        if meth in self.deprecated_methods:
-            raise DeprecationWarning(
-                f"{meth}() deprecated, use {self.deprecated_methods[meth]}()"
-            )
-        raise AttributeError(meth)
-
     @validate_call
     def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
