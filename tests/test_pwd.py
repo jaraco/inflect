@@ -863,9 +863,9 @@ class Test:
         p = inflect.engine()
         assert p.present_participle(sing) == plur
 
-    def test_ordinal(self):
-        p = inflect.engine()
-        for num, numord in (
+    @pytest.mark.parametrize(
+        'num, ord',
+        (
             ("1", "1st"),
             ("2", "2nd"),
             ("3", "3rd"),
@@ -885,8 +885,11 @@ class Test:
             ("one hundered and one", "one hundered and first"),
             ("zero", "zeroth"),
             ("n", "nth"),  # bonus!
-        ):
-            assert p.ordinal(num) == numord
+        ),
+    )
+    def test_ordinal(self, num, ord):
+        p = inflect.engine()
+        assert p.ordinal(num) == ord
 
     def test_millfn(self):
         p = inflect.engine()
