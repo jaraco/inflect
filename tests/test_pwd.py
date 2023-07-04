@@ -762,9 +762,9 @@ class Test:
         p = inflect.engine()
         assert p._pl_special_adjective(adj) == plur
 
-    def test_a(self):
-        p = inflect.engine()
-        for sing, plur in (
+    @pytest.mark.parametrize(
+        'sing, plur',
+        (
             ("cat", "a cat"),
             ("euphemism", "a euphemism"),
             ("Euler number", "an Euler number"),
@@ -806,9 +806,14 @@ class Test:
             ("a cat", "a cat"),
             ("an cat", "a cat"),
             ("a ant", "an ant"),
-        ):
-            assert p.a(sing) == plur
+        ),
+    )
+    def test_a(self, sing, plur):
+        p = inflect.engine()
+        assert p.a(sing) == plur
 
+    def test_a_alt(self):
+        p = inflect.engine()
         assert p.a("cat", 1) == "a cat"
         assert p.a("cat", 2) == "2 cat"
 
