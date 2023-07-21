@@ -56,6 +56,7 @@ import functools
 import collections
 import contextlib
 from typing import (
+    TYPE_CHECKING,
     Dict,
     Union,
     Optional,
@@ -63,6 +64,7 @@ from typing import (
     List,
     Match,
     Tuple,
+    Type,
     Callable,
     Sequence,
     cast,
@@ -72,12 +74,7 @@ from typing_extensions import Literal
 from numbers import Number
 
 
-from pydantic import Field
 from typing_extensions import Annotated
-
-
-from .compat.pydantic1 import validate_call
-from .compat.pydantic import same_method
 
 
 class UnknownClassicalModeError(Exception):
@@ -2020,8 +2017,18 @@ class Words(str):
         self.last = self.split_[-1]
 
 
-Word = Annotated[str, Field(min_length=1)]
 Falsish = Any  # ideally, falsish would only validate on bool(value) is False
+
+if TYPE_CHECKING:
+    Word = Annotated[str, "String with at least 1 character"]
+else:
+
+    class _WordMeta(type):  # Too dynamic to be supported by mypy...
+        def __instancecheck__(self, instance: Any) -> bool:
+            return isinstance(instance, str) and len(instance) >= 1
+
+    class Word(str, metaclass=_WordMeta):
+        """String with at least 1 character"""
 
 
 class engine:
@@ -2045,19 +2052,19 @@ class engine:
     def _number_args(self, val):
         self.__number_args = val
 
-    @validate_call
     def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the noun plural of singular to plural.
 
         """
+        _validate_type(singular, Word, optional=True)
+        _validate_type(plural, Word, optional=True)
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_sb_user_defined.extend((singular, plural))
         self.si_sb_user_defined.extend((plural, singular))
         return 1
 
-    @validate_call
     def defverb(
         self,
         s1: Optional[Word],
@@ -2073,6 +2080,7 @@ class engine:
         Where 1, 2 and 3 represent the 1st, 2nd and 3rd person forms of the verb.
 
         """
+        all(_validate_type(w, Word, optional=True) for w in (s1, p1, s2, p2, s3, p3))
         self.checkpat(s1)
         self.checkpat(s2)
         self.checkpat(s3)
@@ -2082,33 +2090,34 @@ class engine:
         self.pl_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
-    @validate_call
     def defadj(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the adjective plural of singular to plural.
 
         """
+        _validate_type(singular, Word, optional=True)
+        _validate_type(plural, Word, optional=True)
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
-    @validate_call
     def defa(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'a' for words matching pattern.
 
         """
+        _validate_type(pattern, Word, optional=True)
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, "a"))
         return 1
 
-    @validate_call
     def defan(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'an' for words matching pattern.
 
         """
+        _validate_type(pattern, Word, optional=True)
         self.checkpat(pattern)
         self.A_a_user_defined.extend((pattern, "an"))
         return 1
@@ -2130,8 +2139,9 @@ class engine:
         """
         return
 
-    @validate_call
     def ud_match(self, word: Word, wordlist: Sequence[Optional[Word]]) -> Optional[str]:
+        _validate_type(word, Word)
+        all(_validate_type(w, Word, optional=True) for w in wordlist)
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
             mo = re.search(fr"^{wordlist[i]}$", word, re.IGNORECASE)
             if mo:
@@ -2270,7 +2280,6 @@ class engine:
 
     # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
-    @validate_call
     def inflect(self, text: Word) -> str:
         """
         Perform inflections in a string.
@@ -2283,6 +2292,7 @@ class engine:
         and prespart
 
         """
+        _validate_type(text, Word)
         save_persistent_count = self.persistent_count
 
         # Dictionary of allowed methods
@@ -2347,7 +2357,6 @@ class engine:
         else:
             return "", "", ""
 
-    @validate_call
     def plural(self, text: Word, count: Optional[Union[str, int, Any]] = None) -> str:
         """
         Return the plural of text.
@@ -2360,6 +2369,7 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         pre, word, post = self.partition_word(text)
         if not word:
             return text
@@ -2371,7 +2381,6 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @validate_call
     def plural_noun(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2386,13 +2395,13 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         pre, word, post = self.partition_word(text)
         if not word:
             return text
         plural = self.postprocess(word, self._plnoun(word, count))
         return f"{pre}{plural}{post}"
 
-    @validate_call
     def plural_verb(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2407,6 +2416,7 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         pre, word, post = self.partition_word(text)
         if not word:
             return text
@@ -2416,7 +2426,6 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @validate_call
     def plural_adj(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2431,13 +2440,13 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         pre, word, post = self.partition_word(text)
         if not word:
             return text
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
         return f"{pre}{plural}{post}"
 
-    @validate_call
     def compare(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2460,15 +2469,14 @@ class engine:
         >>> compare('egg', '')
         Traceback (most recent call last):
         ...
-        pydantic...ValidationError: ...
-        ...
-          ...at least 1 characters...
+        TypeError: '' given, but expecting Word
         """
+        _validate_type(word1, Word)
+        _validate_type(word2, Word)
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
 
-    @validate_call
     def compare_nouns(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2482,9 +2490,10 @@ class engine:
         False - otherwise
 
         """
+        _validate_type(word1, Word)
+        _validate_type(word2, Word)
         return self._plequal(word1, word2, self.plural_noun)
 
-    @validate_call
     def compare_verbs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2498,9 +2507,10 @@ class engine:
         False - otherwise
 
         """
+        _validate_type(word1, Word)
+        _validate_type(word2, Word)
         return self._plequal(word1, word2, self.plural_verb)
 
-    @validate_call
     def compare_adjs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2514,9 +2524,10 @@ class engine:
         False - otherwise
 
         """
+        _validate_type(word1, Word)
+        _validate_type(word2, Word)
         return self._plequal(word1, word2, self.plural_adj)
 
-    @validate_call
     def singular_noun(
         self,
         text: Word,
@@ -2549,6 +2560,7 @@ class engine:
         False
 
         """
+        _validate_type(text, Word)
         pre, word, post = self.partition_word(text)
         if not word:
             return text
@@ -2574,12 +2586,12 @@ class engine:
             return "s:p"
         self.classical_dict = classval.copy()
 
-        if same_method(pl, self.plural) or same_method(pl, self.plural_noun):
+        if pl == self.plural or pl == self.plural_noun:
             if self._pl_check_plurals_N(word1, word2):
                 return "p:p"
             if self._pl_check_plurals_N(word2, word1):
                 return "p:p"
-        if same_method(pl, self.plural) or same_method(pl, self.plural_adj):
+        if pl == self.plural or pl == self.plural_adj:
             if self._pl_check_plurals_adj(word1, word2):
                 return "p:p"
         return False
@@ -3450,7 +3462,6 @@ class engine:
 
     # ADJECTIVES
 
-    @validate_call
     def a(self, text: Word, count: Optional[Union[int, str, Any]] = 1) -> str:
         """
         Return the appropriate indefinite article followed by text.
@@ -3463,6 +3474,7 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         mo = INDEFINITE_ARTICLE_TEST.search(text)
         if mo:
             word = mo.group(2)
@@ -3531,7 +3543,6 @@ class engine:
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
-    @validate_call
     def no(self, text: Word, count: Optional[Union[int, str]] = None) -> str:
         """
         If count is 0, no, zero or nil, return 'no' followed by the plural
@@ -3548,6 +3559,7 @@ class engine:
         Whitespace at the start and end is preserved.
 
         """
+        _validate_type(text, Word)
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
@@ -3569,7 +3581,6 @@ class engine:
 
     # PARTICIPLES
 
-    @validate_call
     def present_participle(self, word: Word) -> str:
         """
         Return the present participle for word.
@@ -3577,6 +3588,7 @@ class engine:
         word is the 3rd person singular verb.
 
         """
+        _validate_type(word, Word)
         plv = self.plural_verb(word, 2)
         ans = plv
 
@@ -3588,7 +3600,6 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    @validate_call(config=dict(arbitrary_types_allowed=True))
     def ordinal(self, num: Union[Number, Word]) -> str:
         """
         Return the ordinal of num.
@@ -3599,6 +3610,7 @@ class engine:
         >>> ordinal('one')
         'first'
         """
+        _validate_type(num, (Number, Word))
         if DIGIT.match(str(num)):
             if isinstance(num, (float, int)) and int(num) == num:
                 n = int(num)
@@ -3747,7 +3759,6 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
-    @validate_call(config=dict(arbitrary_types_allowed=True))  # noqa: C901
     def number_to_words(  # noqa: C901
         self,
         num: Union[Number, Word],
@@ -3777,6 +3788,7 @@ class engine:
 
         parameters not remembered from last call. Departure from Perl version.
         """
+        _validate_type(num, (Number, Word))
         self._number_args = {"andword": andword, "zero": zero, "one": one}
         num = str(num)
 
@@ -3899,7 +3911,6 @@ class engine:
 
     # Join words with commas and a trailing 'and' (when appropriate)...
 
-    @validate_call
     def join(
         self,
         words: Optional[Sequence[Word]],
@@ -3923,6 +3934,9 @@ class engine:
         """
         if not words:
             return ""
+
+        all(_validate_type(w, Word) for w in words)
+
         if len(words) == 1:
             return words[0]
 
@@ -3949,3 +3963,14 @@ class engine:
             sep += " "
 
         return f"{sep.join(words[0:-1])}{final_sep}{words[-1]}"
+
+
+def _validate_type(
+    obj: Any, expected: Union[Type, Tuple[Type, ...]], optional=False
+) -> bool:
+    """Similar to ``isinstance``, but raises a TypeError"""
+    if isinstance(obj, expected) or (optional and obj is None):
+        return True
+    items = expected if isinstance(expected, tuple) else (expected,)
+    desc = " or ".join(getattr(x, "__name__", None) or str(x) for x in items)
+    raise TypeError(f"{obj!r} given, but expecting {desc}")
