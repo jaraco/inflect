@@ -76,6 +76,7 @@ from numbers import Number
 
 
 from pydantic import Field
+from typeguard import typechecked
 from typing_extensions import Annotated
 from more_itertools import windowed_complete
 
@@ -2049,7 +2050,7 @@ class engine:
     def _number_args(self, val):
         self.__number_args = val
 
-    @validate_call
+    @typechecked
     def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the noun plural of singular to plural.
@@ -2061,7 +2062,7 @@ class engine:
         self.si_sb_user_defined.extend((plural, singular))
         return 1
 
-    @validate_call
+    @typechecked
     def defverb(
         self,
         s1: Optional[Word],
@@ -2086,7 +2087,7 @@ class engine:
         self.pl_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
-    @validate_call
+    @typechecked
     def defadj(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the adjective plural of singular to plural.
@@ -2097,7 +2098,7 @@ class engine:
         self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
-    @validate_call
+    @typechecked
     def defa(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'a' for words matching pattern.
@@ -2107,7 +2108,7 @@ class engine:
         self.A_a_user_defined.extend((pattern, "a"))
         return 1
 
-    @validate_call
+    @typechecked
     def defan(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'an' for words matching pattern.
@@ -2134,7 +2135,7 @@ class engine:
         """
         return
 
-    @validate_call
+    @typechecked
     def ud_match(self, word: Word, wordlist: Sequence[Optional[Word]]) -> Optional[str]:
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
             mo = re.search(fr"^{wordlist[i]}$", word, re.IGNORECASE)
@@ -2274,7 +2275,7 @@ class engine:
 
     # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
-    @validate_call
+    @typechecked
     def inflect(self, text: Word) -> str:
         """
         Perform inflections in a string.
@@ -2351,7 +2352,7 @@ class engine:
         else:
             return "", "", ""
 
-    @validate_call
+    @typechecked
     def plural(self, text: Word, count: Optional[Union[str, int, Any]] = None) -> str:
         """
         Return the plural of text.
@@ -2375,7 +2376,7 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @validate_call
+    @typechecked
     def plural_noun(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2396,7 +2397,7 @@ class engine:
         plural = self.postprocess(word, self._plnoun(word, count))
         return f"{pre}{plural}{post}"
 
-    @validate_call
+    @typechecked
     def plural_verb(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2420,7 +2421,7 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @validate_call
+    @typechecked
     def plural_adj(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2441,7 +2442,7 @@ class engine:
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
         return f"{pre}{plural}{post}"
 
-    @validate_call
+    @typechecked
     def compare(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2472,7 +2473,7 @@ class engine:
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
 
-    @validate_call
+    @typechecked
     def compare_nouns(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2488,7 +2489,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_noun)
 
-    @validate_call
+    @typechecked
     def compare_verbs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2504,7 +2505,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_verb)
 
-    @validate_call
+    @typechecked
     def compare_adjs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2520,7 +2521,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_adj)
 
-    @validate_call
+    @typechecked
     def singular_noun(
         self,
         text: Word,
@@ -3478,7 +3479,7 @@ class engine:
 
     # ADJECTIVES
 
-    @validate_call
+    @typechecked
     def a(self, text: Word, count: Optional[Union[int, str, Any]] = 1) -> str:
         """
         Return the appropriate indefinite article followed by text.
@@ -3559,7 +3560,7 @@ class engine:
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
-    @validate_call
+    @typechecked
     def no(self, text: Word, count: Optional[Union[int, str]] = None) -> str:
         """
         If count is 0, no, zero or nil, return 'no' followed by the plural
@@ -3597,7 +3598,7 @@ class engine:
 
     # PARTICIPLES
 
-    @validate_call
+    @typechecked
     def present_participle(self, word: Word) -> str:
         """
         Return the present participle for word.
@@ -3616,7 +3617,7 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    @validate_call(config=dict(arbitrary_types_allowed=True))
+    @typechecked
     def ordinal(self, num: Union[Number, Word]) -> str:
         """
         Return the ordinal of num.
@@ -3775,7 +3776,7 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
-    @validate_call(config=dict(arbitrary_types_allowed=True))  # noqa: C901
+    @typechecked
     def number_to_words(  # noqa: C901
         self,
         num: Union[Number, Word],
@@ -3927,7 +3928,7 @@ class engine:
 
     # Join words with commas and a trailing 'and' (when appropriate)...
 
-    @validate_call
+    @typechecked
     def join(
         self,
         words: Optional[Sequence[Word]],
