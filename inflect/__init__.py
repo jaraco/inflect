@@ -59,6 +59,7 @@ import collections
 import contextlib
 import itertools
 from typing import (
+    TYPE_CHECKING,
     Dict,
     Union,
     Optional,
@@ -2025,8 +2026,22 @@ class Words(str):
         self.last = self.split_[-1]
 
 
-Word = Annotated[str, Field(min_length=1)]
 Falsish = Any  # ideally, falsish would only validate on bool(value) is False
+
+
+_STATIC_TYPE_CHECKING = TYPE_CHECKING
+# ^-- Workaround for typeguard AST manipulation:
+#     https://github.com/agronholm/typeguard/issues/353#issuecomment-1556306554
+
+if _STATIC_TYPE_CHECKING:
+    Word = Annotated[str, "String with at least 1 character"]
+else:
+    class _WordMeta(type):  # Too dynamic to be supported by mypy...
+        def __instancecheck__(self, instance: Any) -> bool:
+            return isinstance(instance, str) and len(instance) >= 1
+
+    class Word(metaclass=_WordMeta):  # type: ignore[no-redef]
+        """String with at least 1 character"""
 
 
 class engine:
@@ -2465,9 +2480,7 @@ class engine:
         >>> compare('egg', '')
         Traceback (most recent call last):
         ...
-        pydantic...ValidationError: ...
-        ...
-          ...at least 1 characters...
+        typeguard.TypeCheckError:...is not an instance of inflect.Word
         """
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
