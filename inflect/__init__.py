@@ -2036,6 +2036,7 @@ _STATIC_TYPE_CHECKING = TYPE_CHECKING
 if _STATIC_TYPE_CHECKING:
     Word = Annotated[str, "String with at least 1 character"]
 else:
+
     class _WordMeta(type):  # Too dynamic to be supported by mypy...
         def __instancecheck__(self, instance: Any) -> bool:
             return isinstance(instance, str) and len(instance) >= 1
