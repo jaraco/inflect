@@ -76,14 +76,9 @@ from typing_extensions import Literal
 from numbers import Number
 
 
-from pydantic import Field
 from typeguard import typechecked
 from typing_extensions import Annotated
 from more_itertools import windowed_complete
-
-
-from .compat.pydantic1 import validate_call
-from .compat.pydantic import same_method
 
 
 class UnknownClassicalModeError(Exception):
