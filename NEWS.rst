@@ -1,3 +1,12 @@
+v7.1.0
+======
+
+Features
+--------
+
+- Now handle 'pair of x' in pl_sb_uninflected_complete (#188)
+
+
 v7.0.0
 ======
 
