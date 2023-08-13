@@ -652,6 +652,8 @@
                 scarf  ->  scarves
                schema  ->  schemas|schemata
              scissors  ->  scissors
+     pair of scissors  ->  pairs of scissors
+     pair of slippers  ->  pairs of slippers
              Scotsman  ->  Scotsmen
              sea-bass  ->  sea-bass
                seaman  ->  seamen
