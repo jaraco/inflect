@@ -2988,14 +2988,16 @@ class engine:
             raise ValueError("Connot handle `Words`s shorter than 3 words")
 
         function = self._sinoun if count == 1 else self._plnoun
-        for numword in range(1, len(word.split_) - 1):
-            if word.split_[numword] in pl_prep_list_da:
-                return " ".join(
-                    word.split_[: numword - 1]
-                    + [function(word.split_[numword - 1], count)]  # type: ignore
-                    + word.split_[numword:]
-                )
-        return None
+        solutions = (
+            " ".join(
+                word.split_[: numword - 1]
+                + [function(word.split_[numword - 1], count)]  # type: ignore
+                + word.split_[numword:]
+            )
+            for numword in range(1, len(word.split_) - 1)
+            if word.split_[numword] in pl_prep_list_da
+        )
+        return next(solutions, None)
 
     @staticmethod
     def _find_pivot(words, candidates):
