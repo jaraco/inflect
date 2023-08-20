@@ -2992,9 +2992,10 @@ class engine:
             if word.split_[numword] in pl_prep_list_da:
                 return " ".join(
                     word.split_[: numword - 1]
-                    + [function(word.split_[numword - 1], count)]
+                    + [function(word.split_[numword - 1], count)]  # type: ignore
                     + word.split_[numword:]
                 )
+        return None
 
     @staticmethod
     def _find_pivot(words, candidates):
