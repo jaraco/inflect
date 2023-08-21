@@ -2986,12 +2986,12 @@ class engine:
         >>> engine()._handle_long_compounds(Words("men beyond hills"), 1)
         'man beyond hills'
         """
-        function = self._sinoun if count == 1 else self._plnoun
+        inflection = self._sinoun if count == 1 else self._plnoun
         solutions = (  # type: ignore
             " ".join(
                 itertools.chain(
                     leader,
-                    [function(cand, count), prep],  # type: ignore
+                    [inflection(cand, count), prep],  # type: ignore
                     trailer,
                 )
             )
