@@ -2974,11 +2974,9 @@ class engine:
             parts[: pivot - 1] + [sep.join([transformed, parts[pivot], ''])]
         ) + " ".join(parts[(pivot + 1) :])
 
-    def _handle_long_compounds(  # noqa: C901
-        self, word: Words, count: int
-    ) -> Union[str, None]:
+    def _handle_long_compounds(self, word: Words, count: int) -> Union[str, None]:
         """
-        Handles the plural and singular for compound `Words`s that
+        Handles the plural and singular for compound `Words` that
         have three or more words, based on the given count.
 
         >>> engine()._handle_long_compounds(Words("pair of scissors"), 2)
