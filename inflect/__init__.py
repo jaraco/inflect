@@ -2984,9 +2984,6 @@ class engine:
         >>> engine()._handle_long_compounds(Words("men beyond hills"), 1)
         'man beyond hills'
         """
-        if len(word.split_) < 3:
-            raise ValueError("Connot handle `Words`s shorter than 3 words")
-
         function = self._sinoun if count == 1 else self._plnoun
         solutions = (
             " ".join(
