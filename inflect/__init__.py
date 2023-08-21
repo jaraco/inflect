@@ -57,6 +57,7 @@ import re
 import functools
 import collections
 import contextlib
+import itertools
 from typing import (
     Dict,
     Union,
@@ -76,6 +77,7 @@ from numbers import Number
 
 from pydantic import Field
 from typing_extensions import Annotated
+from more_itertools import windowed_complete
 
 
 from .compat.pydantic1 import validate_call
@@ -2985,14 +2987,16 @@ class engine:
         'man beyond hills'
         """
         function = self._sinoun if count == 1 else self._plnoun
-        solutions = (
+        solutions = (  # type: ignore
             " ".join(
-                word.split_[: numword - 1]
-                + [function(word.split_[numword - 1], count)]  # type: ignore
-                + word.split_[numword:]
+                itertools.chain(
+                    leader,
+                    [function(cand, count), prep],  # type: ignore
+                    trailer,
+                )
             )
-            for numword in range(1, len(word.split_) - 1)
-            if word.split_[numword] in pl_prep_list_da
+            for leader, (cand, prep), trailer in windowed_complete(word.split_, 2)
+            if prep in pl_prep_list_da  # type: ignore
         )
         return next(solutions, None)
 
