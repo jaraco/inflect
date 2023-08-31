@@ -8,7 +8,6 @@ from inflect import (
     UnknownClassicalModeError,
 )
 import inflect
-from inflect.compat.pydantic import same_method
 
 
 missing = object()
@@ -821,9 +820,9 @@ class Test:
             p.a("")
 
     def test_a_and_an_same_method(self):
-        assert same_method(inflect.engine.a, inflect.engine.an)
+        assert inflect.engine.a == inflect.engine.an
         p = inflect.engine()
-        assert same_method(p.a, p.an)
+        assert p.a == p.an
 
     def test_no(self):
         p = inflect.engine()
