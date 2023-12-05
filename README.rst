@@ -3,7 +3,7 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/inflect.svg
 
-.. image:: https://github.com/jaraco/inflect/workflows/tests/badge.svg
+.. image:: https://github.com/jaraco/inflect/actions/workflows/main.yml/badge.svg
    :target: https://github.com/jaraco/inflect/actions?query=workflow%3A%22tests%22
    :alt: tests
 
