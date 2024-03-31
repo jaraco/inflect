@@ -1227,4 +1227,4 @@ class Test:
     def test_unknown_method(self):
         p = inflect.engine()
         with pytest.raises(AttributeError):
-            p.unknown_method
+            p.unknown_method  # noqa: B018
