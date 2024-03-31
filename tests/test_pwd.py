@@ -1,15 +1,14 @@
 import pytest
 
+import inflect
 from inflect import (
     BadChunkingOptionError,
-    NumOutOfRangeError,
-    BadNumValueError,
     BadGenderError,
+    BadNumValueError,
+    NumOutOfRangeError,
     UnknownClassicalModeError,
 )
-import inflect
 from inflect.compat.pydantic import same_method
-
 
 missing = object()
 

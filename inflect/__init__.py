@@ -53,35 +53,32 @@ Exceptions:
 """
 
 import ast
-import re
-import functools
 import collections
 import contextlib
+import functools
 import itertools
+import re
+from numbers import Number
 from typing import (
+    Any,
+    Callable,
     Dict,
-    Union,
-    Optional,
     Iterable,
     List,
     Match,
-    Tuple,
-    Callable,
+    Optional,
     Sequence,
+    Tuple,
+    Union,
     cast,
-    Any,
 )
-from typing_extensions import Literal
-from numbers import Number
 
-
-from pydantic import Field
-from typing_extensions import Annotated
 from more_itertools import windowed_complete
+from pydantic import Field
+from typing_extensions import Annotated, Literal
 
-
-from .compat.pydantic1 import validate_call
 from .compat.pydantic import same_method
+from .compat.pydantic1 import validate_call
 
 
 class UnknownClassicalModeError(Exception):
