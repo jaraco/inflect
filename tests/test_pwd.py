@@ -974,7 +974,7 @@ class Test:
     def test_enword_number_args_override(self):
         p = inflect.engine()
         p._number_args["one"] = "single"
-        p.enword("1", 2) == "single, "
+        assert p.enword("1", 2) == "single, "
 
     def test_numwords(self):
         p = inflect.engine()
