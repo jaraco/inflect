@@ -262,9 +262,9 @@ si_sb_irregular_compound = {v: k for (k, v) in pl_sb_irregular_compound.items()}
 for k in list(si_sb_irregular_compound):
     if "|" in k:
         k1, k2 = k.split("|")
-        si_sb_irregular_compound[k1] = si_sb_irregular_compound[
-            k2
-        ] = si_sb_irregular_compound[k]
+        si_sb_irregular_compound[k1] = si_sb_irregular_compound[k2] = (
+            si_sb_irregular_compound[k]
+        )
         del si_sb_irregular_compound[k]
 
 # si_sb_irregular_keys = enclose('|'.join(si_sb_irregular.keys()))
@@ -1601,7 +1601,7 @@ pl_prep_bysize = bysize(pl_prep_list_da)
 
 pl_prep = enclose("|".join(pl_prep_list_da))
 
-pl_sb_prep_dual_compound = fr"(.*?)((?:-|\s+)(?:{pl_prep})(?:-|\s+))a(?:-|\s+)(.*)"
+pl_sb_prep_dual_compound = rf"(.*?)((?:-|\s+)(?:{pl_prep})(?:-|\s+))a(?:-|\s+)(.*)"
 
 
 singular_pronoun_genders = {
@@ -1768,7 +1768,7 @@ plverb_ambiguous_pres = {
 }
 
 plverb_ambiguous_pres_keys = re.compile(
-    fr"^({enclose('|'.join(plverb_ambiguous_pres))})((\s.*)?)$", re.IGNORECASE
+    rf"^({enclose('|'.join(plverb_ambiguous_pres))})((\s.*)?)$", re.IGNORECASE
 )
 
 
@@ -1808,7 +1808,7 @@ pl_count_one = ("1", "a", "an", "one", "each", "every", "this", "that")
 pl_adj_special = {"a": "some", "an": "some", "this": "these", "that": "those"}
 
 pl_adj_special_keys = re.compile(
-    fr"^({enclose('|'.join(pl_adj_special))})$", re.IGNORECASE
+    rf"^({enclose('|'.join(pl_adj_special))})$", re.IGNORECASE
 )
 
 pl_adj_poss = {
@@ -1820,7 +1820,7 @@ pl_adj_poss = {
     "their": "their",
 }
 
-pl_adj_poss_keys = re.compile(fr"^({enclose('|'.join(pl_adj_poss))})$", re.IGNORECASE)
+pl_adj_poss_keys = re.compile(rf"^({enclose('|'.join(pl_adj_poss))})$", re.IGNORECASE)
 
 
 # 2. INDEFINITE ARTICLES
@@ -1887,7 +1887,7 @@ ordinal = dict(
     twelve="twelfth",
 )
 
-ordinal_suff = re.compile(fr"({'|'.join(ordinal)})\Z")
+ordinal_suff = re.compile(rf"({'|'.join(ordinal)})\Z")
 
 
 # NUMBERS
@@ -1952,13 +1952,13 @@ DOLLAR_DIGITS = re.compile(r"\$(\d+)")
 FUNCTION_CALL = re.compile(r"((\w+)\([^)]*\)*)", re.IGNORECASE)
 PARTITION_WORD = re.compile(r"\A(\s*)(.+?)(\s*)\Z")
 PL_SB_POSTFIX_ADJ_STEMS_RE = re.compile(
-    fr"^(?:{pl_sb_postfix_adj_stems})$", re.IGNORECASE
+    rf"^(?:{pl_sb_postfix_adj_stems})$", re.IGNORECASE
 )
 PL_SB_PREP_DUAL_COMPOUND_RE = re.compile(
-    fr"^(?:{pl_sb_prep_dual_compound})$", re.IGNORECASE
+    rf"^(?:{pl_sb_prep_dual_compound})$", re.IGNORECASE
 )
 DENOMINATOR = re.compile(r"(?P<denominator>.+)( (per|a) .+)")
-PLVERB_SPECIAL_S_RE = re.compile(fr"^({plverb_special_s})$")
+PLVERB_SPECIAL_S_RE = re.compile(rf"^({plverb_special_s})$")
 WHITESPACE = re.compile(r"\s")
 ENDS_WITH_S = re.compile(r"^(.*[^s])s$", re.IGNORECASE)
 ENDS_WITH_APOSTROPHE_S = re.compile(r"^(.*)'s?$")
@@ -2137,7 +2137,7 @@ class engine:
     @validate_call
     def ud_match(self, word: Word, wordlist: Sequence[Optional[Word]]) -> Optional[str]:
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
-            mo = re.search(fr"^{wordlist[i]}$", word, re.IGNORECASE)
+            mo = re.search(rf"^{wordlist[i]}$", word, re.IGNORECASE)
             if mo:
                 if wordlist[i + 1] is None:
                     return None
@@ -2589,7 +2589,7 @@ class engine:
         return False
 
     def _pl_reg_plurals(self, pair: str, stems: str, end1: str, end2: str) -> bool:
-        pattern = fr"({stems})({end1}\|\1{end2}|{end2}\|\1{end1})"
+        pattern = rf"({stems})({end1}\|\1{end2}|{end2}\|\1{end1})"
         return bool(re.search(pattern, pair))
 
     def _pl_check_plurals_N(self, word1: str, word2: str) -> bool:
