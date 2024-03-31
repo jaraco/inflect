@@ -996,7 +996,7 @@ class Test:
         ):
             assert numwords(n) == word
 
-        for n, word, wrongword in (
+        for n, word, _wrongword in (
             # TODO: should be one point two three
             ("1.23", "one point two three", "one point twenty-three"),
         ):
