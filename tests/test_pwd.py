@@ -262,9 +262,7 @@ class Test:
             (p.plural_adj, "cat's", "cats'"),
             (p.plural_adj, "child's", "children's"),
         ):
-            assert fn(sing) == plur, '{}("{}") == "{}" != "{}"'.format(
-                fn.__name__, sing, fn(sing), plur
-            )
+            assert fn(sing) == plur, f'{fn.__name__}("{sing}") == "{fn(sing)}" != "{plur}"'
 
         for sing, num, plur in (
             ("cow", 1, "cow"),
@@ -609,9 +607,7 @@ class Test:
             ("zoo", "zoos"),
             ("tomato", "tomatoes"),
         ):
-            assert p._plnoun(sing) == plur, 'p._plnoun("{}") == {} != "{}"'.format(
-                sing, p._plnoun(sing), plur
-            )
+            assert p._plnoun(sing) == plur, f'p._plnoun("{sing}") == {p._plnoun(sing)} != "{plur}"'
 
             assert p._sinoun(plur) == sing, f'p._sinoun("{plur}") != "{sing}"'
 

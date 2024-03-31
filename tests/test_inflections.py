@@ -81,7 +81,7 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
     assert is_eq(p, singular, class_plural) in ("s:p", "p:s", "eq")
     assert is_eq(p, class_plural, singular) in ("p:s", "s:p", "eq")
     assert singular != ""
-    expected = mod_PL_val if class_PL_val else "{}|{}".format(mod_PL_val, class_PL_val)
+    expected = mod_PL_val if class_PL_val else f"{mod_PL_val}|{class_PL_val}"
     assert mod_PL_val == expected
 
     if is_nv != "_V":
