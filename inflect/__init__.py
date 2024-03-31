@@ -2026,7 +2026,7 @@ _STATIC_TYPE_CHECKING = TYPE_CHECKING
 # ^-- Workaround for typeguard AST manipulation:
 #     https://github.com/agronholm/typeguard/issues/353#issuecomment-1556306554
 
-if _STATIC_TYPE_CHECKING:
+if _STATIC_TYPE_CHECKING:  # pragma: no cover
     Word = Annotated[str, "String with at least 1 character"]
 else:
 
