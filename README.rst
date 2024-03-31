@@ -3,7 +3,7 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/inflect.svg
 
-.. image:: https://github.com/jaraco/inflect/workflows/tests/badge.svg
+.. image:: https://github.com/jaraco/inflect/actions/workflows/main.yml/badge.svg
    :target: https://github.com/jaraco/inflect/actions?query=workflow%3A%22tests%22
    :alt: tests
 
@@ -11,14 +11,10 @@
     :target: https://github.com/astral-sh/ruff
     :alt: Ruff
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/psf/black
-   :alt: Code style: Black
-
 .. image:: https://readthedocs.org/projects/inflect/badge/?version=latest
    :target: https://inflect.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://img.shields.io/badge/skeleton-2023-informational
+.. image:: https://img.shields.io/badge/skeleton-2024-informational
    :target: https://blog.jaraco.com/skeleton
 
 .. image:: https://tidelift.com/badges/package/pypi/inflect

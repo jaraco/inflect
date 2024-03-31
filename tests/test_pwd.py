@@ -1,14 +1,14 @@
 import pytest
+from typeguard import TypeCheckError
 
+import inflect
 from inflect import (
     BadChunkingOptionError,
-    NumOutOfRangeError,
-    BadNumValueError,
     BadGenderError,
+    BadNumValueError,
+    NumOutOfRangeError,
     UnknownClassicalModeError,
 )
-import inflect
-
 
 missing = object()
 
@@ -262,9 +262,9 @@ class Test:
             (p.plural_adj, "cat's", "cats'"),
             (p.plural_adj, "child's", "children's"),
         ):
-            assert fn(sing) == plur, '{}("{}") == "{}" != "{}"'.format(
-                fn.__name__, sing, fn(sing), plur
-            )
+            assert (
+                fn(sing) == plur
+            ), f'{fn.__name__}("{sing}") == "{fn(sing)}" != "{plur}"'
 
         for sing, num, plur in (
             ("cow", 1, "cow"),
@@ -290,10 +290,13 @@ class Test:
         assert p.plural("die") == "dice"
         assert p.plural_noun("die") == "dice"
 
-        with pytest.raises(Exception):
+        with pytest.raises(TypeCheckError):
             p.plural("")
+        with pytest.raises(TypeCheckError):
             p.plural_noun("")
+        with pytest.raises(TypeCheckError):
             p.plural_verb("")
+        with pytest.raises(TypeCheckError):
             p.plural_adj("")
 
     def test_sinoun(self):
@@ -609,9 +612,9 @@ class Test:
             ("zoo", "zoos"),
             ("tomato", "tomatoes"),
         ):
-            assert p._plnoun(sing) == plur, 'p._plnoun("{}") == {} != "{}"'.format(
-                sing, p._plnoun(sing), plur
-            )
+            assert (
+                p._plnoun(sing) == plur
+            ), f'p._plnoun("{sing}") == {p._plnoun(sing)} != "{plur}"'
 
             assert p._sinoun(plur) == sing, f'p._sinoun("{plur}") != "{sing}"'
 
@@ -693,8 +696,8 @@ class Test:
 
     def test__pl_special_verb(self):
         p = inflect.engine()
-        with pytest.raises(Exception):
-            assert p._pl_special_verb("") is False
+        with pytest.raises(TypeCheckError):
+            p._pl_special_verb("")
         assert p._pl_special_verb("am") == "are"
         assert p._pl_special_verb("am", 0) == "are"
         assert p._pl_special_verb("runs", 0) == "run"
@@ -816,7 +819,7 @@ class Test:
         assert p.a("cat", 1) == "a cat"
         assert p.a("cat", 2) == "2 cat"
 
-        with pytest.raises(Exception):
+        with pytest.raises(TypeCheckError):
             p.a("")
 
     def test_a_and_an_same_method(self):
@@ -971,7 +974,7 @@ class Test:
     def test_enword_number_args_override(self):
         p = inflect.engine()
         p._number_args["one"] = "single"
-        p.enword("1", 2) == "single, "
+        assert p.enword("1", 2) == "single, "
 
     def test_numwords(self):
         p = inflect.engine()
@@ -993,7 +996,7 @@ class Test:
         ):
             assert numwords(n) == word
 
-        for n, word, wrongword in (
+        for n, word, _wrongword in (
             # TODO: should be one point two three
             ("1.23", "one point two three", "one point twenty-three"),
         ):
@@ -1224,4 +1227,4 @@ class Test:
     def test_unknown_method(self):
         p = inflect.engine()
         with pytest.raises(AttributeError):
-            p.unknown_method
+            p.unknown_method  # noqa: B018
