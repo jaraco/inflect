@@ -15,7 +15,7 @@ class ValidateCallWrapperWrapper:
 
     @property
     def raw_function(self):
-        return getattr(self.orig, 'raw_function')
+        return self.orig.raw_function
 
 
 def same_method(m1, m2) -> bool:

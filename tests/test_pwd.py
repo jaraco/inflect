@@ -290,10 +290,13 @@ class Test:
         assert p.plural("die") == "dice"
         assert p.plural_noun("die") == "dice"
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             p.plural("")
+        with pytest.raises(ValueError):
             p.plural_noun("")
+        with pytest.raises(ValueError):
             p.plural_verb("")
+        with pytest.raises(ValueError):
             p.plural_adj("")
 
     def test_sinoun(self):
@@ -693,8 +696,8 @@ class Test:
 
     def test__pl_special_verb(self):
         p = inflect.engine()
-        with pytest.raises(Exception):
-            assert p._pl_special_verb("") is False
+        with pytest.raises(ValueError):
+            p._pl_special_verb("")
         assert p._pl_special_verb("am") == "are"
         assert p._pl_special_verb("am", 0) == "are"
         assert p._pl_special_verb("runs", 0) == "run"
@@ -816,7 +819,7 @@ class Test:
         assert p.a("cat", 1) == "a cat"
         assert p.a("cat", 2) == "2 cat"
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             p.a("")
 
     def test_a_and_an_same_method(self):
