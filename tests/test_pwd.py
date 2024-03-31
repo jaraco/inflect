@@ -1,4 +1,5 @@
 import pytest
+from typeguard import TypeCheckError
 
 import inflect
 from inflect import (
@@ -8,7 +9,6 @@ from inflect import (
     NumOutOfRangeError,
     UnknownClassicalModeError,
 )
-from inflect.compat.pydantic import same_method
 
 missing = object()
 
@@ -290,13 +290,13 @@ class Test:
         assert p.plural("die") == "dice"
         assert p.plural_noun("die") == "dice"
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p.plural("")
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p.plural_noun("")
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p.plural_verb("")
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p.plural_adj("")
 
     def test_sinoun(self):
@@ -696,7 +696,7 @@ class Test:
 
     def test__pl_special_verb(self):
         p = inflect.engine()
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p._pl_special_verb("")
         assert p._pl_special_verb("am") == "are"
         assert p._pl_special_verb("am", 0) == "are"
@@ -819,13 +819,13 @@ class Test:
         assert p.a("cat", 1) == "a cat"
         assert p.a("cat", 2) == "2 cat"
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeCheckError):
             p.a("")
 
     def test_a_and_an_same_method(self):
-        assert same_method(inflect.engine.a, inflect.engine.an)
+        assert inflect.engine.a == inflect.engine.an
         p = inflect.engine()
-        assert same_method(p.a, p.an)
+        assert p.a == p.an
 
     def test_no(self):
         p = inflect.engine()
