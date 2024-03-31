@@ -2122,8 +2122,8 @@ class engine:
             return
         try:
             re.match(pattern, "")
-        except re.error:
-            raise BadUserDefinedPatternError(pattern)
+        except re.error as err:
+            raise BadUserDefinedPatternError(pattern) from err
 
     def checkpatplural(self, pattern: Optional[Word]) -> None:
         """
@@ -2192,8 +2192,8 @@ class engine:
         if count is not None:
             try:
                 self.persistent_count = int(count)
-            except ValueError:
-                raise BadNumValueError
+            except ValueError as err:
+                raise BadNumValueError from err
             if (show is None) or show:
                 return str(count)
         else:
@@ -3003,7 +3003,7 @@ class engine:
         try:
             return next(pivots)
         except StopIteration:
-            raise ValueError("No pivot found")
+            raise ValueError("No pivot found") from None
 
     def _pl_special_verb(  # noqa: C901
         self, word: str, count: Optional[Union[str, int]] = None
@@ -3168,8 +3168,8 @@ class engine:
                 gender = self.thegender
             elif gender not in singular_pronoun_genders:
                 raise BadGenderError
-        except (TypeError, IndexError):
-            raise BadGenderError
+        except (TypeError, IndexError) as err:
+            raise BadGenderError from err
 
         # HANDLE USER-DEFINED NOUNS
 
