@@ -1,3 +1,12 @@
+v7.2.0
+======
+
+Features
+--------
+
+- Replace pydantic with typeguard (#195)
+
+
 v7.1.0
 ======
 
