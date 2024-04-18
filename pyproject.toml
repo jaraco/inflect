@@ -1,5 +1,69 @@
 [build-system]
-requires = ["setuptools>=56", "setuptools_scm[toml]>=3.4.1"]
+requires = ["setuptools>=61.2", "setuptools_scm[toml]>=3.4.1"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "inflect"
+authors = [
+	{ name = "Paul Dyson", email = "pwdyson@yahoo.com" },
+]
+maintainers = [
+	{ name = "Jason R. Coombs", email = "jaraco@jaraco.com" },
+]
+description = "Correctly generate plurals, singular nouns, ordinals, indefinite articles" # convert numbers to words
+readme = "README.rst"
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Natural Language :: English",
+	"Operating System :: OS Independent",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Topic :: Text Processing :: Linguistic",
+]
+requires-python = ">=3.8"
+dependencies = [
+	"more_itertools",
+	"typeguard >= 4.0.1",
+	"typing_extensions",
+]
+keywords = [
+	"plural",
+	"inflect",
+	"participle",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/jaraco/inflect"
+
+[project.optional-dependencies]
+testing = [
+	# upstream
+	"pytest >= 6",
+	"pytest-checkdocs >= 2.4",
+	"pytest-cov",
+	"pytest-mypy",
+	"pytest-enabler >= 2.2",
+	"pytest-ruff >= 0.2.1",
+
+	# local
+	"pygments",
+]
+docs = [
+	# upstream
+	"sphinx >= 3.5",
+	"jaraco.packaging >= 9.3",
+	"rst.linker >= 1.9",
+	"furo",
+	"sphinx-lint",
+
+	# tidelift
+	"jaraco.tidelift >= 1.4",
+
+	# local
+]
 
 [tool.setuptools_scm]
