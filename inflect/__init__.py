@@ -3915,17 +3915,21 @@ class engine:
         if group:
             return f"{signout}{', '.join(numchunks)}"
 
-        num = f"{signout}{numchunks.pop(0)}"
-        first = decimal is None or not num.endswith(decimal)
-        for nc in numchunks:
+        return signout + ''.join(self._render(numchunks, decimal, comma))
+
+    @staticmethod
+    def _render(chunks, decimal, comma):
+        first_item = chunks.pop(0)
+        yield first_item
+        first = decimal is None or not first_item.endswith(decimal)
+        for nc in chunks:
             if nc == decimal:
-                num += f" {nc}"
+                yield f" {nc}"
                 first = False
             elif first:
-                num += f"{comma} {nc}"
+                yield f"{comma} {nc}"
             else:
-                num += f" {nc}"
-        return num
+                yield f" {nc}"
 
     @typechecked
     def join(
