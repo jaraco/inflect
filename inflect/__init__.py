@@ -3658,13 +3658,7 @@ class engine:
             # Mad props to Damian Conway (?) whose ordinal()
             # algorithm is type-bendy enough to foil MyPy
             str_num: str = num  # type: ignore[assignment]
-            mo = ordinal_suff.search(str_num)
-            if mo:
-                post = ordinal[mo.group(1)]
-                rval = ordinal_suff.sub(post, str_num)
-            else:
-                rval = f"{str_num}th"
-            return rval
+            return self._sub_ord(str_num)
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
