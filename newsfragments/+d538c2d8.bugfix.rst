@@ -1,0 +1,1 @@
+Refactored number_to_words toward reduced complexity.
