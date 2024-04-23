@@ -3655,10 +3655,7 @@ class engine:
                 post = nth[n % 10]
             return f"{num}{post}"
         else:
-            # Mad props to Damian Conway (?) whose ordinal()
-            # algorithm is type-bendy enough to foil MyPy
-            str_num: str = num  # type: ignore[assignment]
-            return self._sub_ord(str_num)
+            return self._sub_ord(num)
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
