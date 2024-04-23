@@ -3864,8 +3864,9 @@ class engine:
             if len(chunks) > 1:
                 loopstart = 1
 
-        for i in range(loopstart, len(chunks)):
-            chunk = chunks[i]
+        def _handle_chunk(chunk):
+            nonlocal first
+
             # remove all non numeric \D
             chunk = NON_DIGIT.sub("", chunk)
             if chunk == "":
@@ -3887,7 +3888,9 @@ class engine:
             chunk = chunk.strip()
             if first:
                 first = ""
-            chunks[i] = chunk
+            return chunk
+
+        chunks[loopstart:] = map(_handle_chunk, chunks[loopstart:])
 
         numchunks = []
         if first != 0:
