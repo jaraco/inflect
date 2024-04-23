@@ -3922,8 +3922,6 @@ class engine:
                     num += f" {nc}"
             return num
 
-    # Join words with commas and a trailing 'and' (when appropriate)...
-
     @typechecked
     def join(
         self,
