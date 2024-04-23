@@ -1,3 +1,12 @@
+v7.2.1
+======
+
+Bugfixes
+--------
+
+- Refactored number_to_words toward reduced complexity.
+
+
 v7.2.0
 ======
 
