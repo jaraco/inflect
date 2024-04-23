@@ -3924,12 +3924,11 @@ class engine:
         first = decimal is None or not first_item.endswith(decimal)
         for nc in chunks:
             if nc == decimal:
-                yield f" {nc}"
                 first = False
             elif first:
-                yield f"{comma} {nc}"
-            else:
-                yield f" {nc}"
+                yield comma
+            yield f" {nc}"
+
 
     @typechecked
     def join(
