@@ -3856,13 +3856,8 @@ class engine:
         else:
             chunks = [num]
 
-        first: Union[int, str, bool] = 1
-        loopstart = 0
-
-        if chunks[0] == "":
-            first = 0
-            if len(chunks) > 1:
-                loopstart = 1
+        loopstart = chunks[0] == ""
+        first: Union[bool, str] = not loopstart
 
         def _handle_chunk(chunk):
             nonlocal first
@@ -3872,7 +3867,7 @@ class engine:
             if chunk == "":
                 chunk = "0"
 
-            if group == 0 and (first == 0 or first == ""):
+            if group == 0 and not first:
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)
@@ -3929,7 +3924,7 @@ class engine:
             for nc in numchunks:
                 if nc == decimal:
                     num += f" {nc}"
-                    first = 0
+                    first = False
                 elif first:
                     num += f"{comma} {nc}"
                 else:
