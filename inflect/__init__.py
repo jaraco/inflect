@@ -3779,6 +3779,28 @@ class engine:
         new = ordinal_suff.sub(lambda match: ordinal[match.group(1)], val)
         return new + "th" * (new == val)
 
+    @classmethod
+    def _chunk_num(cls, num, decimal, group):
+        if decimal:
+            if group != 0:
+                chunks = num.split(".")
+            else:
+                chunks = num.split(".", 1)
+        else:
+            chunks = [num]
+        return cls._remove_last_blank(chunks)
+
+    @staticmethod
+    def _remove_last_blank(chunks):
+        """
+        Remove the last item from chunks if it's a blank string.
+
+        Return the resultant chunks and whether the last item was removed.
+        """
+        removed = chunks[-1] == ""
+        result = chunks[:-1] if removed else chunks
+        return result, removed
+
     @typechecked
     def number_to_words(  # noqa: C901
         self,
@@ -3840,17 +3862,8 @@ class engine:
         myord = num[-2:] in nth_suff
         if myord:
             num = num[:-2]
-        finalpoint = False
-        if decimal:
-            if group != 0:
-                chunks = num.split(".")
-            else:
-                chunks = num.split(".", 1)
-            if chunks[-1] == "":  # remove blank string if nothing after decimal
-                chunks = chunks[:-1]
-                finalpoint = True  # add 'point' to end of output
-        else:
-            chunks = [num]
+
+        chunks, finalpoint = self._chunk_num(num, decimal, group)
 
         loopstart = chunks[0] == ""
         first: Union[bool, str] = not loopstart
