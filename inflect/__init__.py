@@ -3910,12 +3910,11 @@ class engine:
         if wantlist:
             return [sign] * bool(sign) + numchunks
 
-
         signout = f"{sign} " if sign else ""
         valout = (
             ', '.join(numchunks)
-            if group else
-            ''.join(self._render(numchunks, decimal, comma))
+            if group
+            else ''.join(self._render(numchunks, decimal, comma))
         )
         return signout + valout
 
@@ -3930,7 +3929,6 @@ class engine:
             elif first:
                 yield comma
             yield f" {nc}"
-
 
     @typechecked
     def join(
