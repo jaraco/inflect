@@ -3912,10 +3912,12 @@ class engine:
 
 
         signout = f"{sign} " if sign else ""
-        if group:
-            return f"{signout}{', '.join(numchunks)}"
-
-        return signout + ''.join(self._render(numchunks, decimal, comma))
+        valout = (
+            ', '.join(numchunks)
+            if group else
+            ''.join(self._render(numchunks, decimal, comma))
+        )
+        return signout + valout
 
     @staticmethod
     def _render(chunks, decimal, comma):
