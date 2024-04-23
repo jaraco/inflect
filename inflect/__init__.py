@@ -3907,7 +3907,6 @@ class engine:
         if finalpoint:
             numchunks.append(decimal)
 
-        # wantlist: Perl list context. can explicitly specify in Python
         if wantlist:
             if sign:
                 numchunks = [sign] + numchunks
