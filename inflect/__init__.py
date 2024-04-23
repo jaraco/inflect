@@ -3783,6 +3783,15 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
+    @staticmethod
+    def _sub_ord(val):
+        # TODO: can this be just one re as it is in perl?
+        mo = ordinal_suff.search(val)
+        if mo:
+            return ordinal_suff.sub(ordinal[mo.group(1)], val)
+        else:
+            return val + "th"
+
     @typechecked
     def number_to_words(  # noqa: C901
         self,
@@ -3892,12 +3901,7 @@ class engine:
             numchunks = chunks[0].split(f"{comma} ")
 
         if myord and numchunks:
-            # TODO: can this be just one re as it is in perl?
-            mo = ordinal_suff.search(numchunks[-1])
-            if mo:
-                numchunks[-1] = ordinal_suff.sub(ordinal[mo.group(1)], numchunks[-1])
-            else:
-                numchunks[-1] += "th"
+            numchunks[-1] = self._sub_ord(numchunks[-1])
 
         for chunk in chunks[1:]:
             numchunks.append(decimal)
