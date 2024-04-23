@@ -3863,7 +3863,7 @@ class engine:
         chunks, finalpoint = self._chunk_num(num, decimal, group)
 
         loopstart = chunks[0] == ""
-        first: Union[bool, str] = not loopstart
+        first: bool | None = not loopstart
 
         def _handle_chunk(chunk):
             nonlocal first
@@ -3888,7 +3888,7 @@ class engine:
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
-                first = ""
+                first = None
             return chunk
 
         chunks[loopstart:] = map(_handle_chunk, chunks[loopstart:])
