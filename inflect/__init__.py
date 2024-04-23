@@ -3782,10 +3782,8 @@ class engine:
     @classmethod
     def _chunk_num(cls, num, decimal, group):
         if decimal:
-            if group != 0:
-                chunks = num.split(".")
-            else:
-                chunks = num.split(".", 1)
+            max_split = -1 if group != 0 else 1
+            chunks = num.split(".", max_split)
         else:
             chunks = [num]
         return cls._remove_last_blank(chunks)
