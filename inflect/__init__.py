@@ -3799,6 +3799,10 @@ class engine:
         result = chunks[:-1] if removed else chunks
         return result, removed
 
+    @staticmethod
+    def _get_sign(num):
+        return {'+': 'plus', '-': 'minus'}.get(num.lstrip()[0], '')
+
     @typechecked
     def number_to_words(  # noqa: C901
         self,
@@ -3846,13 +3850,8 @@ class engine:
 
         if group < 0 or group > 3:
             raise BadChunkingOptionError
-        nowhite = num.lstrip()
-        if nowhite[0] == "+":
-            sign = "plus"
-        elif nowhite[0] == "-":
-            sign = "minus"
-        else:
-            sign = ""
+
+        sign = self._get_sign(num)
 
         if num in nth_suff:
             num = zero
