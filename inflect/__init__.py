@@ -3908,28 +3908,27 @@ class engine:
             numchunks.append(decimal)
 
         if wantlist:
-            if sign:
-                numchunks = [sign] + numchunks
-            return numchunks
-        elif group:
-            signout = f"{sign} " if sign else ""
+            return [sign] * bool(sign) + numchunks
+
+
+        signout = f"{sign} " if sign else ""
+        if group:
             return f"{signout}{', '.join(numchunks)}"
+
+        num = f"{signout}{numchunks.pop(0)}"
+        if decimal is None:
+            first = True
         else:
-            signout = f"{sign} " if sign else ""
-            num = f"{signout}{numchunks.pop(0)}"
-            if decimal is None:
-                first = True
+            first = not num.endswith(decimal)
+        for nc in numchunks:
+            if nc == decimal:
+                num += f" {nc}"
+                first = False
+            elif first:
+                num += f"{comma} {nc}"
             else:
-                first = not num.endswith(decimal)
-            for nc in numchunks:
-                if nc == decimal:
-                    num += f" {nc}"
-                    first = False
-                elif first:
-                    num += f"{comma} {nc}"
-                else:
-                    num += f" {nc}"
-            return num
+                num += f" {nc}"
+        return num
 
     @typechecked
     def join(
