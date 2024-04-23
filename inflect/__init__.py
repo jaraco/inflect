@@ -3776,12 +3776,8 @@ class engine:
 
     @staticmethod
     def _sub_ord(val):
-        # TODO: can this be just one re as it is in perl?
-        mo = ordinal_suff.search(val)
-        if mo:
-            return ordinal_suff.sub(ordinal[mo.group(1)], val)
-        else:
-            return val + "th"
+        new = ordinal_suff.sub(lambda match: ordinal[match.group(1)], val)
+        return new if new != val else val + "th"
 
     @typechecked
     def number_to_words(  # noqa: C901
