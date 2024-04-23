@@ -3916,10 +3916,7 @@ class engine:
             return f"{signout}{', '.join(numchunks)}"
 
         num = f"{signout}{numchunks.pop(0)}"
-        if decimal is None:
-            first = True
-        else:
-            first = not num.endswith(decimal)
+        first = decimal is None or not num.endswith(decimal)
         for nc in numchunks:
             if nc == decimal:
                 num += f" {nc}"
