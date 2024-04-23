@@ -3777,7 +3777,7 @@ class engine:
     @staticmethod
     def _sub_ord(val):
         new = ordinal_suff.sub(lambda match: ordinal[match.group(1)], val)
-        return new if new != val else val + "th"
+        return new + "th" * (new == val)
 
     @typechecked
     def number_to_words(  # noqa: C901
