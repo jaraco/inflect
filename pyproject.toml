@@ -27,7 +27,7 @@ requires-python = ">=3.8"
 dependencies = [
 	"more_itertools",
 	"typeguard >= 4.0.1",
-	"typing_extensions",
+	"typing_extensions ; python_version<'3.9'",
 ]
 keywords = [
 	"plural",

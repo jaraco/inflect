@@ -68,6 +68,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Literal,
     Match,
     Optional,
     Sequence,
@@ -78,7 +79,11 @@ from typing import (
 
 from more_itertools import windowed_complete
 from typeguard import typechecked
-from typing_extensions import Annotated, Literal
+try:
+    # Python 3.9+
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 
 class UnknownClassicalModeError(Exception):
