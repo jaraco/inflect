@@ -1,3 +1,12 @@
+v7.3.0
+======
+
+Features
+--------
+
+- Restricted typing_extensions to Python 3.8. (#211)
+
+
 v7.2.1
 ======
 
