@@ -79,11 +79,8 @@ from typing import (
 
 from more_itertools import windowed_complete
 from typeguard import typechecked
-try:
-    # Python 3.9+
-    from typing import Annotated
-except ImportError:
-    from typing_extensions import Annotated
+
+from .compat.py38 import Annotated
 
 
 class UnknownClassicalModeError(Exception):
