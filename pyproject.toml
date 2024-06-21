@@ -37,7 +37,7 @@ keywords = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/jaraco/inflect"
+Source = "https://github.com/jaraco/inflect"
 
 [project.optional-dependencies]
 test = [
