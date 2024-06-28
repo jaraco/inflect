@@ -25,7 +25,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-	"more_itertools",
+	"more_itertools >= 8.5.0",
 	"typeguard >= 4.0.1",
 	"typing_extensions ; python_version<'3.9'",
 ]
