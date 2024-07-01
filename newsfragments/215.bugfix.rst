@@ -1,1 +1,0 @@
-Set minimum version of more-itertools to 8.5

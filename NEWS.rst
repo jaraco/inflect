@@ -1,3 +1,12 @@
+v7.3.1
+======
+
+Bugfixes
+--------
+
+- Set minimum version of more-itertools to 8.5 (#215)
+
+
 v7.3.0
 ======
 
