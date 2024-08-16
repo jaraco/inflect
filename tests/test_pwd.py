@@ -743,6 +743,7 @@ class Test:
             ("tuna's", "tuna's"),
             ("TUNA's", "TUNA's"),
             ("bad", False),
+            ("'", False),
             pytest.param(
                 "JOHN's",
                 "JOHNS'",
