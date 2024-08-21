@@ -1695,10 +1695,10 @@ for _thecase, _plur, _gend, _sing in (
     ("acc", "themselves", "masculine or feminine", "himself or herself"),
 ):
     try:
-        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore
+        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore[index]
     except TypeError:
         si_pron[_thecase][_plur] = {}
-        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore
+        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore[index]
 
 
 si_pron_acc_keys = enclose("|".join(si_pron["acc"]))
@@ -2997,16 +2997,16 @@ class engine:
         'man beyond hills'
         """
         inflection = self._sinoun if count == 1 else self._plnoun
-        solutions = (  # type: ignore
+        solutions = (
             " ".join(
                 itertools.chain(
                     leader,
-                    [inflection(cand, count), prep],  # type: ignore
+                    [inflection(cand, count), prep],  # type: ignore[operator]
                     trailer,
                 )
             )
             for leader, (cand, prep), trailer in windowed_complete(word.split_, 2)
-            if prep in pl_prep_list_da  # type: ignore
+            if prep in pl_prep_list_da
         )
         return next(solutions, None)
 
@@ -3652,7 +3652,7 @@ class engine:
                     except ValueError:  # ends with '.', so need to use whole string
                         n = int(str(num)[:-1])
                 else:
-                    n = int(num)  # type: ignore
+                    n = int(num)  # type: ignore[arg-type]
             try:
                 post = nth[n % 100]
             except KeyError:
