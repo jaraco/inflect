@@ -1662,43 +1662,69 @@ pl_pron_acc_keys_bysize = bysize(pl_pron_acc)
 
 si_pron["acc"] = {v: k for (k, v) in pl_pron_acc.items()}
 
-for _thecase, _plur, _gend, _sing in (
-    ("nom", "they", "neuter", "it"),
-    ("nom", "they", "feminine", "she"),
-    ("nom", "they", "masculine", "he"),
-    ("nom", "they", "gender-neutral", "they"),
-    ("nom", "they", "feminine or masculine", "she or he"),
-    ("nom", "they", "masculine or feminine", "he or she"),
-    ("nom", "themselves", "neuter", "itself"),
-    ("nom", "themselves", "feminine", "herself"),
-    ("nom", "themselves", "masculine", "himself"),
-    ("nom", "themselves", "gender-neutral", "themself"),
-    ("nom", "themselves", "feminine or masculine", "herself or himself"),
-    ("nom", "themselves", "masculine or feminine", "himself or herself"),
-    ("nom", "theirs", "neuter", "its"),
-    ("nom", "theirs", "feminine", "hers"),
-    ("nom", "theirs", "masculine", "his"),
-    ("nom", "theirs", "gender-neutral", "theirs"),
-    ("nom", "theirs", "feminine or masculine", "hers or his"),
-    ("nom", "theirs", "masculine or feminine", "his or hers"),
-    ("acc", "them", "neuter", "it"),
-    ("acc", "them", "feminine", "her"),
-    ("acc", "them", "masculine", "him"),
-    ("acc", "them", "gender-neutral", "them"),
-    ("acc", "them", "feminine or masculine", "her or him"),
-    ("acc", "them", "masculine or feminine", "him or her"),
-    ("acc", "themselves", "neuter", "itself"),
-    ("acc", "themselves", "feminine", "herself"),
-    ("acc", "themselves", "masculine", "himself"),
-    ("acc", "themselves", "gender-neutral", "themself"),
-    ("acc", "themselves", "feminine or masculine", "herself or himself"),
-    ("acc", "themselves", "masculine or feminine", "himself or herself"),
+for _thecase, _plur, _gend_sing in (
+    (
+        "nom",
+        "they",
+        {
+            "neuter": "it",
+            "feminine": "she",
+            "masculine": "he",
+            "gender-neutral": "they",
+            "feminine or masculine": "she or he",
+            "masculine or feminine": "he or she",
+        },
+    ),
+    (
+        "nom",
+        "themselves",
+        {
+            "neuter": "itself",
+            "feminine": "herself",
+            "masculine": "himself",
+            "gender-neutral": "themself",
+            "feminine or masculine": "herself or himself",
+            "masculine or feminine": "himself or herself",
+        },
+    ),
+    (
+        "nom",
+        "theirs",
+        {
+            "neuter": "its",
+            "feminine": "hers",
+            "masculine": "his",
+            "gender-neutral": "theirs",
+            "feminine or masculine": "hers or his",
+            "masculine or feminine": "his or hers",
+        },
+    ),
+    (
+        "acc",
+        "them",
+        {
+            "neuter": "it",
+            "feminine": "her",
+            "masculine": "him",
+            "gender-neutral": "them",
+            "feminine or masculine": "her or him",
+            "masculine or feminine": "him or her",
+        },
+    ),
+    (
+        "acc",
+        "themselves",
+        {
+            "neuter": "itself",
+            "feminine": "herself",
+            "masculine": "himself",
+            "gender-neutral": "themself",
+            "feminine or masculine": "herself or himself",
+            "masculine or feminine": "himself or herself",
+        },
+    ),
 ):
-    try:
-        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore[index]
-    except TypeError:
-        si_pron[_thecase][_plur] = {}
-        si_pron[_thecase][_plur][_gend] = _sing  # type: ignore[index]
+    si_pron[_thecase][_plur] = _gend_sing
 
 
 si_pron_acc_keys = enclose("|".join(si_pron["acc"]))
