@@ -3649,7 +3649,8 @@ class engine:
                         # so only need last one for ordinal
                         n = int(str(num)[-1])
 
-                    except ValueError:  # ends with '.', so need to use whole string
+                    except ValueError:
+                        # ends with '.', so need to use whole string
                         n = int(str(num)[:-1])
                 else:
                     n = int(num)  # type: ignore[arg-type]
