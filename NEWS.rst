@@ -1,3 +1,12 @@
+v7.4.0
+======
+
+Features
+--------
+
+- Handle a single apostrophe more gracefully. (#218)
+
+
 v7.3.1
 ======
 
