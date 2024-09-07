@@ -23,7 +23,7 @@
 NAME
 ====
 
-inflect.py - Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words.
+inflect.py - Accurately generate plurals, singular nouns, ordinals, indefinite articles, and word-based representations of numbers. This functionality is limited to English.
 
 SYNOPSIS
 ========
