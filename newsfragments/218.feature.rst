@@ -1,0 +1,1 @@
+Handle a single apostrophe more gracefully.
