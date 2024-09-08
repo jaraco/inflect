@@ -33,7 +33,7 @@ SYNOPSIS
     >>> import inflect
     >>> p = inflect.engine()
 
-Simple example with pluralization and word-representation of numbers when ``count = 1``:
+Simple example with pluralization and word-representation of numbers:
 
 .. code-block:: python
     
@@ -141,7 +141,7 @@ Use Default Counts
     >>> "There ", p.num(errors, ""), p.plural_verb("was"), p.no(" error")
     ('There ', '', 'were', ' 2 errors')
 
-Compare Two Words *Number-Intensitively*
+Compare Two Words Number-Intensitively
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
@@ -163,7 +163,7 @@ Compare Two Words *Number-Intensitively*
     >>> p.compare_adjs('my', 'our')
     's:p'
 
-Add Correct "a" or "an" for a Given Word
+Add Correct *a* or *an* for a Given Word
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
@@ -256,6 +256,10 @@ Join Words into a List
     'apple and banana'
     >>> p.join(("apple", "banana", "carrot"), final_sep="")
     'apple, banana and carrot'
+    >>> p.join(('apples', 'bananas', 'carrots'), conj='and even')
+    'apples, bananas, and even carrots'
+    >>> p.join(('apple', 'banana', 'carrot'), sep='/', sep_spaced=False, conj='', conj_spaced=False)
+    'apple/banana/carrot'
     
 Require Classical Plurals
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -406,7 +410,7 @@ Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
 
 It is also possible to inflect numerals (1,2,3) to ordinals (1st, 2nd, 3rd)
-and to English words ("one", "two", "three").
+or to English words ("one", "two", "three").
 
 In generating these inflections, ``inflect.py`` follows the Oxford
 English Dictionary and the guidelines in Fowler's Modern English
