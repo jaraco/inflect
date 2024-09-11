@@ -29,207 +29,330 @@ SYNOPSIS
 ========
 
 .. code-block:: python
+    
+    >>> import inflect
+    >>> p = inflect.engine()
 
-    import inflect
+Simple example with pluralization and word-representation of numbers:
 
-    p = inflect.engine()
+.. code-block:: python
+    
+    >>> count=1
+    >>> print('There', p.plural_verb('was', count), p.number_to_words(count), p.plural_noun('person', count), 'by the door.')
+    There was one person by the door.
 
-    # METHODS:
+When ``count=243``, the same code will generate:
 
-    # plural plural_noun plural_verb plural_adj singular_noun no num
-    # compare compare_nouns compare_nouns compare_adjs
-    # a an
-    # present_participle
-    # ordinal number_to_words
-    # join
-    # inflect classical gender
-    # defnoun defverb defadj defa defan
-
-
-    # UNCONDITIONALLY FORM THE PLURAL
-
-    print("The plural of ", word, " is ", p.plural(word))
+.. code-block:: python
+    
+    There were two hundred and forty-three people by the door.
 
 
-    # CONDITIONALLY FORM THE PLURAL
+Methods
+=======
 
-    print("I saw", cat_count, p.plural("cat", cat_count))
+- ``plural``, ``plural_noun``, ``plural_verb``, ``plural_adj``, ``singular_noun``, ``no``, ``num``
+- ``compare``, ``compare_nouns``, ``compare_nouns``, ``compare_adjs``
+- ``a``, ``an``
+- ``present_participle``
+- ``ordinal``, ``number_to_words``
+- ``join``
+- ``inflect``, ``classical``, ``gender``
+- ``defnoun``, ``defverb``, ``defadj``, ``defa``, ``defan``
 
+Plurality/Singularity
+---------------------
+Unconditionally Form the Plural
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # FORM PLURALS FOR SPECIFIC PARTS OF SPEECH
+.. code-block:: python
+    
+    >>> "the plural of person is " + p.plural("person")
+    'the plural of person is people'
 
-    print(
-        p.plural_noun("I", N1),
-        p.plural_verb("saw", N1),
-        p.plural_adj("my", N2),
-        p.plural_noun("saw", N2),
-    )
+Conditionally Form the Plural
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. code-block:: python
+    
+    >>> "the plural of 1 person is " + p.plural("person", 1)
+    'the plural of 1 person is person'
 
-    # FORM THE SINGULAR OF PLURAL NOUNS
+Form Plurals for Specific Parts of Speech
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    print("The singular of ", word, " is ", p.singular_noun(word))
+.. code-block:: python
+    
+    >>> p.plural_noun("I", 2)
+    'we'
+    >>> p.plural_verb("saw", 1)
+    'saw'
+    >>> p.plural_adj("my", 2)
+    'our'
+    >>> p.plural_noun("saw", 2)
+    'saws'
 
-    # SELECT THE GENDER OF SINGULAR PRONOUNS
+Form the Singular of Plural Nouns
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    print(p.singular_noun("they"))  # 'it'
-    p.gender("feminine")
-    print(p.singular_noun("they"))  # 'she'
+.. code-block:: python
+    
+    >>> "The singular of people is " + p.singular_noun("people")
+    'The singular of people is person'
 
+Select the Gender of Singular Pronouns
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # DEAL WITH "0/1/N" -> "no/1/N" TRANSLATION:
+.. code-block:: python
+    
+    >>> p.singular_noun("they")
+    'it'
+    >>> p.gender("feminine")
+    >>> p.singular_noun("they")
+    'she'
 
-    print("There ", p.plural_verb("was", errors), p.no(" error", errors))
+Deal with "0/1/N" -> "no/1/N" Translation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. code-block:: python
+    
+    >>> errors = 1
+    >>> "There ", p.plural_verb("was", errors), p.no(" error", errors)
+    ('There ', 'was', ' 1 error')
+    >>> errors = 2
+    >>> "There ", p.plural_verb("was", errors), p.no(" error", errors)
+    ('There ', 'were', ' 2 errors')
 
-    # USE DEFAULT COUNTS:
+Use Default Counts
+^^^^^^^^^^^^^^^^^^
 
-    print(
-        p.num(N1, ""),
-        p.plural("I"),
-        p.plural_verb(" saw"),
-        p.num(N2),
-        p.plural_noun(" saw"),
-    )
-    print("There ", p.num(errors, ""), p.plural_verb("was"), p.no(" error"))
+.. code-block:: python
+    
+    >>> p.num(1, "")
+    ''
+    >>> p.plural("I")
+    'I'
+    >>> p.plural_verb(" saw")
+    ' saw'
+    >>> p.num(2)
+    '2'
+    >>> p.plural_noun(" saw")
+    ' saws'
+    >>> "There ", p.num(errors, ""), p.plural_verb("was"), p.no(" error")
+    ('There ', '', 'were', ' 2 errors')
 
+Compare Two Words Number-Intensitively
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # COMPARE TWO WORDS "NUMBER-INSENSITIVELY":
+.. code-block:: python
+    
+    >>> p.compare('person', 'person')
+    'eq'
+    >>> p.compare('person', 'people')
+    's:p'
+    >>> p.compare_nouns('person', 'people')
+    's:p'
+    >>> p.compare_verbs('run', 'ran')
+    False
+    >>> p.compare_verbs('run', 'running')
+    False
+    >>> p.compare_verbs('run', 'run')
+    'eq'
+    >>> p.compare_adjs('my', 'mine')
+    False
+    >>> p.compare_adjs('my', 'our')
+    's:p'
 
-    if p.compare(word1, word2):
-        print("same")
-    if p.compare_nouns(word1, word2):
-        print("same noun")
-    if p.compare_verbs(word1, word2):
-        print("same verb")
-    if p.compare_adjs(word1, word2):
-        print("same adj.")
+Add Correct *a* or *an* for a Given Word
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. code-block:: python
+    
+    >>> "Did you want ", p.a('thing'), " or ", p.a('idea')
+    ('Did you want ', 'a thing', ' or ', 'an idea')
 
-    # ADD CORRECT "a" OR "an" FOR A GIVEN WORD:
+Convert Numerals into Ordinals
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    print("Did you want ", p.a(thing), " or ", p.an(idea))
+.. code-block:: python
+    
+    >>> "It was", p.ordinal(1), " from the left"
+    ('It was', '1st', ' from the left')
+    >>> "It was", p.ordinal(2), " from the left"
+    ('It was', '2nd', ' from the left')
+    >>> "It was", p.ordinal(3), " from the left"
+    ('It was', '3rd', ' from the left')
+    >>> "It was", p.ordinal(347), " from the left"
+    ('It was', '347th', ' from the left')
 
+Convert Numerals to Words
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Note: This returns a single string.
 
-    # CONVERT NUMERALS INTO ORDINALS (i.e. 1->1st, 2->2nd, 3->3rd, etc.)
+.. code-block:: python
+    
+    >>> p.number_to_words(1)
+    'one'
+    >>> p.number_to_words(38)
+    'thirty-eight'
+    >>> p.number_to_words(1234)
+    'one thousand, two hundred and thirty-four'
+    >>> p.number_to_words(p.ordinal(1234))
+    'one thousand, two hundred and thirty-fourth'
 
-    print("It was", p.ordinal(position), " from the left\n")
+Retrieve Words as List of Parts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # CONVERT NUMERALS TO WORDS (i.e. 1->"one", 101->"one hundred and one", etc.)
-    # RETURNS A SINGLE STRING...
+.. code-block:: python
+    
+    >>> p.number_to_words(1234, wantlist=True)
+    ['one thousand', 'two hundred and thirty-four']
 
-    words = p.number_to_words(1234)
-    # "one thousand, two hundred and thirty-four"
-    words = p.number_to_words(p.ordinal(1234))
-    # "one thousand, two hundred and thirty-fourth"
+Grouping Options
+^^^^^^^^^^^^^^^^
 
+.. code-block:: python
+    
+    >>> p.number_to_words(12345, group=1)
+    'one, two, three, four, five'
+    >>> p.number_to_words(12345, group=2)
+    'twelve, thirty-four, five'
+    >>> p.number_to_words(12345, group=3)
+    'one twenty-three, forty-five'
+    >>> p.number_to_words(1234, andword="")
+    'one thousand, two hundred thirty-four'
+    >>> p.number_to_words(1234, andword=", plus")
+    'one thousand, two hundred, plus thirty-four'
+    >>> p.number_to_words(555_1202, group=1, zero="oh")
+    'five, five, five, one, two, oh, two'
+    >>> p.number_to_words(555_1202, group=1, one="unity")
+    'five, five, five, unity, two, zero, two'
+    >>> p.number_to_words(123.456, group=1, decimal="mark")
+    'one, two, three, mark, four, five, six'
 
-    # GET BACK A LIST OF STRINGS, ONE FOR EACH "CHUNK"...
+Apply Threshold for Word-Representation of Numbers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Above provided threshold, numberals will remain numerals
 
-    words = p.number_to_words(1234, wantlist=True)
-    # ("one thousand","two hundred and thirty-four")
+.. code-block:: python
+    
+    >>> p.number_to_words(9, threshold=10)
+    'nine'
+    >>> p.number_to_words(10, threshold=10)
+    'ten'
+    >>> p.number_to_words(11, threshold=10)
+    '11'
+    >>> p.number_to_words(1000, threshold=10)
+    '1,000'
 
+Join Words into a List
+^^^^^^^^^^^^^^^^^^^^^^
 
-    # OPTIONAL PARAMETERS CHANGE TRANSLATION:
+.. code-block:: python
+    
+    >>> p.join(("apple", "banana", "carrot"))
+    'apple, banana, and carrot'
+    >>> p.join(("apple", "banana"))
+    'apple and banana'
+    >>> p.join(("apple", "banana", "carrot"), final_sep="")
+    'apple, banana and carrot'
+    >>> p.join(('apples', 'bananas', 'carrots'), conj='and even')
+    'apples, bananas, and even carrots'
+    >>> p.join(('apple', 'banana', 'carrot'), sep='/', sep_spaced=False, conj='', conj_spaced=False)
+    'apple/banana/carrot'
+    
+Require Classical Plurals
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Adhere to conventions from Classical Latin and Classical Greek
 
-    words = p.number_to_words(12345, group=1)
-    # "one, two, three, four, five"
+.. code-block:: python
+        
+    >>> p.classical()
+    >>> p.plural_noun("focus", 2)
+    'foci'
+    >>> p.plural_noun("cherubim", 2)
+    'cherubims'
+    >>> p.plural_noun("cherub", 2)
+    'cherubim'
 
-    words = p.number_to_words(12345, group=2)
-    # "twelve, thirty-four, five"
+Other options for classical plurals:
 
-    words = p.number_to_words(12345, group=3)
-    # "one twenty-three, forty-five"
-
-    words = p.number_to_words(1234, andword="")
-    # "one thousand, two hundred thirty-four"
-
-    words = p.number_to_words(1234, andword=", plus")
-    # "one thousand, two hundred, plus thirty-four"
-    # TODO: I get no comma before plus: check perl
-
-    words = p.number_to_words(555_1202, group=1, zero="oh")
-    # "five, five, five, one, two, oh, two"
-
-    words = p.number_to_words(555_1202, group=1, one="unity")
-    # "five, five, five, unity, two, oh, two"
-
-    words = p.number_to_words(123.456, group=1, decimal="mark")
-    # "one two three mark four five six"
-    # TODO: DOCBUG: perl gives commas here as do I
-
-    # LITERAL STYLE ONLY NAMES NUMBERS LESS THAN A CERTAIN THRESHOLD...
-
-    words = p.number_to_words(9, threshold=10)  # "nine"
-    words = p.number_to_words(10, threshold=10)  # "ten"
-    words = p.number_to_words(11, threshold=10)  # "11"
-    words = p.number_to_words(1000, threshold=10)  # "1,000"
-
-    # JOIN WORDS INTO A LIST:
-
-    mylist = p.join(("apple", "banana", "carrot"))
-    # "apple, banana, and carrot"
-
-    mylist = p.join(("apple", "banana"))
-    # "apple and banana"
-
-    mylist = p.join(("apple", "banana", "carrot"), final_sep="")
-    # "apple, banana and carrot"
-
-
-    # REQUIRE "CLASSICAL" PLURALS (EG: "focus"->"foci", "cherub"->"cherubim")
-
-    p.classical()  # USE ALL CLASSICAL PLURALS
-
+.. code-block:: python
+    
     p.classical(all=True)  # USE ALL CLASSICAL PLURALS
     p.classical(all=False)  # SWITCH OFF CLASSICAL MODE
-
+    
     p.classical(zero=True)  #  "no error" INSTEAD OF "no errors"
     p.classical(zero=False)  #  "no errors" INSTEAD OF "no error"
-
+    
     p.classical(herd=True)  #  "2 buffalo" INSTEAD OF "2 buffalos"
     p.classical(herd=False)  #  "2 buffalos" INSTEAD OF "2 buffalo"
-
+    
     p.classical(persons=True)  # "2 chairpersons" INSTEAD OF "2 chairpeople"
     p.classical(persons=False)  # "2 chairpeople" INSTEAD OF "2 chairpersons"
-
+    
     p.classical(ancient=True)  # "2 formulae" INSTEAD OF "2 formulas"
     p.classical(ancient=False)  # "2 formulas" INSTEAD OF "2 formulae"
 
 
-    # INTERPOLATE "plural()", "plural_noun()", "plural_verb()", "plural_adj()", "singular_noun()",
-    # a()", "an()", "num()" AND "ordinal()" WITHIN STRINGS:
+Support for interpolation
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Supports string interpolation with the following functions: ``plural()``, ``plural_noun()``, ``plural_verb()``, ``plural_adj()``, ``singular_noun()``, ``a()``, ``an()``, ``num()`` and ``ordinal()``.
 
-    print(p.inflect("The plural of {0} is plural('{0}')".format(word)))
-    print(p.inflect("The singular of {0} is singular_noun('{0}')".format(word)))
-    print(p.inflect("I saw {0} plural('cat',{0})".format(cat_count)))
-    print(
-        p.inflect(
-            "plural('I',{0}) "
-            "plural_verb('saw',{0}) "
-            "plural('a',{1}) "
-            "plural_noun('saw',{1})".format(N1, N2)
-        )
-    )
-    print(
-        p.inflect(
-            "num({0}, False)plural('I') "
-            "plural_verb('saw') "
-            "num({1}, False)plural('a') "
-            "plural_noun('saw')".format(N1, N2)
-        )
-    )
-    print(p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count)))
-    print(p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors)))
-    print(p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors)))
-    print(p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea)))
-    print(p.inflect("It was ordinal('{0}') from the left".format(position)))
+.. code-block:: python
+    
+    >>> p.inflect("The plural of {0} is plural('{0}')".format('car'))
+    'The plural of car is cars'
+    >>> p.inflect("The singular of {0} is singular_noun('{0}')".format('car'))
+    'The singular of car is car'
+    >>> p.inflect("I saw {0} plural('cat',{0})".format(3))
+    'I saw 3 cats'
+    >>> p.inflect(
+    ...     "plural('I',{0}) "
+    ...     "plural_verb('saw',{0}) "
+    ...     "plural('a',{1}) "
+    ...     "plural_noun('saw',{1})".format(1, 2)
+    ... )
+    'I saw some saws'
+    >>> p.inflect(
+    ...     "num({0}, False)plural('I') "
+    ...     "plural_verb('saw') "
+    ...     "num({1}, False)plural('a') "
+    ...     "plural_noun('saw')".format(N1, 1)
+    ... )
+    'I saw a saw'
+    >>> p.inflect(
+    ...     "num({0}, False)plural('I') "
+    ...     "plural_verb('saw') "
+    ...     "num({1}, False)plural('a') "
+    ...     "plural_noun('saw')".format(2, 2)
+    ... )
+    'we saw some saws'
+    >>> p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count))
+    'I saw 3 cats\n'
+    >>> p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors))
+    'There were 2 errors'
+    >>> p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors))
+    'There were 2 errors'
+    >>> p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea))
+    'Did you want a thing or an idea'
+    >>> p.inflect("It was ordinal('{0}') from the left".format(2))
+    'It was 2nd from the left'
 
+Add User-Defined Inflections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Allows for overriding default rules.
 
-    # ADD USER-DEFINED INFLECTIONS (OVERRIDING INBUILT RULES):
+Override noun defaults:
 
+.. code-block:: python
+        
     p.defnoun("VAX", "VAXen")  # SINGULAR => PLURAL
 
+Override Verb defaults:
+
+.. code-block:: python
+    
     p.defverb(
         "will",  # 1ST PERSON SINGULAR
         "shall",  # 1ST PERSON PLURAL
@@ -239,11 +362,34 @@ SYNOPSIS
         "will",  # 3RD PERSON PLURAL
     )
 
-    p.defadj("hir", "their")  # SINGULAR => PLURAL
+Override adjective defaults:
 
-    p.defa("h")  # "AY HALWAYS SEZ 'HAITCH'!"
+.. code-block:: python
+    
+    >>> p.defadj('hir', 'their')
+    1
+    >>> p.plural_adj('hir', 2)
+    'their'
 
-    p.defan("horrendous.*")  # "AN HORRENDOUS AFFECTATION"
+Override the words that use the indefinite articles "a" or "an":
+
+.. code-block:: python
+    
+    >>> p.a('ape', 1)
+    'an ape'
+    >>> p.defa('a')
+    1
+    >>> p.a('ape', 1)
+    'an ape'
+    >>> p.defa('ape')
+    1
+    >>> p.a('ape', 1)
+    'a ape'
+    >>> p.defan('horrendous.*')
+    1
+    >>> p.a('horrendous affectation', 1)
+    'an horrendous affectation'
+    >>> 
 
 
 DESCRIPTION
@@ -264,7 +410,7 @@ Pronunciation-based "a"/"an" selection is provided for all English
 words, and most initialisms.
 
 It is also possible to inflect numerals (1,2,3) to ordinals (1st, 2nd, 3rd)
-and to English words ("one", "two", "three").
+or to English words ("one", "two", "three").
 
 In generating these inflections, ``inflect.py`` follows the Oxford
 English Dictionary and the guidelines in Fowler's Modern English
