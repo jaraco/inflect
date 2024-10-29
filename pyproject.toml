@@ -23,7 +23,7 @@ classifiers = [
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	"Topic :: Text Processing :: Linguistic",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
 	"more_itertools >= 8.5.0",
 	"typeguard >= 4.0.1",
