@@ -198,19 +198,19 @@ def test_array():
         ],
         [
             "123456",
-            "one hundred and twenty-three thousand, " "four hundred and fifty-six",
+            "one hundred and twenty-three thousand, four hundred and fifty-six",
             "one, two, three, four, five, six",
             "twelve, thirty-four, fifty-six",
             "one twenty-three, four fifty-six",
-            "one hundred and twenty-three thousand, " "four hundred and fifty-sixth",
+            "one hundred and twenty-three thousand, four hundred and fifty-sixth",
         ],
         [
             "0123456",
-            "one hundred and twenty-three thousand, " "four hundred and fifty-six",
+            "one hundred and twenty-three thousand, four hundred and fifty-six",
             "zero, one, two, three, four, five, six",
             "zero one, twenty-three, forty-five, six",
             "zero twelve, three forty-five, six",
-            "one hundred and twenty-three thousand, " "four hundred and fifty-sixth",
+            "one hundred and twenty-three thousand, four hundred and fifty-sixth",
         ],
         [
             "1234567",
