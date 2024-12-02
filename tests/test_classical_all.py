@@ -8,9 +8,9 @@ class Test:
         # DEFAULT...
 
         assert p.plural_noun("error", 0) == "errors", "classical 'zero' not active"
-        assert (
-            p.plural_noun("wildebeest") == "wildebeests"
-        ), "classical 'herd' not active"
+        assert p.plural_noun("wildebeest") == "wildebeests", (
+            "classical 'herd' not active"
+        )
         assert p.plural_noun("Sally") == "Sallys", "classical 'names' active"
         assert p.plural_noun("brother") == "brothers", "classical others not active"
         assert p.plural_noun("person") == "people", "classical 'persons' not active"
@@ -30,9 +30,9 @@ class Test:
 
         p.classical(all=False)
         assert p.plural_noun("error", 0) == "errors", "classical 'zero' not active"
-        assert (
-            p.plural_noun("wildebeest") == "wildebeests"
-        ), "classical 'herd' not active"
+        assert p.plural_noun("wildebeest") == "wildebeests", (
+            "classical 'herd' not active"
+        )
         assert p.plural_noun("Sally") == "Sallies", "classical 'names' not active"
         assert p.plural_noun("brother") == "brothers", "classical others not active"
         assert p.plural_noun("person") == "people", "classical 'persons' not active"

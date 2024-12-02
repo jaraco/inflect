@@ -2264,18 +2264,12 @@ class engine:
         """
         Return the value of the ast object.
         """
-        if isinstance(obj, ast.Num):
-            return obj.n
-        elif isinstance(obj, ast.Str):
-            return obj.s
+        if isinstance(obj, ast.Constant):
+            return obj.value
         elif isinstance(obj, ast.List):
             return [self._get_value_from_ast(e) for e in obj.elts]
         elif isinstance(obj, ast.Tuple):
             return tuple([self._get_value_from_ast(e) for e in obj.elts])
-
-        # None, True and False are NameConstants in Py3.4 and above.
-        elif isinstance(obj, ast.NameConstant):
-            return obj.value
 
         # Probably passed a variable name.
         # Or passed a single word without wrapping it in quotes as an argument
