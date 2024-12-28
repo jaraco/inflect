@@ -2594,20 +2594,16 @@ class engine:
             return f"{pre}{plural}{post}"
         return False
 
-    def _plequal(self, word1: str, word2: str, pl) -> Union[str, bool]:  # noqa: C901
+    def _plequal(self, word1: str, word2: str, pl) -> Union[str, bool]:
         classval = self.classical_dict.copy()
-        self.classical_dict = all_classical.copy()
-        if word1 == word2:
-            return "eq"
-        if word1 == pl(word2):
-            return "p:s"
-        if pl(word1) == word2:
-            return "s:p"
-        self.classical_dict = no_classical.copy()
-        if word1 == pl(word2):
-            return "p:s"
-        if pl(word1) == word2:
-            return "s:p"
+        for dictionary in (all_classical, no_classical):
+            self.classical_dict = dictionary.copy()
+            if word1 == word2:
+                return "eq"
+            if word1 == pl(word2):
+                return "p:s"
+            if pl(word1) == word2:
+                return "s:p"
         self.classical_dict = classval.copy()
 
         if pl == self.plural or pl == self.plural_noun:
