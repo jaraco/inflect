@@ -1,3 +1,12 @@
+v7.5.0
+======
+
+Features
+--------
+
+- Updated `ast` classes for Python 3.14 compatibility. (#225)
+
+
 v7.4.0
 ======
 
