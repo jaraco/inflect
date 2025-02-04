@@ -3854,9 +3854,9 @@ class engine:
 
         # Handle scientific notation conversion
         if isinstance(num, float):
-            formatted = f"{num:.15g}"
+            formatted = f"{num:.17g}"
             if 'e' in formatted.lower():
-                num = f"{num:.15f}".rstrip('0').rstrip('.')
+                num = f"{num:.17f}".rstrip('0').rstrip('.')
             else:
                 num = formatted
         else:
