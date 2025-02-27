@@ -3825,7 +3825,7 @@ class engine:
         return {'+': 'plus', '-': 'minus'}.get(num.lstrip()[0], '')
 
     @typechecked
-    def number_to_words(  # noqa: C901
+    def number_to_words(
         self,
         num: Union[Number, Word],
         wantlist: bool = False,
@@ -3839,23 +3839,28 @@ class engine:
     ) -> Union[str, List[str]]:
         """
         Return a number in words.
-
         group = 1, 2 or 3 to group numbers before turning into words
         comma: define comma
-
         andword:
             word for 'and'. Can be set to ''.
             e.g. "one hundred and one" vs "one hundred one"
-
         zero: word for '0'
         one: word for '1'
         decimal: word for decimal point
         threshold: numbers above threshold not turned into words
-
         parameters not remembered from last call. Departure from Perl version.
         """
         self._number_args = {"andword": andword, "zero": zero, "one": one}
-        num = str(num)
+
+        # Handle scientific notation conversion
+        if isinstance(num, float):
+            formatted = f"{num:.17g}"
+            if 'e' in formatted.lower():
+                num = f"{num:.17f}".rstrip('0').rstrip('.')
+            else:
+                num = formatted
+        else:
+            num = str(num)
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
@@ -3873,7 +3878,6 @@ class engine:
             raise BadChunkingOptionError
 
         sign = self._get_sign(num)
-
         if num in nth_suff:
             num = zero
 
@@ -3882,38 +3886,31 @@ class engine:
             num = num[:-2]
 
         chunks, finalpoint = self._chunk_num(num, decimal, group)
-
         loopstart = chunks[0] == ""
         first: bool | None = not loopstart
 
         def _handle_chunk(chunk):
             nonlocal first
-
             # remove all non numeric \D
             chunk = NON_DIGIT.sub("", chunk)
             if chunk == "":
                 chunk = "0"
-
             if group == 0 and not first:
                 chunk = self.enword(chunk, 1)
             else:
                 chunk = self.enword(chunk, group)
-
             if chunk[-2:] == ", ":
                 chunk = chunk[:-2]
             chunk = WHITESPACES_COMMA.sub(",", chunk)
-
             if group == 0 and first:
                 chunk = COMMA_WORD.sub(f" {andword} \\1", chunk)
             chunk = WHITESPACES.sub(" ", chunk)
-            # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()
             if first:
                 first = None
             return chunk
 
         chunks[loopstart:] = map(_handle_chunk, chunks[loopstart:])
-
         numchunks = []
         if first != 0:
             numchunks = chunks[0].split(f"{comma} ")
