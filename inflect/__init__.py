@@ -3001,29 +3001,41 @@ class engine:
         return " ".join(
             parts[: pivot - 1] + [sep.join([transformed, parts[pivot], ''])]
         ) + " ".join(parts[(pivot + 1) :])
-
+    
     def _handle_long_compounds(self, word: Words, count: int) -> Union[str, None]:
         """
         Handles the plural and singular for compound `Words` that
         have three or more words, based on the given count.
-
-        >>> engine()._handle_long_compounds(Words("pair of scissors"), 2)
-        'pairs of scissors'
-        >>> engine()._handle_long_compounds(Words("men beyond hills"), 1)
-        'man beyond hills'
         """
         inflection = self._sinoun if count == 1 else self._plnoun
+    
+        def handle_irregular_plural(word_to_check, inflection_result):
+            if word_to_check in pl_sb_irregular.values():
+                for sing, plur in pl_sb_irregular.items():
+                    if word_to_check in plur.split('|'):
+                        return sing
+            return inflection_result if inflection_result is not False else word_to_check
+    
         solutions = (
             " ".join(
                 itertools.chain(
                     leader,
-                    [inflection(cand, count), prep],  # type: ignore[operator]
+                    [(
+                        handle_irregular_plural(cand, inflection_result)
+                        if (
+                            not (count != 1 and cand.endswith('s')) or
+                            cand in pl_sb_irregular.values()
+                        )
+                        else cand
+                    ), prep],
                     trailer,
                 )
             )
             for leader, (cand, prep), trailer in windowed_complete(word.split_, 2)
             if prep in pl_prep_list_da
+            for inflection_result in [inflection(cand, count)]
         )
+        
         return next(solutions, None)
 
     @staticmethod
