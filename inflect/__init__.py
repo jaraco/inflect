@@ -60,6 +60,7 @@ import contextlib
 import functools
 import itertools
 import re
+from decimal import Decimal as _Decimal
 from numbers import Number
 from typing import (
     TYPE_CHECKING,
@@ -3855,7 +3856,10 @@ class engine:
         parameters not remembered from last call. Departure from Perl version.
         """
         self._number_args = {"andword": andword, "zero": zero, "one": one}
-        num = str(num)
+        if isinstance(num, float):
+            num = format(_Decimal(repr(num)), "f")
+        else:
+            num = str(num)
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:

@@ -396,3 +396,19 @@ def test_issue_131():
     p = inflect.engine()
     for nth_word in inflect.nth_suff:
         assert p.number_to_words(nth_word) == "zero"
+
+
+def test_float_scientific_notation():
+    """Float values in scientific notation should be converted correctly."""
+    p = inflect.engine()
+    assert p.number_to_words(0.000001) == "zero point zero zero zero zero zero one"
+    assert (
+        p.number_to_words(1e-10)
+        == "zero point zero zero zero zero zero zero zero zero zero one"
+    )
+    assert p.number_to_words(0.1) == "zero point one"
+    assert p.number_to_words(1.5) == "one point five"
+    assert (
+        p.number_to_words(-0.000001) == "minus zero point zero zero zero zero zero one"
+    )
+    assert p.number_to_words(0.000001) == p.number_to_words("0.000001")
