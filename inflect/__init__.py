@@ -3495,6 +3495,11 @@ class engine:
         if word in si_sb_es_is:
             return word[:-2] + "is"
 
+        # WORDS ENDING IN -ss ARE ALREADY SINGULAR (e.g. grass, glass, moss)
+
+        if words.lowered[-2:] == "ss":
+            return False
+
         # OTHERWISE JUST REMOVE ...s
 
         if words.lowered[-1] == "s":
