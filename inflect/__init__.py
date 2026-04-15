@@ -3017,12 +3017,14 @@ class engine:
             " ".join(
                 itertools.chain(
                     leader,
-                    [inflection(cand, count), prep],  # type: ignore[operator]
+                    [inflected, prep],
                     trailer,
                 )
             )
             for leader, (cand, prep), trailer in windowed_complete(word.split_, 2)
             if prep in pl_prep_list_da
+            for inflected in [inflection(cand, count)]  # type: ignore[operator]
+            if isinstance(inflected, str)
         )
         return next(solutions, None)
 
