@@ -396,3 +396,25 @@ def test_issue_131():
     p = inflect.engine()
     for nth_word in inflect.nth_suff:
         assert p.number_to_words(nth_word) == "zero"
+
+
+def test_issue_226_float_scientific_notation():
+    """
+    Floats whose ``str()`` representation uses scientific notation should
+    convert correctly rather than being parsed as the mantissa-and-exponent
+    digits (e.g. ``0.000001`` rendered as ``"one hundred and six"``).
+    """
+    p = inflect.engine()
+    assert p.number_to_words(0.000001) == "zero point zero zero zero zero zero one"
+    assert (
+        p.number_to_words(-0.000001)
+        == "minus zero point zero zero zero zero zero one"
+    )
+    assert p.number_to_words(0.000001) == p.number_to_words("0.000001")
+    # Common floats with exact str() forms must remain unaffected.
+    assert p.number_to_words(0.1) == "zero point one"
+    assert p.number_to_words(999.3) == (
+        "nine hundred and ninety-nine point three"
+    )
+    # Large-magnitude floats also stringify in scientific notation.
+    assert p.number_to_words(1e20) == p.number_to_words(10**20)

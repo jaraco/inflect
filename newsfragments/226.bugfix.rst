@@ -1,0 +1,4 @@
+Convert ``float`` arguments with magnitudes that stringify in scientific
+notation (e.g. ``0.000001`` -> ``'1e-06'``) to fixed-point form before
+processing, so ``number_to_words(0.000001)`` no longer parses the mantissa
+and exponent as digits.

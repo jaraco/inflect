@@ -60,6 +60,7 @@ import contextlib
 import functools
 import itertools
 import re
+from decimal import Decimal
 from numbers import Number
 from typing import (
     TYPE_CHECKING,
@@ -3824,6 +3825,22 @@ class engine:
     def _get_sign(num):
         return {'+': 'plus', '-': 'minus'}.get(num.lstrip()[0], '')
 
+    @staticmethod
+    def _normalize_number(num):
+        """
+        Return a string representation of ``num`` suitable for word conversion.
+
+        ``float`` values are routed through ``Decimal(repr(num))`` so that
+        magnitudes Python would otherwise stringify in scientific notation
+        (``str(0.000001) == '1e-06'``) are converted to fixed-point form,
+        which the parser can then process digit-by-digit. ``repr`` already
+        yields the shortest round-trip form, so values like ``0.1`` and
+        ``999.3`` round-trip without introducing binary-float artifacts. (#226)
+        """
+        if isinstance(num, float):
+            return format(Decimal(repr(num)), "f")
+        return str(num)
+
     @typechecked
     def number_to_words(  # noqa: C901
         self,
@@ -3855,7 +3872,7 @@ class engine:
         parameters not remembered from last call. Departure from Perl version.
         """
         self._number_args = {"andword": andword, "zero": zero, "one": one}
-        num = str(num)
+        num = self._normalize_number(num)
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
