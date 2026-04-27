@@ -19,6 +19,18 @@ def test_compound_4():
     assert p.singular_noun("case of diapers") == "case of diapers"
 
 
+def test_singular_noun_already_singular_long_compound():
+    """
+    Compound phrases routed through ``_handle_long_compounds`` whose
+    candidate word is already singular previously raised ``TypeError``
+    because ``_sinoun`` returned ``False`` and that fell into ``str.join``.
+    See https://github.com/jaraco/inflect/issues/222.
+    """
+    assert p.singular_noun("pair of scissors") == "pair of scissors"
+    # The pluralized form should still round-trip back to the singular.
+    assert p.singular_noun("pairs of scissors") == "pair of scissors"
+
+
 def test_unit_handling_degree():
     test_cases = {
         "degree celsius": "degrees celsius",

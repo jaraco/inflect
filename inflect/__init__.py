@@ -3007,8 +3007,14 @@ class engine:
         Handles the plural and singular for compound `Words` that
         have three or more words, based on the given count.
 
+        When the candidate word is already in the requested form,
+        ``self._sinoun`` / ``self._plnoun`` returns ``False``; fall back
+        to the original word so the joined phrase remains a string. (#222)
+
         >>> engine()._handle_long_compounds(Words("pair of scissors"), 2)
         'pairs of scissors'
+        >>> engine()._handle_long_compounds(Words("pair of scissors"), 1)
+        'pair of scissors'
         >>> engine()._handle_long_compounds(Words("men beyond hills"), 1)
         'man beyond hills'
         """
@@ -3017,7 +3023,7 @@ class engine:
             " ".join(
                 itertools.chain(
                     leader,
-                    [inflection(cand, count), prep],  # type: ignore[operator]
+                    [inflection(cand, count) or cand, prep],
                     trailer,
                 )
             )
