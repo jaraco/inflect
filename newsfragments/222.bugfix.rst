@@ -1,0 +1,5 @@
+Fix ``TypeError`` raised by ``singular_noun`` for compound phrases ending
+in an uninflected word (e.g. ``"pair of scissors"``). When the candidate
+word is already singular, ``_sinoun`` returns ``False``; the long-compound
+handler now falls back to the original word so the joined phrase remains
+a string.
