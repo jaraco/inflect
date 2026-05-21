@@ -515,16 +515,18 @@ word being inflected, but preserve that whitespace when the result is
 returned. For example, ``plural(" cat  ")`` returns " cats  ".
 
 
-``gender(genderletter)``
+``gender(gender)``
 
  The third person plural pronoun takes the same form for the female, male and
  neuter (e.g. "they"). The singular however, depends upon gender (e.g. "she",
  "he", "it" and "they" -- "they" being the gender neutral form.) By default
- ``singular_noun`` returns the neuter form, however, the gender can be selected with
- the ``gender`` method. Pass the first letter of the gender to
- ``gender`` to return the f(eminine), m(asculine), n(euter) or t(hey)
- form of the singular. e.g.
- gender('f') followed by singular_noun('themselves') returns 'herself'.
+ ``singular_noun`` returns the neuter form, however, the gender can be selected
+ with the ``gender`` method. Pass one of ``"feminine"``, ``"masculine"``,
+ ``"neuter"``, ``"gender-neutral"``, ``"feminine or masculine"`` or
+ ``"masculine or feminine"`` to ``gender`` to select the form of the singular
+ returned by subsequent calls to ``singular_noun``. For example,
+ ``gender("feminine")`` followed by ``singular_noun("themselves")`` returns
+ ``"herself"``.
 
 Numbered plurals
 ----------------
