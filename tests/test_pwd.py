@@ -924,6 +924,13 @@ class Test:
         assert tenfn(1, 0, 2) == "ten million"
         assert tenfn(1, 0, 0) == "ten "
         assert tenfn(0, 0, 0) == " "
+        with pytest.raises(NumOutOfRangeError):
+            tenfn(1, 0, 12)
+
+    def test_number_to_words_out_of_range(self):
+        p = inflect.engine()
+        with pytest.raises(NumOutOfRangeError):
+            p.number_to_words(10**40)
 
     def test_hundfn(self):
         p = inflect.engine()
