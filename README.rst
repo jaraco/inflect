@@ -232,7 +232,7 @@ Grouping Options
 
 Apply Threshold for Word-Representation of Numbers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Above provided threshold, numberals will remain numerals
+Above provided threshold, numerals will remain numerals
 
 .. code-block:: python
     
