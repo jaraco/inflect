@@ -1,3 +1,5 @@
+import pytest
+
 import inflect
 
 
@@ -396,3 +398,11 @@ def test_issue_131():
     p = inflect.engine()
     for nth_word in inflect.nth_suff:
         assert p.number_to_words(nth_word) == "zero"
+
+
+def test_number_to_words_out_of_range():
+    """number_to_words should raise NumOutOfRangeError for huge inputs."""
+    p = inflect.engine()
+    for n in (10**36, 10**40, 10**100):
+        with pytest.raises(inflect.NumOutOfRangeError):
+            p.number_to_words(n)
