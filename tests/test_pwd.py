@@ -268,6 +268,7 @@ class Test:
 
         for sing, num, plur in (
             ("cow", 1, "cow"),
+            ("cow", 1.0, "cow"),
             ("cow", 2, "cows"),
             ("cow", "one", "cow"),
             ("cow", "each", "cow"),
@@ -534,6 +535,7 @@ class Test:
         p = inflect.engine()
         for txt, num in (
             (1, 1),
+            (1.0, 1),
             (2, 2),
             (0, 2),
             (87, 2),

@@ -2671,13 +2671,19 @@ class engine:
             count = self.persistent_count
 
         if count is not None:
+            count_text = str(count)
             count = (
                 1
                 if (
-                    (str(count) in pl_count_one)
+                    (
+                        isinstance(count, Number)
+                        and not isinstance(count, bool)
+                        and count == 1
+                    )
+                    or (count_text in pl_count_one)
                     or (
                         self.classical_dict["zero"]
-                        and str(count).lower() in pl_count_zero
+                        and count_text.lower() in pl_count_zero
                     )
                 )
                 else 2
