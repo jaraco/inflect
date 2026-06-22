@@ -31,6 +31,10 @@ def test_lines():
     assert p.number_to_words(100000.3, threshold=500) == "100,000.3"
     assert p.number_to_words(1000000.3, threshold=500) == "1,000,000.3"
 
+    assert p.number_to_words(1000, threshold=500, comma="_") == "1_000"
+    assert p.number_to_words(1000000, threshold=500, comma="_") == "1_000_000"
+    assert p.number_to_words(1000.3, threshold=500, comma="_") == "1_000.3"
+
     assert p.number_to_words(999, threshold=500, comma=0) == "999"
     assert p.number_to_words(1000, threshold=500, comma=0) == "1000"
     assert p.number_to_words(10000, threshold=500, comma=0) == "10000"

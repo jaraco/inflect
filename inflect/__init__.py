@@ -2009,7 +2009,7 @@ THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 
-FOUR_DIGIT_COMMA = re.compile(r"(\d)(\d{3}(?:,|\Z))")
+THREE_DIGIT_GROUP = re.compile(r"(?<=\d)(?=(?:\d{3})+\Z)")
 NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
@@ -3860,10 +3860,9 @@ class engine:
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
             spnum = num.split(".", 1)
-            while comma:
-                (spnum[0], n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", spnum[0])
-                if n == 0:
-                    break
+            comma_text = comma if isinstance(comma, str) else ","
+            if comma:
+                spnum[0] = THREE_DIGIT_GROUP.sub(lambda _: comma_text, spnum[0])
             try:
                 return f"{spnum[0]}.{spnum[1]}"
             except IndexError:
