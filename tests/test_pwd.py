@@ -994,6 +994,8 @@ class Test:
             ("-10", "minus ten"),
             ("10.", "ten point"),
             (".10", "point one zero"),
+            (0.000001, "zero point zero zero zero zero zero one"),
+            (0.0000012, "zero point zero zero zero zero zero one two"),
         ):
             assert numwords(n) == word
 
