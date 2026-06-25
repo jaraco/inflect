@@ -44,6 +44,12 @@ def test_lines():
     assert p.number_to_words(1000000.3, threshold=500, comma=0) == "1000000.3"
 
 
+def test_scientific_notation_float():
+    p = inflect.engine()
+    assert p.number_to_words(0.000001) == "zero point zero zero zero zero zero one"
+    assert p.number_to_words(1e20) == "one hundred quintillion"
+
+
 def test_array():
     nw = [
         ["0", "zero", "zero", "zero", "zero", "zeroth"],
