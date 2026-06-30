@@ -1153,7 +1153,37 @@ si_sb_uses_use = (
     "transfuses",
     "uses",
 )
-
+ess_nouns = [
+    "business",
+    "mattress", 
+    "address", 
+    "fortress", 
+    "distress",
+    "congress", 
+    "progress", 
+    "express", 
+    "impress", 
+    "depress",
+    "compress", 
+    "suppress", 
+    "oppress", 
+    "stress", 
+    "dress",
+    "chess", 
+    "mess", 
+    "guess", 
+    "confess", 
+    "profess", 
+    "possess",
+    "witness", 
+    "harness", 
+    "likeness", 
+    "process", 
+    "excess",
+    "recess", 
+    "success", 
+    "access"
+]        
 si_sb_ies_ie_case = (
     "Addies",
     "Aggies",
@@ -3215,6 +3245,14 @@ class engine:
 
         if word in si_sb_ois_oi_case:
             return word[:-1]
+        
+
+
+        if word[-3:]=="ics":                                       # if the last 3 letter are equal to "ics" it will print word as it is
+            return False
+
+        if word in ess_nouns:
+            return False
 
         words = Words(word)
 
