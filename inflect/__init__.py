@@ -1038,6 +1038,13 @@ pl_sb_uninflected_endings = [
     "cash",
     "furniture",
     "information",
+    "equipment",
+    "luggage",
+    "baggage",
+    "jewelry",
+    "machinery",
+    "cutlery",
+    "livestock",
     # SOME FISH AND HERD ANIMALS
     "fish",
     "deer",
