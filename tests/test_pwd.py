@@ -924,6 +924,21 @@ class Test:
         assert tenfn(1, 0, 2) == "ten million"
         assert tenfn(1, 0, 0) == "ten "
         assert tenfn(0, 0, 0) == " "
+        # A magnitude index past the supported range raises the documented
+        # NumOutOfRangeError instead of leaking an IndexError (issue #242).
+        # Both the "teen" branch (tens == 1) and the general branch are covered.
+        with pytest.raises(NumOutOfRangeError):
+            tenfn(1, 5, 12)
+        with pytest.raises(NumOutOfRangeError):
+            tenfn(3, 1, 12)
+
+    def test_number_to_words_out_of_range(self):
+        p = inflect.engine()
+        # Numbers whose leading group is a "teen" (e.g. 10**40) used to leak an
+        # IndexError; they now raise NumOutOfRangeError like other huge numbers.
+        for number in (10**36, 10**40, 10**100):
+            with pytest.raises(NumOutOfRangeError):
+                p.number_to_words(number)
 
     def test_hundfn(self):
         p = inflect.engine()
