@@ -2666,11 +2666,17 @@ class engine:
             )
         )
 
-    def get_count(self, count: Optional[Union[str, int]] = None) -> Union[str, int]:
+    def get_count(
+        self, count: Optional[Union[str, int, float]] = None
+    ) -> Union[str, int]:
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
         if count is not None:
+            if isinstance(count, float) and count.is_integer():
+                # An integer-valued float (e.g. 1.0) counts as its int form so
+                # that "1.0" is treated like "1" rather than falling through to 2.
+                count = int(count)
             count = (
                 1
                 if (
