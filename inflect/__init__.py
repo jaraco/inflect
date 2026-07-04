@@ -3655,25 +3655,30 @@ class engine:
         >>> ordinal('one')
         'first'
         """
-        if DIGIT.match(str(num)):
+        str_num = str(num)
+        if DIGIT.match(str_num) or (
+            str_num.startswith("-") and DIGIT.match(str_num[1:])
+        ):
             if isinstance(num, (float, int)) and int(num) == num:
                 n = int(num)
             else:
-                if "." in str(num):
+                if "." in str_num:
                     try:
                         # numbers after decimal,
                         # so only need last one for ordinal
-                        n = int(str(num)[-1])
+                        n = int(str_num[-1])
 
                     except ValueError:
                         # ends with '.', so need to use whole string
-                        n = int(str(num)[:-1])
+                        n = int(str_num[:-1])
                 else:
                     n = int(num)  # type: ignore[arg-type]
+            # ``abs`` so the suffix of a negative number is based on its last
+            # digit (e.g. ``-1`` -> ``-1st``); ``-1 % 10`` would be ``9`` in Python.
             try:
-                post = nth[n % 100]
+                post = nth[abs(n) % 100]
             except KeyError:
-                post = nth[n % 10]
+                post = nth[abs(n) % 10]
             return f"{num}{post}"
         else:
             return self._sub_ord(num)

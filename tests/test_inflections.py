@@ -187,6 +187,23 @@ def test_ordinal():
     assert p.ordinal("one hundred and four") == "one hundred and fourth"
 
 
+def test_negative_ordinals():
+    # Negative numbers used to raise a TypeError (ints) or get a bare "th"
+    # suffix (strings); the suffix should follow the last digit. See #192.
+    p = inflect.engine()
+    assert p.ordinal(-1) == p.ordinal("-1") == "-1st"
+    assert p.ordinal(-2) == "-2nd"
+    assert p.ordinal(-3) == "-3rd"
+    assert p.ordinal(-4) == "-4th"
+    # ...teens still take "th".
+    assert p.ordinal(-11) == "-11th"
+    assert p.ordinal(-12) == "-12th"
+    assert p.ordinal(-13) == "-13th"
+    assert p.ordinal(-21) == "-21st"
+    assert p.ordinal(-22) == "-22nd"
+    assert p.ordinal(-113) == "-113th"
+
+
 def test_decimal_ordinals():
     """
     Capture expectation around ordinals for decimals.

@@ -1,0 +1,1 @@
+``ordinal`` now handles negative numbers: it no longer raises a ``TypeError`` on negative integers and returns a suffix based on the last digit (e.g. ``ordinal(-1)`` is ``-1st``).
