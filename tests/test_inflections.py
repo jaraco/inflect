@@ -209,6 +209,7 @@ def test_prespart():
     assert p.present_participle("spies") == "spying"
     assert p.present_participle("skis") == "skiing"
     assert p.present_participle("be") == "being"
+    assert p.present_participle("is") == "being"
 
 
 def test_inflect_on_tuples():
