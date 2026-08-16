@@ -76,6 +76,14 @@ def test_unit_open_compound_nouns():
         assert p.plural(singular) == plural
 
 
+def test_plural_word_count_mismatch():
+    # Regression test for jaraco/inflect#172: contractions/punctuation can
+    # cause `orig` and `inflected` to split into a different number of
+    # words in postprocess(), which used to raise IndexError.
+    result = p.plural("I'm only here for a minute, John.")
+    assert isinstance(result, str)
+
+
 def test_unit_open_compound_nouns_classical():
     p.classical(all=True)
     test_cases = {

@@ -2366,6 +2366,11 @@ class engine:
 
         # Try to fix word wise capitalization
         for index, word in enumerate(orig.split(" ")):
+            if index >= len(result):
+                # orig and inflected have diverged in word count
+                # (e.g. punctuation/contractions), so there's no
+                # corresponding word left to fix up.
+                break
             if word == "I":
                 # Is this the only word for exceptions like this
                 # Where the original is fully capitalized
