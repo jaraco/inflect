@@ -200,6 +200,24 @@ def test_decimal_ordinals():
     assert p.ordinal("7.09") == "7.09th"
 
 
+def test_ordinal_malformed_input():
+    """
+    Malformed multi-token numeric input should raise the library's own
+    BadNumValueError, not a raw ValueError.
+
+    https://github.com/jaraco/inflect/issues/26
+    """
+    p = inflect.engine()
+
+    # unaffected, still-working cases
+    assert p.ordinal(11) == "11th"
+    assert p.ordinal("11") == "11th"
+    assert p.ordinal("11 ") == "11 th"
+
+    with pytest.raises(inflect.BadNumValueError):
+        p.ordinal("11 11")
+
+
 def test_prespart():
     p = inflect.engine()
     assert p.present_participle("sees") == "seeing"

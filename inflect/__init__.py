@@ -3656,20 +3656,23 @@ class engine:
         'first'
         """
         if DIGIT.match(str(num)):
-            if isinstance(num, (float, int)) and int(num) == num:
-                n = int(num)
-            else:
-                if "." in str(num):
-                    try:
-                        # numbers after decimal,
-                        # so only need last one for ordinal
-                        n = int(str(num)[-1])
-
-                    except ValueError:
-                        # ends with '.', so need to use whole string
-                        n = int(str(num)[:-1])
+            try:
+                if isinstance(num, (float, int)) and int(num) == num:
+                    n = int(num)
                 else:
-                    n = int(num)  # type: ignore[arg-type]
+                    if "." in str(num):
+                        try:
+                            # numbers after decimal,
+                            # so only need last one for ordinal
+                            n = int(str(num)[-1])
+
+                        except ValueError:
+                            # ends with '.', so need to use whole string
+                            n = int(str(num)[:-1])
+                    else:
+                        n = int(num)  # type: ignore[arg-type]
+            except ValueError as err:
+                raise BadNumValueError from err
             try:
                 post = nth[n % 100]
             except KeyError:
