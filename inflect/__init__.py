@@ -417,6 +417,14 @@ pl_sb_U_um_a_list = (
     pl_sb_U_um_a,
 ) = make_pl_si_lists(pl_sb_U_um_a_list, "a", 2)
 
+# "-a" plurals of this family that plural_noun()'s already-plural check
+# must NOT trust, because -- unlike "data" -- they are commonly used as
+# ordinary English singular nouns with their own regular plural (e.g.
+# "agenda"/"agendas", "candelabra"/"candelabras").
+pl_sb_U_um_a_ambiguous = frozenset(
+    f"{stem[:-2]}a" for stem in pl_sb_U_um_a_list if stem != "datum"
+)
+
 # CLASSICAL "..um" -> "..a"
 
 pl_sb_C_um_a_list = (
@@ -2427,29 +2435,74 @@ class engine:
         pre, word, post = self.partition_word(text)
         if not word:
             return text
-        computed = self._plnoun(word, count)
-        # _plnoun() has no notion of "this input is already plural"; when
-        # none of its irregular/suffix rules match, it falls through to the
-        # generic regular-plural rule, which just appends "s" (e.g.
-        # "women" -> "womens", "data" -> "datas"). Detect that specific
-        # fallback signature -- the computed result is exactly word + "s" --
-        # and, if singular_noun() independently recognizes word as already
-        # a plural (e.g. singular_noun("women") == "woman"), leave it
-        # unchanged instead. This is narrower than trusting singular_noun()
-        # on its own: singular_noun() has its own false positives (e.g. it
-        # treats "bus" as the plural of "bu", and "carmen" as the plural of
-        # "carman"), but those don't matter here because in those cases
-        # _plnoun() already computes the correct, non-"+s" result
-        # ("buses", "carmina") through its own irregular/suffix rules, so
-        # the "computed == word + 's'" guard never fires for them.
-        # Force count=1 for the singular_noun() check so it actually
-        # computes the reverse form instead of short-circuiting on an
-        # ambient/persistent plural count (singular_noun() returns its
-        # input unchanged, not False, whenever count indicates "plural").
-        if computed == f"{word}s" and self.singular_noun(word, 1) is not False:
-            computed = word
+        computed = self._already_plural_noun(word, self._plnoun(word, count))
         plural = self.postprocess(word, computed)
         return f"{pre}{plural}{post}"
+
+    def _already_plural_noun(self, word: str, computed: str) -> str:
+        """
+        _plnoun() has no notion of "this input is already plural"; when
+        none of its irregular/suffix rules match, it falls through to the
+        generic regular-plural rule, which just appends "s" (e.g.
+        "women" -> "womens", "data" -> "datas", "cats" -> "catss"). This
+        detects that specific fallback signature -- the computed result is
+        exactly word + "s" -- and, if `word` is verified to already be a
+        recognized plural, returns it unchanged instead.
+
+        "Verified" means: singular_noun() proposes a singular for `word`,
+        and re-pluralizing that singular (under the *current*
+        classical_dict settings, via the same _plnoun()/postprocess() path
+        used elsewhere) reproduces `word` exactly. This self-consistency
+        check is what keeps this narrow -- e.g. singular_noun("opera")
+        proposes "opus", but _plnoun("opus") under the default
+        (non-classical) settings is "opuses", not "opera", so the
+        round-trip fails and "opera" is correctly left to pluralize
+        normally to "operas" (it would only round-trip if classical mode
+        made "opus" -> "opera", which is the one case where treating
+        "opera" as already-plural would actually be correct).
+
+        Two families are excluded even when the round-trip mechanically
+        succeeds, because they are known to produce false positives that
+        the round-trip can't detect on its own:
+
+        * Words ending in "-men": singular_noun() reverses *any* word
+          ending in "-men" to a "-man" stem (see si_sb_U_man_mans/"men"
+          handling in _sinoun()), with no dictionary check that the
+          reconstructed "-man" word is real. That stem then mechanically
+          re-pluralizes right back to the original, so the round-trip
+          "succeeds" even for ordinary words like "specimen" ->
+          "speciman" -> "specimen", which would wrongly block
+          "specimen" -> "specimens". Only the two explicitly-required,
+          unambiguous cases ("men", "women") are trusted here.
+        * The unconditional "-um" -> "-a" Latin-loanword family
+          (datum/data, agendum/agenda, candelabrum/candelabra, ...): the
+          "-a" form round-trips to itself regardless of classical_dict,
+          but several siblings ("agenda", "candelabra", "bacteria", ...)
+          are commonly used as ordinary English singular nouns with their
+          own regular plural ("agendas"). Only "data" -- explicitly
+          required by this fix, and not meaningfully used with an
+          independent singular sense -- is carved out; the rest are left
+          to pluralize normally.
+        """
+        if computed != f"{word}s":
+            return computed
+        lw = word.lower()
+        if lw == "data":
+            return word
+        if lw.endswith("men") and lw not in ("men", "women"):
+            return computed
+        if lw in pl_sb_U_um_a_ambiguous:
+            return computed
+        # Force count=1 so this actually computes the reverse form,
+        # instead of short-circuiting on an ambient/persistent plural
+        # count (singular_noun() returns its input unchanged, not False,
+        # whenever count indicates "plural").
+        singular = self.singular_noun(word, 1)
+        if singular is False:
+            return computed
+        if self.postprocess(singular, self._plnoun(singular, 2)) == word:
+            return word
+        return computed
 
     @typechecked
     def plural_verb(

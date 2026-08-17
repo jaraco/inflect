@@ -99,11 +99,40 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
         ("men", "men"),
         ("children", "children"),
         ("mice", "mice"),
+        # already-plural forms reached via other irregular/suffix families
+        ("oxen", "oxen"),
+        ("geese", "geese"),
+        ("teeth", "teeth"),
+        ("feet", "feet"),
+        ("lice", "lice"),
+        ("genera", "genera"),
+        # already-plural regular ("+s") forms
+        ("cats", "cats"),
+        ("dogs", "dogs"),
         # invariant nouns must still work
         ("sheep", "sheep"),
         # regular pluralization must be unaffected
         ("cat", "cats"),
         ("woman", "women"),
+        ("genus", "genera"),
+        ("bus", "buses"),
+        ("walrus", "walruses"),
+        ("gas", "gases"),
+        # words that collide with singular_noun()'s reverse-irregular /
+        # classical mappings but are ordinary standalone English nouns:
+        # must NOT be treated as already-plural (see jaraco/inflect#73
+        # review of a prior attempt at this fix)
+        ("opera", "operas"),
+        ("agenda", "agendas"),
+        ("candelabra", "candelabras"),
+        # words ending in "-men" that are not the plural of a "-man"
+        # word: singular_noun() reverses any "-men" word to a "-man"
+        # stem with no dictionary check, so these must not be
+        # mistaken for already-plural forms either
+        ("specimen", "specimens"),
+        ("regimen", "regimens"),
+        ("omen", "omens"),
+        ("acumen", "acumens"),
     ],
 )
 def test_plural_noun_does_not_double_pluralize(word, expected):
