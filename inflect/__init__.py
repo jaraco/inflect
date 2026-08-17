@@ -2427,7 +2427,28 @@ class engine:
         pre, word, post = self.partition_word(text)
         if not word:
             return text
-        plural = self.postprocess(word, self._plnoun(word, count))
+        computed = self._plnoun(word, count)
+        # _plnoun() has no notion of "this input is already plural"; when
+        # none of its irregular/suffix rules match, it falls through to the
+        # generic regular-plural rule, which just appends "s" (e.g.
+        # "women" -> "womens", "data" -> "datas"). Detect that specific
+        # fallback signature -- the computed result is exactly word + "s" --
+        # and, if singular_noun() independently recognizes word as already
+        # a plural (e.g. singular_noun("women") == "woman"), leave it
+        # unchanged instead. This is narrower than trusting singular_noun()
+        # on its own: singular_noun() has its own false positives (e.g. it
+        # treats "bus" as the plural of "bu", and "carmen" as the plural of
+        # "carman"), but those don't matter here because in those cases
+        # _plnoun() already computes the correct, non-"+s" result
+        # ("buses", "carmina") through its own irregular/suffix rules, so
+        # the "computed == word + 's'" guard never fires for them.
+        # Force count=1 for the singular_noun() check so it actually
+        # computes the reverse form instead of short-circuiting on an
+        # ambient/persistent plural count (singular_noun() returns its
+        # input unchanged, not False, whenever count indicates "plural").
+        if computed == f"{word}s" and self.singular_noun(word, 1) is not False:
+            computed = word
+        plural = self.postprocess(word, computed)
         return f"{pre}{plural}{post}"
 
     @typechecked

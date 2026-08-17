@@ -90,6 +90,33 @@ def check_all(p, is_nv, singular, mod_PL_val, class_PL_val, mod_plural, class_pl
         assert p.singular_noun(class_plural, 1) == singular
 
 
+@pytest.mark.parametrize(
+    "word, expected",
+    [
+        # already-plural irregular forms must be returned unchanged
+        ("women", "women"),
+        ("data", "data"),
+        ("men", "men"),
+        ("children", "children"),
+        ("mice", "mice"),
+        # invariant nouns must still work
+        ("sheep", "sheep"),
+        # regular pluralization must be unaffected
+        ("cat", "cats"),
+        ("woman", "women"),
+    ],
+)
+def test_plural_noun_does_not_double_pluralize(word, expected):
+    p = inflect.engine()
+    assert p.plural_noun(word) == expected
+
+
+def test_plural_noun_count_one_short_circuit():
+    p = inflect.engine()
+    assert p.plural_noun("cat", 1) == "cat"
+    assert p.plural_noun("women", 1) == "women"
+
+
 def test_def():
     p = inflect.engine()
 
