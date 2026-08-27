@@ -3696,7 +3696,7 @@ class engine:
             unit_part = unit[units]
             mill_part = self.millfn(mindex)
             return f"{tens_part}{hyphen}{unit_part}{mill_part}"
-        return f"{teen[units]}{mill[mindex]}"
+        return f"{teen[units]}{self.millfn(mindex)}"
 
     def hundfn(self, hundreds: int, tens: int, units: int, mindex: int) -> str:
         if hundreds:

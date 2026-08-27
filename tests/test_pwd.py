@@ -924,6 +924,11 @@ class Test:
         assert tenfn(1, 0, 2) == "ten million"
         assert tenfn(1, 0, 0) == "ten "
         assert tenfn(0, 0, 0) == " "
+        # The teen branch (tens == 1) must raise the documented
+        # NumOutOfRangeError for an out-of-range magnitude, not leak an
+        # IndexError from an unchecked ``mill`` lookup. See #242.
+        with pytest.raises(NumOutOfRangeError):
+            tenfn(1, 0, 12)
 
     def test_hundfn(self):
         p = inflect.engine()
