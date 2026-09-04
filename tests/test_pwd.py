@@ -905,6 +905,21 @@ class Test:
         with pytest.raises(NumOutOfRangeError):
             millfn(12)
 
+    def test_tenfn_out_of_range(self):
+        # regression test for #242: the teen branch of tenfn indexed
+        # `mill` directly instead of going through the bounds-checked
+        # millfn, so a magnitude past the mill table leaked a bare
+        # IndexError instead of the documented NumOutOfRangeError
+        p = inflect.engine()
+        with pytest.raises(NumOutOfRangeError):
+            p.tenfn(1, 5, 12)
+
+    @pytest.mark.parametrize("num", (10**36, 10**40, 10**100))
+    def test_number_to_words_out_of_range(self, num):
+        p = inflect.engine()
+        with pytest.raises(NumOutOfRangeError):
+            p.number_to_words(num)
+
     def test_unitfn(self):
         p = inflect.engine()
         unitfn = p.unitfn
