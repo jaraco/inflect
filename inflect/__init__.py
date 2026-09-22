@@ -3921,6 +3921,8 @@ class engine:
         if myord and numchunks:
             numchunks[-1] = self._sub_ord(numchunks[-1])
 
+        # Only groups in the integer part need separators.
+        comma_count = max(len(numchunks) - 1, 0)
         for chunk in chunks[1:]:
             numchunks.append(decimal)
             numchunks.extend(chunk.split(f"{comma} "))
@@ -3935,19 +3937,16 @@ class engine:
         valout = (
             ', '.join(numchunks)
             if group
-            else ''.join(self._render(numchunks, decimal, comma))
+            else ''.join(self._render(numchunks, comma, comma_count))
         )
         return signout + valout
 
     @staticmethod
-    def _render(chunks, decimal, comma):
+    def _render(chunks, comma, comma_count):
         first_item = chunks.pop(0)
         yield first_item
-        first = decimal is None or not first_item.endswith(decimal)
-        for nc in chunks:
-            if nc == decimal:
-                first = False
-            elif first:
+        for index, nc in enumerate(chunks):
+            if index < comma_count:
                 yield comma
             yield f" {nc}"
 

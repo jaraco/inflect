@@ -1,4 +1,36 @@
+import pytest
+
 import inflect
+
+
+@pytest.mark.parametrize(
+    'decimal', ['million', 'one million', 'two hundred and thirty-four thousand']
+)
+@pytest.mark.parametrize('fraction', ['', '.89'])
+def test_decimal_word_matching_integer_group(decimal, fraction):
+    p = inflect.engine()
+    expected = (
+        'one million, two hundred and thirty-four thousand, '
+        'five hundred and sixty-seven'
+    )
+    if fraction:
+        expected += f' {decimal} eight nine'
+    assert p.number_to_words('1234567' + fraction, decimal=decimal) == expected
+
+
+@pytest.mark.parametrize('decimal', [None, '', False, 0])
+def test_disabled_decimal_keeps_group_separators(decimal):
+    p = inflect.engine()
+    assert p.number_to_words('1234.5678', decimal=decimal) == (
+        'twelve million, three hundred and forty-five thousand, '
+        'six hundred and seventy-eight'
+    )
+
+
+@pytest.mark.parametrize('number, prefix', [('.89', ''), ('0.89', 'zero ')])
+def test_custom_decimal_with_no_integer_groups(number, prefix):
+    p = inflect.engine()
+    assert p.number_to_words(number, decimal='million') == prefix + 'million eight nine'
 
 
 def test_loop():
