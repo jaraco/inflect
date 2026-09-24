@@ -2074,6 +2074,7 @@ class engine:
         self.persistent_count: Optional[int] = None
         self.mill_count = 0
         self.pl_sb_user_defined: List[Optional[Word]] = []
+        self.pl_sb_preserve_case: set[str] = set()
         self.pl_v_user_defined: List[Optional[Word]] = []
         self.pl_adj_user_defined: List[Optional[Word]] = []
         self.si_sb_user_defined: List[Optional[Word]] = []
@@ -2090,15 +2091,28 @@ class engine:
         self.__number_args = val
 
     @typechecked
-    def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
+    def defnoun(
+        self,
+        singular: Optional[Word],
+        plural: Optional[Word],
+        *,
+        preserve_case: bool = False,
+    ) -> int:
         """
-        Set the noun plural of singular to plural.
+        Set the noun plural of singular to plural. Set ``preserve_case`` to
+        retain the case of a literal uppercase noun's custom plural, such as
+        ``defnoun("URL", "URLs", preserve_case=True)``.
 
         """
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_sb_user_defined.extend((singular, plural))
         self.si_sb_user_defined.extend((plural, singular))
+        if singular is not None:
+            if preserve_case:
+                self.pl_sb_preserve_case.add(singular)
+            else:
+                self.pl_sb_preserve_case.discard(singular)
         return 1
 
     @typechecked
@@ -2366,7 +2380,7 @@ class engine:
 
         # Try to fix word wise capitalization
         for index, word in enumerate(orig.split(" ")):
-            if word == "I":
+            if word == "I" or word in self.pl_sb_preserve_case:
                 # Is this the only word for exceptions like this
                 # Where the original is fully capitalized
                 # without 'meaning' capitalization?

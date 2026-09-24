@@ -134,6 +134,21 @@ class Test:
         ):
             assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
 
+    def test_uppercase_noun_can_keep_custom_plural_case(self):
+        p = inflect.engine()
+
+        assert p.plural("URL", 2) == "URLS"
+        p.defnoun("URL", "URLs", preserve_case=True)
+        assert p.plural("URL", 2) == "URLs"
+        assert p.plural_noun("URL", 2) == "URLs"
+        assert p.plural("URL", 1) == "URL"
+        p.defnoun("ID", "IDs", preserve_case=True)
+        assert p.plural("ID", 2) == "IDs"
+        assert inflect.engine().plural("URL", 2) == "URLS"
+
+        p.defnoun("URL", "URLs")
+        assert p.plural("URL", 2) == "URLS"
+
     def test_user_input_fns(self):
         p = inflect.engine()
 

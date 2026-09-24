@@ -349,6 +349,14 @@ Override noun defaults:
         
     p.defnoun("VAX", "VAXen")  # SINGULAR => PLURAL
 
+To keep a lowercase suffix on an uppercase word, opt out of automatic
+capitalization for that noun:
+
+.. code-block:: python
+
+    p.defnoun("URL", "URLs", preserve_case=True)
+    p.plural("URL", 2)  # "URLs"
+
 Override Verb defaults:
 
 .. code-block:: python
