@@ -2952,7 +2952,7 @@ class engine:
                 return f"{word}s"
 
             if self.classical_dict["names"]:
-                if word.lowered[-1] == "y" and word[0] == word[0].upper():
+                if word.last[0] == word.last[0].upper():
                     return f"{word}s"
 
             return f"{word[:-1]}ies"
