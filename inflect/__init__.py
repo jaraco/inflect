@@ -58,6 +58,7 @@ import ast
 import collections
 import contextlib
 import functools
+import inspect
 import itertools
 import re
 from numbers import Number
@@ -75,12 +76,38 @@ from typing import (
     Tuple,
     Union,
     cast,
+    get_type_hints,
 )
 
 from more_itertools import windowed_complete
-from typeguard import typechecked
+from typeguard import check_type
 
 from .compat.py38 import Annotated
+
+
+def _runtime_typechecked(func):
+    """Check annotated arguments and return values without import-time rewriting."""
+    signature = inspect.signature(func)
+
+    @functools.cache
+    def type_hints():
+        return get_type_hints(func)
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        hints = type_hints()
+        bound = signature.bind(*args, **kwargs)
+        bound.apply_defaults()
+        for name, value in bound.arguments.items():
+            if name in hints:
+                check_type(value, hints[name])
+
+        result = func(*args, **kwargs)
+        if "return" in hints:
+            check_type(result, hints["return"])
+        return result
+
+    return wrapper
 
 
 class UnknownClassicalModeError(Exception):
@@ -2089,7 +2116,7 @@ class engine:
     def _number_args(self, val):
         self.__number_args = val
 
-    @typechecked
+    @_runtime_typechecked
     def defnoun(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the noun plural of singular to plural.
@@ -2101,7 +2128,7 @@ class engine:
         self.si_sb_user_defined.extend((plural, singular))
         return 1
 
-    @typechecked
+    @_runtime_typechecked
     def defverb(
         self,
         s1: Optional[Word],
@@ -2126,7 +2153,7 @@ class engine:
         self.pl_v_user_defined.extend((s1, p1, s2, p2, s3, p3))
         return 1
 
-    @typechecked
+    @_runtime_typechecked
     def defadj(self, singular: Optional[Word], plural: Optional[Word]) -> int:
         """
         Set the adjective plural of singular to plural.
@@ -2137,7 +2164,7 @@ class engine:
         self.pl_adj_user_defined.extend((singular, plural))
         return 1
 
-    @typechecked
+    @_runtime_typechecked
     def defa(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'a' for words matching pattern.
@@ -2147,7 +2174,7 @@ class engine:
         self.A_a_user_defined.extend((pattern, "a"))
         return 1
 
-    @typechecked
+    @_runtime_typechecked
     def defan(self, pattern: Optional[Word]) -> int:
         """
         Define the indefinite article as 'an' for words matching pattern.
@@ -2174,7 +2201,7 @@ class engine:
         """
         return
 
-    @typechecked
+    @_runtime_typechecked
     def ud_match(self, word: Word, wordlist: Sequence[Optional[Word]]) -> Optional[str]:
         for i in range(len(wordlist) - 2, -2, -2):  # backwards through even elements
             mo = re.search(rf"^{wordlist[i]}$", word, re.IGNORECASE)
@@ -2308,7 +2335,7 @@ class engine:
 
     # 0. PERFORM GENERAL INFLECTIONS IN A STRING
 
-    @typechecked
+    @_runtime_typechecked
     def inflect(self, text: Word) -> str:
         """
         Perform inflections in a string.
@@ -2385,7 +2412,7 @@ class engine:
         else:
             return "", "", ""
 
-    @typechecked
+    @_runtime_typechecked
     def plural(self, text: Word, count: Optional[Union[str, int, Any]] = None) -> str:
         """
         Return the plural of text.
@@ -2409,7 +2436,7 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @typechecked
+    @_runtime_typechecked
     def plural_noun(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2430,7 +2457,7 @@ class engine:
         plural = self.postprocess(word, self._plnoun(word, count))
         return f"{pre}{plural}{post}"
 
-    @typechecked
+    @_runtime_typechecked
     def plural_verb(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2454,7 +2481,7 @@ class engine:
         )
         return f"{pre}{plural}{post}"
 
-    @typechecked
+    @_runtime_typechecked
     def plural_adj(
         self, text: Word, count: Optional[Union[str, int, Any]] = None
     ) -> str:
@@ -2475,7 +2502,7 @@ class engine:
         plural = self.postprocess(word, self._pl_special_adjective(word, count) or word)
         return f"{pre}{plural}{post}"
 
-    @typechecked
+    @_runtime_typechecked
     def compare(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2504,7 +2531,7 @@ class engine:
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
 
-    @typechecked
+    @_runtime_typechecked
     def compare_nouns(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2520,7 +2547,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_noun)
 
-    @typechecked
+    @_runtime_typechecked
     def compare_verbs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2536,7 +2563,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_verb)
 
-    @typechecked
+    @_runtime_typechecked
     def compare_adjs(self, word1: Word, word2: Word) -> Union[str, bool]:
         """
         compare word1 and word2 for equality regardless of plurality
@@ -2552,7 +2579,7 @@ class engine:
         """
         return self._plequal(word1, word2, self.plural_adj)
 
-    @typechecked
+    @_runtime_typechecked
     def singular_noun(
         self,
         text: Word,
@@ -3506,7 +3533,7 @@ class engine:
 
     # ADJECTIVES
 
-    @typechecked
+    @_runtime_typechecked
     def a(self, text: Word, count: Optional[Union[int, str, Any]] = 1) -> str:
         """
         Return the appropriate indefinite article followed by text.
@@ -3587,7 +3614,7 @@ class engine:
 
     # 2. TRANSLATE ZERO-QUANTIFIED $word TO "no plural($word)"
 
-    @typechecked
+    @_runtime_typechecked
     def no(self, text: Word, count: Optional[Union[int, str]] = None) -> str:
         """
         If count is 0, no, zero or nil, return 'no' followed by the plural
@@ -3625,7 +3652,7 @@ class engine:
 
     # PARTICIPLES
 
-    @typechecked
+    @_runtime_typechecked
     def present_participle(self, word: Word) -> str:
         """
         Return the present participle for word.
@@ -3644,7 +3671,7 @@ class engine:
 
     # NUMERICAL INFLECTIONS
 
-    @typechecked
+    @_runtime_typechecked
     def ordinal(self, num: Union[Number, Word]) -> str:
         """
         Return the ordinal of num.
@@ -3824,7 +3851,7 @@ class engine:
     def _get_sign(num):
         return {'+': 'plus', '-': 'minus'}.get(num.lstrip()[0], '')
 
-    @typechecked
+    @_runtime_typechecked
     def number_to_words(  # noqa: C901
         self,
         num: Union[Number, Word],
@@ -3951,7 +3978,7 @@ class engine:
                 yield comma
             yield f" {nc}"
 
-    @typechecked
+    @_runtime_typechecked
     def join(
         self,
         words: Optional[Sequence[Word]],
