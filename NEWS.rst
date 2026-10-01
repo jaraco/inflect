@@ -1,6 +1,12 @@
 v7.5.0
 ======
 
+Bugfixes
+--------
+
+- Expose ``Word`` arguments as strings to static type checkers while retaining
+  runtime validation for non-empty words. (#233)
+
 Features
 --------
 

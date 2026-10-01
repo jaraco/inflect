@@ -62,7 +62,6 @@ import itertools
 import re
 from numbers import Number
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -80,7 +79,7 @@ from typing import (
 from more_itertools import windowed_complete
 from typeguard import typechecked
 
-from .compat.py38 import Annotated
+from ._types import Word
 
 
 class UnknownClassicalModeError(Exception):
@@ -2050,22 +2049,6 @@ class Words(str):
 
 
 Falsish = Any  # ideally, falsish would only validate on bool(value) is False
-
-
-_STATIC_TYPE_CHECKING = TYPE_CHECKING
-# ^-- Workaround for typeguard AST manipulation:
-#     https://github.com/agronholm/typeguard/issues/353#issuecomment-1556306554
-
-if _STATIC_TYPE_CHECKING:  # pragma: no cover
-    Word = Annotated[str, "String with at least 1 character"]
-else:
-
-    class _WordMeta(type):  # Too dynamic to be supported by mypy...
-        def __instancecheck__(self, instance: Any) -> bool:
-            return isinstance(instance, str) and len(instance) >= 1
-
-    class Word(metaclass=_WordMeta):  # type: ignore[no-redef]
-        """String with at least 1 character"""
 
 
 class engine:
