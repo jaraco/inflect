@@ -2340,11 +2340,12 @@ class engine:
         }
 
         # Regular expression to find Python's function call syntax
-        output = FUNCTION_CALL.sub(
-            lambda mo: self._string_to_substitute(mo, methods_dict), text
-        )
-        self.persistent_count = save_persistent_count
-        return output
+        try:
+            return FUNCTION_CALL.sub(
+                lambda mo: self._string_to_substitute(mo, methods_dict), text
+            )
+        finally:
+            self.persistent_count = save_persistent_count
 
     # ## PLURAL SUBROUTINES
 

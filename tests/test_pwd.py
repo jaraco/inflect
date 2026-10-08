@@ -134,6 +134,36 @@ class Test:
         ):
             assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
 
+    @pytest.mark.parametrize("count", [None, 1, 2])
+    @pytest.mark.parametrize(
+        "expression, error",
+        [
+            ("num('invalid')", BadNumValueError),
+            ("plural(missing_word)", NameError),
+            ("plural('cat', @)", SyntaxError),
+        ],
+    )
+    def test_inflect_restores_count_after_error(self, count, expression, error):
+        p = inflect.engine()
+        p.num(count)
+        expected = p.plural("cat")
+
+        with pytest.raises(error):
+            p.inflect(f"num(3) num(1) {expression}")
+
+        assert p.persistent_count == count
+        assert p.plural("cat") == expected
+
+    @pytest.mark.parametrize("count", [None, 1, 2])
+    def test_inflect_restores_count_after_success(self, count):
+        p = inflect.engine()
+        p.num(count)
+        expected = p.plural("cat")
+
+        assert p.inflect("num(1, 0)plural('cat')") == "cat"
+        assert p.persistent_count == count
+        assert p.plural("cat") == expected
+
     def test_user_input_fns(self):
         p = inflect.engine()
 
