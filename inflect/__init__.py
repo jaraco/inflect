@@ -2009,7 +2009,18 @@ THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 
-FOUR_DIGIT_COMMA = re.compile(r"(\d)(\d{3}(?:,|\Z))")
+def _group_thousands(integer_text: str, separator: str) -> str:
+    """Insert ``separator`` between groups of three digits, from the right."""
+    if not separator:
+        return integer_text
+    sign = ""
+    if integer_text[:1] in "+-":
+        sign, integer_text = integer_text[0], integer_text[1:]
+    groups: List[str] = []
+    while integer_text:
+        groups.append(integer_text[-3:])
+        integer_text = integer_text[:-3]
+    return sign + separator.join(reversed(groups))
 NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
@@ -3860,10 +3871,8 @@ class engine:
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
             spnum = num.split(".", 1)
-            while comma:
-                (spnum[0], n) = FOUR_DIGIT_COMMA.subn(r"\1,\2", spnum[0])
-                if n == 0:
-                    break
+            if comma:
+                spnum[0] = _group_thousands(spnum[0], str(comma))
             try:
                 return f"{spnum[0]}.{spnum[1]}"
             except IndexError:
@@ -3916,14 +3925,14 @@ class engine:
 
         numchunks = []
         if first != 0:
-            numchunks = chunks[0].split(f"{comma} ")
+            numchunks = chunks[0].split(", ")
 
         if myord and numchunks:
             numchunks[-1] = self._sub_ord(numchunks[-1])
 
         for chunk in chunks[1:]:
             numchunks.append(decimal)
-            numchunks.extend(chunk.split(f"{comma} "))
+            numchunks.extend(chunk.split(", "))
 
         if finalpoint:
             numchunks.append(decimal)
@@ -3932,11 +3941,12 @@ class engine:
             return [sign] * bool(sign) + numchunks
 
         signout = f"{sign} " if sign else ""
-        valout = (
-            ', '.join(numchunks)
-            if group
-            else ''.join(self._render(numchunks, decimal, comma))
-        )
+        rendered_comma = comma if comma else ""
+        if group:
+            separator = f"{rendered_comma} " if rendered_comma else " "
+            valout = separator.join(numchunks)
+        else:
+            valout = "".join(self._render(numchunks, decimal, rendered_comma))
         return signout + valout
 
     @staticmethod

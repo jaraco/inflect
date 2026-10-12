@@ -42,6 +42,12 @@ def test_lines():
     assert p.number_to_words(10000.3, threshold=500, comma=0) == "10000.3"
     assert p.number_to_words(100000.3, threshold=500, comma=0) == "100000.3"
     assert p.number_to_words(1000000.3, threshold=500, comma=0) == "1000000.3"
+    assert p.number_to_words(1000.3, threshold=500, comma="_") == "1_000.3"
+    assert p.number_to_words(1000000, threshold=500, comma="_") == "1_000_000"
+    assert (
+        p.number_to_words(1234, comma=";")
+        == "one thousand; two hundred and thirty-four"
+    )
 
 
 def test_array():
