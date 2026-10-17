@@ -484,6 +484,7 @@ class Test:
             ("my", "my", "eq"),
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
+            ("indexes'", "indices'", "p:p"),
             pytest.param(
                 "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
             ),
