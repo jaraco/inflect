@@ -214,81 +214,117 @@ def test_array():
         ],
         [
             "1234567",
-            "one million, two hundred and thirty-four thousand, "
-            "five hundred and sixty-seven",
+            (
+                "one million, two hundred and thirty-four thousand, "
+                "five hundred and sixty-seven"
+            ),
             "one, two, three, four, five, six, seven",
             "twelve, thirty-four, fifty-six, seven",
             "one twenty-three, four fifty-six, seven",
-            "one million, two hundred and thirty-four thousand, "
-            "five hundred and sixty-seventh",
+            (
+                "one million, two hundred and thirty-four thousand, "
+                "five hundred and sixty-seventh"
+            ),
         ],
         [
             "12345678",
-            "twelve million, three hundred and forty-five thousand, "
-            "six hundred and seventy-eight",
+            (
+                "twelve million, three hundred and forty-five thousand, "
+                "six hundred and seventy-eight"
+            ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
             "one twenty-three, four fifty-six, seventy-eight",
-            "twelve million, three hundred and forty-five thousand, "
-            "six hundred and seventy-eighth",
+            (
+                "twelve million, three hundred and forty-five thousand, "
+                "six hundred and seventy-eighth"
+            ),
         ],
         [
             "12_345_678",
-            "twelve million, three hundred and forty-five thousand, "
-            "six hundred and seventy-eight",
+            (
+                "twelve million, three hundred and forty-five thousand, "
+                "six hundred and seventy-eight"
+            ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
             "one twenty-three, four fifty-six, seventy-eight",
         ],
         [
             "1234,5678",
-            "twelve million, three hundred and forty-five thousand, "
-            "six hundred and seventy-eight",
+            (
+                "twelve million, three hundred and forty-five thousand, "
+                "six hundred and seventy-eight"
+            ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
             "one twenty-three, four fifty-six, seventy-eight",
         ],
         [
             "1234567890",
-            "one billion, two hundred and thirty-four million, five hundred "
-            "and sixty-seven thousand, eight hundred and ninety",
+            (
+                "one billion, two hundred and thirty-four million, five hundred "
+                "and sixty-seven thousand, eight hundred and ninety"
+            ),
             "one, two, three, four, five, six, seven, eight, nine, zero",
             "twelve, thirty-four, fifty-six, seventy-eight, ninety",
             "one twenty-three, four fifty-six, seven eighty-nine, zero",
-            "one billion, two hundred and thirty-four million, five hundred "
-            "and sixty-seven thousand, eight hundred and ninetieth",
+            (
+                "one billion, two hundred and thirty-four million, five hundred "
+                "and sixty-seven thousand, eight hundred and ninetieth"
+            ),
         ],
         [
             "123456789012345",
-            "one hundred and twenty-three trillion, four hundred and "
-            "fifty-six billion, seven hundred and eighty-nine million, twelve "
-            "thousand, three hundred and forty-five",
-            "one, two, three, four, five, six, seven, eight, nine, zero, one, "
-            "two, three, four, five",
-            "twelve, thirty-four, fifty-six, seventy-eight, ninety, twelve, "
-            "thirty-four, five",
-            "one twenty-three, four fifty-six, seven eighty-nine, "
-            "zero twelve, three forty-five",
-            "one hundred and twenty-three trillion, four hundred and "
-            "fifty-six billion, seven hundred and eighty-nine million, "
-            "twelve thousand, three hundred and forty-fifth",
+            (
+                "one hundred and twenty-three trillion, four hundred and "
+                "fifty-six billion, seven hundred and eighty-nine million, twelve "
+                "thousand, three hundred and forty-five"
+            ),
+            (
+                "one, two, three, four, five, six, seven, eight, nine, zero, one, "
+                "two, three, four, five"
+            ),
+            (
+                "twelve, thirty-four, fifty-six, seventy-eight, ninety, twelve, "
+                "thirty-four, five"
+            ),
+            (
+                "one twenty-three, four fifty-six, seven eighty-nine, "
+                "zero twelve, three forty-five"
+            ),
+            (
+                "one hundred and twenty-three trillion, four hundred and "
+                "fifty-six billion, seven hundred and eighty-nine million, "
+                "twelve thousand, three hundred and forty-fifth"
+            ),
         ],
         [
             "12345678901234567890",
-            "twelve quintillion, three hundred and forty-five quadrillion, "
-            "six hundred and seventy-eight trillion, nine hundred and one "
-            "billion, two hundred and thirty-four million, five hundred and "
-            "sixty-seven thousand, eight hundred and ninety",
-            "one, two, three, four, five, six, seven, eight, nine, zero, one, "
-            "two, three, four, five, six, seven, eight, nine, zero",
-            "twelve, thirty-four, fifty-six, seventy-eight, ninety, twelve, "
-            "thirty-four, fifty-six, seventy-eight, ninety",
-            "one twenty-three, four fifty-six, seven eighty-nine, "
-            "zero twelve, three forty-five, six seventy-eight, ninety",
-            "twelve quintillion, three hundred and forty-five quadrillion, "
-            "six hundred and seventy-eight trillion, nine hundred and one "
-            "billion, two hundred and thirty-four million, five hundred and "
-            "sixty-seven thousand, eight hundred and ninetieth",
+            (
+                "twelve quintillion, three hundred and forty-five quadrillion, "
+                "six hundred and seventy-eight trillion, nine hundred and one "
+                "billion, two hundred and thirty-four million, five hundred and "
+                "sixty-seven thousand, eight hundred and ninety"
+            ),
+            (
+                "one, two, three, four, five, six, seven, eight, nine, zero, one, "
+                "two, three, four, five, six, seven, eight, nine, zero"
+            ),
+            (
+                "twelve, thirty-four, fifty-six, seventy-eight, ninety, twelve, "
+                "thirty-four, fifty-six, seventy-eight, ninety"
+            ),
+            (
+                "one twenty-three, four fifty-six, seven eighty-nine, "
+                "zero twelve, three forty-five, six seventy-eight, ninety"
+            ),
+            (
+                "twelve quintillion, three hundred and forty-five quadrillion, "
+                "six hundred and seventy-eight trillion, nine hundred and one "
+                "billion, two hundred and thirty-four million, five hundred and "
+                "sixty-seven thousand, eight hundred and ninetieth"
+            ),
         ],
         [
             "0.987654",

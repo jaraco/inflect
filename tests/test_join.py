@@ -5,7 +5,7 @@ def test_join():
     p = inflect.engine()
 
     # Three words...
-    words = "apple banana carrot".split()
+    words = ["apple", "banana", "carrot"]
 
     assert p.join(words), "apple, banana == and carrot"
 

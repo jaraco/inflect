@@ -227,14 +227,14 @@ def test_inflect_on_builtin_constants():
     assert (
         p.inflect("Plural of False is plural('False')") == "Plural of False is Falses"
     )
-    assert p.inflect("num(%d, False) plural('False')" % 10) == " Falses"
+    assert p.inflect("num(10, False) plural('False')") == " Falses"
 
     assert p.inflect("plural('True')") == "Trues"
-    assert p.inflect("num(%d, True) plural('False')" % 10) == "10 Falses"
-    assert p.inflect("num(%d, %r) plural('False')" % (10, True)) == "10 Falses"
+    assert p.inflect("num(10, True) plural('False')") == "10 Falses"
+    assert p.inflect(f"num(10, {True!r}) plural('False')") == "10 Falses"
 
     assert p.inflect("plural('None')") == "Nones"
-    assert p.inflect("num(%d, %r) plural('True')" % (10, None)) == "10 Trues"
+    assert p.inflect(f"num(10, {None!r}) plural('True')") == "10 Trues"
 
 
 def test_inflect_keyword_args():
