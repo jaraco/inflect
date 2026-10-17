@@ -63,6 +63,7 @@ import re
 from numbers import Number
 from typing import (
     TYPE_CHECKING,
+    Annotated,
     Any,
     Callable,
     Dict,
@@ -79,8 +80,6 @@ from typing import (
 
 from more_itertools import windowed_complete
 from typeguard import typechecked
-
-from .compat.py38 import Annotated
 
 
 class UnknownClassicalModeError(Exception):

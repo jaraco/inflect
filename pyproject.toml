@@ -32,7 +32,6 @@ license = "MIT"
 dependencies = [
 	"more_itertools >= 8.5.0",
 	"typeguard >= 4.0.1",
-	"typing_extensions ; python_version<'3.9'",
 ]
 keywords = [
 	"plural",
