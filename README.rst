@@ -314,6 +314,7 @@ Supports string interpolation with the following functions: ``plural()``, ``plur
     ...     "plural_noun('saw',{1})".format(1, 2)
     ... )
     'I saw some saws'
+    >>> N1 = 1
     >>> p.inflect(
     ...     "num({0}, False)plural('I') "
     ...     "plural_verb('saw') "
@@ -328,12 +329,15 @@ Supports string interpolation with the following functions: ``plural()``, ``plur
     ...     "plural_noun('saw')".format(2, 2)
     ... )
     'we saw some saws'
+    >>> cat_count = 3
     >>> p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count))
     'I saw 3 cats\n'
     >>> p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors))
     'There were 2 errors'
     >>> p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors))
     'There were 2 errors'
+    >>> thing = 'thing'
+    >>> idea = 'idea'
     >>> p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea))
     'Did you want a thing or an idea'
     >>> p.inflect("It was ordinal('{0}') from the left".format(2))
