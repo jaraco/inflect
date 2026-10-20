@@ -25,6 +25,13 @@ class Test:
             == "(?:ephemer|ir|.*it)"
         )
 
+    def test_compare_preserves_classical_mode(self):
+        # a comparison query must not switch the engine into classical mode
+        p = inflect.engine()
+        assert p.compare("formula", "formulae") == "s:p"
+        assert p.classical_dict == inflect.def_classical
+        assert p.plural("formula") == "formulas"
+
     def test_classical(self):
         # classical dicts
         assert set(inflect.def_classical.keys()) == set(inflect.all_classical.keys())

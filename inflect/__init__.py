@@ -2582,15 +2582,17 @@ class engine:
 
     def _plequal(self, word1: str, word2: str, pl) -> str | bool:
         classval = self.classical_dict.copy()
-        for dictionary in (all_classical, no_classical):
-            self.classical_dict = dictionary.copy()
-            if word1 == word2:
-                return "eq"
-            if word1 == pl(word2):
-                return "p:s"
-            if pl(word1) == word2:
-                return "s:p"
-        self.classical_dict = classval.copy()
+        try:
+            for dictionary in (all_classical, no_classical):
+                self.classical_dict = dictionary.copy()
+                if word1 == word2:
+                    return "eq"
+                if word1 == pl(word2):
+                    return "p:s"
+                if pl(word1) == word2:
+                    return "s:p"
+        finally:
+            self.classical_dict = classval.copy()
 
         if pl == self.plural or pl == self.plural_noun:
             if self._pl_check_plurals_N(word1, word2):
