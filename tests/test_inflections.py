@@ -255,6 +255,36 @@ def test_inflect_keyword_args():
     )
 
 
+@pytest.mark.parametrize(
+    'text, expected',
+    (
+        ("number_to_words(-12)", "minus twelve"),
+        ("number_to_words(+12)", "twelve"),
+        ("number_to_words(-1.5)", "minus one point five"),
+        ("number_to_words(+1.5)", "one point five"),
+        ("number_to_words(num=-12)", "minus twelve"),
+        ("number_to_words(num=+12)", "twelve"),
+        ("plural('error', -2)", "errors"),
+        ("plural('error', count=+1)", "error"),
+        ("no('error', -2)", "-2 errors"),
+        ("num(-2, False)no('error')", "-2 errors"),
+        ("plural('error', [-2, +1])", "errors"),
+        ("plural('error', (-2, +1))", "errors"),
+    ),
+)
+def test_inflect_signed_numbers(text, expected):
+    p = inflect.engine()
+    p.num(3)
+    assert p.inflect(text) == expected
+    assert p.persistent_count == 3
+
+
+@pytest.mark.parametrize('value', ('-missing', "-'2'", '--2', '~2', '1 + 2'))
+def test_inflect_rejects_nonliteral_numbers(value):
+    with pytest.raises((AttributeError, ValueError)):
+        inflect.engine().inflect(f"number_to_words({value})")
+
+
 def test_NameError_in_strings():
     with pytest.raises(NameError):
         p = inflect.engine()

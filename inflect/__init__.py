@@ -2255,6 +2255,8 @@ class engine:
         """
         if isinstance(obj, ast.Constant):
             return obj.value
+        elif isinstance(obj, ast.UnaryOp) and isinstance(obj.op, (ast.UAdd, ast.USub)):
+            return ast.literal_eval(obj)
         elif isinstance(obj, ast.List):
             return [self._get_value_from_ast(e) for e in obj.elts]
         elif isinstance(obj, ast.Tuple):
