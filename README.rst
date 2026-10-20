@@ -354,7 +354,7 @@ capitalization for that noun:
 
 .. code-block:: python
 
-    p.defnoun("URL", "URLs", preserve_case=True)
+    p.defnoun("URL", "URLs", case="preserve")
     p.plural("URL", 2)  # "URLs"
 
 Override Verb defaults:

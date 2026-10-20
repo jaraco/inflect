@@ -1968,6 +1968,13 @@ all_classical = {k: True for k in def_classical}
 no_classical = {k: False for k in def_classical}
 
 
+# Nouns whose capitalization is intrinsic ("I" is always capitalized) and so
+# should be preserved by ``postprocess`` rather than normalized to the case of
+# the input. Callers register additional words (e.g. acronyms like "URL") via
+# ``defnoun(..., case='preserve')``.
+preserve_case_default = {"I"}
+
+
 # Maps strings to built-in constant types
 string_to_constant = {"True": True, "False": False, "None": None}
 
@@ -2074,7 +2081,8 @@ class engine:
         self.persistent_count: Optional[int] = None
         self.mill_count = 0
         self.pl_sb_user_defined: List[Optional[Word]] = []
-        self.pl_sb_preserve_case: set[str] = set()
+        # nouns whose case postprocess should preserve rather than normalize
+        self.pl_sb_preserve_case: set[str] = set(preserve_case_default)
         self.pl_v_user_defined: List[Optional[Word]] = []
         self.pl_adj_user_defined: List[Optional[Word]] = []
         self.si_sb_user_defined: List[Optional[Word]] = []
@@ -2096,23 +2104,26 @@ class engine:
         singular: Optional[Word],
         plural: Optional[Word],
         *,
-        preserve_case: bool = False,
+        case: Literal["normalize", "preserve"] = "normalize",
     ) -> int:
         """
-        Set the noun plural of singular to plural. Set ``preserve_case`` to
-        retain the case of a literal uppercase noun's custom plural, such as
-        ``defnoun("URL", "URLs", preserve_case=True)``.
+        Set the noun plural of singular to plural.
+
+        By default, the case of ``singular`` is normalized to match the input
+        when inflected. Pass ``case='preserve'`` to retain the literal case of
+        an uppercase noun's custom plural, such as
+        ``defnoun("URL", "URLs", case='preserve')``.
 
         """
         self.checkpat(singular)
         self.checkpatplural(plural)
         self.pl_sb_user_defined.extend((singular, plural))
         self.si_sb_user_defined.extend((plural, singular))
+        mutate = getattr(
+            self.pl_sb_preserve_case, {"preserve": "add", "normalize": "discard"}[case]
+        )
         if singular is not None:
-            if preserve_case:
-                self.pl_sb_preserve_case.add(singular)
-            else:
-                self.pl_sb_preserve_case.discard(singular)
+            mutate(singular)
         return 1
 
     @typechecked
@@ -2380,11 +2391,11 @@ class engine:
 
         # Try to fix word wise capitalization
         for index, word in enumerate(orig.split(" ")):
-            if word == "I" or word in self.pl_sb_preserve_case:
-                # Is this the only word for exceptions like this
-                # Where the original is fully capitalized
-                # without 'meaning' capitalization?
-                # Also this fails to handle a capitalizaion in context
+            if word in self.pl_sb_preserve_case:
+                # This word's capitalization is intrinsic (e.g. "I", or an
+                # acronym registered via ``defnoun(..., case='preserve')``),
+                # so keep the inflected case rather than normalizing it to the
+                # case of the input.
                 continue
             if word.capitalize() == word:
                 result[index] = result[index].capitalize()
