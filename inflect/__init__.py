@@ -61,6 +61,7 @@ import functools
 import itertools
 import re
 from collections.abc import Callable, Iterable, Sequence
+from decimal import Decimal
 from numbers import Number
 from re import Match
 from typing import (
@@ -3886,7 +3887,10 @@ class engine:
         parameters not remembered from last call. Departure from Perl version.
         """
         self._number_args = {"andword": andword, "zero": zero, "one": one}
+        num_is_number = isinstance(num, Number)
         num = str(num)
+        if num_is_number and "e" in num.lower():
+            num = format(Decimal(num), "f")
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
