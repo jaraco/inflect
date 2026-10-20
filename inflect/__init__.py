@@ -2019,6 +2019,7 @@ PRESENT_PARTICIPLE_REPLACEMENTS = (
     (re.compile(r"^(hoe)$"), r"\g<1>"),
     (re.compile(r"([^e])e$"), r"\g<1>"),
     (re.compile(r"er$"), r"er"),
+    (re.compile(r"([aeiou]c)$"), r"\g<1>k"),
     (re.compile(r"([^aeiou][aeiouy]([bdgmnprst]))$"), r"\g<1>\g<2>"),
 )
 
