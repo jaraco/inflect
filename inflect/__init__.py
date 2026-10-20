@@ -2023,7 +2023,7 @@ PRESENT_PARTICIPLE_REPLACEMENTS = (
     (re.compile(r"[^b]i$"), r""),
     (re.compile(r"^(are|were)$"), r"be"),
     (re.compile(r"^(had)$"), r"hav"),
-    (re.compile(r"^(hoe)$"), r"\g<1>"),
+    (re.compile(r"^(hoe|be)$"), r"\g<1>"),
     (re.compile(r"([^e])e$"), r"\g<1>"),
     (re.compile(r"er$"), r"er"),
     (re.compile(r"([aeiou]c)$"), r"\g<1>k"),
