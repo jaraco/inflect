@@ -232,7 +232,7 @@ Grouping Options
 
 Apply Threshold for Word-Representation of Numbers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Above provided threshold, numberals will remain numerals
+Above provided threshold, numerals will remain numerals
 
 .. code-block:: python
     
@@ -314,6 +314,7 @@ Supports string interpolation with the following functions: ``plural()``, ``plur
     ...     "plural_noun('saw',{1})".format(1, 2)
     ... )
     'I saw some saws'
+    >>> N1 = 1
     >>> p.inflect(
     ...     "num({0}, False)plural('I') "
     ...     "plural_verb('saw') "
@@ -328,12 +329,15 @@ Supports string interpolation with the following functions: ``plural()``, ``plur
     ...     "plural_noun('saw')".format(2, 2)
     ... )
     'we saw some saws'
+    >>> cat_count = 3
     >>> p.inflect("I saw num({0}) plural('cat')\nnum()".format(cat_count))
     'I saw 3 cats\n'
     >>> p.inflect("There plural_verb('was',{0}) no('error',{0})".format(errors))
     'There were 2 errors'
     >>> p.inflect("There num({0}, False)plural_verb('was') no('error')".format(errors))
     'There were 2 errors'
+    >>> thing = 'thing'
+    >>> idea = 'idea'
     >>> p.inflect("Did you want a('{0}') or an('{1}')".format(thing, idea))
     'Did you want a thing or an idea'
     >>> p.inflect("It was ordinal('{0}') from the left".format(2))
@@ -523,16 +527,18 @@ word being inflected, but preserve that whitespace when the result is
 returned. For example, ``plural(" cat  ")`` returns " cats  ".
 
 
-``gender(genderletter)``
+``gender(gender)``
 
  The third person plural pronoun takes the same form for the female, male and
  neuter (e.g. "they"). The singular however, depends upon gender (e.g. "she",
  "he", "it" and "they" -- "they" being the gender neutral form.) By default
- ``singular_noun`` returns the neuter form, however, the gender can be selected with
- the ``gender`` method. Pass the first letter of the gender to
- ``gender`` to return the f(eminine), m(asculine), n(euter) or t(hey)
- form of the singular. e.g.
- gender('f') followed by singular_noun('themselves') returns 'herself'.
+ ``singular_noun`` returns the neuter form, however, the gender can be selected
+ with the ``gender`` method. Pass one of ``"feminine"``, ``"masculine"``,
+ ``"neuter"``, ``"gender-neutral"``, ``"feminine or masculine"`` or
+ ``"masculine or feminine"`` to ``gender`` to select the form of the singular
+ returned by subsequent calls to ``singular_noun``. For example,
+ ``gender("feminine")`` followed by ``singular_noun("themselves")`` returns
+ ``"herself"``.
 
 Numbered plurals
 ----------------

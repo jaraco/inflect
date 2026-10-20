@@ -1,0 +1,1 @@
+``defnoun`` now accepts a keyword-only ``case`` parameter. Pass ``case="preserve"`` to retain the literal case of an uppercase noun's custom plural (such as ``defnoun("URL", "URLs", case="preserve")``) rather than normalizing it to the case of the input.

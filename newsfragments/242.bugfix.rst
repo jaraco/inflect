@@ -1,0 +1,1 @@
+``number_to_words`` now raises the documented ``NumOutOfRangeError`` for numbers whose magnitude exceeds the largest known scale word, instead of leaking an uncaught ``IndexError``.
