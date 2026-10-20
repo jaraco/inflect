@@ -2663,15 +2663,17 @@ class engine:
             )
         )
 
-    def get_count(self, count: str | int | None = None) -> str | int:
+    def get_count(self, count: str | int | float | None = None) -> str | int:
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
         if count is not None:
+            numeric_one = count == 1 and not isinstance(count, bool)
             count = (
                 1
                 if (
-                    (str(count) in pl_count_one)
+                    numeric_one
+                    or (str(count) in pl_count_one)
                     or (
                         self.classical_dict["zero"]
                         and str(count).lower() in pl_count_zero
