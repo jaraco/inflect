@@ -114,6 +114,7 @@
            bronchitis  ->  bronchitises|bronchitides
              bronchus  ->  bronchi
               brother  ->  brothers|brethren
+       brother-in-law  ->  brothers-in-law|brethren-in-law
    TODO:         brother's  ->  brothers'|brethren's
               buffalo  ->  buffaloes|buffalo
              Buginese  ->  Buginese

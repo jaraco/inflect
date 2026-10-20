@@ -2999,9 +2999,17 @@ class engine:
         pivot = cls._find_pivot(parts, pl_prep_list_da)
 
         transformed = transform(parts[pivot - 1]) or parts[pivot - 1]
-        return " ".join(
-            parts[: pivot - 1] + [sep.join([transformed, parts[pivot], ''])]
-        ) + " ".join(parts[(pivot + 1) :])
+
+        def assemble(head: str) -> str:
+            return " ".join(
+                parts[: pivot - 1] + [sep.join([head, parts[pivot], ''])]
+            ) + " ".join(parts[(pivot + 1) :])
+
+        # The transform may return a "modern|classical" alternation (e.g.
+        # "brothers|brethren"); distribute it across each variant so the pipe
+        # stays at the top level for postprocess to resolve, instead of being
+        # buried mid-word where the rest of the phrase would be dropped.
+        return "|".join(assemble(head) for head in str(transformed).split("|"))
 
     def _handle_long_compounds(self, word: Words, count: int) -> str | None:
         """
