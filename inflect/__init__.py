@@ -3680,20 +3680,23 @@ class engine:
         if DIGIT.match(str_num) or (
             str_num.startswith("-") and DIGIT.match(str_num[1:])
         ):
-            if isinstance(num, (float, int)) and int(num) == num:
-                n = int(num)
-            else:
-                if "." in str_num:
-                    try:
-                        # numbers after decimal,
-                        # so only need last one for ordinal
-                        n = int(str_num[-1])
-
-                    except ValueError:
-                        # ends with '.', so need to use whole string
-                        n = int(str_num[:-1])
+            try:
+                if isinstance(num, (float, int)) and int(num) == num:
+                    n = int(num)
                 else:
-                    n = int(num)  # type: ignore[arg-type]
+                    if "." in str_num:
+                        try:
+                            # numbers after decimal,
+                            # so only need last one for ordinal
+                            n = int(str_num[-1])
+
+                        except ValueError:
+                            # ends with '.', so need to use whole string
+                            n = int(str_num[:-1])
+                    else:
+                        n = int(num)  # type: ignore[arg-type]
+            except ValueError as err:
+                raise BadNumValueError from err
             # ``abs`` so the suffix of a negative number is based on its last
             # digit (e.g. ``-1`` -> ``-1st``); ``-1 % 10`` would be ``9`` in Python.
             try:
