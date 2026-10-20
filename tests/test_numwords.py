@@ -1,3 +1,5 @@
+import pytest
+
 import inflect
 
 
@@ -432,3 +434,15 @@ def test_issue_131():
     p = inflect.engine()
     for nth_word in inflect.nth_suff:
         assert p.number_to_words(nth_word) == "zero"
+
+
+def test_issue_242():
+    # Numbers whose magnitude exceeds the largest known scale word must raise
+    # the documented NumOutOfRangeError, not leak an uncaught IndexError from
+    # an unchecked internal ``mill`` lookup.
+    p = inflect.engine()
+    for n in (10**36, 10**40, 10**100):
+        with pytest.raises(inflect.NumOutOfRangeError):
+            p.number_to_words(n)
+    # A number just within range still converts.
+    assert p.number_to_words(10**33) == "one decillion"
