@@ -2664,7 +2664,7 @@ class engine:
             )
         )
 
-    def get_count(self, count: str | int | float | None = None) -> str | int:
+    def get_count(self, count: str | float | None = None) -> str | int:
         if count is None and self.persistent_count is not None:
             count = self.persistent_count
 
