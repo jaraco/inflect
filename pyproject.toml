@@ -30,6 +30,7 @@ classifiers = [
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
+	"jaraco.functools",
 	"more_itertools >= 8.5.0",
 	"typeguard >= 4.0.1",
 ]

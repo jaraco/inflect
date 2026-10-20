@@ -148,6 +148,40 @@ class Test:
         ):
             assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
 
+    def test_uppercase_noun_can_keep_custom_plural_case(self):
+        p = inflect.engine()
+
+        assert p.plural("URL", 2) == "URLS"
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        assert p.plural_noun("URL", 2) == "URLs"
+        assert p.plural("URL", 1) == "URL"
+        p.defnoun("ID", "IDs", case="preserve")
+        assert p.plural("ID", 2) == "IDs"
+        # preservation is confined to the engine that registered it
+        assert inflect.engine().plural("URL", 2) == "URLS"
+
+    def test_defnoun_case_normalize_discards_preservation(self):
+        p = inflect.engine()
+
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        # re-registering with the default case normalizes the case again
+        p.defnoun("URL", "URLs")
+        assert p.plural("URL", 2) == "URLS"
+        # and case="normalize" is the explicit spelling of that default
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        p.defnoun("URL", "URLs", case="normalize")
+        assert p.plural("URL", 2) == "URLS"
+
+    def test_pronoun_I_case_preserved_by_default(self):
+        # "I" is always capitalized, so its case is preserved without the
+        # caller registering it; see preserve_case_default.
+        p = inflect.engine()
+        assert "I" in p.pl_sb_preserve_case
+        assert p.plural("I", 2) == "we"
+
     @pytest.mark.parametrize("count", [None, 1, 2])
     @pytest.mark.parametrize(
         "expression, error",
