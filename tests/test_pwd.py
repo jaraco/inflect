@@ -1077,6 +1077,12 @@ class Test:
             numwords("1234", andword="plus")
             == "one thousand, two hundred plus thirty-four"
         )
+        # #229: a punctuation andword must not leave a space before itself
+        assert numwords(140, andword=",") == "one hundred, forty"
+        assert (
+            numwords(541140, andword=",")
+            == "five hundred, forty-one thousand, one hundred, forty"
+        )
         assert numwords(p.ordinal("21")) == "twenty-first"
         assert numwords("9", threshold=10) == "nine"
         assert numwords("10", threshold=10) == "ten"

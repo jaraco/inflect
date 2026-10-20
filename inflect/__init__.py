@@ -3900,6 +3900,9 @@ class engine:
 
             if group == 0 and first:
                 chunk = COMMA_WORD.sub(f" {andword} \\1", chunk)
+                # A punctuation andword (e.g. ",") re-introduces a space before
+                # itself; drop it again as above.
+                chunk = WHITESPACES_COMMA.sub(",", chunk)
             chunk = WHITESPACES.sub(" ", chunk)
             # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
             chunk = chunk.strip()

@@ -1,0 +1,1 @@
+``number_to_words`` no longer emits a stray space before a punctuation ``andword`` (such as ``number_to_words(541140, andword=",")``).
