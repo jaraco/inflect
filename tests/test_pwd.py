@@ -111,6 +111,9 @@ class Test:
         with pytest.raises(BadNumValueError):
             p.num("text")
 
+        with pytest.raises(BadNumValueError):
+            p.num(float("inf"))
+
     def test_inflect(self):
         p = inflect.engine()
         for txt, ans in (

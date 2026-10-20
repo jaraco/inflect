@@ -2217,7 +2217,7 @@ class engine:
         if count is not None:
             try:
                 self.persistent_count = int(count)
-            except ValueError as err:
+            except (ValueError, OverflowError) as err:
                 raise BadNumValueError from err
             if (show is None) or show:
                 return str(count)
