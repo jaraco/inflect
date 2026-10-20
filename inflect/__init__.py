@@ -3006,11 +3006,16 @@ class engine:
         'man beyond hills'
         """
         inflection = self._sinoun if count == 1 else self._plnoun
+
+        def inflect_or_original(candidate: str) -> str:
+            result = inflection(candidate, count)
+            return result if isinstance(result, str) else candidate
+
         solutions = (
             " ".join(
                 itertools.chain(
                     leader,
-                    [inflection(cand, count), prep],  # type: ignore[operator]
+                    [inflect_or_original(cand), prep],
                     trailer,
                 )
             )
