@@ -1030,8 +1030,8 @@ class Test:
         assert enword("347", 1) == "three, four, seven, "
 
         assert enword("34", 2) == "thirty-four , "
-        assert enword("347", 2) == "thirty-four , seven, "
-        assert enword("34768", 2) == "thirty-four , seventy-six , eight, "
+        assert enword("347", 2) == "three, forty-seven , "
+        assert enword("34768", 2) == "three, forty-seven , sixty-eight , "
         assert enword("1", 2) == "one, "
 
         assert enword("134", 3) == " one thirty-four , "
@@ -1149,7 +1149,7 @@ class Test:
     @pytest.mark.parametrize(
         'input,kwargs,expect',
         (
-            ("12345", dict(group=2), "twelve, thirty-four, five"),
+            ("12345", dict(group=2), "one, twenty-three, forty-five"),
             ("123456", dict(group=3), "one twenty-three, four fifty-six"),
             ("12345", dict(group=1), "one, two, three, four, five"),
             (
@@ -1162,8 +1162,8 @@ class Test:
                 dict(group=0),
                 "one thousand, two hundred and thirty-fourth",
             ),
-            ("120", dict(group=2), "twelve, zero"),
-            ("120", dict(group=2, zero="oh", one="unity"), "twelve, oh"),
+            ("120", dict(group=2), "one, twenty"),
+            ("120", dict(group=2, zero="oh", one="unity"), "one, twenty"),
             (
                 "555_1202",
                 dict(group=1, zero="oh"),
