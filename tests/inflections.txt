@@ -179,6 +179,8 @@
                 child  ->  children
                 chili  ->  chilis|chilies
               Chinese  ->  Chinese
+            hanger-on  ->  hangers-on
+            looker-on  ->  lookers-on
        oatmeal cookie  ->  oatmeal cookies
                chorus  ->  choruses
             chrysalis  ->  chrysalises|chrysalides
@@ -564,6 +566,8 @@
               Panaman  ->  Panamans
              parabola  ->  parabolas|parabolae
               Parmese  ->  Parmese
+            passer-by  ->  passers-by
+             passerby  ->  passersby
                pathos  ->  pathoses
               pegasus  ->  pegasuses
             Pekingese  ->  Pekingese
@@ -641,6 +645,7 @@
                  roof  ->  roofs
               rostrum  ->  rostrums|rostra
                ruckus  ->  ruckuses
+            runner-up  ->  runners-up
                salmon  ->  salmon
             Sangirese  ->  Sangirese
    TODO: siverb              sank  ->  sank
