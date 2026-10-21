@@ -2372,19 +2372,34 @@ class engine:
         else:
             result = inflected.split(" ")
 
-        # Try to fix word wise capitalization
-        for index, word in enumerate(orig.split(" ")):
-            if word in self.pl_sb_preserve_case:
-                # This word's capitalization is intrinsic (e.g. "I", or an
-                # acronym registered via ``defnoun(..., case='preserve')``),
-                # so keep the inflected case rather than normalizing it to the
-                # case of the input.
-                continue
-            if word.capitalize() == word:
-                result[index] = result[index].capitalize()
-            if word == word.upper():
-                result[index] = result[index].upper()
-        return " ".join(result)
+        # Try to fix word wise capitalization by restoring each inflected
+        # word's case from the original word it came from. Inflecting a phrase
+        # can change the number of words (e.g. "a cat" -> "cats" drops the
+        # article), so pair the words positionally only as far as they align
+        # and leave any surplus inflected words untouched rather than indexing
+        # past the end of either sequence.
+        originals = orig.split(" ")
+        recased = (
+            self._recase(original, word) for original, word in zip(originals, result)
+        )
+        surplus = result[len(originals) :]
+        return " ".join(itertools.chain(recased, surplus))
+
+    def _recase(self, original: str, inflected: str) -> str:
+        """
+        Return ``inflected`` recased to match the case of ``original``.
+        """
+        if original in self.pl_sb_preserve_case:
+            # This word's capitalization is intrinsic (e.g. "I", or an
+            # acronym registered via ``defnoun(..., case='preserve')``), so
+            # keep the inflected case rather than normalizing it to the case
+            # of the input.
+            return inflected
+        if original == original.upper():
+            return inflected.upper()
+        if original == original.capitalize():
+            return inflected.capitalize()
+        return inflected
 
     def partition_word(self, text: str) -> tuple[str, str, str]:
         mo = PARTITION_WORD.search(text)
