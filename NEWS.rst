@@ -1,12 +1,3 @@
-Unreleased
-==========
-
-Bugfixes
---------
-
-- Honor a custom ``comma`` separator in ``number_to_words``. (#176)
-
-
 v7.5.0
 ======
 

@@ -60,7 +60,7 @@ import contextlib
 import functools
 import itertools
 import re
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from decimal import Decimal
 from numbers import Number
 from re import Match
@@ -2013,23 +2013,54 @@ THREE_DIGITS = re.compile(r"(\d)(\d)(\d)")
 THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
-
-def _group_thousands(integer_text: str, separator: str) -> str:
-    """Insert ``separator`` between groups of three digits, from the right."""
-    if not separator:
-        return integer_text
-    sign = ""
-    if integer_text[:1] in "+-":
-        sign, integer_text = integer_text[0], integer_text[1:]
-    groups: List[str] = []
-    while integer_text:
-        groups.append(integer_text[-3:])
-        integer_text = integer_text[:-3]
-    return sign + separator.join(reversed(groups))
 NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
 WHITESPACES = re.compile(r"\s+")
+
+
+def _grouped_from_right(digits: str, size: int = 3) -> Iterator[str]:
+    """
+    Yield ``digits`` in groups of ``size`` characters, aligned from the right.
+
+    >>> list(_grouped_from_right("1234567"))
+    ['1', '234', '567']
+    """
+    head = (len(digits) - 1) % size + 1
+    yield digits[:head]
+    yield from (digits[i : i + size] for i in range(head, len(digits), size))
+
+
+def _passthrough_sign(func: Callable[..., str]) -> Callable[..., str]:
+    """
+    Wrap a magnitude transform so a leading ``+``/``-`` sign passes through.
+
+    The sign is stripped from the first argument before the call and restored
+    on the result, so ``func`` only ever sees an unsigned magnitude.
+
+    >>> _passthrough_sign(str.upper)("-abc")
+    '-ABC'
+    """
+
+    @functools.wraps(func)
+    def wrapper(text: str, *args: object, **kwargs: object) -> str:
+        sign = text[:1] if text[:1] in "+-" else ""
+        return sign + func(text[len(sign) :], *args, **kwargs)
+
+    return wrapper
+
+
+@_passthrough_sign
+def _group_thousands(integer_text: str, separator: str) -> str:
+    """
+    Insert ``separator`` between groups of three digits, from the right.
+
+    >>> _group_thousands("1234567", "_")
+    '1_234_567'
+    >>> _group_thousands("-1000", ",")
+    '-1,000'
+    """
+    return separator.join(_grouped_from_right(integer_text))
 
 
 PRESENT_PARTICIPLE_REPLACEMENTS = (
@@ -3914,7 +3945,7 @@ class engine:
         if threshold is not None and float(num) > threshold:
             spnum = num.split(".", 1)
             if comma:
-                spnum[0] = _group_thousands(spnum[0], str(comma))
+                spnum[0] = _group_thousands(spnum[0], comma)
             try:
                 return f"{spnum[0]}.{spnum[1]}"
             except IndexError:
@@ -3986,12 +4017,12 @@ class engine:
             return [sign] * bool(sign) + numchunks
 
         signout = f"{sign} " if sign else ""
-        rendered_comma = comma if comma else ""
-        if group:
-            separator = f"{rendered_comma} " if rendered_comma else " "
-            valout = separator.join(numchunks)
-        else:
-            valout = "".join(self._render(numchunks, decimal, rendered_comma))
+        resolved_comma = comma or ""
+        valout = (
+            (resolved_comma + ' ').join(numchunks)
+            if group
+            else ''.join(self._render(numchunks, decimal, resolved_comma))
+        )
         return signout + valout
 
     @staticmethod
