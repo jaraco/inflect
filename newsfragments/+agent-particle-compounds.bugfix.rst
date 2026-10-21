@@ -1,0 +1,1 @@
+Pluralize the head noun of agent-noun compounds: "passer-by"/"passerby", "hanger-on", "looker-on", and "runner-up" now yield "passers-by"/"passersby", "hangers-on", "lookers-on", and "runners-up" (previously "passer-bies", "hanger-ons", etc.).

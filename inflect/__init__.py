@@ -230,6 +230,11 @@ pl_sb_irregular = {
     "talouse": "talouses",
     "rom": "roma",
     "carmen": "carmina",
+    "passerby": "passersby",
+    "passer-by": "passers-by",
+    "hanger-on": "hangers-on",
+    "looker-on": "lookers-on",
+    "runner-up": "runners-up",
 }
 
 pl_sb_irregular.update(pl_sb_irregular_s)
