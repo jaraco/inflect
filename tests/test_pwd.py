@@ -290,11 +290,23 @@ class Test:
             ("cow", "cows|kine", "cows"),
             ("Entry", "entries", "Entries"),
             ("can of Coke", "cans of coke", "cans of Coke"),
+            # Inflection may change the number of words; recasing should align
+            # the words it can and leave any surplus untouched (#172).
+            ("a cat", "cats", "cats"),
+            ("Cats and dogs", "Cats and dogs plus mice", "Cats and dogs plus mice"),
         ):
             assert p.postprocess(orig, infl) == txt
 
         p.classical()
         assert p.postprocess("cow", "cows|kine") == "kine"
+
+    def test_plural_phrase_changing_word_count(self):
+        """
+        Pluralizing a phrase whose word count changes should not raise
+        (previously an IndexError in postprocess). Ref #172.
+        """
+        p = inflect.engine()
+        assert p.plural("I'm only here for a minute, John.")
 
     def test_partition_word(self):
         p = inflect.engine()
