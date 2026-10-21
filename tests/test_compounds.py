@@ -80,6 +80,12 @@ def test_unit_open_compound_nouns():
         assert p.plural(singular) == plural
 
 
+def test_capitalized_compound_with_lowercase_y_ending():
+    assert p.plural("Old technology") == "Old technologies"
+    assert p.plural_noun("Old technology") == "Old technologies"
+    assert p.plural("Old Mary") == "Old Marys"
+
+
 def test_unit_open_compound_nouns_classical():
     p.classical(all=True)
     test_cases = {
