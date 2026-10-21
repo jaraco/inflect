@@ -55,7 +55,7 @@ Methods
 - ``compare``, ``compare_nouns``, ``compare_nouns``, ``compare_adjs``
 - ``a``, ``an``
 - ``present_participle``
-- ``ordinal``, ``number_to_words``
+- ``ordinal``, ``number_to_words``, ``number_to_currency``
 - ``join``
 - ``inflect``, ``classical``, ``gender``
 - ``defnoun``, ``defverb``, ``defadj``, ``defa``, ``defan``
@@ -244,6 +244,17 @@ Above provided threshold, numerals will remain numerals
     '11'
     >>> p.number_to_words(1000, threshold=10)
     '1,000'
+
+Write an Amount as on a Check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The cents are written as a fraction of one hundred.
+
+.. code-block:: python
+
+    >>> p.number_to_currency(100_020.56)
+    'one hundred thousand and twenty and 56/100'
+    >>> p.number_to_currency(1234.5, andword="")
+    'one thousand, two hundred thirty-four and 50/100'
 
 Join Words into a List
 ^^^^^^^^^^^^^^^^^^^^^^

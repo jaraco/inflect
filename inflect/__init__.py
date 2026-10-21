@@ -14,7 +14,7 @@ methods:
     compare compare_nouns compare_verbs compare_adjs
     present_participle
     ordinal
-    number_to_words
+    number_to_words number_to_currency
     join
     defnoun defverb defadj defa defan
 
@@ -36,7 +36,7 @@ ARTICLES:
     classical inflect num a an
 
 NUMERICAL:
-    ordinal number_to_words
+    ordinal number_to_words number_to_currency
 
 USER_DEFINED:
     defnoun defverb defadj defa defan
@@ -61,7 +61,7 @@ import functools
 import itertools
 import re
 from collections.abc import Callable, Iterable, Iterator, Sequence
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from numbers import Number
 from re import Match
 from typing import (
@@ -4036,6 +4036,30 @@ class engine:
             elif first:
                 yield comma
             yield f" {nc}"
+
+    @typechecked
+    def number_to_currency(self, num: Number | Word, andword: str = "and") -> str:
+        """
+        Return an amount in words, with the cents written as a fraction
+        of one hundred, as on checks and money orders.
+
+        The amount is rounded half up to the nearest cent.
+
+        andword: word for 'and' in the whole amount, as in number_to_words.
+            The 'and' before the cents is always written.
+
+        >>> number_to_currency = engine().number_to_currency
+        >>> number_to_currency(100_020.56)
+        'one hundred thousand and twenty and 56/100'
+        >>> number_to_currency(120, andword="")
+        'one hundred twenty and 00/100'
+        """
+        try:
+            amount = Decimal(str(num)).quantize(Decimal("0.01"), ROUND_HALF_UP)
+            whole, cents = format(amount, "f").split(".")
+        except (InvalidOperation, ValueError) as err:
+            raise BadNumValueError from err
+        return f"{self.number_to_words(whole, andword=andword)} and {cents}/100"
 
     @typechecked
     def join(

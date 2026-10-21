@@ -1,0 +1,1 @@
+Added ``number_to_currency``, which writes an amount in words with the cents as a fraction of one hundred, as on checks and money orders (``number_to_currency(100020.56)`` is ``"one hundred thousand and twenty and 56/100"``).
