@@ -1,1 +1,0 @@
-In classical "names" mode, a capitalized multi-word phrase whose final noun is lowercase and ends in a consonant plus "y" now pluralizes that noun (e.g. "Old technology" -> "Old technologies") instead of treating the whole phrase as a proper name.

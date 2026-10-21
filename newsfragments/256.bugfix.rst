@@ -1,1 +1,0 @@
-``num`` now raises ``BadNumValueError`` instead of leaking an ``OverflowError`` for non-finite counts such as ``float("inf")``.

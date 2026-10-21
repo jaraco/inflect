@@ -1,3 +1,40 @@
+v7.6.0
+======
+
+Features
+--------
+
+- Added ``number_to_currency``, which writes an amount in words with the cents as a fraction of one hundred, as on checks and money orders (``number_to_currency(100020.56)`` is ``"one hundred thousand and twenty and 56/100"``). (#213)
+- ``defnoun`` now accepts a keyword-only ``case`` parameter. Pass ``case="preserve"`` to retain the literal case of an uppercase noun's custom plural (such as ``defnoun("URL", "URLs", case="preserve")``) rather than normalizing it to the case of the input. (#275)
+
+
+Bugfixes
+--------
+
+- Pluralizing a multi-word phrase whose word count changes during inflection (such as when a leading article is dropped) no longer raises an ``IndexError``. ``postprocess`` now restores word-wise capitalization by pairing original and inflected words rather than by index. (#172)
+- ``number_to_words`` now honors a custom ``comma`` separator across the word-spelling, grouped, and threshold code paths rather than only the default ``", "``. (#176)
+- ``ordinal`` now handles negative numbers: it no longer raises a ``TypeError`` on negative integers and returns a suffix based on the last digit (e.g. ``ordinal(-1)`` is ``-1st``). (#192)
+- ``singular_noun`` now recognizes words ending in "-ss" (such as "class", "boss", and "address") as already singular and returns ``False`` instead of stripping the trailing "s". (#214)
+- ``number_to_words`` now groups digits from the right, so ``123`` with ``group=2`` reads as ``one, twenty-three`` instead of ``twelve, three``. (#217)
+- Avoid a ``TypeError`` when singularizing long compounds whose leading noun is
+  already singular. (#222)
+- ``number_to_words`` now expands floats expressed in scientific notation (such as ``1e20`` or ``0.000001``) instead of mis-parsing the exponent. (#226)
+- ``number_to_words`` no longer emits a stray space before a punctuation ``andword`` (such as ``number_to_words(541140, andword=",")``). (#229)
+- In classical "names" mode, a capitalized multi-word phrase whose final noun is lowercase and ends in a consonant plus "y" now pluralizes that noun (e.g. "Old technology" -> "Old technologies") instead of treating the whole phrase as a proper name. (#231)
+- Numeric count values equal to ``1`` (such as ``1.0``) are now treated as singular. (#232)
+- ``Word`` arguments are now exposed as ``str`` to static type checkers (such as Pylance and mypy) while still enforcing the non-empty-string check at runtime. (#233)
+- Common uncountable mass nouns (such as "equipment", "luggage", "baggage", "jewelry", "machinery", "cutlery", and "livestock") are now left unchanged by ``plural_noun`` instead of being incorrectly pluralized. (#239)
+- ``number_to_words`` now raises the documented ``NumOutOfRangeError`` for numbers whose magnitude exceeds the largest known scale word, instead of leaking an uncaught ``IndexError``. (#242)
+- ``present_participle`` now returns "being" for the verb "be" (and its forms "is", "are", "were") instead of the malformed "bing". (#252)
+- ``num`` now raises ``BadNumValueError`` instead of leaking an ``OverflowError`` for non-finite counts such as ``float("inf")``. (#256)
+- ``plural_noun`` no longer drops the trailing prepositional phrase when the head of a compound has an irregular plural (e.g. "brother-in-law" now pluralizes to "brothers-in-law"). (#264)
+- ``ordinal`` now raises ``BadNumValueError`` for malformed numeric input such as "11 11" instead of leaking a bare ``ValueError``. (#269)
+- Handle signed numeric literals in inflect() interpolation arguments.
+- Restore the persistent count when an interpolated function in ``inflect()`` raises an exception.
+- ``compare`` and the related ``compare_nouns``/``compare_verbs``/``compare_adjs`` no longer leave the engine in classical mode as a side effect of the comparison.
+- ``present_participle`` now inserts a ``k`` before ``-ing`` for verbs ending in a vowel followed by ``c`` (for example "panics" becomes "panicking").
+
+
 v7.5.0
 ======
 

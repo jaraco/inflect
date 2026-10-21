@@ -1,1 +1,0 @@
-``present_participle`` now returns "being" for the verb "be" (and its forms "is", "are", "were") instead of the malformed "bing".

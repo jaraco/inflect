@@ -1,1 +1,0 @@
-``number_to_words`` now honors a custom ``comma`` separator across the word-spelling, grouped, and threshold code paths rather than only the default ``", "``.

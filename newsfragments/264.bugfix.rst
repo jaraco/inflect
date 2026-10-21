@@ -1,1 +1,0 @@
-``plural_noun`` no longer drops the trailing prepositional phrase when the head of a compound has an irregular plural (e.g. "brother-in-law" now pluralizes to "brothers-in-law").

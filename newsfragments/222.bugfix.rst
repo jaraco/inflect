@@ -1,2 +1,0 @@
-Avoid a ``TypeError`` when singularizing long compounds whose leading noun is
-already singular.

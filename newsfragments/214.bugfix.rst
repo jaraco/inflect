@@ -1,1 +1,0 @@
-``singular_noun`` now recognizes words ending in "-ss" (such as "class", "boss", and "address") as already singular and returns ``False`` instead of stripping the trailing "s".

@@ -1,1 +1,0 @@
-``Word`` arguments are now exposed as ``str`` to static type checkers (such as Pylance and mypy) while still enforcing the non-empty-string check at runtime. (#233)
