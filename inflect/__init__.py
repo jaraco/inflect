@@ -3869,7 +3869,10 @@ class engine:
         if group == 1:
             num = DIGIT_GROUP.sub(self.group1sub, num)
         elif group in (2, 3):
-            num = self._grouped_words(num, group)
+            num = "".join(
+                self._render_group(part, group)
+                for part in _grouped_from_right(num, group)
+            )
         elif int(num) == 0:
             num = self._number_args["zero"]
         elif int(num) == 1:
@@ -3886,31 +3889,21 @@ class engine:
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
 
-    def _grouped_words(self, num: str, group: int) -> str:
-        """Render digits in groups of ``group``, grouped from the right.
-
-        The leading group is short when the digit count is not a multiple of
-        ``group`` (e.g. ``123`` with ``group=2`` reads as ``one, twenty-three``).
+    def _render_group(self, part: str, group: int) -> str:
         """
-        head = len(num) % group
-        parts = []
-        if head:
-            parts.append(num[:head])
-        parts.extend(num[i : i + group] for i in range(head, len(num), group))
-        rendered = []
-        for part in parts:
-            size = len(part)
-            if size == 1:
-                sub = self.group1bsub if group == 2 else self.group1sub
-                pattern = DIGIT_GROUP
-            elif size == 2:
-                sub = self.group2sub
-                pattern = TWO_DIGITS
-            else:
-                sub = self.group3sub
-                pattern = THREE_DIGITS
-            rendered.append(pattern.sub(sub, part))
-        return "".join(rendered)
+        Render a single right-aligned digit group (1 to ``group`` digits).
+
+        A short leading group of a single digit is phrased differently for
+        ``group == 2`` than for ``group == 3``, preserving the historical
+        output (e.g. ``123`` with ``group=2`` reads as ``one, twenty-three``).
+        """
+        one_digit = self.group1bsub if group == 2 else self.group1sub
+        pattern, sub = {
+            1: (DIGIT_GROUP, one_digit),
+            2: (TWO_DIGITS, self.group2sub),
+            3: (THREE_DIGITS, self.group3sub),
+        }[len(part)]
+        return pattern.sub(sub, part)
 
     @staticmethod
     def _sub_ord(val):
