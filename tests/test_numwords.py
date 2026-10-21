@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 
 import inflect
@@ -458,6 +460,34 @@ def test_issue_242():
             p.number_to_words(n)
     # A number just within range still converts.
     assert p.number_to_words(10**33) == "one decillion"
+
+
+def test_number_to_currency():
+    p = inflect.engine()
+    assert (
+        p.number_to_currency(100_020.56) == "one hundred thousand and twenty and 56/100"
+    )
+    assert (
+        p.number_to_currency(1234)
+        == "one thousand, two hundred and thirty-four and 00/100"
+    )
+    assert p.number_to_currency(0.07) == "zero and 07/100"
+    assert p.number_to_currency(1.5) == "one and 50/100"
+    assert p.number_to_currency("19.99") == "nineteen and 99/100"
+    assert p.number_to_currency(101.01, andword="") == "one hundred one and 01/100"
+
+
+def test_number_to_currency_rounds_half_up():
+    p = inflect.engine()
+    assert p.number_to_currency(2.675) == "two and 68/100"
+    assert p.number_to_currency(2.674) == "two and 67/100"
+    assert p.number_to_currency(Decimal("0.995")) == "one and 00/100"
+
+
+@pytest.mark.parametrize("num", ["ten", "nan", "inf"])
+def test_number_to_currency_bad_value(num):
+    with pytest.raises(inflect.BadNumValueError):
+        inflect.engine().number_to_currency(num)
 
 
 def test_issue_217():
