@@ -25,6 +25,13 @@ class Test:
             == "(?:ephemer|ir|.*it)"
         )
 
+    def test_compare_preserves_classical_mode(self):
+        # a comparison query must not switch the engine into classical mode
+        p = inflect.engine()
+        assert p.compare("formula", "formulae") == "s:p"
+        assert p.classical_dict == inflect.def_classical
+        assert p.plural("formula") == "formulas"
+
     def test_classical(self):
         # classical dicts
         assert set(inflect.def_classical.keys()) == set(inflect.all_classical.keys())
@@ -104,6 +111,9 @@ class Test:
         with pytest.raises(BadNumValueError):
             p.num("text")
 
+        with pytest.raises(BadNumValueError):
+            p.num(float("inf"))
+
     def test_inflect(self):
         p = inflect.engine()
         for txt, ans in (
@@ -121,18 +131,86 @@ class Test:
             ("plural('rock')  plural('child')", "rocks  children"),
             ("num(2) plural('rock')  plural('child')", "2 rocks  children"),
             (
-                "plural('rock') plural_noun('rock') plural_verb('rocks') "
-                "plural_adj('big') a('ant')",
+                (
+                    "plural('rock') plural_noun('rock') plural_verb('rocks') "
+                    "plural_adj('big') a('ant')"
+                ),
                 "rocks rocks rock big an ant",
             ),
             (
-                "an('rock') no('cat') ordinal(3) number_to_words(1234) "
-                "present_participle('runs')",
+                (
+                    "an('rock') no('cat') ordinal(3) number_to_words(1234) "
+                    "present_participle('runs')"
+                ),
                 "a rock no cats 3rd one thousand, two hundred and thirty-four running",
             ),
             ("a('cat',0) a('cat',1) a('cat',2) a('cat', 2)", "0 cat a cat 2 cat 2 cat"),
         ):
             assert p.inflect(txt) == ans, f'p.inflect("{txt}") != "{ans}"'
+
+    def test_uppercase_noun_can_keep_custom_plural_case(self):
+        p = inflect.engine()
+
+        assert p.plural("URL", 2) == "URLS"
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        assert p.plural_noun("URL", 2) == "URLs"
+        assert p.plural("URL", 1) == "URL"
+        p.defnoun("ID", "IDs", case="preserve")
+        assert p.plural("ID", 2) == "IDs"
+        # preservation is confined to the engine that registered it
+        assert inflect.engine().plural("URL", 2) == "URLS"
+
+    def test_defnoun_case_normalize_discards_preservation(self):
+        p = inflect.engine()
+
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        # re-registering with the default case normalizes the case again
+        p.defnoun("URL", "URLs")
+        assert p.plural("URL", 2) == "URLS"
+        # and case="normalize" is the explicit spelling of that default
+        p.defnoun("URL", "URLs", case="preserve")
+        assert p.plural("URL", 2) == "URLs"
+        p.defnoun("URL", "URLs", case="normalize")
+        assert p.plural("URL", 2) == "URLS"
+
+    def test_pronoun_I_case_preserved_by_default(self):
+        # "I" is always capitalized, so its case is preserved without the
+        # caller registering it; see preserve_case_default.
+        p = inflect.engine()
+        assert "I" in p.pl_sb_preserve_case
+        assert p.plural("I", 2) == "we"
+
+    @pytest.mark.parametrize("count", [None, 1, 2])
+    @pytest.mark.parametrize(
+        "expression, error",
+        [
+            ("num('invalid')", BadNumValueError),
+            ("plural(missing_word)", NameError),
+            ("plural('cat', @)", SyntaxError),
+        ],
+    )
+    def test_inflect_restores_count_after_error(self, count, expression, error):
+        p = inflect.engine()
+        p.num(count)
+        expected = p.plural("cat")
+
+        with pytest.raises(error):
+            p.inflect(f"num(3) num(1) {expression}")
+
+        assert p.persistent_count == count
+        assert p.plural("cat") == expected
+
+    @pytest.mark.parametrize("count", [None, 1, 2])
+    def test_inflect_restores_count_after_success(self, count):
+        p = inflect.engine()
+        p.num(count)
+        expected = p.plural("cat")
+
+        assert p.inflect("num(1, 0)plural('cat')") == "cat"
+        assert p.persistent_count == count
+        assert p.plural("cat") == expected
 
     def test_user_input_fns(self):
         p = inflect.engine()
@@ -307,7 +385,7 @@ class Test:
             ("goose", "geese"),
         ):
             assert p.singular_noun(plur) == sing
-            assert p.inflect("singular_noun('%s')" % plur) == sing
+            assert p.inflect(f"singular_noun('{plur}')") == sing
 
         assert p.singular_noun("cats", count=2) == "cats"
         assert p.singular_noun("open valves", count=2) == "open valves"
@@ -344,7 +422,7 @@ class Test:
             assert p.singular_noun(plur) == sing, (
                 f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             )
-            assert p.inflect("singular_noun('%s')" % plur) == sing
+            assert p.inflect(f"singular_noun('{plur}')") == sing
 
         p.gender("masculine")
         for sing, plur in (
@@ -357,7 +435,7 @@ class Test:
             assert p.singular_noun(plur) == sing, (
                 f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             )
-            assert p.inflect("singular_noun('%s')" % plur) == sing
+            assert p.inflect(f"singular_noun('{plur}')") == sing
 
         p.gender("gender-neutral")
         for sing, plur in (
@@ -370,7 +448,7 @@ class Test:
             assert p.singular_noun(plur) == sing, (
                 f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             )
-            assert p.inflect("singular_noun('%s')" % plur) == sing
+            assert p.inflect(f"singular_noun('{plur}')") == sing
 
         p.gender("neuter")
         for sing, plur in (
@@ -383,7 +461,7 @@ class Test:
             assert p.singular_noun(plur) == sing, (
                 f"singular_noun({plur}) == {p.singular_noun(plur)} != {sing}"
             )
-            assert p.inflect("singular_noun('%s')" % plur) == sing
+            assert p.inflect(f"singular_noun('{plur}')") == sing
 
         with pytest.raises(BadGenderError):
             p.gender("male")
@@ -480,6 +558,7 @@ class Test:
             ("my", "my", "eq"),
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
+            ("indexes'", "indices'", "p:p"),
             pytest.param(
                 "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
             ),
@@ -534,6 +613,7 @@ class Test:
         p = inflect.engine()
         for txt, num in (
             (1, 1),
+            (1.0, 1),
             (2, 2),
             (0, 2),
             (87, 2),
@@ -924,6 +1004,11 @@ class Test:
         assert tenfn(1, 0, 2) == "ten million"
         assert tenfn(1, 0, 0) == "ten "
         assert tenfn(0, 0, 0) == " "
+        # The teen branch (tens == 1) must raise the documented
+        # NumOutOfRangeError for an out-of-range magnitude, not leak an
+        # IndexError from an unchecked ``mill`` lookup. See #242.
+        with pytest.raises(NumOutOfRangeError):
+            tenfn(1, 0, 12)
 
     def test_hundfn(self):
         p = inflect.engine()
@@ -1034,6 +1119,12 @@ class Test:
         assert (
             numwords("1234", andword="plus")
             == "one thousand, two hundred plus thirty-four"
+        )
+        # #229: a punctuation andword must not leave a space before itself
+        assert numwords(140, andword=",") == "one hundred, forty"
+        assert (
+            numwords(541140, andword=",")
+            == "five hundred, forty-one thousand, one hundred, forty"
         )
         assert numwords(p.ordinal("21")) == "twenty-first"
         assert numwords("9", threshold=10) == "nine"
@@ -1187,9 +1278,7 @@ class Test:
             )
 
             assert (
-                p.inflect(
-                    "There plural_verb('was',%d) no('error',%d)" % (errors, errors)
-                )
+                p.inflect(f"There plural_verb('was',{errors}) no('error',{errors})")
                 == txt
             )
 
@@ -1207,8 +1296,8 @@ class Test:
 
             assert (
                 p.inflect(
-                    "num(%d, False)plural('I') plural_verb('saw') "
-                    "num(%d) plural_noun('saw')" % (num1, num2)
+                    f"num({num1}, False)plural('I') plural_verb('saw') "
+                    f"num({num2}) plural_noun('saw')"
                 )
                 == txt
             )
