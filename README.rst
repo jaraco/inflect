@@ -216,9 +216,9 @@ Grouping Options
     >>> p.number_to_words(12345, group=1)
     'one, two, three, four, five'
     >>> p.number_to_words(12345, group=2)
-    'twelve, thirty-four, five'
+    'one, twenty-three, forty-five'
     >>> p.number_to_words(12345, group=3)
-    'one twenty-three, forty-five'
+    'twelve, three forty-five'
     >>> p.number_to_words(1234, andword="")
     'one thousand, two hundred thirty-four'
     >>> p.number_to_words(1234, andword=", plus")

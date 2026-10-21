@@ -102,7 +102,7 @@ def test_array():
             "100",
             "one hundred",
             "one, zero, zero",
-            "ten, zero",
+            "one, zero zero",
             "one zero zero",
             "one hundredth",
         ],
@@ -110,7 +110,7 @@ def test_array():
             "101",
             "one hundred and one",
             "one, zero, one",
-            "ten, one",
+            "one, zero one",
             "one zero one",
             "one hundred and first",
         ],
@@ -118,7 +118,7 @@ def test_array():
             "110",
             "one hundred and ten",
             "one, one, zero",
-            "eleven, zero",
+            "one, ten",
             "one ten",
             "one hundred and tenth",
         ],
@@ -126,7 +126,7 @@ def test_array():
             "111",
             "one hundred and eleven",
             "one, one, one",
-            "eleven, one",
+            "one, eleven",
             "one eleven",
             "one hundred and eleventh",
         ],
@@ -134,7 +134,7 @@ def test_array():
             "900",
             "nine hundred",
             "nine, zero, zero",
-            "ninety, zero",
+            "nine, zero zero",
             "nine zero zero",
             "nine hundredth",
         ],
@@ -142,7 +142,7 @@ def test_array():
             "999",
             "nine hundred and ninety-nine",
             "nine, nine, nine",
-            "ninety-nine, nine",
+            "nine, ninety-nine",
             "nine ninety-nine",
             "nine hundred and ninety-ninth",
         ],
@@ -151,7 +151,7 @@ def test_array():
             "one thousand",
             "one, zero, zero, zero",
             "ten, zero zero",
-            "one zero zero, zero",
+            "one, zero zero zero",
             "one thousandth",
         ],
         [
@@ -159,7 +159,7 @@ def test_array():
             "one thousand and one",
             "one, zero, zero, one",
             "ten, zero one",
-            "one zero zero, one",
+            "one, zero zero one",
             "one thousand and first",
         ],
         [
@@ -167,7 +167,7 @@ def test_array():
             "one thousand and ten",
             "one, zero, one, zero",
             "ten, ten",
-            "one zero one, zero",
+            "one, zero ten",
             "one thousand and tenth",
         ],
         [
@@ -175,7 +175,7 @@ def test_array():
             "one thousand, one hundred",
             "one, one, zero, zero",
             "eleven, zero zero",
-            "one ten, zero",
+            "one, one zero zero",
             "one thousand, one hundredth",
         ],
         [
@@ -183,15 +183,15 @@ def test_array():
             "two thousand",
             "two, zero, zero, zero",
             "twenty, zero zero",
-            "two zero zero, zero",
+            "two, zero zero zero",
             "two thousandth",
         ],
         [
             "10000",
             "ten thousand",
             "one, zero, zero, zero, zero",
-            "ten, zero zero, zero",
-            "one zero zero, zero zero",
+            "one, zero zero, zero zero",
+            "ten, zero zero zero",
             "ten thousandth",
         ],
         [
@@ -222,8 +222,8 @@ def test_array():
             "0123456",
             "one hundred and twenty-three thousand, four hundred and fifty-six",
             "zero, one, two, three, four, five, six",
-            "zero one, twenty-three, forty-five, six",
-            "zero twelve, three forty-five, six",
+            "zero, twelve, thirty-four, fifty-six",
+            "zero, one twenty-three, four fifty-six",
             "one hundred and twenty-three thousand, four hundred and fifty-sixth",
         ],
         [
@@ -233,8 +233,8 @@ def test_array():
                 "five hundred and sixty-seven"
             ),
             "one, two, three, four, five, six, seven",
-            "twelve, thirty-four, fifty-six, seven",
-            "one twenty-three, four fifty-six, seven",
+            "one, twenty-three, forty-five, sixty-seven",
+            "one, two thirty-four, five sixty-seven",
             (
                 "one million, two hundred and thirty-four thousand, "
                 "five hundred and sixty-seventh"
@@ -248,7 +248,7 @@ def test_array():
             ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
-            "one twenty-three, four fifty-six, seventy-eight",
+            "twelve, three forty-five, six seventy-eight",
             (
                 "twelve million, three hundred and forty-five thousand, "
                 "six hundred and seventy-eighth"
@@ -262,7 +262,7 @@ def test_array():
             ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
-            "one twenty-three, four fifty-six, seventy-eight",
+            "twelve, three forty-five, six seventy-eight",
         ],
         [
             "1234,5678",
@@ -272,7 +272,7 @@ def test_array():
             ),
             "one, two, three, four, five, six, seven, eight",
             "twelve, thirty-four, fifty-six, seventy-eight",
-            "one twenty-three, four fifty-six, seventy-eight",
+            "twelve, three forty-five, six seventy-eight",
         ],
         [
             "1234567890",
@@ -282,7 +282,7 @@ def test_array():
             ),
             "one, two, three, four, five, six, seven, eight, nine, zero",
             "twelve, thirty-four, fifty-six, seventy-eight, ninety",
-            "one twenty-three, four fifty-six, seven eighty-nine, zero",
+            "one, two thirty-four, five sixty-seven, eight ninety",
             (
                 "one billion, two hundred and thirty-four million, five hundred "
                 "and sixty-seven thousand, eight hundred and ninetieth"
@@ -300,8 +300,8 @@ def test_array():
                 "two, three, four, five"
             ),
             (
-                "twelve, thirty-four, fifty-six, seventy-eight, ninety, twelve, "
-                "thirty-four, five"
+                "one, twenty-three, forty-five, sixty-seven, eighty-nine, zero one, twenty-three, "
+                "forty-five"
             ),
             (
                 "one twenty-three, four fifty-six, seven eighty-nine, "
@@ -330,8 +330,8 @@ def test_array():
                 "thirty-four, fifty-six, seventy-eight, ninety"
             ),
             (
-                "one twenty-three, four fifty-six, seven eighty-nine, "
-                "zero twelve, three forty-five, six seventy-eight, ninety"
+                "twelve, three forty-five, six seventy-eight, nine zero one, two thirty-four, five "
+                "sixty-seven, eight ninety"
             ),
             (
                 "twelve quintillion, three hundred and forty-five quadrillion, "
@@ -362,8 +362,8 @@ def test_array():
             "9.87654",
             "nine point eight seven six five four",
             "nine, point, eight, seven, six, five, four",
-            "nine, point, eighty-seven, sixty-five, four",
-            "nine, point, eight seventy-six, fifty-four",
+            "nine, point, eight, seventy-six, fifty-four",
+            "nine, point, eighty-seven, six fifty-four",
             "ninth point eight seven six five four",
             "nine point eight seven six five fourth",
         ],
@@ -372,7 +372,7 @@ def test_array():
             "ninety-eight point seven six five four",
             "nine, eight, point, seven, six, five, four",
             "ninety-eight, point, seventy-six, fifty-four",
-            "ninety-eight, point, seven sixty-five, four",
+            "ninety-eight, point, seven, six fifty-four",
             "ninety-eighth point seven six five four",
             "ninety-eight point seven six five fourth",
         ],
@@ -380,7 +380,7 @@ def test_array():
             "987.654",
             "nine hundred and eighty-seven point six five four",
             "nine, eight, seven, point, six, five, four",
-            "ninety-eight, seven, point, sixty-five, four",
+            "nine, eighty-seven, point, six, fifty-four",
             "nine eighty-seven, point, six fifty-four",
             "nine hundred and eighty-seventh point six five four",
             "nine hundred and eighty-seven point six five fourth",
@@ -390,7 +390,7 @@ def test_array():
             "nine thousand, eight hundred and seventy-six point five four",
             "nine, eight, seven, six, point, five, four",
             "ninety-eight, seventy-six, point, fifty-four",
-            "nine eighty-seven, six, point, fifty-four",
+            "nine, eight seventy-six, point, fifty-four",
             "nine thousand, eight hundred and seventy-sixth point five four",
             "nine thousand, eight hundred and seventy-six point five fourth",
         ],
@@ -398,8 +398,8 @@ def test_array():
             "98765.4",
             "ninety-eight thousand, seven hundred and sixty-five point four",
             "nine, eight, seven, six, five, point, four",
-            "ninety-eight, seventy-six, five, point, four",
-            "nine eighty-seven, sixty-five, point, four",
+            "nine, eighty-seven, sixty-five, point, four",
+            "ninety-eight, seven sixty-five, point, four",
             "ninety-eight thousand, seven hundred and sixty-fifth point four",
             "ninety-eight thousand, seven hundred and sixty-five point fourth",
         ],
@@ -407,15 +407,15 @@ def test_array():
             "101.202.303",
             "one hundred and one point two zero two three zero three",
             "one, zero, one, point, two, zero, two, point, three, zero, three",
-            "ten, one, point, twenty, two, point, thirty, three",
+            "one, zero one, point, two, zero two, point, three, zero three",
             "one zero one, point, two zero two, point, three zero three",
         ],
         [
             "98765.",
             "ninety-eight thousand, seven hundred and sixty-five point",
             "nine, eight, seven, six, five, point",
-            "ninety-eight, seventy-six, five, point",
-            "nine eighty-seven, sixty-five, point",
+            "nine, eighty-seven, sixty-five, point",
+            "ninety-eight, seven sixty-five, point",
         ],
     ]
 
@@ -458,3 +458,17 @@ def test_issue_242():
             p.number_to_words(n)
     # A number just within range still converts.
     assert p.number_to_words(10**33) == "one decillion"
+
+
+def test_issue_217():
+    # Groups of digits are aligned from the right, so a three digit number
+    # with group=2 reads as "one, twenty-three" rather than "twelve, three".
+    p = inflect.engine()
+    assert p.number_to_words("123", group=2) == "one, twenty-three"
+    assert p.number_to_words("1234", group=2) == "twelve, thirty-four"
+    assert p.number_to_words("12345", group=2) == "one, twenty-three, forty-five"
+    assert p.number_to_words("98765", group=3) == "ninety-eight, seven sixty-five"
+    assert (
+        p.number_to_words("1234567", group=3)
+        == "one, two thirty-four, five sixty-seven"
+    )

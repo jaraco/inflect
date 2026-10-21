@@ -3864,13 +3864,11 @@ class engine:
 
         if group == 1:
             num = DIGIT_GROUP.sub(self.group1sub, num)
-        elif group == 2:
-            num = TWO_DIGITS.sub(self.group2sub, num)
-            num = DIGIT_GROUP.sub(self.group1bsub, num, 1)
-        elif group == 3:
-            num = THREE_DIGITS.sub(self.group3sub, num)
-            num = TWO_DIGITS.sub(self.group2sub, num, 1)
-            num = DIGIT_GROUP.sub(self.group1sub, num, 1)
+        elif group in (2, 3):
+            num = "".join(
+                self._render_group(part, group)
+                for part in _grouped_from_right(num, group)
+            )
         elif int(num) == 0:
             num = self._number_args["zero"]
         elif int(num) == 1:
@@ -3886,6 +3884,22 @@ class engine:
             num = TWO_DIGITS_WORD.sub(self.tensub, num, 1)
             num = ONE_DIGIT_WORD.sub(self.unitsub, num, 1)
         return num
+
+    def _render_group(self, part: str, group: int) -> str:
+        """
+        Render a single right-aligned digit group (1 to ``group`` digits).
+
+        A short leading group of a single digit is phrased differently for
+        ``group == 2`` than for ``group == 3``, preserving the historical
+        output (e.g. ``123`` with ``group=2`` reads as ``one, twenty-three``).
+        """
+        one_digit = self.group1bsub if group == 2 else self.group1sub
+        pattern, sub = {
+            1: (DIGIT_GROUP, one_digit),
+            2: (TWO_DIGITS, self.group2sub),
+            3: (THREE_DIGITS, self.group3sub),
+        }[len(part)]
+        return pattern.sub(sub, part)
 
     @staticmethod
     def _sub_ord(val):
