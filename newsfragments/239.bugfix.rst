@@ -1,0 +1,1 @@
+Common uncountable mass nouns (such as "equipment", "luggage", "baggage", "jewelry", "machinery", "cutlery", and "livestock") are now left unchanged by ``plural_noun`` instead of being incorrectly pluralized.

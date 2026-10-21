@@ -1,0 +1,1 @@
+``number_to_words`` now expands floats expressed in scientific notation (such as ``1e20`` or ``0.000001``) instead of mis-parsing the exponent.

@@ -1,0 +1,1 @@
+``ordinal`` now raises ``BadNumValueError`` for malformed numeric input such as "11 11" instead of leaking a bare ``ValueError``.

@@ -187,6 +187,23 @@ def test_ordinal():
     assert p.ordinal("one hundred and four") == "one hundred and fourth"
 
 
+def test_negative_ordinals():
+    # Negative numbers used to raise a TypeError (ints) or get a bare "th"
+    # suffix (strings); the suffix should follow the last digit. See #192.
+    p = inflect.engine()
+    assert p.ordinal(-1) == p.ordinal("-1") == "-1st"
+    assert p.ordinal(-2) == "-2nd"
+    assert p.ordinal(-3) == "-3rd"
+    assert p.ordinal(-4) == "-4th"
+    # ...teens still take "th".
+    assert p.ordinal(-11) == "-11th"
+    assert p.ordinal(-12) == "-12th"
+    assert p.ordinal(-13) == "-13th"
+    assert p.ordinal(-21) == "-21st"
+    assert p.ordinal(-22) == "-22nd"
+    assert p.ordinal(-113) == "-113th"
+
+
 def test_decimal_ordinals():
     """
     Capture expectation around ordinals for decimals.
@@ -200,6 +217,24 @@ def test_decimal_ordinals():
     assert p.ordinal("7.09") == "7.09th"
 
 
+def test_ordinal_malformed_input():
+    """
+    Malformed multi-token numeric input should raise the library's own
+    BadNumValueError, not a raw ValueError.
+
+    https://github.com/jaraco/inflect/issues/26
+    """
+    p = inflect.engine()
+
+    # unaffected, still-working cases
+    assert p.ordinal(11) == "11th"
+    assert p.ordinal("11") == "11th"
+    assert p.ordinal("11 ") == "11 th"
+
+    with pytest.raises(inflect.BadNumValueError):
+        p.ordinal("11 11")
+
+
 def test_prespart():
     p = inflect.engine()
     assert p.present_participle("sees") == "seeing"
@@ -208,6 +243,13 @@ def test_prespart():
     assert p.present_participle("hates") == "hating"
     assert p.present_participle("spies") == "spying"
     assert p.present_participle("skis") == "skiing"
+    # verbs ending in a vowel + "c" take a "k" before "-ing"
+    assert p.present_participle("panics") == "panicking"
+    assert p.present_participle("picnics") == "picnicking"
+    assert p.present_participle("traffics") == "trafficking"
+    assert p.present_participle("mimics") == "mimicking"
+    assert p.present_participle("be") == "being"
+    assert p.present_participle("is") == "being"
 
 
 def test_inflect_on_tuples():
@@ -227,14 +269,14 @@ def test_inflect_on_builtin_constants():
     assert (
         p.inflect("Plural of False is plural('False')") == "Plural of False is Falses"
     )
-    assert p.inflect("num(%d, False) plural('False')" % 10) == " Falses"
+    assert p.inflect("num(10, False) plural('False')") == " Falses"
 
     assert p.inflect("plural('True')") == "Trues"
-    assert p.inflect("num(%d, True) plural('False')" % 10) == "10 Falses"
-    assert p.inflect("num(%d, %r) plural('False')" % (10, True)) == "10 Falses"
+    assert p.inflect("num(10, True) plural('False')") == "10 Falses"
+    assert p.inflect(f"num(10, {True!r}) plural('False')") == "10 Falses"
 
     assert p.inflect("plural('None')") == "Nones"
-    assert p.inflect("num(%d, %r) plural('True')" % (10, None)) == "10 Trues"
+    assert p.inflect(f"num(10, {None!r}) plural('True')") == "10 Trues"
 
 
 def test_inflect_keyword_args():
@@ -253,6 +295,36 @@ def test_inflect_keyword_args():
         p.inflect("number_to_words('555_1202', group=1, zero='oh')")
         == "five, five, five, one, two, oh, two"
     )
+
+
+@pytest.mark.parametrize(
+    'text, expected',
+    (
+        ("number_to_words(-12)", "minus twelve"),
+        ("number_to_words(+12)", "twelve"),
+        ("number_to_words(-1.5)", "minus one point five"),
+        ("number_to_words(+1.5)", "one point five"),
+        ("number_to_words(num=-12)", "minus twelve"),
+        ("number_to_words(num=+12)", "twelve"),
+        ("plural('error', -2)", "errors"),
+        ("plural('error', count=+1)", "error"),
+        ("no('error', -2)", "-2 errors"),
+        ("num(-2, False)no('error')", "-2 errors"),
+        ("plural('error', [-2, +1])", "errors"),
+        ("plural('error', (-2, +1))", "errors"),
+    ),
+)
+def test_inflect_signed_numbers(text, expected):
+    p = inflect.engine()
+    p.num(3)
+    assert p.inflect(text) == expected
+    assert p.persistent_count == 3
+
+
+@pytest.mark.parametrize('value', ('-missing', "-'2'", '--2', '~2', '1 + 2'))
+def test_inflect_rejects_nonliteral_numbers(value):
+    with pytest.raises((AttributeError, ValueError)):
+        inflect.engine().inflect(f"number_to_words({value})")
 
 
 def test_NameError_in_strings():

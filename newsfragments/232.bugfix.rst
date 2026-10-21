@@ -1,0 +1,1 @@
+Numeric count values equal to ``1`` (such as ``1.0``) are now treated as singular.

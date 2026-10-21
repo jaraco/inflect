@@ -1,0 +1,1 @@
+Pluralizing a multi-word phrase whose word count changes during inflection (such as when a leading article is dropped) no longer raises an ``IndexError``. ``postprocess`` now restores word-wise capitalization by pairing original and inflected words rather than by index.

@@ -19,6 +19,10 @@ def test_compound_4():
     assert p.singular_noun("case of diapers") == "case of diapers"
 
 
+def test_singular_compound_with_singular_leader():
+    assert p.singular_noun("pair of scissors") == "pair of scissors"
+
+
 def test_unit_handling_degree():
     test_cases = {
         "degree celsius": "degrees celsius",
