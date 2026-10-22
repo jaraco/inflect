@@ -424,6 +424,7 @@
                lacuna  ->  lacunas|lacunae
       lady in waiting  ->  ladies in waiting
             Lapponese  ->  Lapponese
+                larva  ->  larvae
                larynx  ->  larynxes|larynges
                 latex  ->  latexes|latices
                lawman  ->  lawmen
@@ -625,6 +626,7 @@
                 radix  ->  radices
                ragman  ->  ragmen
                 rebus  ->  rebuses
+           referendum  ->  referendums|referenda
    TODO:siverb            rehoes  ->  rehoe
              reindeer  ->  reindeer
              repo      ->  repos
@@ -729,8 +731,10 @@
               surplus  ->  surpluses
             Swahilese  ->  Swahilese
                 swine  ->  swines|swine
+             syllabus  ->  syllabuses|syllabi
       TODO:singular_noun multiple return        syringe  ->  syringes
                syrinx  ->  syrinxes|syringes
+            symposium  ->  symposiums|symposia
               tableau  ->  tableaus|tableaux
                  taco  ->  tacos
               Tacoman  ->  Tacomans
@@ -745,6 +749,7 @@
       TODO:siadj           that  ->  those
       TODO:siadj          their  ->  their
            # POSSESSIVE FORM (GENDER-INCLUSIVE)
+            thesaurus  ->  thesauruses|thesauri
       TODO:singular_noun multiple return       themself  ->  themselves
            # ugly but gaining currency
       TODO:singular_noun multiple return           they  ->  they
