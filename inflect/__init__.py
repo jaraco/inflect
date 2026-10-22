@@ -14,7 +14,7 @@ methods:
     compare compare_nouns compare_verbs compare_adjs
     present_participle
     ordinal
-    number_to_words number_to_currency
+    number_to_words number_to_currency numbers_to_words
     join
     defnoun defverb defadj defa defan
 
@@ -36,7 +36,7 @@ ARTICLES:
     classical inflect num a an
 
 NUMERICAL:
-    ordinal number_to_words number_to_currency
+    ordinal number_to_words number_to_currency numbers_to_words
 
 USER_DEFINED:
     defnoun defverb defadj defa defan
@@ -2017,6 +2017,17 @@ NON_DIGIT = re.compile(r"\D")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
 WHITESPACES = re.compile(r"\s+")
+# A number in running text, with its sign, thousands separators and decimal
+# part or ordinal suffix, but not digits in a word (mp3) or a version (1.2.3).
+NUMBER_IN_TEXT = re.compile(
+    r"""
+    (?<![\w.])
+    (?P<number>[-+]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+(?!st|nd|rd|th))?)
+    (?P<ordinal>st|nd|rd|th)?
+    (?!\w|\.[0-9])
+    """,
+    re.VERBOSE,
+)
 
 
 def _grouped_from_right(digits: str, size: int = 3) -> Iterator[str]:
@@ -4085,6 +4096,35 @@ class engine:
         except (InvalidOperation, ValueError) as err:
             raise BadNumValueError from err
         return f"{self.number_to_words(whole, andword=andword)} and {cents}/100"
+
+    @typechecked
+    def numbers_to_words(
+        self, text: str, threshold: int | None = None, **kwargs: Any
+    ) -> str:
+        """
+        Return text with each number in it written out in words.
+
+        Digits that are part of a word, such as in 'mp3', or of a version,
+        such as '1.2.3', are left as they are.
+
+        threshold: numbers above it are left as they are
+        Other keyword arguments, except wantlist, are passed on to
+        number_to_words.
+
+        >>> numbers_to_words = engine().numbers_to_words
+        >>> numbers_to_words('In 2019, Mark saved $15 thousand.')
+        'In two thousand and nineteen, Mark saved $fifteen thousand.'
+        >>> numbers_to_words('the 3rd of 12 tracks', threshold=10)
+        'the third of 12 tracks'
+        """
+
+        def spell(match: Match[str]) -> str:
+            number = match["number"].replace(",", "")
+            if threshold is not None and float(number) > threshold:
+                return match.group()
+            return self.number_to_words(number + (match["ordinal"] or ""), **kwargs)
+
+        return NUMBER_IN_TEXT.sub(spell, text)
 
     @typechecked
     def join(
