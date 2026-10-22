@@ -2853,6 +2853,14 @@ class engine:
         except KeyError:
             pass
 
+        # Apply custom rules to the noun at the end of an ordinary phrase,
+        # after handling compounds whose head is elsewhere. A whole-phrase
+        # rule has already taken precedence above.
+        if self.pl_sb_user_defined and word.last != word:
+            value = self.ud_match(word.last, self.pl_sb_user_defined)
+            if value is not None:
+                return f"{word[: -len(word.last)]}{value}"
+
         # HANDLE ISOLATED IRREGULAR PLURALS
 
         if word.last in pl_sb_irregular_caps:
