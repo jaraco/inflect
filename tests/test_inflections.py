@@ -215,6 +215,17 @@ def test_decimal_ordinals():
     p = inflect.engine()
     assert p.ordinal("1.23") == "1.23rd"
     assert p.ordinal("7.09") == "7.09th"
+    # a float holding a whole number is no exception (#192)
+    assert p.ordinal(1.0) == p.ordinal("1.0") == "1.0th"
+    assert p.ordinal(2.0) == "2.0th"
+    assert p.ordinal(-1.0) == p.ordinal("-1.0") == "-1.0th"
+
+
+@pytest.mark.parametrize("num", ["1.", "-1."])
+def test_ordinal_without_decimal_digits(num):
+    # no digit after the decimal point to choose the suffix from (#192)
+    with pytest.raises(inflect.BadNumValueError):
+        inflect.engine().ordinal(num)
 
 
 def test_ordinal_malformed_input():
