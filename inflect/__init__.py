@@ -341,6 +341,7 @@ pl_sb_C_a_ata_list = (
 pl_sb_U_a_ae_list = (
     "alumna",
     "alga",
+    "larva",
     "vertebra",
     "persona",
     "vita",
@@ -432,6 +433,8 @@ pl_sb_C_um_a_list = (
     "interregnum",
     "lustrum",
     "memorandum",
+    "referendum",
+    "symposium",
     "millennium",
     "rostrum",
     "spectrum",
@@ -491,6 +494,8 @@ pl_sb_C_us_i_list = (
     "uterus",
     "hippopotamus",
     "cactus",
+    "syllabus",
+    "thesaurus",
 )
 
 (
