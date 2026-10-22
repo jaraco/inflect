@@ -3744,20 +3744,8 @@ class engine:
             str_num.startswith("-") and DIGIT.match(str_num[1:])
         ):
             try:
-                if isinstance(num, (float, int)) and int(num) == num:
-                    n = int(num)
-                else:
-                    if "." in str_num:
-                        try:
-                            # numbers after decimal,
-                            # so only need last one for ordinal
-                            n = int(str_num[-1])
-
-                        except ValueError:
-                            # ends with '.', so need to use whole string
-                            n = int(str_num[:-1])
-                    else:
-                        n = int(num)  # type: ignore[arg-type]
+                # after a decimal point, only the last digit sets the suffix
+                n = int(str_num[-1] if "." in str_num else num)  # type: ignore[arg-type]
             except ValueError as err:
                 raise BadNumValueError from err
             # ``abs`` so the suffix of a negative number is based on its last
