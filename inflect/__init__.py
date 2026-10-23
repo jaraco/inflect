@@ -2907,7 +2907,7 @@ class engine:
         if word.lowered[-4:] == "foot":
             return f"{word[:-4]}feet"
         if word.lowered[-4:] == "taco":
-            return f"{word[:-5]}tacos"
+            return f"{word}s"
 
         if word.lowered == "die":
             return "dice"

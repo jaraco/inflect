@@ -1,3 +1,5 @@
+import pytest
+
 import inflect
 
 p = inflect.engine()
@@ -84,6 +86,27 @@ def test_capitalized_compound_with_lowercase_y_ending():
     assert p.plural("Old technology") == "Old technologies"
     assert p.plural_noun("Old technology") == "Old technologies"
     assert p.plural("Old Mary") == "Old Marys"
+
+
+@pytest.mark.parametrize('method', ['plural', 'plural_noun'])
+@pytest.mark.parametrize(
+    'singular, plural',
+    [
+        ('taco', 'tacos'),
+        ('TACO', 'TACOS'),
+        ('fish taco', 'fish tacos'),
+        ('beef taco', 'beef tacos'),
+        ('breakfast taco', 'breakfast tacos'),
+        ('soft-shell taco', 'soft-shell tacos'),
+        ('Fish Taco', 'Fish Tacos'),
+        ('  fish taco\t', '  fish tacos\t'),
+    ],
+)
+def test_taco_compound_prefix(method, singular, plural):
+    pluralize = getattr(inflect.engine(), method)
+    assert pluralize(singular) == plural
+    assert pluralize(singular, 1) == singular
+    assert pluralize(singular, 2) == plural
 
 
 def test_unit_open_compound_nouns_classical():
