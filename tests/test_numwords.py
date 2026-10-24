@@ -462,6 +462,25 @@ def test_issue_242():
     assert p.number_to_words(10**33) == "one decillion"
 
 
+@pytest.mark.parametrize(
+    "num",
+    [
+        float("inf"),
+        float("-inf"),
+        float("nan"),
+        Decimal("Infinity"),
+        Decimal("-Infinity"),
+        Decimal("NaN"),
+        Decimal("sNaN"),
+    ],
+)
+def test_number_to_words_non_finite(num):
+    # Non-finite numbers have no digits to spell, so they must raise
+    # rather than silently read as "zero".
+    with pytest.raises(inflect.BadNumValueError):
+        inflect.engine().number_to_words(num)
+
+
 def test_number_to_currency():
     p = inflect.engine()
     assert (

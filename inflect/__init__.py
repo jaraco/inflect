@@ -3963,6 +3963,13 @@ class engine:
         self._number_args = {"andword": andword, "zero": zero, "one": one}
         num_is_number = isinstance(num, Number)
         num = str(num)
+        if num_is_number and num.lower().lstrip("+-") in (
+            "inf",
+            "infinity",
+            "nan",
+            "snan",
+        ):
+            raise BadNumValueError(f"cannot convert {num} to words")
         if num_is_number and "e" in num.lower():
             num = format(Decimal(num), "f")
 
