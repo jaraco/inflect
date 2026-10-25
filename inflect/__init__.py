@@ -987,7 +987,6 @@ pl_sb_uninflected_complete = [
     "whiting",
     "moose",
     # OTHER ODDITIES
-    "graffiti",
     "djinn",
     "samuri",
     "offspring",
