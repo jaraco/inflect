@@ -502,3 +502,25 @@ def test_issue_217():
         p.number_to_words("1234567", group=3)
         == "one, two thirty-four, five sixty-seven"
     )
+
+
+@pytest.mark.parametrize("num", [float("inf"), float("-inf"), float("nan")])
+def test_number_to_words_rejects_non_representable_floats(num):
+    # Previously these silently fell through to "zero" because str(num)
+    # (e.g. "inf"/"nan") got stripped of all non-digit characters.
+    p = inflect.engine()
+    with pytest.raises(ValueError):
+        p.number_to_words(num)
+
+
+def test_number_to_words_still_handles_normal_numbers():
+    p = inflect.engine()
+    assert p.number_to_words(0) == "zero"
+    assert p.number_to_words(-5) == "minus five"
+    assert p.number_to_words(3.14) == "three point one four"
+    assert (
+        p.number_to_words(123456789)
+        == "one hundred and twenty-three million, "
+        "four hundred and fifty-six thousand, "
+        "seven hundred and eighty-nine"
+    )
