@@ -1,0 +1,1 @@
+Handle the Latin plurals of larva, referendum, syllabus, symposium, and thesaurus.
