@@ -2416,16 +2416,17 @@ class engine:
 
         # Try to fix word wise capitalization by restoring each inflected
         # word's case from the original word it came from. Inflecting a phrase
-        # can change the number of words (e.g. "a cat" -> "cats" drops the
-        # article), so pair the words positionally only as far as they align
-        # and leave any surplus inflected words untouched rather than indexing
-        # past the end of either sequence.
+        # can change the number of words (e.g. "City on a Hill" ->
+        # "Citys on Hills" drops the article). Positional pairing would then
+        # misalign and mangle the case of unrelated words (#301), and the
+        # recursive calls that produced the inflected words already restored
+        # their case, so return them untouched.
         originals = orig.split(" ")
-        recased = (
+        if len(originals) != len(result):
+            return " ".join(result)
+        return " ".join(
             self._recase(original, word) for original, word in zip(originals, result)
         )
-        surplus = result[len(originals) :]
-        return " ".join(itertools.chain(recased, surplus))
 
     def _recase(self, original: str, inflected: str) -> str:
         """
