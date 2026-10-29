@@ -2421,13 +2421,15 @@ class engine:
         # misalign and mangle the case of unrelated words (#301), and the
         # recursive calls that produced the inflected words already restored
         # their case, so return them untouched.
-        originals = orig.split(" ")        if len(originals) != len(result):
+        originals = orig.split(" ")
+        if len(originals) != len(result):
             return " ".join(result)
         return " ".join(
             self._recase(original, word) for original, word in zip(originals, result)
         )
 
-    def _recase(self, original: str, inflected: str) -> str:        """
+    def _recase(self, original: str, inflected: str) -> str:
+        """
         Return ``inflected`` recased to match the case of ``original``.
         """
         if original in self.pl_sb_preserve_case:
