@@ -59,6 +59,7 @@ import collections
 import contextlib
 import functools
 import itertools
+import math
 import re
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
@@ -3960,6 +3961,9 @@ class engine:
 
         parameters not remembered from last call. Departure from Perl version.
         """
+        if isinstance(num, float) and (math.isnan(num) or math.isinf(num)):
+            raise ValueError(f"number_to_words() got un-representable value: {num!r}")
+
         self._number_args = {"andword": andword, "zero": zero, "one": one}
         num_is_number = isinstance(num, Number)
         num = str(num)
