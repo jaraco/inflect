@@ -98,3 +98,18 @@ def test_unit_open_compound_nouns_classical():
     for singular, plural in test_cases.items():
         assert p.plural(singular) == plural
     p.classical(all=False)
+
+
+def test_plural_phrase_preserves_case_when_word_count_changes():
+    # The dual-compound path drops the article ("1 Day At A Time" inflects to
+    # one fewer word), so word-wise recasing must not pair "A" with "Times"
+    # and upper-case it (#301).
+    assert p.plural("1 Day At A Time") == "1 Days At Times"
+
+
+def test_plural_phrase_word_count_change_keeps_inner_casing():
+    # Behavior unchanged by #301: capitalized words are pluralized as
+    # proper nouns and the article is dropped, but casing is preserved.
+    assert p.plural("The Cat on a Mat") == "The Cats on Mats"
+    assert p.plural("day at a time") == "days at times"
+    assert p.plural("jack in a box") == "jacks in boxes"
