@@ -18,6 +18,15 @@ def test_an():
     assert p.an("Unabomber") == "a Unabomber"
     assert p.an("unanimous decision") == "a unanimous decision"
     assert p.an("US farmer") == "a US farmer"
+    assert p.an("USB cable") == "a USB cable"
+    assert p.an("USSR flag") == "a USSR flag"
+    # "US" is a capitalized acronym; it must not swallow the "us" prefix of
+    # ordinary vowel-sounded words that happen to start with those letters.
+    assert p.an("usher") == "an usher"
+    assert p.an("usherette") == "an usherette"
+    # Genuine "you-" sounded words beginning "us" still take "a".
+    assert p.an("useful tool") == "a useful tool"
+    assert p.an("usurper") == "a usurper"
     assert p.an("wild PIKACHU appeared") == "a wild PIKACHU appeared"
 
 
