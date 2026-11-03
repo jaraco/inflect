@@ -1879,6 +1879,12 @@ A_ordinal_an = re.compile(r"^([aefhilmnorsx]-?th)", re.IGNORECASE)
 
 A_ordinal_a = re.compile(r"^([bcdgjkpqtuvwyz]-?th)", re.IGNORECASE)
 
+# NUMBERS WRITTEN IN DIGITS: "an" BEFORE ONE SAID WITH AN INITIAL VOWEL,
+# THAT IS ANY NUMBER STARTING WITH 8 ("an 8", "an 80", "an 8th") AND ONE
+# READ AS "eleven ..." OR "eighteen ..." (11, 18, 11,000, 18000000, 11.5).
+
+A_digits_an = re.compile(r"^(?:8|1[18](?:,?\d{3})*(?!,?\d))")
+
 
 # NUMERICAL INFLECTIONS
 
@@ -3617,6 +3623,8 @@ class engine:
     an = a
 
     _indef_article_cases = (
+        # HANDLE NUMBERS IN DIGIT FORM
+        (A_digits_an, "an"),
         # HANDLE ORDINAL FORMS
         (A_ordinal_a, "a"),
         (A_ordinal_an, "an"),
