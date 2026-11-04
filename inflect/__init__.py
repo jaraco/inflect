@@ -2464,7 +2464,7 @@ class engine:
 
         """
         pre, word, post = self.partition_word(text)
-        if not word:
+        if not word or not word.split():
             return text
         plural = self.postprocess(
             word,
@@ -2488,7 +2488,7 @@ class engine:
 
         """
         pre, word, post = self.partition_word(text)
-        if not word:
+        if not word or not word.split():
             return text
         plural = self.postprocess(word, self._plnoun(word, count))
         return f"{pre}{plural}{post}"
