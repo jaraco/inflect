@@ -338,3 +338,12 @@ def get_data():
     filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
     with open(filename, encoding='utf-8') as strm:
         return list(map(str.strip, strm))
+
+def test_special_character_strings_do_not_raise():
+    p = inflect.engine()
+    for text in (" ", "   ", "\t", "'s", "!", "@#$"):
+        assert p.plural(text) is not None
+        assert p.plural_noun(text) is not None
+    for text in (" ", "   ", "\t"):
+        assert p.plural(text) == text
+        assert p.plural_noun(text) == text
