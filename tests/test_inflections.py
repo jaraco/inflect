@@ -338,3 +338,11 @@ def get_data():
     filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
     with open(filename, encoding='utf-8') as strm:
         return list(map(str.strip, strm))
+
+
+def test_graffiti_singular_and_plural():
+    p = inflect.engine()
+    assert p.plural("graffito") == "graffiti"
+    assert p.singular_noun("graffiti") == "graffito"
+    assert p.compare("graffito", "graffiti") == "s:p"
+    assert p.compare("graffiti", "graffito") == "p:s"

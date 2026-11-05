@@ -318,8 +318,7 @@
                 goose  ->  geese
     TODO:singular_noun Governor General  ->  Governors General
                   goy  ->  goys|goyim
-             graffiti  ->  graffiti
-    TODO:singular_noun 2 diff ret values         graffito  ->  graffiti
+             graffito  ->  graffiti
               grizzly  ->  grizzlies
                 guano  ->  guanos
             guardsman  ->  guardsmen

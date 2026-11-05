@@ -1,0 +1,1 @@
+Fixed singular_noun('graffiti') to return 'graffito' by removing 'graffiti' from the uninflected nouns, since it is already listed as the plural of 'graffito'.
