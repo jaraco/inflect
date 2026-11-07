@@ -1,0 +1,1 @@
+Document the ``classical(names=False)`` option for pluralizing capitalized common nouns.
