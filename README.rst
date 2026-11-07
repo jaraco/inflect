@@ -305,6 +305,28 @@ Other options for classical plurals:
     p.classical(ancient=True)  # "2 formulae" INSTEAD OF "2 formulas"
     p.classical(ancient=False)  # "2 formulas" INSTEAD OF "2 formulae"
 
+    p.classical(names=True)  # "Sallys" INSTEAD OF "Sallies" (the default)
+    p.classical(names=False)  # "Sallies" INSTEAD OF "Sallys"
+
+The ``names`` mode is enabled by default. It preserves the final ``y`` in
+capitalized words such as proper names, so a capitalized common noun like
+``Property`` also becomes ``Propertys``. Disable this mode when pluralizing
+capitalized common nouns:
+
+.. code-block:: python
+
+    >>> common_nouns = inflect.engine()
+    >>> common_nouns.plural("Property")
+    'Propertys'
+    >>> common_nouns.classical(names=False)
+    >>> common_nouns.plural("Property")
+    'Properties'
+    >>> common_nouns.plural_noun("Property")
+    'Properties'
+
+This setting applies to the whole engine, including names such as ``Sally``.
+Use separate engines if you need both behaviors.
+
 
 Support for interpolation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
