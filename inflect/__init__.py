@@ -15,6 +15,7 @@ methods:
     present_participle
     ordinal
     number_to_words number_to_currency
+    date_diff
     join
     defnoun defverb defadj defa defan
 
@@ -61,6 +62,7 @@ import functools
 import itertools
 import re
 from collections.abc import Callable, Iterable, Iterator, Sequence
+from datetime import timedelta
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from numbers import Number
 from re import Match
@@ -4085,6 +4087,53 @@ class engine:
         except (InvalidOperation, ValueError) as err:
             raise BadNumValueError from err
         return f"{self.number_to_words(whole, andword=andword)} and {cents}/100"
+
+    @typechecked
+    def date_diff(
+        self,
+        delta: timedelta | float,
+        fmt: Callable[[timedelta], str] | None = None,
+    ) -> str:
+        """
+        Inflect a time difference as 'before', 'after', or 'at'.
+
+        ``delta`` is a timedelta or a number of seconds (int or float).
+        Numeric inputs use timedelta's range and microsecond rounding.
+        A difference that rounds to zero returns 'at'.
+
+        By default, format the magnitude as HH:MM:SS, with at least two
+        hour digits and six fractional digits when microseconds are nonzero.
+        Hours include complete days, so they may exceed 23.
+
+        If supplied, ``fmt`` is called once with the positive timedelta and
+        must return a string. It is not called for zero. Exceptions raised
+        by the formatter propagate to the caller.
+
+        >>> date_diff = engine().date_diff
+        >>> date_diff(timedelta(minutes=-30))
+        '00:30:00 before'
+        >>> date_diff(5)
+        '00:00:05 after'
+        >>> date_diff(0)
+        'at'
+        >>> date_diff(timedelta(days=1, microseconds=1))
+        '24:00:00.000001 after'
+        >>> date_diff(-5, fmt=lambda duration: f'{duration.seconds} seconds')
+        '5 seconds before'
+        """
+        duration = delta if isinstance(delta, timedelta) else timedelta(seconds=delta)
+        if not duration:
+            return 'at'
+        direction = 'before' if duration < timedelta() else 'after'
+        formatter = self._format_duration if fmt is None else fmt
+        return formatter(abs(duration)) + ' ' + direction
+
+    @staticmethod
+    def _format_duration(duration: timedelta) -> str:
+        hours, remainder = divmod(duration.days * 86400 + duration.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        fraction = f'.{duration.microseconds:06d}' if duration.microseconds else ''
+        return f'{hours:02d}:{minutes:02d}:{seconds:02d}{fraction}'
 
     @typechecked
     def join(
