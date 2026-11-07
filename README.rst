@@ -56,6 +56,7 @@ Methods
 - ``a``, ``an``
 - ``present_participle``
 - ``ordinal``, ``number_to_words``, ``number_to_currency``
+- ``date_diff``
 - ``join``
 - ``inflect``, ``classical``, ``gender``
 - ``defnoun``, ``defverb``, ``defadj``, ``defa``, ``defan``
@@ -699,6 +700,48 @@ Note too that, although the comparison is "number-insensitive" it is *not*
 case-insensitive (that is, ``plural("time","Times")`` returns false. To obtain
 both number and case insensitivity, use the ``lower()`` method on both strings
 (that is, ``plural("time".lower(), "Times".lower())`` returns true).
+
+
+Time differences
+----------------
+
+Use ``date_diff(delta, fmt=None)`` to describe a difference relative to a
+reference time:
+
+.. code-block:: python
+
+    from datetime import timedelta
+
+    p.date_diff(timedelta(minutes=-30))  # '00:30:00 before'
+    p.date_diff(5)  # '00:00:05 after'
+    p.date_diff(0)  # 'at'
+
+The input is a ``timedelta`` or an ``int`` or ``float`` number of seconds.
+Numeric inputs follow ``timedelta(seconds=...)``, including its range,
+exceptions, and rounding to the nearest microsecond. A value that rounds to
+zero produces ``'at'``.
+
+The default format is ``HH:MM:SS``, with at least two hour digits. Hours
+include complete days: a difference of one day produces ``'24:00:00 after'``.
+Nonzero microseconds are retained as six fractional digits, for example
+``'00:00:00.125000 before'`` for ``-0.125`` seconds.
+
+Pass ``fmt`` to supply a different duration format. The callable receives the
+positive ``timedelta`` once and must return a string; ``date_diff`` appends the
+direction. For example:
+
+.. code-block:: python
+
+    def nice_time(duration):
+        count = int(duration.total_seconds())
+        return f"{p.number_to_words(count)} {p.plural('second', count)}"
+
+    p.date_diff(-5, fmt=nice_time)  # 'five seconds before'
+    p.date_diff(1, fmt=nice_time)  # 'one second after'
+    p.date_diff(0, fmt=nice_time)  # 'at'
+
+The formatter is not called for zero, and any exception it raises propagates
+to the caller.
 
 Related Functionality
 =====================

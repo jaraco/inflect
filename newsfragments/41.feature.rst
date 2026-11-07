@@ -1,0 +1,2 @@
+Add ``engine.date_diff`` to describe signed time differences as before, after,
+or at a reference time, with an optional duration formatter.
