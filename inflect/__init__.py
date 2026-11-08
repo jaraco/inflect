@@ -2005,6 +2005,27 @@ ARTICLE_SPECIAL_UNIT = re.compile(r"^uni([^nmd]|mo)", re.IGNORECASE)
 ARTICLE_SPECIAL_UBA = re.compile(r"^u[bcfghjkqrst][aeiou]", re.IGNORECASE)
 ARTICLE_SPECIAL_UKR = re.compile(r"^ukr", re.IGNORECASE)
 SPECIAL_CAPITALS = re.compile(r"^U[NK][AIEO]?")
+
+# UPPERCASE ACRONYMS SPOKEN LETTER-BY-LETTER ("YOU ..."): URL, UDP, UML,
+# UTF, UPS, UCLA, UHF, UI, UUID, UX.  ALL-CAPS WORDS SUCH AS UPDATE, URN,
+# URGE AND UGLY TAKE "AN" (VOWEL SOUND), SO THEIR CONSONANT PAIRS (PD, RN,
+# RG, GL...) ARE NOT MATCHED - ONLY THE LISTED PAIRS ARE.
+SPECIAL_CAPITALS_U = re.compile(
+    r"""
+^U(?:
+    T[BCDFGHJKLMNPQRSTVWXZ]      # UTF
+  | D[BCDFGHJKLMNPQRSTVWXZ]      # UDP
+  | M[BCDFGHJKLMNPQRSTVWXZ]      # UML
+  | C[BCDFGHJKLMNPQRSTVWXZ]      # UCLA
+  | H[BCDFGHJKLMNPQRSTVWXZ]      # UHF
+  | RL                           # URL
+  | PS                           # UPS
+  | U?I                          # UI, UUID
+  | X                            # UX
+)
+""",
+    re.VERBOSE,
+)
 VOWELS = re.compile(r"^[aeiou]", re.IGNORECASE)
 
 DIGIT_GROUP = re.compile(r"(\d)")
@@ -3640,6 +3661,7 @@ class engine:
         (A_explicit_a, "a"),
         # HANDLE SPECIAL CAPITALS
         (SPECIAL_CAPITALS, "a"),
+        (SPECIAL_CAPITALS_U, "a"),
         # HANDLE VOWELS
         (VOWELS, "an"),
         # HANDLE y...

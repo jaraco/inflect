@@ -27,3 +27,25 @@ def test_an_abbreviation():
     assert p.an("YAML code block") == "a YAML code block"
     assert p.an("Core ML function") == "a Core ML function"
     assert p.an("JSON code block") == "a JSON code block"
+
+
+def test_an_u_acronyms():
+    p = inflect.engine()
+
+    # Acronyms spoken letter-by-letter take "a" (issue #309).
+    assert p.a("UI") == "a UI"
+    assert p.a("URL") == "a URL"
+    assert p.a("UUID") == "a UUID"
+    assert p.a("UDP") == "a UDP"
+    assert p.a("UML") == "a UML"
+    assert p.a("UTF-8") == "a UTF-8"
+    assert p.a("UX") == "a UX"
+    assert p.a("UCLA") == "a UCLA"
+    assert p.a("UHF") == "a UHF"
+    assert p.a("UPS") == "a UPS"
+
+    # All-caps words keep "an".
+    assert p.a("UPDATE") == "an UPDATE"
+    assert p.a("URN") == "an URN"
+    assert p.a("URGE") == "an URGE"
+    assert p.a("UGLY") == "an UGLY"
