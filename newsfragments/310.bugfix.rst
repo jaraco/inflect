@@ -1,0 +1,1 @@
+Correct the default plural of "thief" to "thieves".

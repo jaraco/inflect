@@ -334,6 +334,15 @@ def test_NameError_in_strings():
         p.inflect("plural(two)")
 
 
+@pytest.mark.parametrize('classical', (False, True))
+def test_thief_plural(classical):
+    p = inflect.engine()
+    p.classical(all=classical)
+    assert p.plural('thief') == 'thieves'
+    assert p.plural_noun('thief') == 'thieves'
+    assert p.singular_noun('thieves') == 'thief'
+
+
 def get_data():
     filename = os.path.join(os.path.dirname(__file__), "inflections.txt")
     with open(filename, encoding='utf-8') as strm:
