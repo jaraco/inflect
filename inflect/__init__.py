@@ -205,7 +205,7 @@ pl_sb_irregular = {
     "lore": "lores|lore",
     "hoof": "hoofs|hooves",
     "beef": "beefs|beeves",
-    "thief": "thiefs|thieves",
+    "thief": "thieves",
     "money": "monies",
     "mongoose": "mongooses",
     "ox": "oxen",
