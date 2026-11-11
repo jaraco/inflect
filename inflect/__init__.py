@@ -205,7 +205,7 @@ pl_sb_irregular = {
     "lore": "lores|lore",
     "hoof": "hoofs|hooves",
     "beef": "beefs|beeves",
-    "thief": "thiefs|thieves",
+    "thief": "thieves",
     "money": "monies",
     "mongoose": "mongooses",
     "ox": "oxen",
@@ -2313,7 +2313,7 @@ class engine:
         """
         if isinstance(obj, ast.Constant):
             return obj.value
-        elif isinstance(obj, ast.UnaryOp) and isinstance(obj.op, (ast.UAdd, ast.USub)):
+        elif isinstance(obj, ast.UnaryOp) and isinstance(obj.op, ast.UAdd | ast.USub):
             return ast.literal_eval(obj)
         elif isinstance(obj, ast.List):
             return [self._get_value_from_ast(e) for e in obj.elts]
@@ -3744,7 +3744,7 @@ class engine:
             str_num.startswith("-") and DIGIT.match(str_num[1:])
         ):
             try:
-                if isinstance(num, (float, int)) and int(num) == num:
+                if isinstance(num, float | int) and int(num) == num:
                     n = int(num)
                 else:
                     if "." in str_num:

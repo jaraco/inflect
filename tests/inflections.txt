@@ -749,7 +749,7 @@
            # ugly but gaining currency
       TODO:singular_noun multiple return           they  ->  they
            # for indeterminate gender
-                thief  ->  thiefs|thieves
+                thief  ->  thieves
       TODO:siadj           this  ->  these
               thought  ->  thoughts                       # NOUN FORM
               thought  ->  thought                        # VERB FORM
