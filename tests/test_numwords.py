@@ -60,6 +60,24 @@ def test_scientific_notation_float():
     assert p.number_to_words(1e20) == "one hundred quintillion"
 
 
+@pytest.mark.parametrize(
+    "num, words",
+    [
+        ("1e3", "one thousand"),
+        ("10e6", "ten million"),
+        ("1.5e3", "one thousand, five hundred"),
+        ("1.0e3", "one thousand"),
+        ("-1e3", "minus one thousand"),
+        ("+1e3", "plus one thousand"),
+        ("2E2", "two hundred"),
+        ("1e-3", "zero point zero zero one"),
+    ],
+)
+def test_scientific_notation_string(num, words):
+    p = inflect.engine()
+    assert p.number_to_words(num) == words
+
+
 def test_array():
     nw = [
         ["0", "zero", "zero", "zero", "zero", "zeroth"],
