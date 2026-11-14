@@ -1,0 +1,1 @@
+Apply user-defined noun rules to the final noun of an ordinary phrase, so a custom rule for "jeans" also applies to "blue jeans". Whole-phrase rules and special compound-head handling retain precedence.
