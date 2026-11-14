@@ -2014,6 +2014,7 @@ THREE_DIGITS_WORD = re.compile(r"(\d)(\d)(\d)(?=\D*\Z)")
 TWO_DIGITS_WORD = re.compile(r"(\d)(\d)(?=\D*\Z)")
 ONE_DIGIT_WORD = re.compile(r"(\d)(?=\D*\Z)")
 NON_DIGIT = re.compile(r"\D")
+SCIENTIFIC_NOTATION = re.compile(r"\s*(?P<sign>[+-]?)(\d+\.?\d*|\.\d+)[eE][+-]?\d+\s*")
 WHITESPACES_COMMA = re.compile(r"\s+,")
 COMMA_WORD = re.compile(r", (\S+)\s+\Z")
 WHITESPACES = re.compile(r"\s+")
@@ -3965,6 +3966,8 @@ class engine:
         num = str(num)
         if num_is_number and "e" in num.lower():
             num = format(Decimal(num), "f")
+        elif match := SCIENTIFIC_NOTATION.fullmatch(num):
+            num = match["sign"] + format(abs(Decimal(num)), "f")
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:

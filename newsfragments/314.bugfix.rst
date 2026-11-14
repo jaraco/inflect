@@ -1,0 +1,1 @@
+``number_to_words`` now expands strings written in scientific notation (such as ``"1e3"``) instead of joining the digits around the exponent.
