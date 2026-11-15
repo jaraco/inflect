@@ -54,6 +54,20 @@ def test_lines():
     )
 
 
+def test_threshold_ordinal_and_grouped_strings():
+    """
+    number_to_words accepts ordinals and grouped digits, including with a threshold.
+    """
+    p = inflect.engine()
+    assert p.number_to_words(p.ordinal(5), threshold=10) == "fifth"
+    assert p.number_to_words(p.ordinal(12), threshold=10) == "12th"
+    assert p.number_to_words("1234th", threshold=10) == "1,234th"
+    assert p.number_to_words("1,000", threshold=10) == "1,000"
+    assert p.number_to_words("1,000", threshold=10, comma=0) == "1000"
+    assert p.number_to_words("1,234.5", threshold=10) == "1,234.5"
+    assert p.number_to_words("1,000", threshold=1000) == "one thousand"
+
+
 def test_scientific_notation_float():
     p = inflect.engine()
     assert p.number_to_words(0.000001) == "zero point zero zero zero zero zero one"
