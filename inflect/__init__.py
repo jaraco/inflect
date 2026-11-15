@@ -1589,6 +1589,12 @@ si_sb_es_is = (
     "urinalyses",
 )
 
+# SINGULAR WORDS ENDING IN is WHOSE PLURALS END IN es (e.g. analysis, analyses)
+si_sb_is_singular_complete = [f"{w[:-2]}is" for w in si_sb_es_is] + [
+    "basis",
+    "metropolis",
+]
+
 pl_prep_list = """
     about above across after among around at athwart before behind
     below beneath beside besides between betwixt beyond but by
@@ -3330,6 +3336,16 @@ class engine:
                 functools.partial(self._sinoun, count=1, gender=gender),
                 '-',
             )
+
+        # SINGULAR WORDS ENDING IN s ARE ALREADY SINGULAR (e.g. alias, analysis)
+        # Compounds reach this check through the recursion above, so it only
+        # ever applies to the noun being inflected, not a phrase's tail word.
+
+        if words.last.lower() in pl_sb_singular_s_complete:
+            return False
+
+        if words.last.lower() in si_sb_is_singular_complete:
+            return False
 
         # HANDLE PRONOUNS
 
