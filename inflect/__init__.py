@@ -3967,14 +3967,16 @@ class engine:
             num = format(Decimal(num), "f")
 
         # Handle "stylistic" conversions (up to a given threshold)...
-        if threshold is not None and float(num) > threshold:
-            spnum = num.split(".", 1)
-            if comma:
-                spnum[0] = _group_thousands(spnum[0], comma)
-            try:
-                return f"{spnum[0]}.{spnum[1]}"
-            except IndexError:
-                return str(spnum[0])
+        if threshold is not None:
+            # Look past an ordinal suffix ("12th") and thousands
+            # separators ("1,000"), which number_to_words also accepts.
+            suffix = num[-2:] if num[-2:] in nth_suff else ""
+            numeral = num[: len(num) - len(suffix)].replace(",", "")
+            if float(numeral) > threshold:
+                spnum = numeral.split(".", 1)
+                if comma:
+                    spnum[0] = _group_thousands(spnum[0], comma)
+                return ".".join(spnum) + suffix
 
         if group < 0 or group > 3:
             raise BadChunkingOptionError
