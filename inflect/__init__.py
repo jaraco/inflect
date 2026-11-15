@@ -3317,14 +3317,6 @@ class engine:
         if words.last.lower() in pl_sb_C_us_us:
             return word if self.classical_dict["ancient"] else False
 
-        # SINGULAR WORDS ENDING IN s ARE ALREADY SINGULAR (e.g. alias, analysis)
-
-        if words.last.lower() in pl_sb_singular_s_complete:
-            return False
-
-        if words.last.lower() in si_sb_is_singular_complete:
-            return False
-
         # HANDLE COMPOUNDS ("Governor General", "mother-in-law", "aide-de-camp", ETC.)
 
         mo = PL_SB_POSTFIX_ADJ_STEMS_RE.search(word)
@@ -3344,6 +3336,16 @@ class engine:
                 functools.partial(self._sinoun, count=1, gender=gender),
                 '-',
             )
+
+        # SINGULAR WORDS ENDING IN s ARE ALREADY SINGULAR (e.g. alias, analysis)
+        # Compounds reach this check through the recursion above, so it only
+        # ever applies to the noun being inflected, not a phrase's tail word.
+
+        if words.last.lower() in pl_sb_singular_s_complete:
+            return False
+
+        if words.last.lower() in si_sb_is_singular_complete:
+            return False
 
         # HANDLE PRONOUNS
 

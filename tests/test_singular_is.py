@@ -75,3 +75,18 @@ def test_plural_of_is_singulars_unchanged(singular, plural):
     """The -is singulars keep their existing -es plurals."""
     p = inflect.engine()
     assert p.plural(singular) == plural
+
+
+# Plural-head compounds with a singular tail must still singularize the head;
+# the already-singular guard must not short-circuit on the phrase's last word.
+COMPOUND_HEAD_PAIRS = [
+    ("analyses of gas", "analysis of gas"),
+    ("collections of canvas", "collection of canvas"),
+    ("lenses for analysis", "lens for analysis"),
+]
+
+
+@pytest.mark.parametrize("plural,singular", COMPOUND_HEAD_PAIRS)
+def test_singular_noun_compound_head_with_singular_tail(plural, singular):
+    p = inflect.engine()
+    assert p.singular_noun(plural) == singular
