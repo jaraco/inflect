@@ -1330,3 +1330,14 @@ class Test:
         p = inflect.engine()
         with pytest.raises(AttributeError):
             p.unknown_method  # noqa: B018
+
+
+@pytest.mark.parametrize(
+    "word, expected",
+    [("BUS", "BUSES"), ("CRISIS", "CRISES"), ("GAS", "GASES"), ("LENS", "LENSES")],
+)
+def test_plural_all_caps_ends_in_s(word, expected):
+    """All-caps words ending in s are pluralized like their lowercase form."""
+    p = inflect.engine()
+    assert p.plural(word) == expected
+    assert p.plural(word.lower()) == expected.lower()

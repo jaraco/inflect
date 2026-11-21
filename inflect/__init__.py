@@ -3157,8 +3157,10 @@ class engine:
 
         # HANDLE SPECIAL CASES
 
-        mo = PLVERB_SPECIAL_S_RE.search(word)
-        if mo:
+        # also try lowercase so all-caps words (BUS) match the lowercase entries
+        if PLVERB_SPECIAL_S_RE.search(word) or PLVERB_SPECIAL_S_RE.search(
+            words.lowered
+        ):
             return False
         if WHITESPACE.search(word):
             return False
