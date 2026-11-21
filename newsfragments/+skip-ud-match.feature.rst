@@ -1,0 +1,1 @@
+Pluralizing, singularizing, and choosing an indefinite article are faster when no custom words are defined. The engine now skips the type-checked ``ud_match`` call when the list of user definitions is empty.
