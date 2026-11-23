@@ -502,3 +502,47 @@ def test_issue_217():
         p.number_to_words("1234567", group=3)
         == "one, two thirty-four, five sixty-seven"
     )
+
+
+def test_numbers_to_words():
+    p = inflect.engine()
+    text = (
+        "In 2019, mark saved $15 thousand, "
+        "for a total savings of 54 thousand over eight years."
+    )
+    assert p.numbers_to_words(text) == (
+        "In two thousand and nineteen, mark saved $fifteen thousand, "
+        "for a total savings of fifty-four thousand over eight years."
+    )
+
+
+@pytest.mark.parametrize(
+    "text, words",
+    [
+        ("", ""),
+        ("no numbers", "no numbers"),
+        ("1,000 people", "one thousand people"),
+        ("1, 2, 3", "one, two, three"),
+        ("pi is 3.14.", "pi is three point one four."),
+        ("the 21st century", "the twenty-first century"),
+        ("-5 or +5", "minus five or plus five"),
+        ("pages 5-10", "pages five-ten"),
+        ("33% off", "thirty-three% off"),
+        ("mp3, 3D, B2B, file_2", "mp3, 3D, B2B, file_2"),
+        ("v1.2, 1.2.3 and 2.5th", "v1.2, 1.2.3 and 2.5th"),
+    ],
+)
+def test_numbers_to_words_finds_numbers(text, words):
+    assert inflect.engine().numbers_to_words(text) == words
+
+
+def test_numbers_to_words_options():
+    p = inflect.engine()
+    assert p.numbers_to_words("101 Dalmatians", andword="") == (
+        "one hundred one Dalmatians"
+    )
+    # numbers above the threshold stay as they were written
+    assert p.numbers_to_words("the 3rd of 12th, 1,000 or 10000", threshold=10) == (
+        "the third of 12th, 1,000 or 10000"
+    )
+    assert p.numbers_to_words("10 of 11, -50", threshold=10) == "ten of 11, minus fifty"

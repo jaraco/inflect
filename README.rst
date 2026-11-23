@@ -55,7 +55,7 @@ Methods
 - ``compare``, ``compare_nouns``, ``compare_nouns``, ``compare_adjs``
 - ``a``, ``an``
 - ``present_participle``
-- ``ordinal``, ``number_to_words``, ``number_to_currency``
+- ``ordinal``, ``number_to_words``, ``number_to_currency``, ``numbers_to_words``
 - ``join``
 - ``inflect``, ``classical``, ``gender``
 - ``defnoun``, ``defverb``, ``defadj``, ``defa``, ``defan``
@@ -255,6 +255,17 @@ The cents are written as a fraction of one hundred.
     'one hundred thousand and twenty and 56/100'
     >>> p.number_to_currency(1234.5, andword="")
     'one thousand, two hundred thirty-four and 50/100'
+
+Write Out the Numbers in a Text
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Digits that are part of a word, such as ``mp3``, are left as they are.
+
+.. code-block:: python
+
+    >>> p.numbers_to_words("In 2019, Mark saved $15 thousand.")
+    'In two thousand and nineteen, Mark saved $fifteen thousand.'
+    >>> p.numbers_to_words("the 21st of 3 versions, after v1.2")
+    'the twenty-first of three versions, after v1.2'
 
 Join Words into a List
 ^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,1 @@
+Added ``numbers_to_words``, which writes out each number in a text in words (``numbers_to_words("In 2019, Mark saved $15 thousand.")`` is ``"In two thousand and nineteen, Mark saved $fifteen thousand."``).
