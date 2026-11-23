@@ -2559,6 +2559,12 @@ class engine:
         ...
         typeguard.TypeCheckError:...is not an instance of inflect.Word
         """
+        if (
+            word1 != word2
+            and word1.endswith(("'s", "'"))
+            and self._pl_check_plurals_adj(word1, word2)
+        ):
+            return "p:p"
         norms = self.plural_noun, self.plural_verb, self.plural_adj
         results = (self._plequal(word1, word2, norm) for norm in norms)
         return next(filter(None, results), False)
@@ -2723,7 +2729,12 @@ class engine:
             bool(word1a)
             and bool(word2a)
             and (
-                self._pl_check_plurals_N(word1a, word2a)
+                (
+                    word1 != word2
+                    and word1a == word2a
+                    and self.singular_noun(word1a) is not False
+                )
+                or self._pl_check_plurals_N(word1a, word2a)
                 or self._pl_check_plurals_N(word2a, word1a)
             )
         )

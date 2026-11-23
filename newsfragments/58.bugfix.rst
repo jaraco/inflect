@@ -1,0 +1,1 @@
+Recognize alternative plural possessives such as "dresses's" and "dresses'" as plural equivalents in compare() and compare_adjs(), instead of treating them as unrelated or singular/plural pairs.

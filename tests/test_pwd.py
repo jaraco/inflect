@@ -520,9 +520,7 @@ class Test:
             ("my", "my", "eq"),
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
-            pytest.param(
-                "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
-            ),
+            ("dresses's", "dresses'", "p:p"),
             pytest.param(
                 "dress's", "dress'", "s:s", marks=pytest.mark.xfail(reason='todo')
             ),
@@ -571,9 +569,7 @@ class Test:
             ("my", "our", "s:p"),
             ("our", "our", "eq"),
             ("indexes'", "indices'", "p:p"),
-            pytest.param(
-                "dresses's", "dresses'", "p:p", marks=pytest.mark.xfail(reason="todo")
-            ),
+            ("dresses's", "dresses'", "p:p"),
             pytest.param(
                 "dress's", "dress'", "s:s", marks=pytest.mark.xfail(reason='todo')
             ),
