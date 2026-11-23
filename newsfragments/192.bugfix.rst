@@ -1,0 +1,1 @@
+``ordinal`` now gives a float holding a whole number the same suffix as its string form (``ordinal(1.0)`` is ``"1.0th"``, as ``ordinal("1.0")`` already was), and raises ``BadNumValueError`` for a number with no digit after the decimal point, such as ``"1."``.
