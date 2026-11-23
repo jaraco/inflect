@@ -926,6 +926,25 @@ pl_sb_uninflected_s_complete = [
     "news",
     "mews",
     "haggis",
+    # -ICS MASS NOUNS (DISCIPLINES AND ACTIVITIES, SINGULAR IN CONSTRUCTION)
+    "aerobics",
+    "biomechanics",
+    "calisthenics",
+    "economics",
+    "genetics",
+    "genomics",
+    "gymnastics",
+    "informatics",
+    "kinematics",
+    "linguistics",
+    "logistics",
+    "mathematics",
+    "metaphysics",
+    "physics",
+    "politics",
+    "proteomics",
+    "semantics",
+    "thermodynamics",
 ]
 
 pl_sb_uninflected_s_endings = [
