@@ -2763,9 +2763,11 @@ class engine:
 
         # HANDLE USER-DEFINED NOUNS
 
-        value = self.ud_match(word, self.pl_sb_user_defined)
-        if value is not None:
-            return value
+        # an empty word still goes to ud_match, which rejects it
+        if self.pl_sb_user_defined or not word:
+            value = self.ud_match(word, self.pl_sb_user_defined)
+            if value is not None:
+                return value
 
         # HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
 
@@ -3125,9 +3127,11 @@ class engine:
 
         # HANDLE USER-DEFINED VERBS
 
-        value = self.ud_match(word, self.pl_v_user_defined)
-        if value is not None:
-            return value
+        # an empty word still goes to ud_match, which rejects it
+        if self.pl_v_user_defined or not word:
+            value = self.ud_match(word, self.pl_v_user_defined)
+            if value is not None:
+                return value
 
         # HANDLE IRREGULAR PRESENT TENSE (SIMPLE AND COMPOUND)
 
@@ -3227,9 +3231,11 @@ class engine:
 
         # HANDLE USER-DEFINED ADJECTIVES
 
-        value = self.ud_match(word, self.pl_adj_user_defined)
-        if value is not None:
-            return value
+        # an empty word still goes to ud_match, which rejects it
+        if self.pl_adj_user_defined or not word:
+            value = self.ud_match(word, self.pl_adj_user_defined)
+            if value is not None:
+                return value
 
         # HANDLE KNOWN CASES
 
@@ -3279,9 +3285,11 @@ class engine:
 
         # HANDLE USER-DEFINED NOUNS
 
-        value = self.ud_match(word, self.si_sb_user_defined)
-        if value is not None:
-            return value
+        # an empty word still goes to ud_match, which rejects it
+        if self.si_sb_user_defined or not word:
+            value = self.ud_match(word, self.si_sb_user_defined)
+            if value is not None:
+                return value
 
         # HANDLE EMPTY WORD, SINGULAR COUNT AND UNINFLECTED PLURALS
 
@@ -3655,9 +3663,11 @@ class engine:
 
         # HANDLE USER-DEFINED VARIANTS
 
-        value = self.ud_match(word, self.A_a_user_defined)
-        if value is not None:
-            return f"{value} {word}"
+        # an empty word still goes to ud_match, which rejects it
+        if self.A_a_user_defined or not word:
+            value = self.ud_match(word, self.A_a_user_defined)
+            if value is not None:
+                return f"{value} {word}"
 
         matches = (
             f'{article} {word}'

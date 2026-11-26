@@ -218,6 +218,7 @@ class Test:
         assert p.pl_sb_user_defined == []
         p.defnoun("VAX", "VAXen")
         assert p.plural("VAX") == "VAXEN"
+        assert p.singular_noun("VAXen") == "VAX"
         assert p.pl_sb_user_defined == ["VAX", "VAXen"]
 
         assert p.ud_match("word", p.pl_sb_user_defined) is None
