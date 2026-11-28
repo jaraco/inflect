@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, localcontext
 
 import pytest
 
@@ -76,6 +76,21 @@ def test_scientific_notation_float():
 def test_scientific_notation_string(num, words):
     p = inflect.engine()
     assert p.number_to_words(num) == words
+
+
+def test_scientific_notation_string_exact():
+    p = inflect.engine()
+    digits = "12345678901234567890123456789"
+    assert p.number_to_words(f"{digits}e0", threshold=0, comma="") == digits
+    assert p.number_to_words(f"-{digits}e0") == p.number_to_words(f"-{digits}")
+
+
+def test_scientific_notation_string_ignores_context():
+    p = inflect.engine()
+    with localcontext() as ctx:
+        ctx.prec = 6
+        assert p.number_to_words("1234567e0", threshold=0, comma="") == "1234567"
+        assert p.number_to_words("1234567e0") == p.number_to_words("1234567")
 
 
 def test_array():

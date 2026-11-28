@@ -3967,7 +3967,7 @@ class engine:
         if num_is_number and "e" in num.lower():
             num = format(Decimal(num), "f")
         elif match := SCIENTIFIC_NOTATION.fullmatch(num):
-            num = match["sign"] + format(abs(Decimal(num)), "f")
+            num = match["sign"] + format(Decimal(num).copy_abs(), "f")
 
         # Handle "stylistic" conversions (up to a given threshold)...
         if threshold is not None and float(num) > threshold:
