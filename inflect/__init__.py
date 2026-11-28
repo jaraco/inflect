@@ -2416,16 +2416,17 @@ class engine:
 
         # Try to fix word wise capitalization by restoring each inflected
         # word's case from the original word it came from. Inflecting a phrase
-        # can change the number of words (e.g. "a cat" -> "cats" drops the
-        # article), so pair the words positionally only as far as they align
-        # and leave any surplus inflected words untouched rather than indexing
-        # past the end of either sequence.
+        # can change the number of words (e.g. "City on a Hill" ->
+        # "Citys on Hills" drops the article). Positional pairing would then
+        # misalign and mangle the case of unrelated words (#301). The
+        # word-count-changing dual-compound branch restores each part's case
+        # before joining them, so return those words untouched.
         originals = orig.split(" ")
-        recased = (
+        if len(originals) != len(result):
+            return " ".join(result)
+        return " ".join(
             self._recase(original, word) for original, word in zip(originals, result)
         )
-        surplus = result[len(originals) :]
-        return " ".join(itertools.chain(recased, surplus))
 
     def _recase(self, original: str, inflected: str) -> str:
         """
@@ -2799,9 +2800,9 @@ class engine:
             mo = PL_SB_PREP_DUAL_COMPOUND_RE.search(word)
             if mo and mo.group(2) != "" and mo.group(3) != "":
                 return (
-                    f"{self._plnoun(mo.group(1), 2)}"
+                    f"{self.postprocess(mo.group(1), self._plnoun(mo.group(1), 2))}"
                     f"{mo.group(2)}"
-                    f"{self._plnoun(mo.group(3))}"
+                    f"{self.postprocess(mo.group(3), self._plnoun(mo.group(3)))}"
                 )
 
         if len(word.split_) >= 3:
