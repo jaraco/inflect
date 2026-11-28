@@ -1,3 +1,5 @@
+import pytest
+
 import inflect
 
 p = inflect.engine()
@@ -113,3 +115,20 @@ def test_plural_phrase_word_count_change_keeps_inner_casing():
     assert p.plural("The Cat on a Mat") == "The Cats on Mats"
     assert p.plural("day at a time") == "days at times"
     assert p.plural("jack in a box") == "jacks in boxes"
+
+
+@pytest.mark.parametrize("method", ["plural", "plural_noun"])
+@pytest.mark.parametrize(
+    ("singular", "plural"),
+    [
+        ("DAY AT A TIME", "DAYS AT TIMES"),
+        ("CAT ON A MAT", "CATS ON MATS"),
+        ("JACK IN A BOX", "JACKS IN BOXES"),
+        ("1 Day At A Time", "1 Days At Times"),
+        ("DAY at a Time", "DAYS at Times"),
+        ("day AT A TIME", "days AT TIMES"),
+        ("day at a time", "days at times"),
+    ],
+)
+def test_dual_compound_recases_each_part(method, singular, plural):
+    assert getattr(p, method)(singular) == plural
