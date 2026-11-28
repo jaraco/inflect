@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, localcontext
 
 import pytest
 
@@ -58,6 +58,39 @@ def test_scientific_notation_float():
     p = inflect.engine()
     assert p.number_to_words(0.000001) == "zero point zero zero zero zero zero one"
     assert p.number_to_words(1e20) == "one hundred quintillion"
+
+
+@pytest.mark.parametrize(
+    "num, words",
+    [
+        ("1e3", "one thousand"),
+        ("10e6", "ten million"),
+        ("1.5e3", "one thousand, five hundred"),
+        ("1.0e3", "one thousand"),
+        ("-1e3", "minus one thousand"),
+        ("+1e3", "plus one thousand"),
+        ("2E2", "two hundred"),
+        ("1e-3", "zero point zero zero one"),
+    ],
+)
+def test_scientific_notation_string(num, words):
+    p = inflect.engine()
+    assert p.number_to_words(num) == words
+
+
+def test_scientific_notation_string_exact():
+    p = inflect.engine()
+    digits = "12345678901234567890123456789"
+    assert p.number_to_words(f"{digits}e0", threshold=0, comma="") == digits
+    assert p.number_to_words(f"-{digits}e0") == p.number_to_words(f"-{digits}")
+
+
+def test_scientific_notation_string_ignores_context():
+    p = inflect.engine()
+    with localcontext() as ctx:
+        ctx.prec = 6
+        assert p.number_to_words("1234567e0", threshold=0, comma="") == "1234567"
+        assert p.number_to_words("1234567e0") == p.number_to_words("1234567")
 
 
 def test_array():
