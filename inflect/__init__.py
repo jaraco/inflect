@@ -2418,9 +2418,9 @@ class engine:
         # word's case from the original word it came from. Inflecting a phrase
         # can change the number of words (e.g. "City on a Hill" ->
         # "Citys on Hills" drops the article). Positional pairing would then
-        # misalign and mangle the case of unrelated words (#301), and the
-        # recursive calls that produced the inflected words already restored
-        # their case, so return them untouched.
+        # misalign and mangle the case of unrelated words (#301). The
+        # word-count-changing dual-compound branch restores each part's case
+        # before joining them, so return those words untouched.
         originals = orig.split(" ")
         if len(originals) != len(result):
             return " ".join(result)
@@ -2800,9 +2800,9 @@ class engine:
             mo = PL_SB_PREP_DUAL_COMPOUND_RE.search(word)
             if mo and mo.group(2) != "" and mo.group(3) != "":
                 return (
-                    f"{self._plnoun(mo.group(1), 2)}"
+                    f"{self.postprocess(mo.group(1), self._plnoun(mo.group(1), 2))}"
                     f"{mo.group(2)}"
-                    f"{self._plnoun(mo.group(3))}"
+                    f"{self.postprocess(mo.group(3), self._plnoun(mo.group(3)))}"
                 )
 
         if len(word.split_) >= 3:
